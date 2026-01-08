@@ -59,6 +59,14 @@ namespace Terrarium.Logic.Entities
             _waterLevel = MaxWaterLevel;
         }
 
+        internal Plant(double x, double y, double initialSize, int id)
+            : base(x, y, id: id)
+        {
+            _size = initialSize;
+            _growthRate = DefaultGrowthRate;
+            _waterLevel = MaxWaterLevel;
+        }
+
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);

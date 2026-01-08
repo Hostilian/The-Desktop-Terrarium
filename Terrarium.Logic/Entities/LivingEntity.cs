@@ -48,8 +48,8 @@ namespace Terrarium.Logic.Entities
             private set => _isAlive = value;
         }
 
-        protected LivingEntity(double x, double y, double initialHealth = MaxHealth)
-            : base(x, y)
+        protected LivingEntity(double x, double y, double initialHealth = MaxHealth, int? id = null)
+            : base(x, y, id)
         {
             _isAlive = true;
             Health = initialHealth;

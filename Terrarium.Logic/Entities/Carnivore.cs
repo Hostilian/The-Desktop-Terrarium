@@ -16,8 +16,8 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public string Type { get; set; }
 
-        public Carnivore(double x, double y, string type = "Wolf")
-            : base(x, y, CarnivoreSpeed)
+        public Carnivore(double x, double y, string type = "Wolf", int? id = null)
+            : base(x, y, CarnivoreSpeed, id: id)
         {
             Type = type;
         }

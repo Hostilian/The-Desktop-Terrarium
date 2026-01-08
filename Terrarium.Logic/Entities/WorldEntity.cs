@@ -6,7 +6,7 @@ namespace Terrarium.Logic.Entities
     /// </summary>
     public abstract class WorldEntity
     {
-        private static int _nextId = 0;
+        private static int _nextId = -1;
         private readonly int _id;
         private double _x;
         private double _y;
@@ -34,11 +34,36 @@ namespace Terrarium.Logic.Entities
             set => _y = value;
         }
 
-        protected WorldEntity(double x, double y)
+        protected WorldEntity(double x, double y, int? id = null)
         {
-            _id = _nextId++;
+            if (id.HasValue)
+            {
+                _id = id.Value;
+                EnsureNextIdAtLeast(_id);
+            }
+            else
+            {
+                _id = System.Threading.Interlocked.Increment(ref _nextId);
+            }
             _x = x;
             _y = y;
+        }
+
+        private static void EnsureNextIdAtLeast(int restoredId)
+        {
+            while (true)
+            {
+                int current = System.Threading.Volatile.Read(ref _nextId);
+                if (current >= restoredId)
+                {
+                    return;
+                }
+
+                if (System.Threading.Interlocked.CompareExchange(ref _nextId, restoredId, current) == current)
+                {
+                    return;
+                }
+            }
         }
 
         /// <summary>

@@ -51,8 +51,8 @@ namespace Terrarium.Logic.Entities
             private set => _waterLevel = Math.Clamp(value, 0, MaxWaterLevel);
         }
 
-        public Plant(double x, double y, double initialSize = MinSize)
-            : base(x, y)
+        public Plant(double x, double y, double initialSize = MinSize, int? id = null)
+            : base(x, y, id: id)
         {
             _size = initialSize;
             _growthRate = DefaultGrowthRate;

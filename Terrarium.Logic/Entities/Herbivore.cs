@@ -15,8 +15,8 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public string Type { get; set; }
 
-        public Herbivore(double x, double y, string type = "Sheep")
-            : base(x, y, HerbivoreSpeed)
+        public Herbivore(double x, double y, string type = "Sheep", int? id = null)
+            : base(x, y, HerbivoreSpeed, id: id)
         {
             Type = type;
         }

@@ -5,6 +5,9 @@ A desktop ecosystem simulator that runs transparently at the bottom of your scre
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
 ![WPF](https://img.shields.io/badge/WPF-Windows-blue.svg)
+![CI/CD](https://img.shields.io/github/actions/workflow/status/Hostilian/The-Desktop-Terrarium/ci-cd.yml?branch=main&label=build)
+
+🌐 **[Visit the Official Website](https://hostilian.github.io/The-Desktop-Terrarium/)** | 📦 **[Download Latest Release](https://github.com/Hostilian/The-Desktop-Terrarium/releases)**
 
 ## 📋 Project Overview
 

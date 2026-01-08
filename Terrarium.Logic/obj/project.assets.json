@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Hostilian\\.nuget\\packages\\": {}
+    "/home/runner/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+      "projectUniqueName": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Logic/Terrarium.Logic.csproj",
       "projectName": "Terrarium.Logic",
-      "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
-      "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
+      "projectPath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Logic/Terrarium.Logic.csproj",
+      "packagesPath": "/home/runner/.nuget/packages/",
+      "outputPath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Logic/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -43,7 +43,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -64,7 +65,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

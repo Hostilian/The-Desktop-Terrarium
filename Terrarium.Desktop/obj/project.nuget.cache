@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "98rWGK5/TnY=",
+  "dgSpecHash": "xAA3IKW2vZ4=",
   "success": true,
-  "projectFilePath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Desktop/Terrarium.Desktop.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/.nuget/packages/microsoft.windowsdesktop.app.ref/8.0.22/microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

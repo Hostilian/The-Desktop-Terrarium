@@ -43,6 +43,16 @@ namespace Terrarium.Logic.Simulation
             WeatherIntensity = 0.0;
         }
 
+        public SimulationEngine(World world)
+        {
+            _world = world ?? throw new ArgumentNullException(nameof(world));
+            _movementCalculator = new MovementCalculator(_world);
+            _collisionDetector = new CollisionDetector();
+            _foodManager = new FoodManager(_world);
+            _logicAccumulator = 0;
+            WeatherIntensity = 0.0;
+        }
+
         /// <summary>
         /// Initializes the simulation with starting entities.
         /// </summary>
@@ -196,6 +206,16 @@ namespace Terrarium.Logic.Simulation
             }
 
             return null;
+        }
+
+        public bool IsEcosystemBalanced()
+        {
+            return _foodManager.IsEcosystemBalanced();
+        }
+
+        public double GetEcosystemHealth()
+        {
+            return _foodManager.GetEcosystemHealth();
         }
     }
 }

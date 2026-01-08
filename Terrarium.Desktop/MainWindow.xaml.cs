@@ -24,6 +24,11 @@ namespace Terrarium.Desktop
         private SystemMonitor? _systemMonitor;
         private SaveManager? _saveManager;
 
+        // Weather from CPU constants
+        private const double CpuStormStartThreshold = 0.70;
+        private const double CpuStormMaxThreshold = 1.00;
+        private const double StormyWeatherThreshold = 0.50;
+
         // Timing constants
         private const int RenderFps = 60;
         private const double RenderInterval = 1000.0 / RenderFps; // milliseconds
@@ -41,12 +46,12 @@ namespace Terrarium.Desktop
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            PositionWindowAtBottom();
             InitializeSimulation();
             InitializeRendering();
             InitializeSaveSystem();
             InitializeSystemMonitoring();
             StartSimulation();
-            PositionWindowAtBottom();
         }
 
         /// <summary>
@@ -115,9 +120,7 @@ namespace Terrarium.Desktop
                     var loadedWorld = _saveManager.LoadWorld();
                     if (_simulationEngine != null)
                     {
-                        // Replace current world with loaded world
-                        _simulationEngine = new SimulationEngine(loadedWorld.Width, loadedWorld.Height);
-                        // Note: Would need to properly restore the world in SimulationEngine
+                        _simulationEngine = new SimulationEngine(loadedWorld);
                     }
                 }
                 catch
@@ -169,8 +172,17 @@ namespace Terrarium.Desktop
 
             double cpuUsage = _systemMonitor.GetCpuUsage();
 
-            // High CPU usage (>70%) causes stormy weather
-            _simulationEngine.WeatherIntensity = cpuUsage > 0.7 ? (cpuUsage - 0.7) / 0.3 : 0.0;
+            // High CPU usage causes stormy weather
+            if (cpuUsage <= CpuStormStartThreshold)
+            {
+                _simulationEngine.WeatherIntensity = 0.0;
+                return;
+            }
+
+            double denom = CpuStormMaxThreshold - CpuStormStartThreshold;
+            _simulationEngine.WeatherIntensity = denom <= 0
+                ? 0.0
+                : Math.Clamp((cpuUsage - CpuStormStartThreshold) / denom, 0.0, 1.0);
         }
 
         /// <summary>
@@ -207,7 +219,10 @@ namespace Terrarium.Desktop
                                  $"H:{_simulationEngine.World.Herbivores.Count} " +
                                  $"C:{_simulationEngine.World.Carnivores.Count})";
 
-            WeatherText.Text = $"Weather: {(_simulationEngine.WeatherIntensity > 0.5 ? "Stormy" : "Calm")}";
+            EcosystemHealthText.Text = $"Ecosystem: {_simulationEngine.GetEcosystemHealth():P0} " +
+                                      $"({(_simulationEngine.IsEcosystemBalanced() ? "Balanced" : "Unbalanced")})";
+
+            WeatherText.Text = $"Weather: {(_simulationEngine.WeatherIntensity > StormyWeatherThreshold ? "Stormy" : "Calm")}";
         }
 
         /// <summary>
@@ -235,14 +250,13 @@ namespace Terrarium.Desktop
 
             var position = e.GetPosition(RenderCanvas);
 
-            // Check if hovering over a plant
-            foreach (var plant in _simulationEngine.World.Plants)
+            var hoveredPlant = _simulationEngine.World.Plants
+                .FirstOrDefault(p => p.IsAlive && p.ContainsPoint(position.X, position.Y));
+
+            if (hoveredPlant != null)
             {
-                if (plant.IsAlive && plant.ContainsPoint(position.X, position.Y))
-                {
-                    plant.Shake();
-                    _renderer?.TriggerPlantShake(plant);
-                }
+                hoveredPlant.Shake();
+                _renderer?.TriggerPlantShake(hoveredPlant);
             }
         }
 
@@ -330,8 +344,7 @@ namespace Terrarium.Desktop
             try
             {
                 var loadedWorld = _saveManager.LoadWorld();
-                _simulationEngine = new SimulationEngine(loadedWorld.Width, loadedWorld.Height);
-                // Note: Would need proper world restoration in SimulationEngine
+                _simulationEngine = new SimulationEngine(loadedWorld);
 
                 // Could show a load confirmation visual here
             }

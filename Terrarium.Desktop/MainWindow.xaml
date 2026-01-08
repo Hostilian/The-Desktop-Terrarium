@@ -12,6 +12,7 @@
         ResizeMode="NoResize"
         MouseDown="Window_MouseDown"
         MouseMove="Window_MouseMove"
+        KeyDown="Window_KeyDown"
         Loaded="Window_Loaded">
     
     <Grid>

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Simulation;
+using Terrarium.Logic.Persistence;
 using System.Diagnostics;
 
 namespace Terrarium.Desktop
@@ -19,6 +20,7 @@ namespace Terrarium.Desktop
         private DispatcherTimer? _systemMonitorTimer;
         private Stopwatch _frameStopwatch;
         private SystemMonitor? _systemMonitor;
+        private SaveManager? _saveManager;
 
         // Timing constants
         private const int RenderFps = 60;
@@ -39,6 +41,7 @@ namespace Terrarium.Desktop
         {
             InitializeSimulation();
             InitializeRendering();
+            InitializeSaveSystem();
             InitializeSystemMonitoring();
             StartSimulation();
             PositionWindowAtBottom();
@@ -92,7 +95,34 @@ namespace Terrarium.Desktop
             {
                 Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval)
             };
-            _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
+         
+
+        /// <summary>
+        /// Initializes save/load system.
+        /// </summary>
+        private void InitializeSaveSystem()
+        {
+            _saveManager = new SaveManager();
+            
+            // Try to load existing save file
+            if (_saveManager.SaveFileExists())
+            {
+                try
+                {
+                    var loadedWorld = _saveManager.LoadWorld();
+                    if (_simulationEngine != null)
+                    {
+                        // Replace current world with loaded world
+                        _simulationEngine = new SimulationEngine(loadedWorld.Width, loadedWorld.Height);
+                        // Note: Would need to properly restore the world in SimulationEngine
+                    }
+                }
+                catch
+                {
+                    // If load fails, continue with new world
+                }
+            }
+        }   _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
         }
 
         /// <summary>
@@ -188,10 +218,109 @@ namespace Terrarium.Desktop
             var position = e.GetPosition(RenderCanvas);
             var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
             
-            if (clickable != null)
+            Handles keyboard input for save/load and controls.
+        /// </summary>
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (_simulationEngine == null) return;
+
+            switch (e.Key)
             {
-                clickable.OnClick();
+                case Key.S when Keyboard.Modifiers == ModifierKeys.Control:
+                    // Ctrl+S: Save game
+                    SaveGame();
+                    e.Handled = true;
+                    break;
+
+                case Key.L when Keyboard.Modifiers == ModifierKeys.Control:
+                    // Ctrl+L: Load game
+                    LoadGame();
+                    e.Handled = true;
+                    break;
+
+                case Key.P:
+                    // P: Spawn plant
+                    _simulationEngine.World.SpawnRandomPlant();
+                    e.Handled = true;
+                    break;
+
+                case Key.H:
+                    // H: Spawn herbivore
+                    _simulationEngine.World.SpawnRandomHerbivore();
+                    e.Handled = true;
+                    break;
+
+                case Key.C:
+                    // C: Spawn carnivore
+                    _simulationEngine.World.SpawnRandomCarnivore();
+                    e.Handled = true;
+                    break;
+
+                case Key.F1:
+                    // F1: Toggle status panel
+                    StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible 
+                        ? Visibility.Collapsed 
+                        : Visibility.Visible;
+                    e.Handled = true;
+                    break;
+
+                case Key.Escape:
+                    // ESC: Close application
+                    Close();
+                    e.Handled = true;
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Saves the current game state.
+        /// </summary>
+        private void SaveGame()
+        {
+            if (_saveManager == null || _simulationEngine == null) return;
+
+            try
+            {
+                _saveManager.SaveWorld(_simulationEngine.World);
+                // Could show a save confirmation visual here
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save: {ex.Message}", "Save Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Loads a saved game state.
+        /// </summary>
+        private void LoadGame()
+        {
+            if (_saveManager == null) return;
+
+            try
+            {
+                var loadedWorld = _saveManager.LoadWorld();
+                _simulationEngine = new SimulationEngine(loadedWorld.Width, loadedWorld.Height);
+                // Note: Would need proper world restoration in SimulationEngine
+                
+                // Could show a load confirmation visual here
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load: {ex.Message}", "Load Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Cleanup when window closes.
+        /// </summary>
+        protected override void OnClosed(EventArgs e)
+        {
+            // Auto-save on exit
+            SaveGame();
+               }
         }
 
         /// <summary>

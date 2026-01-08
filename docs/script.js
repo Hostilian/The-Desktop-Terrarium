@@ -248,8 +248,13 @@
     }
 
     // ===== Lazy Loading Images =====
+    // Note: Currently no images use lazy loading, but this is ready for future use
+    // To use: Add images with data-src attribute instead of src
     function initLazyLoading() {
         if ('IntersectionObserver' in window) {
+            const images = document.querySelectorAll('img[data-src]');
+            if (images.length === 0) return; // Skip if no lazy-loaded images
+            
             const imageObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -263,9 +268,7 @@
                 });
             });
             
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
+            images.forEach(img => imageObserver.observe(img));
         }
     }
 
@@ -396,6 +399,12 @@
                     this.textContent = 'Copied!';
                     setTimeout(() => {
                         this.textContent = originalText;
+                    }, 1000);
+                }).catch((err) => {
+                    console.error('Failed to copy text: ', err);
+                    this.textContent = 'Copy failed!';
+                    setTimeout(() => {
+                        this.textContent = text;
                     }, 1000);
                 });
             });

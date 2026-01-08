@@ -525,7 +525,7 @@ namespace Terrarium.Desktop
             {
                 UnregisterGlobalHotkeys(hwndSource.Handle);
             }
-            
+
             _renderTimer?.Stop();
             _systemMonitorTimer?.Stop();
             _systemMonitor?.Dispose();

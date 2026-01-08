@@ -9,6 +9,8 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
+        ShowActivated="False"
+        Focusable="False"
         ResizeMode="NoResize"
         MouseDown="Window_MouseDown"
         MouseMove="Window_MouseMove"

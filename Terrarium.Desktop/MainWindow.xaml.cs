@@ -36,10 +36,19 @@ namespace Terrarium.Desktop
         private const int WmNcHitTest = 0x0084;
         private const int HtTransparent = -1;
 
+        // Win32 window styles
+        private const int GwlExStyle = -20;
+        private const int WsExToolWindow = 0x00000080;
+        private const int WsExNoActivate = 0x08000000;
+
         // Timing constants
         private const int RenderFps = 60;
         private const double RenderInterval = 1000.0 / RenderFps; // milliseconds
         private const double SystemMonitorInterval = 2000.0; // milliseconds
+
+        // Visual tuning constants (uses existing BackgroundRect)
+        private const double CalmBackgroundOpacity = 0.0;
+        private const double StormMaxBackgroundOpacity = 1.0;
 
         private int _frameCount;
         private double _fpsAccumulator;
@@ -54,10 +63,28 @@ namespace Terrarium.Desktop
             {
                 if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
                 {
+                    ApplyNoActivateStyles(hwndSource.Handle);
                     hwndSource.AddHook(WndProc);
                 }
             };
         }
+
+        private static void ApplyNoActivateStyles(IntPtr hwnd)
+        {
+            IntPtr exStylePtr = GetWindowLongPtr(hwnd, GwlExStyle);
+            long exStyle = exStylePtr.ToInt64();
+
+            exStyle |= WsExNoActivate;
+            exStyle |= WsExToolWindow;
+
+            SetWindowLongPtr(hwnd, GwlExStyle, new IntPtr(exStyle));
+        }
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", SetLastError = true)]
+        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -288,6 +315,12 @@ namespace Terrarium.Desktop
                                       $"({(_simulationEngine.IsEcosystemBalanced() ? "Balanced" : "Unbalanced")})";
 
             WeatherText.Text = $"Weather: {(_simulationEngine.WeatherIntensity > StormyWeatherThreshold ? "Stormy" : "Calm")}";
+
+            // Darken slightly as storms intensify.
+            BackgroundRect.Opacity = Math.Clamp(
+                CalmBackgroundOpacity + (_simulationEngine.WeatherIntensity * (StormMaxBackgroundOpacity - CalmBackgroundOpacity)),
+                CalmBackgroundOpacity,
+                StormMaxBackgroundOpacity);
         }
 
         /// <summary>

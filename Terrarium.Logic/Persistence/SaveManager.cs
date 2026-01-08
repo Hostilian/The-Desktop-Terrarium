@@ -57,7 +57,15 @@ namespace Terrarium.Logic.Persistence
             // Restore plants
             foreach (var plantData in saveData.Plants)
             {
-                var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
+                Plant plant;
+                if (plantData.Id.HasValue)
+                {
+                    plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback, plantData.Id.Value);
+                }
+                else
+                {
+                    plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
+                }
                 RestoreEntityData(plant, plantData);
                 world.AddPlant(plant);
             }
@@ -65,7 +73,15 @@ namespace Terrarium.Logic.Persistence
             // Restore herbivores
             foreach (var herbData in saveData.Herbivores)
             {
-                var herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
+                Herbivore herbivore;
+                if (herbData.Id.HasValue)
+                {
+                    herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep", herbData.Id.Value);
+                }
+                else
+                {
+                    herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
+                }
                 RestoreEntityData(herbivore, herbData);
                 world.AddHerbivore(herbivore);
             }
@@ -73,7 +89,15 @@ namespace Terrarium.Logic.Persistence
             // Restore carnivores
             foreach (var carnData in saveData.Carnivores)
             {
-                var carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
+                Carnivore carnivore;
+                if (carnData.Id.HasValue)
+                {
+                    carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf", carnData.Id.Value);
+                }
+                else
+                {
+                    carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
+                }
                 RestoreEntityData(carnivore, carnData);
                 world.AddCarnivore(carnivore);
             }
@@ -88,14 +112,13 @@ namespace Terrarium.Logic.Persistence
         {
             var data = new EntitySaveData
             {
+                Id = entity.Id,
                 X = entity.X,
                 Y = entity.Y,
                 Health = entity.Health,
                 Age = entity.Age
             };
 
-                {
-                    Id = entity.Id,
             if (entity is Plant plant)
             {
                 data.Size = plant.Size;
@@ -107,9 +130,7 @@ namespace Terrarium.Logic.Persistence
                 data.VelocityX = creature.VelocityX;
                 data.VelocityY = creature.VelocityY;
 
-                var plant = plantData.Id.HasValue
-                    ? new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback, plantData.Id.Value)
-                    : new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
+                if (creature is Herbivore herbivore)
                 {
                     data.Type = herbivore.Type;
                 }
@@ -117,16 +138,12 @@ namespace Terrarium.Logic.Persistence
                 {
                     data.Type = carnivore.Type;
                 }
-                    var herbivore = herbData.Id.HasValue
-                        ? new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep", herbData.Id.Value)
-                        : new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
+            }
 
             return data;
         }
 
-                var carnivore = carnData.Id.HasValue
-                    ? new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf", carnData.Id.Value)
-                    : new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
+        /// <summary>
         /// Restores entity data from save data.
         /// </summary>
         private void RestoreEntityData(LivingEntity entity, EntitySaveData data)

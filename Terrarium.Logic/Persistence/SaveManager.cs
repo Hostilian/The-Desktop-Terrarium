@@ -67,49 +67,42 @@ namespace Terrarium.Logic.Persistence
             {
                 var herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
                 RestoreEntityData(herbivore, herbData);
-                world.AddHerbivore(herbivore);
-            }
-
-            // Restore carnivores
-            foreach (var carnData in saveData.Carnivores)
-            {
-                var carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
-                RestoreEntityData(carnivore, carnData);
-                world.AddCarnivore(carnivore);
-            }
-
-            return world;
-        }
-
-        /// <summary>
-        /// Converts an entity to save data.
-        /// </summary>
-        private EntitySaveData EntityToData(LivingEntity entity)
-        {
-            var data = new EntitySaveData
-            {
-                X = entity.X,
-                Y = entity.Y,
-                Health = entity.Health,
-                Age = entity.Age
-            };
-
-            if (entity is Plant plant)
-            {
-                data.Size = plant.Size;
-                data.WaterLevel = plant.WaterLevel;
-            }
-            else if (entity is Creature creature)
-            {
-                data.Hunger = creature.Hunger;
-                data.VelocityX = creature.VelocityX;
-                data.VelocityY = creature.VelocityY;
-
-                if (creature is Herbivore herbivore)
+                var data = new EntitySaveData
                 {
-                    data.Type = herbivore.Type;
+                    Id = entity.Id,
+                    X = entity.X,
+                    Y = entity.Y,
+                    Health = entity.Health,
+                    Age = entity.Age
+                };
+
+                if (entity is Plant plant)
+                {
+                    data.Size = plant.Size;
+                    data.WaterLevel = plant.WaterLevel;
                 }
-                else if (creature is Carnivore carnivore)
+                else if (entity is Creature creature)
+                {
+                    data.Hunger = creature.Hunger;
+                    data.VelocityX = creature.VelocityX;
+                    data.VelocityY = creature.VelocityY;
+
+                    if (creature is Herbivore herbivore)
+                    {
+                        data.Type = herbivore.Type;
+                    }
+                    else if (creature is Carnivore carnivore)
+                    {
+                        data.Type = carnivore.Type;
+                    }
+                }
+
+                return data;
+            }
+
+            /// <summary>
+            /// Restores entity data from save data.
+            /// </summary>
                 {
                     data.Type = carnivore.Type;
                 }

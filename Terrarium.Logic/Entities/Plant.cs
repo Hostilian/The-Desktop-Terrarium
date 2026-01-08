@@ -14,7 +14,7 @@ namespace Terrarium.Logic.Entities
         private const double MinSize = 1.0;
         private const double MaxSize = 50.0;
         private const double DefaultGrowthRate = 0.5;
-        private const double WaterLevel = 100.0;
+        private const double MaxWaterLevel = 100.0;
         private const double WaterDecayRate = 0.2;
 
         private double _waterLevel;
@@ -43,7 +43,7 @@ namespace Terrarium.Logic.Entities
         public double WaterLevel
         {
             get => _waterLevel;
-            private set => _waterLevel = Math.Clamp(value, 0, WaterLevel);
+            private set => _waterLevel = Math.Clamp(value, 0, MaxWaterLevel);
         }
 
         public Plant(double x, double y, double initialSize = MinSize)
@@ -51,7 +51,7 @@ namespace Terrarium.Logic.Entities
         {
             _size = initialSize;
             _growthRate = DefaultGrowthRate;
-            _waterLevel = WaterLevel;
+            _waterLevel = MaxWaterLevel;
         }
 
         public override void Update(double deltaTime)

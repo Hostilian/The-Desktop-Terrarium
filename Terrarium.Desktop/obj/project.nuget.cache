@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "98rWGK5/TnY=",
+  "dgSpecHash": "P5leeqrk2Kk=",
   "success": true,
-  "projectFilePath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Desktop/Terrarium.Desktop.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages/microsoft.windowsdesktop.app.ref/8.0.22/microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.host.linux-x64/8.0.22/microsoft.netcore.app.host.linux-x64.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

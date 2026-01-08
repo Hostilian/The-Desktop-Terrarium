@@ -27,19 +27,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hostilian\\.nuget\\packages\\": {}
+    "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
+      "projectUniqueName": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Desktop/Terrarium.Desktop.csproj",
       "projectName": "Terrarium.Desktop",
-      "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
-      "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\obj\\",
+      "projectPath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Desktop/Terrarium.Desktop.csproj",
+      "packagesPath": "/home/runner/work/The-Desktop-Terrarium/.codeql-scratch/dbs/csharp/working/packages",
+      "outputPath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Desktop/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0-windows"
@@ -51,8 +51,8 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
-              "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
+            "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Logic/Terrarium.Logic.csproj": {
+              "projectPath": "/home/runner/work/The-Desktop-Terrarium/The-Desktop-Terrarium/Terrarium.Logic/Terrarium.Logic.csproj"
             }
           }
         }
@@ -66,7 +66,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0-windows7.0": {
@@ -82,6 +83,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -90,7 +109,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

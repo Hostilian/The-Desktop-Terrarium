@@ -57,15 +57,9 @@ namespace Terrarium.Logic.Persistence
             // Restore plants
             foreach (var plantData in saveData.Plants)
             {
-                Plant plant;
-                if (plantData.Id.HasValue)
-                {
-                    plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback, plantData.Id.Value);
-                }
-                else
-                {
-                    plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
-                }
+                var plant = plantData.Id.HasValue
+                    ? new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback, plantData.Id.Value)
+                    : new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
                 RestoreEntityData(plant, plantData);
                 world.AddPlant(plant);
             }
@@ -73,15 +67,9 @@ namespace Terrarium.Logic.Persistence
             // Restore herbivores
             foreach (var herbData in saveData.Herbivores)
             {
-                Herbivore herbivore;
-                if (herbData.Id.HasValue)
-                {
-                    herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep", herbData.Id.Value);
-                }
-                else
-                {
-                    herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
-                }
+                var herbivore = herbData.Id.HasValue
+                    ? new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep", herbData.Id.Value)
+                    : new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
                 RestoreEntityData(herbivore, herbData);
                 world.AddHerbivore(herbivore);
             }
@@ -89,15 +77,9 @@ namespace Terrarium.Logic.Persistence
             // Restore carnivores
             foreach (var carnData in saveData.Carnivores)
             {
-                Carnivore carnivore;
-                if (carnData.Id.HasValue)
-                {
-                    carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf", carnData.Id.Value);
-                }
-                else
-                {
-                    carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
-                }
+                var carnivore = carnData.Id.HasValue
+                    ? new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf", carnData.Id.Value)
+                    : new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
                 RestoreEntityData(carnivore, carnData);
                 world.AddCarnivore(carnivore);
             }

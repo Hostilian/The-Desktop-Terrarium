@@ -36,6 +36,16 @@ namespace Terrarium.Desktop
         private const int WmNcHitTest = 0x0084;
         private const int HtTransparent = -1;
 
+        // Win32 hotkey constants
+        private const int WmHotKey = 0x0312;
+        private const uint ModAlt = 0x0001;
+        private const uint ModControl = 0x0002;
+        private const uint ModNoRepeat = 0x4000;
+
+        private const int HotkeySave = 1;
+        private const int HotkeyLoad = 2;
+        private const int HotkeyToggleStatus = 3;
+
         // Win32 window styles
         private const int GwlExStyle = -20;
         private const int WsExToolWindow = 0x00000080;
@@ -64,9 +74,29 @@ namespace Terrarium.Desktop
                 if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
                 {
                     ApplyNoActivateStyles(hwndSource.Handle);
+                    RegisterGlobalHotkeys(hwndSource.Handle);
                     hwndSource.AddHook(WndProc);
                 }
             };
+        }
+
+        private void RegisterGlobalHotkeys(IntPtr hwnd)
+        {
+            RegisterHotKey(hwnd, HotkeySave, ModControl | ModAlt | ModNoRepeat,
+                (uint)KeyInterop.VirtualKeyFromKey(Key.S));
+
+            RegisterHotKey(hwnd, HotkeyLoad, ModControl | ModAlt | ModNoRepeat,
+                (uint)KeyInterop.VirtualKeyFromKey(Key.L));
+
+            RegisterHotKey(hwnd, HotkeyToggleStatus, ModControl | ModAlt | ModNoRepeat,
+                (uint)KeyInterop.VirtualKeyFromKey(Key.F1));
+        }
+
+        private void UnregisterGlobalHotkeys(IntPtr hwnd)
+        {
+            UnregisterHotKey(hwnd, HotkeySave);
+            UnregisterHotKey(hwnd, HotkeyLoad);
+            UnregisterHotKey(hwnd, HotkeyToggleStatus);
         }
 
         private static void ApplyNoActivateStyles(IntPtr hwnd)
@@ -86,8 +116,38 @@ namespace Terrarium.Desktop
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
         private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (msg == WmHotKey)
+            {
+                int hotkeyId = wParam.ToInt32();
+                switch (hotkeyId)
+                {
+                    case HotkeySave:
+                        SaveGame();
+                        handled = true;
+                        return IntPtr.Zero;
+
+                    case HotkeyLoad:
+                        LoadGame();
+                        handled = true;
+                        return IntPtr.Zero;
+
+                    case HotkeyToggleStatus:
+                        StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible
+                            ? Visibility.Collapsed
+                            : Visibility.Visible;
+                        handled = true;
+                        return IntPtr.Zero;
+                }
+            }
+
             if (msg != WmNcHitTest)
             {
                 return IntPtr.Zero;
@@ -460,6 +520,11 @@ namespace Terrarium.Desktop
         {
             // Auto-save on exit
             SaveGame();
+
+            if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
+            {
+                UnregisterGlobalHotkeys(hwndSource.Handle);
+            }
             
             _renderTimer?.Stop();
             _systemMonitorTimer?.Stop();

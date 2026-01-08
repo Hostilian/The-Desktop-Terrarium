@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -7,6 +9,7 @@ using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Persistence;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Windows.Interop;
 
 namespace Terrarium.Desktop
 {
@@ -29,6 +32,10 @@ namespace Terrarium.Desktop
         private const double CpuStormMaxThreshold = 1.00;
         private const double StormyWeatherThreshold = 0.50;
 
+        // Win32 hit testing constants
+        private const int WmNcHitTest = 0x0084;
+        private const int HtTransparent = -1;
+
         // Timing constants
         private const int RenderFps = 60;
         private const double RenderInterval = 1000.0 / RenderFps; // milliseconds
@@ -42,6 +49,64 @@ namespace Terrarium.Desktop
         {
             InitializeComponent();
             _frameStopwatch = new Stopwatch();
+
+            SourceInitialized += (_, _) =>
+            {
+                if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
+                {
+                    hwndSource.AddHook(WndProc);
+                }
+            };
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg != WmNcHitTest)
+            {
+                return IntPtr.Zero;
+            }
+
+            // If we haven't started, don't block input.
+            if (_simulationEngine == null)
+            {
+                handled = true;
+                return new IntPtr(HtTransparent);
+            }
+
+            // Screen coords packed into lParam.
+            int x = GetSignedLowWord(lParam);
+            int y = GetSignedHighWord(lParam);
+
+            Point screenPoint = new Point(x, y);
+            Point windowPoint = PointFromScreen(screenPoint);
+            Point canvasPoint = TranslateToCanvasPoint(windowPoint);
+
+            var clickable = _simulationEngine.FindClickableAt(canvasPoint.X, canvasPoint.Y);
+            if (clickable == null)
+            {
+                handled = true;
+                return new IntPtr(HtTransparent);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        private static int GetSignedLowWord(IntPtr ptr)
+        {
+            int value = unchecked((short)((long)ptr & 0xFFFF));
+            return value;
+        }
+
+        private static int GetSignedHighWord(IntPtr ptr)
+        {
+            int value = unchecked((short)(((long)ptr >> 16) & 0xFFFF));
+            return value;
+        }
+
+        private Point TranslateToCanvasPoint(Point windowPoint)
+        {
+            // RenderCanvas is inside the window; translate the point.
+            return RenderCanvas.TransformToAncestor(this).Inverse.Transform(windowPoint);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

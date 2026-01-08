@@ -48,18 +48,16 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Clear()
         {
-            // Remove visuals for dead entities
-            var deadIds = _entityVisuals.Keys
-                .Where(id => !_entityVisuals.ContainsKey(id))
+            // Remove any orphaned visuals (e.g., removed from canvas elsewhere).
+            var orphanIds = _entityVisuals
+                .Where(kvp => !_canvas.Children.Contains(kvp.Value))
+                .Select(kvp => kvp.Key)
                 .ToList();
 
-            foreach (var id in deadIds)
+            foreach (var id in orphanIds)
             {
-                if (_entityVisuals.TryGetValue(id, out var visual))
-                {
-                    _canvas.Children.Remove(visual);
-                    _entityVisuals.Remove(id);
-                }
+                _entityVisuals.Remove(id);
+                _plantShakeTimers.Remove(id);
             }
         }
 

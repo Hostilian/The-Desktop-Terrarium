@@ -17,6 +17,12 @@ namespace Terrarium.Logic.Simulation
         private const double PlantSpawnInterval = 5.0;
         private const double PlantSpawnChance = 0.3;
 
+        private const double MinEcosystemHealth = 0.0;
+        private const double MaxEcosystemHealth = 1.0;
+        private const double IdealPlantRatio = 0.6;
+        private const double IdealHerbivoreRatio = 0.3;
+        private const double HealthAverageDivisor = 2.0;
+
         private double _plantSpawnTimer;
 
         public FoodManager(World world)
@@ -88,16 +94,16 @@ namespace Terrarium.Logic.Simulation
             int herbivoreCount = _world.Herbivores.Count;
             int totalCount = plantCount + herbivoreCount + _world.Carnivores.Count;
 
-            if (totalCount == 0) return 0.0;
+            if (totalCount == 0) return MinEcosystemHealth;
 
             // Ideal ratio: 60% plants, 30% herbivores, 10% carnivores
             double plantRatio = (double)plantCount / totalCount;
             double herbivoreRatio = (double)herbivoreCount / totalCount;
 
-            double plantScore = 1.0 - Math.Abs(plantRatio - 0.6);
-            double herbivoreScore = 1.0 - Math.Abs(herbivoreRatio - 0.3);
+            double plantScore = MaxEcosystemHealth - Math.Abs(plantRatio - IdealPlantRatio);
+            double herbivoreScore = MaxEcosystemHealth - Math.Abs(herbivoreRatio - IdealHerbivoreRatio);
 
-            return (plantScore + herbivoreScore) / 2.0;
+            return (plantScore + herbivoreScore) / HealthAverageDivisor;
         }
     }
 }

@@ -11,6 +11,14 @@ namespace Terrarium.Logic.Simulation
         // Collision radius constants
         private const double PlantCollisionRadius = 15.0;
         private const double CreatureCollisionRadius = 20.0;
+        private const double PlantSizeRadiusMultiplier = 0.5;
+        private const double DefaultCollisionRadius = 10.0;
+
+        // Collision resolution constants
+        private const double MinCollisionDistance = 0.1;
+        private const double ArbitraryPushDirectionX = 1.0;
+        private const double ArbitraryPushDirectionY = 0.5;
+        private const double CreaturePushForce = 0.5;
 
         /// <summary>
         /// Checks if two entities are colliding.
@@ -31,9 +39,9 @@ namespace Terrarium.Logic.Simulation
         {
             return entity switch
             {
-                Plant plant => PlantCollisionRadius + plant.Size * 0.5,
+                Plant plant => PlantCollisionRadius + plant.Size * PlantSizeRadiusMultiplier,
                 Creature => CreatureCollisionRadius,
-                _ => 10.0
+                _ => DefaultCollisionRadius
             };
         }
 
@@ -74,15 +82,14 @@ namespace Terrarium.Logic.Simulation
                 // If creatures are at exact same position, push them in opposite directions
                 if (distance == 0)
                 {
-                    distance = 0.1; // Small value to prevent division by zero
-                    dx = 1.0; // Push in arbitrary directions
-                    dy = 0.5;
+                    distance = MinCollisionDistance; // Small value to prevent division by zero
+                    dx = ArbitraryPushDirectionX; // Push in arbitrary directions
+                    dy = ArbitraryPushDirectionY;
                 }
 
                 // Push creatures apart
-                double pushForce = 0.5;
-                double pushX = (dx / distance) * pushForce;
-                double pushY = (dy / distance) * pushForce;
+                double pushX = (dx / distance) * CreaturePushForce;
+                double pushY = (dy / distance) * CreaturePushForce;
 
                 creature1.X -= pushX;
                 creature1.Y -= pushY;

@@ -14,6 +14,7 @@ namespace Terrarium.Logic.Simulation
         // Movement behavior constants
         private const double WanderChangeInterval = 2.0;
         private const double BoundaryPadding = 20.0;
+        private const double DefaultSlowingRadius = 50.0;
 
         private double _wanderTimer;
 
@@ -93,7 +94,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Calculates movement toward a target with arrival behavior.
         /// </summary>
-        public void MoveToward(Creature creature, double targetX, double targetY, double slowingRadius = 50.0)
+        public void MoveToward(Creature creature, double targetX, double targetY, double slowingRadius = DefaultSlowingRadius)
         {
             double dx = targetX - creature.X;
             double dy = targetY - creature.Y;

@@ -9,6 +9,7 @@ namespace Terrarium.Logic.Entities
         private const double PreyNutritionValue = 50.0;
         private const double AttackRange = 20.0;
         private const double AttackDamage = 80.0;
+        private const double DefaultPreyDetectionRange = 300.0;
 
         /// <summary>
         /// Type name for the carnivore (e.g., "Wolf", "Fox").
@@ -49,7 +50,7 @@ namespace Terrarium.Logic.Entities
         /// <summary>
         /// Finds the nearest herbivore within detection range.
         /// </summary>
-        public Herbivore? FindNearestPrey(IEnumerable<Herbivore> herbivores, double detectionRange = 300.0)
+        public Herbivore? FindNearestPrey(IEnumerable<Herbivore> herbivores, double detectionRange = DefaultPreyDetectionRange)
         {
             Herbivore? nearest = null;
             double minDistance = detectionRange;

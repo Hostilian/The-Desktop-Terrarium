@@ -9,6 +9,7 @@ namespace Terrarium.Logic.Persistence
     public class SaveManager
     {
         private const string DefaultSaveFileName = "terrarium_save.json";
+        private const double DefaultPlantSizeFallback = 10.0;
 
         /// <summary>
         /// Saves the current world state to a JSON file.
@@ -56,7 +57,7 @@ namespace Terrarium.Logic.Persistence
             // Restore plants
             foreach (var plantData in saveData.Plants)
             {
-                var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? 10.0);
+                var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
                 RestoreEntityData(plant, plantData);
                 world.AddPlant(plant);
             }

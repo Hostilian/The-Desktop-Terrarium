@@ -19,6 +19,9 @@ namespace Terrarium.Logic.Entities
         protected const double DefaultSpeed = 50.0;
         protected const double StarvationThreshold = 20.0;
         private const double ClickFeedNutritionValue = 20.0;
+        private const double StarvationDamageRate = 0.5;
+        private const double FeedHealMultiplier = 0.5;
+        private const double ClickRadius = 25.0;
 
         /// <summary>
         /// Movement speed of the creature.
@@ -77,7 +80,7 @@ namespace Terrarium.Logic.Entities
             // Starving creatures lose health
             if (Hunger > MaxHunger - StarvationThreshold)
             {
-                TakeDamage(0.5 * deltaTime);
+                TakeDamage(StarvationDamageRate * deltaTime);
             }
 
             // Update position based on velocity
@@ -91,7 +94,7 @@ namespace Terrarium.Logic.Entities
         public virtual void Feed(double nutritionValue)
         {
             Hunger = Math.Max(MinHunger, Hunger - nutritionValue);
-            Heal(nutritionValue * 0.5);
+            Heal(nutritionValue * FeedHealMultiplier);
         }
 
         /// <summary>
@@ -149,10 +152,9 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public bool ContainsPoint(double x, double y)
         {
-            const double clickRadius = 25.0;
             double dx = x - X;
             double dy = y - Y;
-            return (dx * dx + dy * dy) <= (clickRadius * clickRadius);
+            return (dx * dx + dy * dy) <= (ClickRadius * ClickRadius);
         }
     }
 }

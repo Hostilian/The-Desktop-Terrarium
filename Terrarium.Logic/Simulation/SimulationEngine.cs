@@ -15,6 +15,12 @@ namespace Terrarium.Logic.Simulation
 
         // Simulation timing constants
         private const double LogicTickRate = 0.2; // Logic updates 5 times per second
+
+        // Behavior tuning constants
+        private const double HerbivoreHungryThreshold = 30.0;
+        private const double CarnivoreHungryThreshold = 20.0;
+        private const double StormWeatherThreshold = 0.5;
+        private const double StormPlantDamageRate = 0.1;
         private double _logicAccumulator;
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace Terrarium.Logic.Simulation
                 if (!herbivore.IsAlive) continue;
 
                 // Look for nearby plants if hungry
-                if (herbivore.Hunger > 30)
+                if (herbivore.Hunger > HerbivoreHungryThreshold)
                 {
                     var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
                     if (nearestPlant != null)
@@ -133,7 +139,7 @@ namespace Terrarium.Logic.Simulation
                 if (!carnivore.IsAlive) continue;
 
                 // Hunt herbivores if hungry
-                if (carnivore.Hunger > 20)
+                if (carnivore.Hunger > CarnivoreHungryThreshold)
                 {
                     var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
                     if (nearestPrey != null)
@@ -160,12 +166,12 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void ApplyWeatherEffects(double deltaTime)
         {
-            if (WeatherIntensity > 0.5)
+            if (WeatherIntensity > StormWeatherThreshold)
             {
                 // Storm damages plants
                 foreach (var plant in _world.Plants)
                 {
-                    plant.TakeDamage(WeatherIntensity * 0.1 * deltaTime);
+                    plant.TakeDamage(WeatherIntensity * StormPlantDamageRate * deltaTime);
                 }
             }
         }

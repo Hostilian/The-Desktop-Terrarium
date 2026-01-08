@@ -18,6 +18,9 @@ namespace Terrarium.Logic.Entities
         private const double WaterDecayRate = 2.0; // Water depletes at 2 units per second
         private const double DehydrationDamage = 5.0; // Damage per second without water
         private const double ClickWaterAmount = 30.0;
+        private const double WaterSufficientThreshold = 20.0;
+        private const double GrowthHealRate = 0.1;
+        private const double ClickRadiusPadding = 10.0;
 
         private double _waterLevel;
 
@@ -65,7 +68,7 @@ namespace Terrarium.Logic.Entities
             // Plants need water to survive
             WaterLevel -= WaterDecayRate * deltaTime;
 
-            if (WaterLevel > 20)
+            if (WaterLevel > WaterSufficientThreshold)
             {
                 Grow(deltaTime);
             }
@@ -85,7 +88,7 @@ namespace Terrarium.Logic.Entities
             {
                 Size += GrowthRate * deltaTime;
                 // Growing consumes health
-                Heal(0.1 * deltaTime);
+                Heal(GrowthHealRate * deltaTime);
             }
         }
 
@@ -119,7 +122,7 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public bool ContainsPoint(double x, double y)
         {
-            double clickRadius = Size + 10.0;
+            double clickRadius = Size + ClickRadiusPadding;
             double dx = x - X;
             double dy = Y - y; // Plants grow upward
             return (dx * dx + dy * dy) <= (clickRadius * clickRadius);

@@ -20,7 +20,7 @@ namespace Terrarium.Logic.Entities
         public double Health
         {
             get => _health;
-            protected set
+            private set
             {
                 _health = Math.Clamp(value, MinHealth, MaxHealth);
                 if (_health <= MinHealth)
@@ -36,7 +36,7 @@ namespace Terrarium.Logic.Entities
         public double Age
         {
             get => _age;
-            protected set => _age = value;
+            private set => _age = value;
         }
 
         /// <summary>
@@ -45,23 +45,33 @@ namespace Terrarium.Logic.Entities
         public bool IsAlive
         {
             get => _isAlive;
-            protected set => _isAlive = value;
+            private set => _isAlive = value;
         }
 
         protected LivingEntity(double x, double y, double initialHealth = MaxHealth)
             : base(x, y)
         {
-            _health = initialHealth;
-            _age = 0;
             _isAlive = true;
+            Health = initialHealth;
+            Age = 0;
         }
 
         public override void Update(double deltaTime)
         {
             if (!IsAlive) return;
 
-            _age += deltaTime;
+            Age += deltaTime;
             UpdateHealth(deltaTime);
+        }
+
+        /// <summary>
+        /// Restores core life-state for persistence.
+        /// </summary>
+        internal void RestoreVitalStats(double health, double age)
+        {
+            _isAlive = true;
+            Health = health;
+            Age = age;
         }
 
         /// <summary>

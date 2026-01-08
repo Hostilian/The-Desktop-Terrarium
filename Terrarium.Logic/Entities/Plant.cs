@@ -17,6 +17,7 @@ namespace Terrarium.Logic.Entities
         private const double MaxWaterLevel = 100.0;
         private const double WaterDecayRate = 2.0; // Water depletes at 2 units per second
         private const double DehydrationDamage = 5.0; // Damage per second without water
+        private const double ClickWaterAmount = 30.0;
 
         private double _waterLevel;
 
@@ -84,7 +85,7 @@ namespace Terrarium.Logic.Entities
             {
                 Size += GrowthRate * deltaTime;
                 // Growing consumes health
-                Health = Math.Min(MaxHealth, Health + 0.1 * deltaTime);
+                Heal(0.1 * deltaTime);
             }
         }
 
@@ -110,7 +111,7 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public void OnClick()
         {
-            Water(30.0); // Clicking waters the plant
+            Water(ClickWaterAmount); // Clicking waters the plant
         }
 
         /// <summary>

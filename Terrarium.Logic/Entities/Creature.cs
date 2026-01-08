@@ -18,6 +18,7 @@ namespace Terrarium.Logic.Entities
         protected const double HungerIncreaseRate = 0.3;
         protected const double DefaultSpeed = 50.0;
         protected const double StarvationThreshold = 20.0;
+        private const double ClickFeedNutritionValue = 20.0;
 
         /// <summary>
         /// Movement speed of the creature.
@@ -130,7 +131,17 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public virtual void OnClick()
         {
-            Feed(20.0); // Clicking feeds the creature
+            Feed(ClickFeedNutritionValue); // Clicking feeds the creature
+        }
+
+        /// <summary>
+        /// Restores creature-specific state for persistence.
+        /// </summary>
+        internal void RestoreCreatureState(double hunger, double velocityX, double velocityY)
+        {
+            Hunger = hunger;
+            VelocityX = velocityX;
+            VelocityY = velocityY;
         }
 
         /// <summary>

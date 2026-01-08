@@ -126,22 +126,18 @@ namespace Terrarium.Logic.Persistence
             entity.X = data.X;
             entity.Y = data.Y;
 
+            entity.RestoreVitalStats(data.Health, data.Age);
+
             if (entity is Plant plant && data.WaterLevel.HasValue)
             {
                 plant.Water(data.WaterLevel.Value - plant.WaterLevel);
             }
             else if (entity is Creature creature)
             {
-                creature.VelocityX = data.VelocityX;
-                creature.VelocityY = data.VelocityY;
-
-                if (data.Hunger.HasValue)
-                {
-                    // Adjust hunger to saved value
-                    double hungerDiff = data.Hunger.Value - creature.Hunger;
-                    if (hungerDiff < 0)
-                        creature.Feed(-hungerDiff);
-                }
+                creature.RestoreCreatureState(
+                    hunger: data.Hunger ?? creature.Hunger,
+                    velocityX: data.VelocityX,
+                    velocityY: data.VelocityY);
             }
         }
 

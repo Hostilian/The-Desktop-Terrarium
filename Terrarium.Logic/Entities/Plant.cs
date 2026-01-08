@@ -15,7 +15,8 @@ namespace Terrarium.Logic.Entities
         private const double MaxSize = 50.0;
         private const double DefaultGrowthRate = 0.5;
         private const double MaxWaterLevel = 100.0;
-        private const double WaterDecayRate = 0.2;
+        private const double WaterDecayRate = 2.0; // Water depletes at 2 units per second
+        private const double DehydrationDamage = 5.0; // Damage per second without water
 
         private double _waterLevel;
 
@@ -70,7 +71,7 @@ namespace Terrarium.Logic.Entities
             else
             {
                 // Plant starts dying without water
-                TakeDamage(1.0 * deltaTime);
+                TakeDamage(DehydrationDamage * deltaTime);
             }
         }
 

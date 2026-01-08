@@ -68,8 +68,17 @@ namespace Terrarium.Logic.Simulation
             double dy = creature2.Y - creature1.Y;
             double distance = Math.Sqrt(dx * dx + dy * dy);
 
-            if (distance < CreatureCollisionRadius * 2 && distance > 0)
+            // Handle collision (including zero distance)
+            if (distance < CreatureCollisionRadius * 2)
             {
+                // If creatures are at exact same position, push them in opposite directions
+                if (distance == 0)
+                {
+                    distance = 0.1; // Small value to prevent division by zero
+                    dx = 1.0; // Push in arbitrary directions
+                    dy = 0.5;
+                }
+
                 // Push creatures apart
                 double pushForce = 0.5;
                 double pushX = (dx / distance) * pushForce;

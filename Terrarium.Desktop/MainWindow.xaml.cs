@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -5,6 +6,7 @@ using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Persistence;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Terrarium.Desktop
 {
@@ -95,7 +97,8 @@ namespace Terrarium.Desktop
             {
                 Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval)
             };
-
+            _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
+        }
 
         /// <summary>
         /// Initializes save/load system.
@@ -122,7 +125,6 @@ namespace Terrarium.Desktop
                     // If load fails, continue with new world
                 }
             }
-        }   _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
         }
 
         /// <summary>
@@ -218,7 +220,34 @@ namespace Terrarium.Desktop
             var position = e.GetPosition(RenderCanvas);
             var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
 
-            Handles keyboard input for save/load and controls.
+            if (clickable != null)
+            {
+                clickable.OnClick();
+            }
+        }
+
+        /// <summary>
+        /// Handles mouse move events (for hover effects).
+        /// </summary>
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_simulationEngine == null) return;
+
+            var position = e.GetPosition(RenderCanvas);
+
+            // Check if hovering over a plant
+            foreach (var plant in _simulationEngine.World.Plants)
+            {
+                if (plant.IsAlive && plant.ContainsPoint(position.X, position.Y))
+                {
+                    plant.Shake();
+                    _renderer?.TriggerPlantShake(plant);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles keyboard input for save/load and controls.
         /// </summary>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -320,34 +349,7 @@ namespace Terrarium.Desktop
         {
             // Auto-save on exit
             SaveGame();
-               }
-        }
-
-        /// <summary>
-        /// Handles mouse move events (for hover effects).
-        /// </summary>
-        private void Window_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (_simulationEngine == null) return;
-
-            var position = e.GetPosition(RenderCanvas);
-
-            // Check if hovering over a plant
-            foreach (var plant in _simulationEngine.World.Plants)
-            {
-                if (plant.IsAlive && plant.ContainsPoint(position.X, position.Y))
-                {
-                    plant.Shake();
-                    _renderer?.TriggerPlantShake(plant);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Cleanup when window closes.
-        /// </summary>
-        protected override void OnClosed(EventArgs e)
-        {
+            
             _renderTimer?.Stop();
             _systemMonitorTimer?.Stop();
             _systemMonitor?.Dispose();

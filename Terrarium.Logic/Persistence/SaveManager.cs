@@ -56,7 +56,7 @@ namespace Terrarium.Logic.Persistence
             // Restore plants
             foreach (var plantData in saveData.Plants)
             {
-                var plant = new Plant(plantData.X, plantData.Y, plantData.Size);
+                var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? 10.0);
                 RestoreEntityData(plant, plantData);
                 world.AddPlant(plant);
             }

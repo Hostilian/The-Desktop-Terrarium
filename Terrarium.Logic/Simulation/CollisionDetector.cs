@@ -20,7 +20,7 @@ namespace Terrarium.Logic.Simulation
             double radius1 = GetCollisionRadius(entity1);
             double radius2 = GetCollisionRadius(entity2);
             double distance = entity1.DistanceTo(entity2);
-            
+
             return distance < (radius1 + radius2);
         }
 
@@ -40,15 +40,15 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Finds all entities within a certain radius.
         /// </summary>
-        public List<T> FindNearbyEntities<T>(WorldEntity center, IEnumerable<T> entities, double radius) 
+        public List<T> FindNearbyEntities<T>(WorldEntity center, IEnumerable<T> entities, double radius)
             where T : WorldEntity
         {
             var nearby = new List<T>();
-            
+
             foreach (var entity in entities)
             {
                 if (entity.Id == center.Id) continue;
-                
+
                 double distance = center.DistanceTo(entity);
                 if (distance <= radius)
                 {

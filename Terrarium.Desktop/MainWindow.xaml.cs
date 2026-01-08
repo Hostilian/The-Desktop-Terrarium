@@ -54,7 +54,7 @@ namespace Terrarium.Desktop
         {
             var screenHeight = SystemParameters.PrimaryScreenHeight;
             var screenWidth = SystemParameters.PrimaryScreenWidth;
-            
+
             Width = screenWidth;
             Left = 0;
             Top = screenHeight - Height;
@@ -75,7 +75,7 @@ namespace Terrarium.Desktop
         private void InitializeRendering()
         {
             _renderer = new Renderer(RenderCanvas);
-            
+
             // Setup render timer (60 FPS)
             _renderTimer = new DispatcherTimer
             {
@@ -90,12 +90,12 @@ namespace Terrarium.Desktop
         private void InitializeSystemMonitoring()
         {
             _systemMonitor = new SystemMonitor();
-            
+
             _systemMonitorTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval)
             };
-         
+
 
         /// <summary>
         /// Initializes save/load system.
@@ -103,7 +103,7 @@ namespace Terrarium.Desktop
         private void InitializeSaveSystem()
         {
             _saveManager = new SaveManager();
-            
+
             // Try to load existing save file
             if (_saveManager.SaveFileExists())
             {
@@ -166,7 +166,7 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null || _systemMonitor == null) return;
 
             double cpuUsage = _systemMonitor.GetCpuUsage();
-            
+
             // High CPU usage (>70%) causes stormy weather
             _simulationEngine.WeatherIntensity = cpuUsage > 0.7 ? (cpuUsage - 0.7) / 0.3 : 0.0;
         }
@@ -195,16 +195,16 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null) return;
 
             FpsText.Text = $"FPS: {_currentFps:F1}";
-            
+
             int totalEntities = _simulationEngine.World.Plants.Count +
                               _simulationEngine.World.Herbivores.Count +
                               _simulationEngine.World.Carnivores.Count;
-            
+
             EntityCountText.Text = $"Entities: {totalEntities} " +
                                  $"(P:{_simulationEngine.World.Plants.Count} " +
                                  $"H:{_simulationEngine.World.Herbivores.Count} " +
                                  $"C:{_simulationEngine.World.Carnivores.Count})";
-            
+
             WeatherText.Text = $"Weather: {(_simulationEngine.WeatherIntensity > 0.5 ? "Stormy" : "Calm")}";
         }
 
@@ -217,7 +217,7 @@ namespace Terrarium.Desktop
 
             var position = e.GetPosition(RenderCanvas);
             var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
-            
+
             Handles keyboard input for save/load and controls.
         /// </summary>
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -258,8 +258,8 @@ namespace Terrarium.Desktop
 
                 case Key.F1:
                     // F1: Toggle status panel
-                    StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible 
-                        ? Visibility.Collapsed 
+                    StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible
+                        ? Visibility.Collapsed
                         : Visibility.Visible;
                     e.Handled = true;
                     break;
@@ -286,7 +286,7 @@ namespace Terrarium.Desktop
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to save: {ex.Message}", "Save Error", 
+                MessageBox.Show($"Failed to save: {ex.Message}", "Save Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -303,12 +303,12 @@ namespace Terrarium.Desktop
                 var loadedWorld = _saveManager.LoadWorld();
                 _simulationEngine = new SimulationEngine(loadedWorld.Width, loadedWorld.Height);
                 // Note: Would need proper world restoration in SimulationEngine
-                
+
                 // Could show a load confirmation visual here
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load: {ex.Message}", "Load Error", 
+                MessageBox.Show($"Failed to load: {ex.Message}", "Load Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -331,7 +331,7 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null) return;
 
             var position = e.GetPosition(RenderCanvas);
-            
+
             // Check if hovering over a plant
             foreach (var plant in _simulationEngine.World.Plants)
             {

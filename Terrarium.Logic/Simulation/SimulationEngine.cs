@@ -43,7 +43,7 @@ namespace Terrarium.Logic.Simulation
         public void Initialize()
         {
             _foodManager.InitializeStartingFood();
-            
+
             // Spawn starting creatures
             _world.SpawnRandomHerbivore("Sheep");
             _world.SpawnRandomHerbivore("Rabbit");

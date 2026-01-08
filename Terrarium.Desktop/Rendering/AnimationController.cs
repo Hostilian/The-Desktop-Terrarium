@@ -31,7 +31,7 @@ namespace Terrarium.Desktop.Rendering
             StopAnimation(entityId);
 
             var storyboard = new Storyboard();
-            
+
             // Create subtle bobbing motion
             var bobAnimation = new DoubleAnimation
             {
@@ -58,11 +58,11 @@ namespace Terrarium.Desktop.Rendering
         {
             // Walk animation could involve sprite frame cycling or transform animations
             // For now, we'll use a simple wobble effect
-            
+
             StopAnimation(entityId);
 
             var storyboard = new Storyboard();
-            
+
             var rotateAnimation = new DoubleAnimation
             {
                 From = -5,
@@ -79,7 +79,7 @@ namespace Terrarium.Desktop.Rendering
             }
 
             Storyboard.SetTarget(rotateAnimation, visual);
-            Storyboard.SetTargetProperty(rotateAnimation, 
+            Storyboard.SetTargetProperty(rotateAnimation,
                 new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
             storyboard.Children.Add(rotateAnimation);
 
@@ -95,7 +95,7 @@ namespace Terrarium.Desktop.Rendering
             StopAnimation(entityId);
 
             var storyboard = new Storyboard();
-            
+
             // Scale up and down to simulate eating
             var scaleXAnimation = new DoubleAnimation
             {
@@ -120,11 +120,11 @@ namespace Terrarium.Desktop.Rendering
             }
 
             Storyboard.SetTarget(scaleXAnimation, visual);
-            Storyboard.SetTargetProperty(scaleXAnimation, 
+            Storyboard.SetTargetProperty(scaleXAnimation,
                 new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
-            
+
             Storyboard.SetTarget(scaleYAnimation, visual);
-            Storyboard.SetTargetProperty(scaleYAnimation, 
+            Storyboard.SetTargetProperty(scaleYAnimation,
                 new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
 
             storyboard.Children.Add(scaleXAnimation);

@@ -25,11 +25,11 @@ namespace Terrarium.Logic.Persistence
                 SaveDate = DateTime.Now
             };
 
-            string json = JsonSerializer.Serialize(saveData, new JsonSerializerOptions 
-            { 
-                WriteIndented = true 
+            string json = JsonSerializer.Serialize(saveData, new JsonSerializerOptions
+            {
+                WriteIndented = true
             });
-            
+
             File.WriteAllText(fileName, json);
         }
 
@@ -125,7 +125,7 @@ namespace Terrarium.Logic.Persistence
             // Use reflection or direct property access to restore state
             entity.X = data.X;
             entity.Y = data.Y;
-            
+
             if (entity is Plant plant && data.WaterLevel.HasValue)
             {
                 plant.Water(data.WaterLevel.Value - plant.WaterLevel);
@@ -134,7 +134,7 @@ namespace Terrarium.Logic.Persistence
             {
                 creature.VelocityX = data.VelocityX;
                 creature.VelocityY = data.VelocityY;
-                
+
                 if (data.Hunger.HasValue)
                 {
                     // Adjust hunger to saved value

@@ -47,7 +47,7 @@ namespace Terrarium.Logic.Simulation
         {
             int plantCount = _world.Plants.Count;
 
-            if (plantCount < MinPlantCount || 
+            if (plantCount < MinPlantCount ||
                 (plantCount < MaxPlantCount && _random.NextDouble() < PlantSpawnChance))
             {
                 _world.SpawnRandomPlant();
@@ -75,7 +75,7 @@ namespace Terrarium.Logic.Simulation
             int carnivoreCount = _world.Carnivores.Count;
 
             // Basic balance: plants > herbivores > carnivores
-            return plantCount >= herbivoreCount && 
+            return plantCount >= herbivoreCount &&
                    herbivoreCount >= carnivoreCount;
         }
 

@@ -120,7 +120,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 // Shape mode: Draw simple plant shape
                 var plantGroup = new Canvas();
-                
+
                 // Stem
                 var stem = new Rectangle
                 {
@@ -128,7 +128,7 @@ namespace Terrarium.Desktop.Rendering
                     Height = plant.Size,
                     Fill = PlantColor
                 };
-                
+
                 // Leaves (ellipse on top)
                 var leaves = new Ellipse
                 {
@@ -139,10 +139,10 @@ namespace Terrarium.Desktop.Rendering
 
                 plantGroup.Children.Add(stem);
                 plantGroup.Children.Add(leaves);
-                
+
                 Canvas.SetLeft(leaves, -plant.Size * 0.4 + 2);
                 Canvas.SetTop(leaves, -plant.Size * 0.6);
-                
+
                 _canvas.Children.Add(plantGroup);
                 _entityVisuals[plant.Id] = plantGroup;
             }
@@ -178,7 +178,7 @@ namespace Terrarium.Desktop.Rendering
                 {
                     stem.Height = plant.Size;
                 }
-                
+
                 // Update leaves size
                 if (plantCanvas.Children[1] is Ellipse leaves)
                 {
@@ -232,7 +232,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 // Shape mode: Draw circle with eyes
                 var creatureGroup = new Canvas();
-                
+
                 var body = new Ellipse
                 {
                     Width = 30,

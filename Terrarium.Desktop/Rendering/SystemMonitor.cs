@@ -46,7 +46,7 @@ namespace Terrarium.Desktop.Rendering
         public void Dispose()
         {
             if (_disposed) return;
-            
+
             _cpuCounter?.Dispose();
             _disposed = true;
         }

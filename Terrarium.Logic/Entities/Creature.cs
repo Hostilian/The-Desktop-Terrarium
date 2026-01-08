@@ -59,8 +59,8 @@ namespace Terrarium.Logic.Entities
             set => _velocityY = value;
         }
 
-        protected Creature(double x, double y, double speed = DefaultSpeed)
-            : base(x, y)
+        protected Creature(double x, double y, double speed = DefaultSpeed, int? id = null)
+            : base(x, y, id: id)
         {
             _speed = speed;
             _hunger = MinHunger;

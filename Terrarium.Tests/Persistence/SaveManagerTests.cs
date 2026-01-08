@@ -41,11 +41,13 @@ namespace Terrarium.Tests.Persistence
                 Assert.AreEqual(1, loaded.Herbivores.Count, "Expected one herbivore after load");
 
                 var loadedPlant = loaded.Plants[0];
+                Assert.AreEqual(plant.Id, loadedPlant.Id, "Plant ID should be restored");
                 Assert.AreEqual(plant.Health, loadedPlant.Health, 0.0001, "Plant health should be restored");
                 Assert.AreEqual(plant.Age, loadedPlant.Age, 0.0001, "Plant age should be restored");
                 Assert.AreEqual(plant.IsAlive, loadedPlant.IsAlive, "Plant alive state should match restored health");
 
                 var loadedHerbivore = loaded.Herbivores[0];
+                Assert.AreEqual(herbivore.Id, loadedHerbivore.Id, "Herbivore ID should be restored");
                 Assert.AreEqual(herbivore.Health, loadedHerbivore.Health, 0.0001, "Herbivore health should be restored");
                 Assert.AreEqual(herbivore.Age, loadedHerbivore.Age, 0.0001, "Herbivore age should be restored");
                 Assert.AreEqual(herbivore.Hunger, loadedHerbivore.Hunger, 0.0001, "Herbivore hunger should be restored");

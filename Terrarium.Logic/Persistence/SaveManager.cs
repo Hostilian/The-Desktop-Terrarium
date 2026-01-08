@@ -94,6 +94,8 @@ namespace Terrarium.Logic.Persistence
                 Age = entity.Age
             };
 
+                {
+                    Id = entity.Id,
             if (entity is Plant plant)
             {
                 data.Size = plant.Size;
@@ -105,7 +107,9 @@ namespace Terrarium.Logic.Persistence
                 data.VelocityX = creature.VelocityX;
                 data.VelocityY = creature.VelocityY;
 
-                if (creature is Herbivore herbivore)
+                var plant = plantData.Id.HasValue
+                    ? new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback, plantData.Id.Value)
+                    : new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
                 {
                     data.Type = herbivore.Type;
                 }
@@ -113,12 +117,16 @@ namespace Terrarium.Logic.Persistence
                 {
                     data.Type = carnivore.Type;
                 }
-            }
+                    var herbivore = herbData.Id.HasValue
+                        ? new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep", herbData.Id.Value)
+                        : new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
 
             return data;
         }
 
-        /// <summary>
+                var carnivore = carnData.Id.HasValue
+                    ? new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf", carnData.Id.Value)
+                    : new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
         /// Restores entity data from save data.
         /// </summary>
         private void RestoreEntityData(LivingEntity entity, EntitySaveData data)
@@ -169,6 +177,7 @@ namespace Terrarium.Logic.Persistence
     /// </summary>
     public class EntitySaveData
     {
+        public int? Id { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Health { get; set; }

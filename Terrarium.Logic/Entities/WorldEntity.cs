@@ -34,11 +34,37 @@ namespace Terrarium.Logic.Entities
             set => _y = value;
         }
 
-        protected WorldEntity(double x, double y)
+        protected WorldEntity(double x, double y, int? id = null)
         {
-            _id = _nextId++;
+            if (id.HasValue)
+            {
+                _id = id.Value;
+                EnsureNextIdAtLeast(_id + 1);
+            }
+            else
+            {
+                _id = System.Threading.Interlocked.Increment(ref _nextId) - 1;
+            }
             _x = x;
             _y = y;
+        }
+
+        private static void EnsureNextIdAtLeast(int minNextId)
+        {
+            while (true)
+            {
+                int current = System.Threading.Volatile.Read(ref _nextId);
+                if (current >= minNextId)
+                {
+                    return;
+                }
+
+                int original = System.Threading.Interlocked.CompareExchange(ref _nextId, minNextId, current);
+                if (original == current)
+                {
+                    return;
+                }
+            }
         }
 
         /// <summary>

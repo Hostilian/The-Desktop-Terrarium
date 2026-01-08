@@ -21,6 +21,12 @@ namespace Terrarium.Logic.Entities
             Type = type;
         }
 
+        internal Herbivore(double x, double y, string type, int id)
+            : base(x, y, HerbivoreSpeed, id: id)
+        {
+            Type = type;
+        }
+
         /// <summary>
         /// Attempts to eat a plant if within range.
         /// </summary>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj": {}
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+        "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
         "projectName": "Terrarium.Logic",
-        "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+        "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
         "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
+        "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -62,14 +62,14 @@
         }
       }
     },
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj": {
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
         "projectName": "Terrarium.Tests",
-        "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
+        "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
         "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\obj\\",
+        "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -84,8 +84,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
-                "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
+              "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
+                "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
               }
             }
           }

@@ -211,9 +211,10 @@ namespace Terrarium.Desktop.Rendering
             }
             maxValue = (int)(maxValue * HeadroomMultiplier); // Add headroom
 
-            // Draw grid lines
+            // Draw grid lines (evenly spaced, excluding top edge)
             for (int i = 1; i <= GridLineCount; i++)
             {
+                // Divide by (GridLineCount + 1) to create even spacing without line at top edge
                 double y = GraphHeight - (GraphHeight * i / (GridLineCount + 1));
                 var gridLine = new Line
                 {

@@ -20,6 +20,9 @@ namespace Terrarium.Logic.Simulation
         private const double ArbitraryPushDirectionY = 0.5;
         private const double CreaturePushForce = 0.5;
 
+        // Spatial hashing constants (for performance)
+        private const double CreatureCollisionCellSizeMultiplier = 2.0;
+
         /// <summary>
         /// Checks if two entities are colliding.
         /// </summary>
@@ -96,6 +99,116 @@ namespace Terrarium.Logic.Simulation
                 creature1.Y -= pushY;
                 creature2.X += pushX;
                 creature2.Y += pushY;
+            }
+        }
+
+        /// <summary>
+        /// Resolves collisions between a set of creatures using spatial hashing to reduce comparisons.
+        /// </summary>
+        public void ResolveCreatureCollisions(IReadOnlyList<Creature> creatures)
+        {
+            if (creatures == null)
+                throw new ArgumentNullException(nameof(creatures));
+
+            if (creatures.Count <= 1)
+                return;
+
+            double cellSize = CreatureCollisionRadius * CreatureCollisionCellSizeMultiplier;
+            if (cellSize <= 0)
+                return;
+
+            var grid = new Dictionary<(int x, int y), List<Creature>>();
+
+            foreach (var creature in creatures)
+            {
+                if (!creature.IsAlive)
+                    continue;
+
+                var key = GetCellKey(creature.X, creature.Y, cellSize);
+                if (!grid.TryGetValue(key, out var list))
+                {
+                    list = new List<Creature>();
+                    grid[key] = list;
+                }
+
+                list.Add(creature);
+            }
+
+            // Within-cell pairs
+            foreach (var cell in grid.Values)
+            {
+                ResolvePairsInSameCell(cell);
+            }
+
+            // Cross-cell pairs: only check a subset of neighbors to avoid double-processing.
+            foreach (var kvp in grid)
+            {
+                var key = kvp.Key;
+                var cellCreatures = kvp.Value;
+
+                CheckNeighborCell(key, (1, 0), cellCreatures, grid);
+                CheckNeighborCell(key, (0, 1), cellCreatures, grid);
+                CheckNeighborCell(key, (1, 1), cellCreatures, grid);
+                CheckNeighborCell(key, (-1, 1), cellCreatures, grid);
+            }
+        }
+
+        private static (int x, int y) GetCellKey(double x, double y, double cellSize)
+        {
+            int cellX = (int)Math.Floor(x / cellSize);
+            int cellY = (int)Math.Floor(y / cellSize);
+            return (cellX, cellY);
+        }
+
+        private void ResolvePairsInSameCell(List<Creature> cell)
+        {
+            for (int i = 0; i < cell.Count; i++)
+            {
+                var a = cell[i];
+                if (!a.IsAlive)
+                    continue;
+
+                for (int j = i + 1; j < cell.Count; j++)
+                {
+                    var b = cell[j];
+                    if (!b.IsAlive)
+                        continue;
+
+                    if (AreColliding(a, b))
+                    {
+                        ResolveCreatureCollision(a, b);
+                    }
+                }
+            }
+        }
+
+        private void CheckNeighborCell(
+            (int x, int y) key,
+            (int dx, int dy) offset,
+            List<Creature> cellCreatures,
+            Dictionary<(int x, int y), List<Creature>> grid)
+        {
+            var neighborKey = (key.x + offset.dx, key.y + offset.dy);
+            if (!grid.TryGetValue(neighborKey, out var neighbor))
+                return;
+
+            for (int i = 0; i < cellCreatures.Count; i++)
+            {
+                var a = cellCreatures[i];
+                if (!a.IsAlive)
+                    continue;
+
+                for (int j = 0; j < neighbor.Count; j++)
+                {
+                    var b = neighbor[j];
+                    if (!b.IsAlive)
+                        continue;
+
+                    if (AreColliding(a, b))
+                    {
+                        ResolveCreatureCollision(a, b);
+                    }
+                }
             }
         }
     }

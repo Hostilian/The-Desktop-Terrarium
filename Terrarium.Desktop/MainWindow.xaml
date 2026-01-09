@@ -192,7 +192,7 @@
                 </StackPanel>
                 <TextBlock Text="F2 Settings | Click Select | F Follow | Esc Deselect" 
                            Foreground="#888888" FontSize="8" Margin="16,2,0,0"/>
-                <TextBlock Text="Ctrl+Alt+S Save | Ctrl+Alt+L Load | F1 Toggle UI" 
+                    <TextBlock Text="Space Pause | +/- Speed | Ctrl+Alt+S Save | Ctrl+Alt+L Load | F1 Toggle UI" 
                            Foreground="#666666" FontSize="8" Margin="16,2,0,0"/>
             </StackPanel>
         </Border>

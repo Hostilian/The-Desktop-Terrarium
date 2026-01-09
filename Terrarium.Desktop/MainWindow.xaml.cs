@@ -702,8 +702,32 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null)
                 return;
 
+            const double speedStep = 0.25;
+
             switch (e.Key)
             {
+                case Key.Space:
+                    _simulationEngine.TogglePause();
+                    _notificationManager?.Notify(
+                        _simulationEngine.IsPaused ? "⏸️ Paused" : "▶️ Resumed",
+                        NotificationType.Info);
+                    e.Handled = true;
+                    break;
+
+                case Key.OemPlus:
+                case Key.Add:
+                    _simulationEngine.SetSimulationSpeed(_simulationEngine.SimulationSpeed + speedStep);
+                    _notificationManager?.Notify($"⏱️ Speed: {_simulationEngine.SimulationSpeed:0.##}x", NotificationType.Info);
+                    e.Handled = true;
+                    break;
+
+                case Key.OemMinus:
+                case Key.Subtract:
+                    _simulationEngine.SetSimulationSpeed(_simulationEngine.SimulationSpeed - speedStep);
+                    _notificationManager?.Notify($"⏱️ Speed: {_simulationEngine.SimulationSpeed:0.##}x", NotificationType.Info);
+                    e.Handled = true;
+                    break;
+
                 case Key.S when Keyboard.Modifiers == ModifierKeys.Control:
                     // Ctrl+S: Save game
                     SaveGame();

@@ -65,6 +65,14 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public double SimulationSpeed { get; set; } = 1.0;
 
+        /// <summary>
+        /// Whether the simulation is currently paused.
+        /// </summary>
+        public bool IsPaused { get; private set; }
+
+        private const double MinSimulationSpeed = 0.25;
+        private const double MaxSimulationSpeed = 4.0;
+
         public SimulationEngine(double worldWidth, double worldHeight)
         {
             _world = new World(worldWidth, worldHeight);
@@ -113,6 +121,9 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void Update(double deltaTime)
         {
+            if (IsPaused)
+                return;
+
             // Apply simulation speed multiplier
             double scaledDelta = deltaTime * SimulationSpeed;
 
@@ -125,6 +136,38 @@ namespace Terrarium.Logic.Simulation
                 UpdateLogic(LogicTickRate);
                 _logicAccumulator -= LogicTickRate;
             }
+        }
+
+        /// <summary>
+        /// Sets simulation speed with safety clamping.
+        /// </summary>
+        public void SetSimulationSpeed(double speed)
+        {
+            SimulationSpeed = Math.Clamp(speed, MinSimulationSpeed, MaxSimulationSpeed);
+        }
+
+        /// <summary>
+        /// Pauses the simulation.
+        /// </summary>
+        public void Pause()
+        {
+            IsPaused = true;
+        }
+
+        /// <summary>
+        /// Resumes the simulation.
+        /// </summary>
+        public void Resume()
+        {
+            IsPaused = false;
+        }
+
+        /// <summary>
+        /// Toggles pause state.
+        /// </summary>
+        public void TogglePause()
+        {
+            IsPaused = !IsPaused;
         }
 
         /// <summary>
@@ -191,16 +234,7 @@ namespace Terrarium.Logic.Simulation
                 .Where(c => c.IsAlive)
                 .ToList();
 
-            for (int i = 0; i < allCreatures.Count; i++)
-            {
-                for (int j = i + 1; j < allCreatures.Count; j++)
-                {
-                    if (_collisionDetector.AreColliding(allCreatures[i], allCreatures[j]))
-                    {
-                        _collisionDetector.ResolveCreatureCollision(allCreatures[i], allCreatures[j]);
-                    }
-                }
-            }
+            _collisionDetector.ResolveCreatureCollisions(allCreatures);
         }
 
         /// <summary>

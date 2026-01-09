@@ -74,5 +74,39 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsTrue(plant.Health < healthBefore, "Stormy weather should damage plants");
         }
+
+        [TestMethod]
+        public void SimulationEngine_Pause_StopsEntityUpdates()
+        {
+            // Arrange
+            var engine = new SimulationEngine(800, 600);
+            engine.Initialize();
+            var firstPlant = engine.World.Plants.First();
+            double initialAge = firstPlant.Age;
+
+            // Act
+            engine.Pause();
+            engine.Update(deltaTime: 1.0);
+
+            // Assert
+            Assert.AreEqual(initialAge, firstPlant.Age, 1e-9, "Entities should not update while paused");
+        }
+
+        [TestMethod]
+        public void SimulationEngine_SetSimulationSpeed_ClampsToValidRange()
+        {
+            // Arrange
+            var engine = new SimulationEngine(800, 600);
+
+            // Act
+            engine.SetSimulationSpeed(1000.0);
+            double high = engine.SimulationSpeed;
+            engine.SetSimulationSpeed(0.0001);
+            double low = engine.SimulationSpeed;
+
+            // Assert
+            Assert.IsTrue(high <= 4.0, "Speed should clamp to max");
+            Assert.IsTrue(low >= 0.25, "Speed should clamp to min");
+        }
     }
 }

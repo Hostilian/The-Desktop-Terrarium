@@ -77,5 +77,24 @@ namespace Terrarium.Tests.Simulation
             double finalDistance = creature1.DistanceTo(creature2);
             Assert.IsTrue(finalDistance > initialDistance, "Creatures should be pushed apart");
         }
+
+        [TestMethod]
+        public void CollisionDetector_ResolveCreatureCollisions_SeparatesCreaturesAcrossCellBoundary()
+        {
+            // Arrange
+            var detector = new CollisionDetector();
+            var creature1 = new Herbivore(39, 100);
+            var creature2 = new Herbivore(41, 100); // Very close, likely in adjacent spatial cells
+            double initialDistance = creature1.DistanceTo(creature2);
+
+            var creatures = new List<Creature> { creature1, creature2 };
+
+            // Act
+            detector.ResolveCreatureCollisions(creatures);
+
+            // Assert
+            double finalDistance = creature1.DistanceTo(creature2);
+            Assert.IsTrue(finalDistance > initialDistance, "Creatures should be pushed apart even when in adjacent cells");
+        }
     }
 }

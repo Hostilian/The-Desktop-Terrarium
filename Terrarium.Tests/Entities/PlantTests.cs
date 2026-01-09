@@ -21,7 +21,7 @@ namespace Terrarium.Tests.Entities
             plant.Grow(deltaTime: 1.0);
 
             // Assert
-            Assert.IsTrue(plant.Size > initialSize, "Plant size should increase after growing");
+            Assert.IsGreaterThan(initialSize, plant.Size, "Plant size should increase after growing");
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Terrarium.Tests.Entities
             plant.Update(deltaTime: 5.0);
 
             // Assert
-            Assert.IsTrue(plant.WaterLevel < initialWaterLevel, "Water level should decrease over time");
+            Assert.IsLessThan(initialWaterLevel, plant.WaterLevel, "Water level should decrease over time");
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Terrarium.Tests.Entities
             plant.Water(30);
 
             // Assert
-            Assert.IsTrue(plant.WaterLevel > waterBefore, "Watering should increase water level");
+            Assert.IsGreaterThan(waterBefore, plant.WaterLevel, "Watering should increase water level");
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace Terrarium.Tests.Entities
             plant.OnClick();
 
             // Assert
-            Assert.IsTrue(plant.WaterLevel > waterBefore, "Clicking should water the plant");
+            Assert.IsGreaterThan(waterBefore, plant.WaterLevel, "Clicking should water the plant");
         }
 
         [TestMethod]

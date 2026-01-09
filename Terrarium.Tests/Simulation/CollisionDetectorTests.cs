@@ -58,7 +58,7 @@ namespace Terrarium.Tests.Simulation
             var nearby = detector.FindNearbyEntities(center, entities, radius: 50);
 
             // Assert
-            Assert.AreEqual(2, nearby.Count, "Should find 2 nearby entities");
+            Assert.HasCount(2, nearby);
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             double finalDistance = creature1.DistanceTo(creature2);
-            Assert.IsTrue(finalDistance > initialDistance, "Creatures should be pushed apart");
+            Assert.IsGreaterThan(initialDistance, finalDistance, "Creatures should be pushed apart");
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             double finalDistance = creature1.DistanceTo(creature2);
-            Assert.IsTrue(finalDistance > initialDistance, "Creatures should be pushed apart even when in adjacent cells");
+            Assert.IsGreaterThan(initialDistance, finalDistance, "Creatures should be pushed apart even when in adjacent cells");
         }
     }
 }

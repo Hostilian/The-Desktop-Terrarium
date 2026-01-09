@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Terrarium.Logic.Simulation.Achievements;
 
 namespace Terrarium.Desktop.Rendering
 {
@@ -41,50 +42,25 @@ namespace Terrarium.Desktop.Rendering
                                        int currentPlants, int currentHerbivores, int currentCarnivores,
                                        double simulationTime)
         {
-            // Population achievements
-            TryUnlock("first_birth", "🎉 First Birth", "Welcome the first creature to the world!", totalBirths >= 1);
-            TryUnlock("population_10", "👨‍👩‍👧‍👦 Growing Family", "Reach 10 total creatures", peakPopulation >= 10);
-            TryUnlock("population_25", "🏘️ Village", "Reach 25 total creatures", peakPopulation >= 25);
-            TryUnlock("population_50", "🌆 City", "Reach 50 total creatures", peakPopulation >= 50);
-
-            // Birth achievements
-            TryUnlock("births_10", "👶 Nursery", "Witness 10 births", totalBirths >= 10);
-            TryUnlock("births_50", "🏥 Maternity Ward", "Witness 50 births", totalBirths >= 50);
-            TryUnlock("births_100", "🎊 Baby Boom", "Witness 100 births", totalBirths >= 100);
-
-            // Survival achievements
-            TryUnlock("survivor", "💪 Survivor", "Have at least one of each species alive",
-                      currentPlants > 0 && currentHerbivores > 0 && currentCarnivores > 0);
-
-            // Time achievements
-            TryUnlock("time_5min", "⏰ Getting Started", "Run simulation for 5 minutes", simulationTime >= 300);
-            TryUnlock("time_30min", "🕐 Dedicated Observer", "Run simulation for 30 minutes", simulationTime >= 1800);
-            TryUnlock("time_1hour", "🏆 Ecosystem Master", "Run simulation for 1 hour", simulationTime >= 3600);
-
-            // Plant achievements
-            TryUnlock("plants_20", "🌳 Forest", "Grow 20 plants", currentPlants >= 20);
-            TryUnlock("plants_40", "🌲 Jungle", "Grow 40 plants", currentPlants >= 40);
-
-            // Balance achievements
-            int totalCreatures = currentHerbivores + currentCarnivores;
-            if (totalCreatures >= 10)
+            foreach (var achievement in AchievementEvaluator.Evaluate(
+                         totalBirths,
+                         totalDeaths,
+                         peakPopulation,
+                         currentPlants,
+                         currentHerbivores,
+                         currentCarnivores,
+                         simulationTime))
             {
-                double herbivoreRatio = (double)currentHerbivores / totalCreatures;
-                TryUnlock("balance", "⚖️ Perfect Balance", "Maintain 60-80% herbivore ratio with 10+ creatures",
-                          herbivoreRatio >= 0.6 && herbivoreRatio <= 0.8);
-            }
-
-            // Predator achievements
-            TryUnlock("apex_predator", "🦁 Apex Predators", "Have 5+ carnivores alive", currentCarnivores >= 5);
-        }
-
-        private void TryUnlock(string id, string title, string description, bool condition)
-        {
-            if (condition && !_unlockedAchievements.Contains(id))
-            {
-                _unlockedAchievements.Add(id);
-                _pendingAchievements.Enqueue(new Achievement { Id = id, Title = title, Description = description });
-                OnAchievementUnlocked?.Invoke(title, description);
+                if (_unlockedAchievements.Add(achievement.Id))
+                {
+                    _pendingAchievements.Enqueue(new Achievement
+                    {
+                        Id = achievement.Id,
+                        Title = achievement.Title,
+                        Description = achievement.Description
+                    });
+                    OnAchievementUnlocked?.Invoke(achievement.Title, achievement.Description);
+                }
             }
         }
 
@@ -236,7 +212,7 @@ namespace Terrarium.Desktop.Rendering
         /// <summary>
         /// Gets total available achievements.
         /// </summary>
-        public int TotalAchievements => 14;
+        public int TotalAchievements => AchievementEvaluator.TotalAchievements;
     }
 
     internal class Achievement

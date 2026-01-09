@@ -14,6 +14,12 @@ packages/
 TestResults/
 *.trx
 
+# Publish integrity outputs (keep only deterministic config manifests)
+publish-integrity/**
+!publish-integrity/**/
+!publish-integrity/**/*.deps.json
+!publish-integrity/**/*.runtimeconfig.json
+
 # Save files
 terrarium_save.json
 

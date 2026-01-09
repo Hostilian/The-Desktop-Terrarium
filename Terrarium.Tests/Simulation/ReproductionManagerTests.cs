@@ -121,7 +121,7 @@ namespace Terrarium.Tests.Simulation
             manager.Update(1.0);
 
             // Assert - Should not exceed max
-            Assert.IsTrue(world.Herbivores.Count <= 15);
+            Assert.IsLessThanOrEqualTo(world.Herbivores.Count, 15);
         }
 
         [TestMethod]

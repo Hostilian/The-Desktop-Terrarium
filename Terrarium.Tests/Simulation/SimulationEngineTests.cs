@@ -20,9 +20,9 @@ namespace Terrarium.Tests.Simulation
             engine.Initialize();
 
             // Assert
-            Assert.IsTrue(engine.World.Plants.Count > 0, "Should create initial plants");
-            Assert.IsTrue(engine.World.Herbivores.Count > 0, "Should create initial herbivores");
-            Assert.IsTrue(engine.World.Carnivores.Count > 0, "Should create initial carnivores");
+            Assert.IsNotEmpty(engine.World.Plants, "Should create initial plants");
+            Assert.IsNotEmpty(engine.World.Herbivores, "Should create initial herbivores");
+            Assert.IsNotEmpty(engine.World.Carnivores, "Should create initial carnivores");
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace Terrarium.Tests.Simulation
             engine.Update(deltaTime: 1.0);
 
             // Assert
-            Assert.IsTrue(firstPlant.Age > initialAge, "Entities should age after update");
+            Assert.IsGreaterThan(initialAge, firstPlant.Age, "Entities should age after update");
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Terrarium.Tests.Simulation
             }
 
             // Assert
-            Assert.IsTrue(plant.Health < healthBefore, "Stormy weather should damage plants");
+            Assert.IsLessThan(healthBefore, plant.Health, "Stormy weather should damage plants");
         }
 
         [TestMethod]
@@ -105,8 +105,8 @@ namespace Terrarium.Tests.Simulation
             double low = engine.SimulationSpeed;
 
             // Assert
-            Assert.IsTrue(high <= 4.0, "Speed should clamp to max");
-            Assert.IsTrue(low >= 0.25, "Speed should clamp to min");
+            Assert.IsLessThanOrEqualTo(high, 4.0, "Speed should clamp to max");
+            Assert.IsGreaterThanOrEqualTo(low, 0.25, "Speed should clamp to min");
         }
     }
 }

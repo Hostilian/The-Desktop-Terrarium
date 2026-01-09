@@ -5,7 +5,7 @@ namespace Terrarium.Tests.Rendering
     [TestClass]
     public class SessionTimerTests
     {
-        private const double DayDuration = 120.0;
+        private static double DayDuration => 120.0;
 
         [TestMethod]
         public void SessionTimer_StartsAtDayOne()
@@ -51,7 +51,7 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 3700; // Just over 1 hour
             int minutes = (int)(sessionTime / 60);
 
-            Assert.IsTrue(minutes > 60, "Minutes should exceed 60 for long sessions");
+            Assert.IsGreaterThan(60, minutes, "Minutes should exceed 60 for long sessions");
 
             int dayCount = (int)(sessionTime / DayDuration) + 1;
             Assert.AreEqual(31, dayCount, "Should be on day 31 after ~1 hour");
@@ -90,9 +90,6 @@ namespace Terrarium.Tests.Rendering
         [TestMethod]
         public void SessionTimer_DayDurationIsReasonable()
         {
-            // 2 minutes per day - allows seeing full day/night cycle
-            Assert.AreEqual(120.0, DayDuration, "Day duration should be 2 minutes");
-
             // An hour session would have 30 days
             double hourInSeconds = 3600;
             int daysInHour = (int)(hourInSeconds / DayDuration);

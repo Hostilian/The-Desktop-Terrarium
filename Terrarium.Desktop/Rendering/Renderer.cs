@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,19 +35,28 @@ namespace Terrarium.Desktop.Rendering
         private static readonly Brush HerbivoreBodyColor = new SolidColorBrush(Color.FromRgb(255, 183, 77)); // Warm orange
         private static readonly Brush HerbivoreBellyColor = new SolidColorBrush(Color.FromRgb(255, 224, 178)); // Light cream
         private static readonly Brush HerbivoreEarColor = new SolidColorBrush(Color.FromRgb(255, 138, 128)); // Pink
+        private static readonly Brush HerbivoreOutlineColor = new SolidColorBrush(Color.FromRgb(230, 150, 50));
 
         private static readonly Brush CarnivoreBodyColor = new SolidColorBrush(Color.FromRgb(120, 120, 130)); // Gray
         private static readonly Brush CarnivoreFurColor = new SolidColorBrush(Color.FromRgb(150, 150, 160)); // Light gray
         private static readonly Brush CarnivoreAccentColor = new SolidColorBrush(Color.FromRgb(200, 80, 80)); // Red accent
+        private static readonly Brush CarnivoreOutlineColor = new SolidColorBrush(Color.FromRgb(90, 90, 100));
+        private static readonly Brush CarnivoreEyeColor = new SolidColorBrush(Color.FromRgb(255, 193, 7));
 
         private static readonly Brush DeadColor = new SolidColorBrush(Color.FromRgb(128, 128, 128));
 
         // Animation constants
         private const double ShakeDuration = 0.5;
         private const double ShakeMagnitude = 5.0;
+        private const double ApproxFrameDeltaSecondsAt60Fps = 0.016;
 
         // Common numeric constants
         private const double PercentMax = 100.0;
+
+        // Creature visual tuning (shape mode)
+        private const double CreatureAnchorOffset = 15.0;
+        private const double CreatureDeadOpacity = 0.3;
+        private const double DefaultSpriteSize = 40.0;
 
         // Plant visual tuning (shape mode)
         private const double PlantStemWidth = 4.0;
@@ -265,7 +275,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!_entityVisuals.ContainsKey(herbivore.Id))
             {
-                CreateCreatureVisual(herbivore, HerbivoreBodyColor);
+                CreateCreatureVisual(herbivore);
             }
 
             UpdateCreatureVisual(herbivore);
@@ -278,7 +288,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!_entityVisuals.ContainsKey(carnivore.Id))
             {
-                CreateCreatureVisual(carnivore, CarnivoreBodyColor);
+                CreateCreatureVisual(carnivore);
             }
 
             UpdateCreatureVisual(carnivore);
@@ -287,7 +297,7 @@ namespace Terrarium.Desktop.Rendering
         /// <summary>
         /// Creates visual representation for a creature.
         /// </summary>
-        private void CreateCreatureVisual(Creature creature, Brush color)
+        private void CreateCreatureVisual(Creature creature)
         {
             if (_useSpriteMode)
             {
@@ -310,7 +320,7 @@ namespace Terrarium.Desktop.Rendering
                         Width = 28,
                         Height = 24,
                         Fill = HerbivoreBodyColor,
-                        Stroke = new SolidColorBrush(Color.FromRgb(230, 150, 50)),
+                        Stroke = HerbivoreOutlineColor,
                         StrokeThickness = 1.5
                     };
 
@@ -346,7 +356,8 @@ namespace Terrarium.Desktop.Rendering
                     var rightPupil = new Ellipse { Width = 3, Height = 3, Fill = Brushes.Black };
 
                     // Nose
-                    var nose = new Ellipse { Width = 4, Height = 3, Fill = new SolidColorBrush(Color.FromRgb(255, 138, 128)) };
+                    var nose = new Ellipse { Width = 4, Height = 3, Fill = HerbivoreEarColor };
+                    
 
                     creatureGroup.Children.Add(leftEar);
                     creatureGroup.Children.Add(rightEar);
@@ -386,7 +397,7 @@ namespace Terrarium.Desktop.Rendering
                         Width = 32,
                         Height = 26,
                         Fill = CarnivoreBodyColor,
-                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        Stroke = CarnivoreOutlineColor,
                         StrokeThickness = 2
                     };
 
@@ -403,7 +414,7 @@ namespace Terrarium.Desktop.Rendering
                     {
                         Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
                         Fill = CarnivoreBodyColor,
-                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        Stroke = CarnivoreOutlineColor,
                         StrokeThickness = 1
                     };
 
@@ -412,13 +423,13 @@ namespace Terrarium.Desktop.Rendering
                     {
                         Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
                         Fill = CarnivoreBodyColor,
-                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        Stroke = CarnivoreOutlineColor,
                         StrokeThickness = 1
                     };
 
                     // Eyes (menacing)
-                    var leftEye = new Ellipse { Width = 7, Height = 5, Fill = new SolidColorBrush(Color.FromRgb(255, 193, 7)) }; // Yellow
-                    var rightEye = new Ellipse { Width = 7, Height = 5, Fill = new SolidColorBrush(Color.FromRgb(255, 193, 7)) };
+                    var leftEye = new Ellipse { Width = 7, Height = 5, Fill = CarnivoreEyeColor }; // Yellow
+                    var rightEye = new Ellipse { Width = 7, Height = 5, Fill = CarnivoreEyeColor };
                     var leftPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
                     var rightPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
 
@@ -468,12 +479,12 @@ namespace Terrarium.Desktop.Rendering
             if (!_entityVisuals.TryGetValue(creature.Id, out var visual))
                 return;
 
-            Canvas.SetLeft(visual, creature.X - 15);
-            Canvas.SetTop(visual, creature.Y - 15);
+            Canvas.SetLeft(visual, creature.X - CreatureAnchorOffset);
+            Canvas.SetTop(visual, creature.Y - CreatureAnchorOffset);
 
             // Update opacity based on health
-            double healthRatio = creature.Health / 100.0;
-            visual.Opacity = creature.IsAlive ? healthRatio : 0.3;
+            double healthRatio = creature.Health / PercentMax;
+            visual.Opacity = creature.IsAlive ? healthRatio : CreatureDeadOpacity;
 
             // Flip visual based on movement direction
             if (visual is Canvas creatureCanvas)
@@ -481,7 +492,7 @@ namespace Terrarium.Desktop.Rendering
                 var scaleTransform = new ScaleTransform
                 {
                     ScaleX = creature.VelocityX < 0 ? -1 : 1,
-                    CenterX = 15
+                    CenterX = CreatureAnchorOffset
                 };
                 creatureCanvas.RenderTransform = scaleTransform;
             }
@@ -494,8 +505,8 @@ namespace Terrarium.Desktop.Rendering
         {
             var image = new Image
             {
-                Width = 40,
-                Height = 40
+                Width = DefaultSpriteSize,
+                Height = DefaultSpriteSize
             };
 
             try
@@ -504,10 +515,11 @@ namespace Terrarium.Desktop.Rendering
                 var uri = new Uri($"pack://application:,,,/Assets/{fileName}");
                 image.Source = new BitmapImage(uri);
             }
-            catch
+            catch (Exception ex)
             {
                 // Fallback: create colored rectangle if sprite not found
                 // This allows the app to run without sprite assets
+                Debug.WriteLine($"Failed to load sprite '{fileName}': {ex.Message}");
             }
 
             return image;
@@ -540,7 +552,7 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var kvp in _plantShakeTimers.ToList())
             {
-                double newTime = kvp.Value - 0.016; // Approximately one frame at 60 FPS
+                double newTime = kvp.Value - ApproxFrameDeltaSecondsAt60Fps;
                 if (newTime <= 0)
                 {
                     expiredShakes.Add(kvp.Key);

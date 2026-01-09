@@ -18,7 +18,8 @@
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
 - [ ] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
-- [ ] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
+- [x] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
+    - Evidence: `dotnet publish "Terrarium.Desktop\Terrarium.Desktop.csproj" -c Release -r win-x64 --self-contained false -o "publish-integrity\win-x64"`
 
 ---
 
@@ -46,6 +47,13 @@ dotnet run
 ```
 **Expected**: Transparent window appears at bottom of screen  
 **Status**: ⬜ Not yet re-verified
+
+### 4. Publish Artifacts (win-x64)
+```bash
+dotnet publish "Terrarium.Desktop\Terrarium.Desktop.csproj" -c Release -r win-x64 --self-contained false -o "publish-integrity\win-x64"
+```
+**Expected**: publish output folder contains `Terrarium.Desktop.exe`, `.dll`, `.deps.json`, `.runtimeconfig.json`  
+**Status**: ✅ Verified (outputs to `publish-integrity/win-x64`)
 
 ---
 

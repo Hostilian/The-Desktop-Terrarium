@@ -186,7 +186,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsFalse(string.IsNullOrEmpty(summary));
-            Assert.IsTrue(summary.Contains("Population"));
+            Assert.Contains("Population", summary);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Terrarium.Tests.Entities
             sheep.Update(deltaTime: 5.0);
 
             // Assert
-            Assert.IsTrue(sheep.Hunger > initialHunger, "Hunger should increase over time");
+            Assert.IsGreaterThan(initialHunger, sheep.Hunger, "Hunger should increase over time");
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Terrarium.Tests.Entities
             sheep.Feed(nutritionValue: 30);
 
             // Assert
-            Assert.IsTrue(sheep.Hunger < hungerBefore, "Feeding should reduce hunger");
+            Assert.IsLessThan(hungerBefore, sheep.Hunger, "Feeding should reduce hunger");
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace Terrarium.Tests.Entities
             sheep.SetDirection(1, 0); // Move right
 
             // Assert
-            Assert.IsTrue(sheep.VelocityX > 0, "VelocityX should be positive when moving right");
+            Assert.IsGreaterThan(0, sheep.VelocityX, "VelocityX should be positive when moving right");
             Assert.AreEqual(0, sheep.VelocityY, 0.01, "VelocityY should be zero when moving horizontally");
         }
 
@@ -95,7 +95,7 @@ namespace Terrarium.Tests.Entities
             sheep.OnClick();
 
             // Assert
-            Assert.IsTrue(sheep.Hunger < hungerBefore, "Clicking should feed the creature");
+            Assert.IsLessThan(hungerBefore, sheep.Hunger, "Clicking should feed the creature");
         }
 
         [TestMethod]
@@ -111,7 +111,7 @@ namespace Terrarium.Tests.Entities
             }
 
             // Assert
-            Assert.IsTrue(sheep.Health < 100, "High hunger should cause health loss");
+            Assert.IsLessThan(100, sheep.Health, "High hunger should cause health loss");
         }
     }
 }

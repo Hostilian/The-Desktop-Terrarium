@@ -22,7 +22,7 @@ namespace Terrarium.Tests.Entities
             wolf.TryEat(sheep);
 
             // Assert
-            Assert.IsTrue(sheep.Health < sheepHealthBefore, "Wolf should damage prey");
+            Assert.IsLessThan(sheepHealthBefore, sheep.Health, "Wolf should damage prey");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             Assert.IsFalse(sheep.IsAlive, "Sheep should be dead after wolf attack");
-            Assert.IsTrue(wolf.Hunger < wolfHungerBefore, "Wolf should be less hungry after eating");
+            Assert.IsLessThan(wolfHungerBefore, wolf.Hunger, "Wolf should be less hungry after eating");
         }
 
         [TestMethod]
@@ -79,7 +79,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             double finalDistance = wolf.DistanceTo(sheep);
-            Assert.IsTrue(finalDistance < initialDistance, "Wolf should get closer to prey");
+            Assert.IsLessThan(initialDistance, finalDistance, "Wolf should get closer to prey");
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace Terrarium.Tests.Entities
             var sheep = new Herbivore(100, 100);
 
             // Assert
-            Assert.IsTrue(wolf.Speed > sheep.Speed, "Carnivores should be faster than herbivores");
+            Assert.IsGreaterThan(sheep.Speed, wolf.Speed, "Carnivores should be faster than herbivores");
         }
     }
 }

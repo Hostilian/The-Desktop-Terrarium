@@ -53,7 +53,7 @@ namespace Terrarium.Tests.Rendering
             double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
             // sqrt(70^2 + 70^2) = sqrt(9800) ≈ 98.99
 
-            Assert.IsTrue(distance < WarningRadius,
+            Assert.IsLessThan(WarningRadius, distance,
                 $"Diagonal distance {distance:F2} should be within {WarningRadius}");
         }
 

@@ -23,8 +23,8 @@ namespace Terrarium.Tests.Simulation
             calculator.EnforceBoundaries(creature);
 
             // Assert
-            Assert.IsTrue(creature.X >= 0, "X should be kept within bounds");
-            Assert.IsTrue(creature.Y >= 0, "Y should be kept within bounds");
+            Assert.IsGreaterThanOrEqualTo(0, creature.X, "X should be kept within bounds");
+            Assert.IsGreaterThanOrEqualTo(0, creature.Y, "Y should be kept within bounds");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Terrarium.Tests.Simulation
             calculator.EnforceBoundaries(creature);
 
             // Assert
-            Assert.IsTrue(creature.VelocityX > 0, "Velocity should reverse when hitting boundary");
+            Assert.IsGreaterThan(0, creature.VelocityX, "Velocity should reverse when hitting boundary");
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace Terrarium.Tests.Simulation
             calculator.MoveToward(creature, 200, 100);
 
             // Assert
-            Assert.IsTrue(creature.VelocityX > 0, "Should move toward target on X axis");
+            Assert.IsGreaterThan(0, creature.VelocityX, "Should move toward target on X axis");
         }
     }
 }

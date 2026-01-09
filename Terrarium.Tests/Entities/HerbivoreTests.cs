@@ -23,7 +23,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             Assert.IsTrue(ateSuccessfully, "Herbivore should eat nearby plant");
-            Assert.IsTrue(sheep.Hunger < 50, "Hunger should decrease after eating");
+            Assert.IsLessThan(50, sheep.Hunger, "Hunger should decrease after eating");
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace Terrarium.Tests.Entities
             sheep.TryEat(plant);
 
             // Assert
-            Assert.IsTrue(plant.Health < plantHealthBefore, "Eating should damage the plant");
+            Assert.IsLessThan(plantHealthBefore, plant.Health, "Eating should damage the plant");
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace Terrarium.Tests.Entities
             sheep.Update(1.0);
 
             // Assert
-            Assert.IsTrue(sheep.X > 100, "Herbivore should move toward target");
+            Assert.IsGreaterThan(100, sheep.X, "Herbivore should move toward target");
         }
     }
 }

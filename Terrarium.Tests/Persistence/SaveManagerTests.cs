@@ -37,8 +37,8 @@ namespace Terrarium.Tests.Persistence
                 var loaded = saveManager.LoadWorld(fileName: filePath);
 
                 // Assert
-                Assert.AreEqual(1, loaded.Plants.Count, "Expected one plant after load");
-                Assert.AreEqual(1, loaded.Herbivores.Count, "Expected one herbivore after load");
+                Assert.HasCount(1, loaded.Plants);
+                Assert.HasCount(1, loaded.Herbivores);
 
                 var loadedPlant = loaded.Plants[0];
                 Assert.AreEqual(plant.Health, loadedPlant.Health, 0.0001, "Plant health should be restored");

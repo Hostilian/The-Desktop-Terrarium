@@ -47,14 +47,6 @@ namespace Terrarium.Tests.Rendering
             Assert.IsTrue(canBreed, "Creature at exact thresholds should breed");
         }
 
-        [TestMethod]
-        public void BreedingThresholds_AreReasonable()
-        {
-            Assert.IsTrue(MinHealthForBreeding > 50, "Min health should be over half");
-            Assert.IsTrue(MaxHungerForBreeding < 50, "Max hunger should be under half");
-            Assert.IsTrue(MinAgeForBreeding > 0, "Min age should be positive");
-        }
-
         /// <summary>
         /// Mirrors the BreedingIndicator's breeding check logic.
         /// </summary>

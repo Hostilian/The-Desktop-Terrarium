@@ -24,6 +24,8 @@ namespace Terrarium.Desktop.Rendering
         private const double RainDropMaxLength = 25.0;
         private const double RainDropWidth = 2.0;
         private const double RainAngle = 15.0; // Degrees from vertical
+        private const double DegreesToRadians = Math.PI / 180.0;
+        private const double RainAngleRadians = RainAngle * DegreesToRadians;
 
         private const double RainIntensityThreshold = 0.5;
         private const double RainSpawnStartYOffset = -20.0;
@@ -140,7 +142,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 X1 = 0,
                 Y1 = 0,
-                X2 = Math.Sin(RainAngle * Math.PI / 180) * length,
+                X2 = Math.Sin(RainAngleRadians) * length,
                 Y2 = length,
                 Stroke = RainColor,
                 StrokeThickness = RainDropWidth,
@@ -182,7 +184,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 // Move the drop
                 drop.Y += drop.Speed * deltaTime;
-                drop.X += Math.Sin(RainAngle * Math.PI / 180) * drop.Speed * deltaTime * RainDriftSpeedMultiplier;
+                drop.X += Math.Sin(RainAngleRadians) * drop.Speed * deltaTime * RainDriftSpeedMultiplier;
 
                 Canvas.SetTop(drop.Visual, drop.Y);
                 Canvas.SetLeft(drop.Visual, drop.X);

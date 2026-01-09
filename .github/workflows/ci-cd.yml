@@ -124,6 +124,10 @@ jobs:
     - name: 🛡️ Scan NuGet vulnerabilities
       run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable --include-transitive
 
+    - name: 🧯 Scan deprecated packages
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --deprecated
+      continue-on-error: true
+
     - name: 🧹 List outdated NuGet packages
       run: dotnet list ${{ env.SOLUTION_FILE }} package --outdated --include-transitive
       continue-on-error: true
@@ -251,11 +255,20 @@ jobs:
     - name: 📦 Publish (framework-dependent)
       run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-x64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-x64
 
+    - name: 📦 Publish (framework-dependent, ARM64)
+      run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-arm64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-arm64
+
     - name: 📊 Upload Publish Artifact
       uses: actions/upload-artifact@v4
       with:
         name: publish-integrity-win-x64
         path: ./publish-integrity/win-x64/
+
+    - name: 📊 Upload Publish Artifact (ARM64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: publish-integrity-win-arm64
+        path: ./publish-integrity/win-arm64/
 
     - name: 📤 Publish Application
       run: |

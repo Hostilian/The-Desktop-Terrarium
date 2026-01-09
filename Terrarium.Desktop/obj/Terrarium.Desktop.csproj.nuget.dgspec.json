@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {}
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
+        "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
         "projectName": "Terrarium.Desktop",
-        "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
+        "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
         "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\obj\\",
+        "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,14 +26,13 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
-                "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
+              "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
+                "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
               }
             }
           }
         },
         "warningProperties": {
-          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -68,21 +67,16 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
-        }
       }
     },
-    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
+    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+        "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
         "projectName": "Terrarium.Logic",
-        "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+        "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
         "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
+        "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -100,7 +94,6 @@
           }
         },
         "warningProperties": {
-          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -131,11 +124,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
         }
       }
     }

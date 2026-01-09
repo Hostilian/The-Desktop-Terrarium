@@ -529,7 +529,7 @@ Passed!  - Failed: 0, Passed: 111, Skipped: 0, Total: 111
 <!-- Terrarium.Logic.csproj - NO UI references -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <!-- No PresentationFramework, PresentationCore, etc. -->
 </Project>
@@ -537,7 +537,7 @@ Passed!  - Failed: 0, Passed: 111, Skipped: 0, Total: 111
 <!-- Terrarium.Desktop.csproj - References Logic -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>

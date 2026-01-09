@@ -3,7 +3,7 @@
 A desktop ecosystem simulator that runs transparently at the bottom of your screen, featuring interactive plants and creatures that respond to your mouse and system activity.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
+![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)
 ![WPF](https://img.shields.io/badge/WPF-Windows-blue.svg)
 
 ## 📋 Project Overview
@@ -79,7 +79,7 @@ WorldEntity (base)
 
 ### Prerequisites
 - Visual Studio 2022 or later
-- .NET 8.0 SDK
+- .NET 10.0 SDK
 - Windows OS (for WPF support)
 
 ### Building the Project
@@ -272,7 +272,7 @@ private const double WaterDecayRate = 0.2;        // How fast plants use water
 **Solution**: Reduce `RenderFps` constant in `MainWindow.xaml.cs` (default: 60).
 
 ### Issue: Tests failing
-**Solution**: Rebuild solution and ensure .NET 8.0 SDK is installed.
+**Solution**: Rebuild solution and ensure .NET 10.0 SDK is installed.
 
 ### Issue: Performance counter errors
 **Solution**: SystemMonitor gracefully handles missing performance counters. Run as administrator if needed.

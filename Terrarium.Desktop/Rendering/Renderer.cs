@@ -29,6 +29,7 @@ namespace Terrarium.Desktop.Rendering
         private static readonly Brush PlantStemColor = new SolidColorBrush(Color.FromRgb(46, 125, 50));
         private static readonly Brush PlantLeafColor = new SolidColorBrush(Color.FromRgb(76, 175, 80));
         private static readonly Brush PlantLeafHighlight = new SolidColorBrush(Color.FromRgb(129, 199, 132));
+        private static readonly Brush PlantAccentColor = new SolidColorBrush(Color.FromRgb(244, 67, 54));
 
         private static readonly Brush HerbivoreBodyColor = new SolidColorBrush(Color.FromRgb(255, 183, 77)); // Warm orange
         private static readonly Brush HerbivoreBellyColor = new SolidColorBrush(Color.FromRgb(255, 224, 178)); // Light cream
@@ -43,6 +44,27 @@ namespace Terrarium.Desktop.Rendering
         // Animation constants
         private const double ShakeDuration = 0.5;
         private const double ShakeMagnitude = 5.0;
+
+        // Common numeric constants
+        private const double PercentMax = 100.0;
+
+        // Plant visual tuning (shape mode)
+        private const double PlantStemWidth = 4.0;
+        private const double PlantStemCornerRadius = 2.0;
+        private const double PlantLeavesSizeRatio = 0.9;
+        private const double PlantLeavesLeftOffsetRatio = 0.45;
+        private const double PlantLeavesTopOffsetRatio = 0.7;
+        private const double PlantLeavesLeftNudge = 2.0;
+        private const double PlantHighlightSizeRatio = 0.5;
+        private const double PlantHighlightLeftOffsetRatio = 0.25;
+        private const double PlantHighlightTopOffsetRatio = 0.5;
+        private const double PlantHighlightOpacity = 0.7;
+        private const double PlantAccentSize = 6.0;
+        private const double PlantAccentOpacity = 0.9;
+        private const double PlantAccentLeftOffsetRatio = 0.2;
+        private const double PlantAccentTopOffsetRatio = 0.4;
+        private const double PlantMinAliveOpacity = 0.5;
+        private const double PlantDeadOpacity = 0.3;
 
         public Renderer(Canvas canvas)
         {
@@ -134,37 +156,37 @@ namespace Terrarium.Desktop.Rendering
                 // Stem with gradient effect
                 var stem = new Rectangle
                 {
-                    Width = 4,
+                    Width = PlantStemWidth,
                     Height = plant.Size,
                     Fill = PlantStemColor,
-                    RadiusX = 2,
-                    RadiusY = 2
+                    RadiusX = PlantStemCornerRadius,
+                    RadiusY = PlantStemCornerRadius
                 };
 
                 // Main leaf cluster (larger ellipse)
                 var leaves = new Ellipse
                 {
-                    Width = plant.Size * 0.9,
-                    Height = plant.Size * 0.9,
+                    Width = plant.Size * PlantLeavesSizeRatio,
+                    Height = plant.Size * PlantLeavesSizeRatio,
                     Fill = PlantLeafColor
                 };
 
                 // Highlight leaf (smaller, lighter)
                 var leafHighlight = new Ellipse
                 {
-                    Width = plant.Size * 0.5,
-                    Height = plant.Size * 0.5,
+                    Width = plant.Size * PlantHighlightSizeRatio,
+                    Height = plant.Size * PlantHighlightSizeRatio,
                     Fill = PlantLeafHighlight,
-                    Opacity = 0.7
+                    Opacity = PlantHighlightOpacity
                 };
 
                 // Small berry or flower accent
                 var accent = new Ellipse
                 {
-                    Width = 6,
-                    Height = 6,
-                    Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54)), // Red berry
-                    Opacity = 0.9
+                    Width = PlantAccentSize,
+                    Height = PlantAccentSize,
+                    Fill = PlantAccentColor,
+                    Opacity = PlantAccentOpacity
                 };
 
                 plantGroup.Children.Add(stem);
@@ -172,12 +194,12 @@ namespace Terrarium.Desktop.Rendering
                 plantGroup.Children.Add(leafHighlight);
                 plantGroup.Children.Add(accent);
 
-                Canvas.SetLeft(leaves, -plant.Size * 0.45 + 2);
-                Canvas.SetTop(leaves, -plant.Size * 0.7);
-                Canvas.SetLeft(leafHighlight, -plant.Size * 0.25 + 2);
-                Canvas.SetTop(leafHighlight, -plant.Size * 0.5);
-                Canvas.SetLeft(accent, plant.Size * 0.2);
-                Canvas.SetTop(accent, -plant.Size * 0.4);
+                Canvas.SetLeft(leaves, -plant.Size * PlantLeavesLeftOffsetRatio + PlantLeavesLeftNudge);
+                Canvas.SetTop(leaves, -plant.Size * PlantLeavesTopOffsetRatio);
+                Canvas.SetLeft(leafHighlight, -plant.Size * PlantHighlightLeftOffsetRatio + PlantLeavesLeftNudge);
+                Canvas.SetTop(leafHighlight, -plant.Size * PlantHighlightTopOffsetRatio);
+                Canvas.SetLeft(accent, plant.Size * PlantAccentLeftOffsetRatio);
+                Canvas.SetTop(accent, -plant.Size * PlantAccentTopOffsetRatio);
 
                 _canvas.Children.Add(plantGroup);
                 _entityVisuals[plant.Id] = plantGroup;
@@ -205,8 +227,8 @@ namespace Terrarium.Desktop.Rendering
             Canvas.SetTop(visual, y);
 
             // Update size and color based on health
-            double healthRatio = plant.Health / 100.0;
-            visual.Opacity = plant.IsAlive ? Math.Max(0.5, healthRatio) : 0.3;
+            double healthRatio = plant.Health / PercentMax;
+            visual.Opacity = plant.IsAlive ? Math.Max(PlantMinAliveOpacity, healthRatio) : PlantDeadOpacity;
 
             if (visual is Canvas plantCanvas && plantCanvas.Children.Count >= 3)
             {
@@ -219,19 +241,19 @@ namespace Terrarium.Desktop.Rendering
                 // Update main leaves size
                 if (plantCanvas.Children[1] is Ellipse leaves)
                 {
-                    leaves.Width = plant.Size * 0.9;
-                    leaves.Height = plant.Size * 0.9;
-                    Canvas.SetLeft(leaves, -plant.Size * 0.45 + 2);
-                    Canvas.SetTop(leaves, -plant.Size * 0.7);
+                    leaves.Width = plant.Size * PlantLeavesSizeRatio;
+                    leaves.Height = plant.Size * PlantLeavesSizeRatio;
+                    Canvas.SetLeft(leaves, -plant.Size * PlantLeavesLeftOffsetRatio + PlantLeavesLeftNudge);
+                    Canvas.SetTop(leaves, -plant.Size * PlantLeavesTopOffsetRatio);
                 }
 
                 // Update highlight leaves
                 if (plantCanvas.Children[2] is Ellipse highlight)
                 {
-                    highlight.Width = plant.Size * 0.5;
-                    highlight.Height = plant.Size * 0.5;
-                    Canvas.SetLeft(highlight, -plant.Size * 0.25 + 2);
-                    Canvas.SetTop(highlight, -plant.Size * 0.5);
+                    highlight.Width = plant.Size * PlantHighlightSizeRatio;
+                    highlight.Height = plant.Size * PlantHighlightSizeRatio;
+                    Canvas.SetLeft(highlight, -plant.Size * PlantHighlightLeftOffsetRatio + PlantLeavesLeftNudge);
+                    Canvas.SetTop(highlight, -plant.Size * PlantHighlightTopOffsetRatio);
                 }
             }
         }

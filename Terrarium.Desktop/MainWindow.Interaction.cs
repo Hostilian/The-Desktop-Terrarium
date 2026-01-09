@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Terrarium.Desktop.Rendering;
 
 namespace Terrarium.Desktop
 {

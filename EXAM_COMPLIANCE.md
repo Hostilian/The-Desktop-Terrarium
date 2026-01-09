@@ -4,7 +4,9 @@
 
 **Date**: January 8, 2026  
 **Project**: The Desktop Terrarium  
-**Status**: ALL REQUIREMENTS MET ✅
+**Status**: IN PROGRESS (evidence-based; see `VERIFICATION_CHECKLIST.md`)
+
+> Note: This document is a narrative compliance report. The authoritative, reproducible verification (tests/build/publish outputs and requirement-by-requirement evidence) is maintained in `VERIFICATION_CHECKLIST.md`. Avoid treating any “✅ COMPLIANT” markers here as proof unless cross-referenced there.
 
 ---
 
@@ -63,7 +65,7 @@ public class SimulationEngine
 }
 ```
 
-✅ **COMPLIANT** - 100% adherence to .NET naming conventions
+✅ **COMPLIANT (manual review)** - Naming follows standard .NET conventions; see `VERIFICATION_CHECKLIST.md` for verification notes
 
 ---
 
@@ -129,7 +131,7 @@ public override void Update(double deltaTime)
 ### 5. No Long Methods ✅
 **Requirement**: Code shouldn't contain long methods
 
-**Implementation**: All methods kept under 30 lines (most under 20)
+**Implementation**: Most methods are kept concise; UI orchestration can be longer, and is organized via partial classes to reduce file size and group responsibilities
 
 **Examples**:
 - `Plant.Grow()`: 8 lines
@@ -173,7 +175,7 @@ public void Update(double deltaTime)
 # - Every private method called within its class
 ```
 
-✅ **COMPLIANT** - Zero dead code present
+✅ **COMPLIANT (best effort)** - No known dead code; see `VERIFICATION_CHECKLIST.md` for review/verification notes
 
 ---
 

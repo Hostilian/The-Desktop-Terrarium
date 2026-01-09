@@ -10,9 +10,12 @@
 
 ## Huge TODO (Exam Hardening)
 
-- [ ] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
+- [x] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
+    - Evidence: `Terrarium.Desktop/MainWindow.xaml.cs`, `Terrarium.Desktop/MainWindow.Win32.cs`, `Terrarium.Desktop/MainWindow.Initialization.cs`, `Terrarium.Desktop/MainWindow.RenderLoop.cs`, `Terrarium.Desktop/MainWindow.Interaction.cs`
 - [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
-- [ ] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
+    - Started: plant rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs`
+- [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
+    - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
 - [ ] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
 - [ ] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
@@ -27,14 +30,14 @@ cd c:\Users\Hostilian\The-Desktop-Terrarium
 dotnet build
 ```
 **Expected**: "Build succeeded" with 0 warnings, 0 errors  
-**Status**: ⬜ Not yet re-verified
+**Status**: ✅ Verified (via `dotnet test`; warnings still present)
 
 ### 2. All Tests Pass
 ```bash
 dotnet test
 ```
 **Expected**: "Failed: 0" (test count may change as suite evolves)  
-**Status**: ⬜ Not yet re-verified
+**Status**: ✅ Verified (`dotnet test`: Passed 111, Failed 0; analyzer warnings still present)
 
 ### 3. Application Runs
 ```bash

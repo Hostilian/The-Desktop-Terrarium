@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "z+8PtfYujbA=",
+  "dgSpecHash": "b31rdoIFA08=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
+  "projectFilePath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hostilian\\.nuget\\packages\\coverlet.msbuild\\6.0.4\\coverlet.msbuild.6.0.4.nupkg.sha512",
     "C:\\Users\\Hostilian\\.nuget\\packages\\microsoft.applicationinsights\\2.23.0\\microsoft.applicationinsights.2.23.0.nupkg.sha512",

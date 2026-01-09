@@ -1,8 +1,21 @@
 # ✅ The Desktop Terrarium - Verification Checklist
 
-## Quick Status Check
+## How To Use This
 
-Run this checklist to verify all components are working:
+- Treat this file as the **single source of truth** for exam compliance.
+- Only mark items ✅ once you can point to (a) code evidence and/or (b) a reproducible command output.
+- Avoid claiming “100%” unless you can reproduce it from fresh clone.
+
+---
+
+## Huge TODO (Exam Hardening)
+
+- [ ] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
+- [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
+- [ ] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
+- [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
+- [ ] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
+- [ ] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
 
 ---
 
@@ -14,14 +27,14 @@ cd c:\Users\Hostilian\The-Desktop-Terrarium
 dotnet build
 ```
 **Expected**: "Build succeeded" with 0 warnings, 0 errors  
-**Status**: ✅ PASS
+**Status**: ⬜ Not yet re-verified
 
 ### 2. All Tests Pass
 ```bash
 dotnet test
 ```
-**Expected**: "Passed: 100, Failed: 0"  
-**Status**: ✅ PASS (100/100 tests)
+**Expected**: "Failed: 0" (test count may change as suite evolves)  
+**Status**: ⬜ Not yet re-verified
 
 ### 3. Application Runs
 ```bash
@@ -29,7 +42,69 @@ cd Terrarium.Desktop
 dotnet run
 ```
 **Expected**: Transparent window appears at bottom of screen  
-**Status**: ✅ RUNNING
+**Status**: ⬜ Not yet re-verified
+
+---
+
+## 📋 Moodle Exam Requirements (Cross-Check)
+
+This section mirrors the Moodle bullets and provides a place to record **evidence**.
+
+### GUI (WPF/WinForms)
+- [ ] GUI exists (WPF) and starts successfully
+    - Evidence: `Terrarium.Desktop/MainWindow.xaml`, `Terrarium.Desktop/App.xaml`
+
+### Naming conventions + descriptive names
+- [ ] .NET naming conventions followed (PascalCase types/members; camelCase locals/params)
+- [ ] Classes/variables/properties are descriptive (no `x`, `tmp`, `DoThing()` style)
+    - Evidence: `Terrarium.Logic/Entities/*`, `Terrarium.Logic/Simulation/*`
+
+### Formatting
+- [ ] Code is consistently formatted (indentation, spacing) and free of obvious style noise
+    - Evidence: `dotnet format` (optional) or IDE formatting; no massive diffs
+
+### No long methods
+- [ ] Large methods are decomposed (reviewers typically expect ~<30–50 LOC per method)
+    - Evidence: `Terrarium.Desktop/MainWindow*.cs`, `Terrarium.Desktop/Rendering/Renderer.cs`
+
+### No dead code
+- [ ] No commented-out old implementations; no unused members/classes
+    - Evidence: grep for `// TODO remove`, `OLD`, `unused`, and compiler warnings
+
+### SRP: each method one purpose
+- [ ] Methods do one thing; orchestration delegates to helpers/managers
+    - Evidence: `Terrarium.Logic/Simulation/SimulationEngine.cs` delegates to managers
+
+### Comments are purposeful
+- [ ] Comments explain “why” / constraints; avoid narrating obvious code
+- [ ] No stale/old comments
+    - Evidence: spot-check Desktop + Logic files
+
+### Data + methods colocated
+- [ ] Data and methods that operate on it belong to the same class (no scattered logic)
+    - Evidence: entity classes encapsulate their behavior; managers own their data
+
+### Encapsulation
+- [ ] Non-constant fields are `private` and exposed via properties/methods
+    - Evidence: `Terrarium.Logic/Entities/*`
+
+### Inheritance is IS-A
+- [ ] Inheritance expresses IS-A relationships (entity tree)
+    - Evidence: `Terrarium.Logic/Entities/WorldEntity.cs` → `LivingEntity.cs` → (`Plant.cs`, `Creature.cs`) → (`Herbivore.cs`, `Carnivore.cs`)
+
+### Unit tests (meaningful coverage)
+- [ ] Unit tests meaningfully cover logic (and pass)
+    - Evidence: `Terrarium.Tests/*`, `dotnet test` output
+
+### Layering
+- [ ] Presentation layer separated from application logic
+    - Evidence: `Terrarium.Desktop` references `Terrarium.Logic`; Logic has no WPF refs
+
+### No anti-patterns / smells
+- [ ] No “magic constants” (prefer named constants/config)
+- [ ] No “god objects” (large classes split into cohesive units)
+- [ ] No “error hiding” (exceptions handled intentionally; log + safe fallback)
+    - Evidence: review `Terrarium.Desktop/MainWindow*.cs`, `Terrarium.Logic/Persistence/SaveManager.cs`
 
 ---
 

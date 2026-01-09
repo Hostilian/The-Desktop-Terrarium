@@ -29,13 +29,18 @@ namespace Terrarium.Desktop.Rendering
         private readonly Queue<NotificationItem> _pendingNotifications;
         private readonly List<NotificationItem> _activeNotifications;
 
+        // Display limits
         private const int MaxActiveNotifications = 3;
+
+        // Timing constants
         private const double NotificationDuration = 3.0;
+        private const double SlideInDuration = 0.3;
+        private const double FadeOutDuration = 0.5;
+
+        // UI Layout constants
         private const double NotificationWidth = 250;
         private const double NotificationHeight = 50;
         private const double NotificationMargin = 10;
-        private const double SlideInDuration = 0.3;
-        private const double FadeOutDuration = 0.5;
 
         /// <summary>
         /// Gets or sets whether notifications are enabled.

@@ -17,8 +17,26 @@ namespace Terrarium.Desktop.Rendering
         private WorldEntity? _currentEntity;
         private bool _isVisible;
 
+        // UI Layout constants
         private const double TooltipWidth = 180;
         private const double TooltipOffset = 15;
+        private const double ZIndexTooltip = 999;
+
+        // Colors
+        private static readonly Color TooltipBackgroundColor = Color.FromArgb(240, 30, 30, 46);
+        private static readonly Color TooltipBorderColor = Color.FromArgb(100, 255, 255, 255);
+
+        // Drop shadow constants
+        private const double ShadowDirection = 270;
+        private const double ShadowDepth = 4;
+        private const double ShadowBlurRadius = 10;
+        private const double ShadowOpacity = 0.6;
+
+        // Margins and padding
+        private const double TooltipBorderThickness = 1;
+        private const double TooltipCornerRadius = 8;
+        private const double ContentPaddingHorizontal = 10;
+        private const double ContentPaddingVertical = 8;
 
         public TooltipManager(Canvas canvas)
         {
@@ -30,29 +48,29 @@ namespace Terrarium.Desktop.Rendering
         {
             _tooltipContent = new StackPanel
             {
-                Margin = new Thickness(10, 8, 10, 8)
+                Margin = new Thickness(ContentPaddingHorizontal, ContentPaddingVertical, ContentPaddingHorizontal, ContentPaddingVertical)
             };
 
             _tooltipBorder = new Border
             {
                 Width = TooltipWidth,
-                Background = new SolidColorBrush(Color.FromArgb(240, 30, 30, 46)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8),
+                Background = new SolidColorBrush(TooltipBackgroundColor),
+                BorderBrush = new SolidColorBrush(TooltipBorderColor),
+                BorderThickness = new Thickness(TooltipBorderThickness),
+                CornerRadius = new CornerRadius(TooltipCornerRadius),
                 Child = _tooltipContent,
                 Visibility = Visibility.Collapsed,
                 Effect = new System.Windows.Media.Effects.DropShadowEffect
                 {
                     Color = Colors.Black,
-                    Direction = 270,
-                    ShadowDepth = 4,
-                    BlurRadius = 10,
-                    Opacity = 0.6
+                    Direction = ShadowDirection,
+                    ShadowDepth = ShadowDepth,
+                    BlurRadius = ShadowBlurRadius,
+                    Opacity = ShadowOpacity
                 }
             };
 
-            Canvas.SetZIndex(_tooltipBorder, 999);
+            Canvas.SetZIndex(_tooltipBorder, ZIndexTooltip);
             _canvas.Children.Add(_tooltipBorder);
         }
 

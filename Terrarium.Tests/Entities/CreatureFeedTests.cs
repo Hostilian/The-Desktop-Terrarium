@@ -16,7 +16,7 @@ namespace Terrarium.Tests.Entities
             creature.Feed(-10.0);
 
             Assert.AreEqual(startHealth, creature.Health);
-            Assert.IsGreaterThan(creature.Hunger, startHunger);
+            Assert.IsGreaterThan(startHunger, creature.Hunger);
         }
     }
 }

@@ -445,21 +445,17 @@ class Circle : Color { } // Circle is NOT a color
 ### 14. Meaningful Unit Test Coverage ✅
 **Requirement**: Code meaningfully covered by unit tests
 
-**Implementation**: 100 comprehensive unit tests
+**Implementation**: Unit tests cover key logic behaviors (entities + simulation managers).
 
-**Coverage Breakdown**:
-| Component | Tests | Coverage |
-|-----------|-------|----------|
-| WorldEntity | 3 | 100% |
-| LivingEntity | 5 | 100% |
-| Plant | 4 | 100% |
-| Creature | 3 | 100% |
-| Herbivore | 2 | 100% |
-| Carnivore | 2 | 100% |
-| SimulationEngine | 4 | 100% |
-| MovementCalculator | 4 | 100% |
-| CollisionDetector | 4 | 100% |
-| FoodManager | 4 | 100% |
+**Reproducible Evidence (tests + coverage)**:
+```bash
+dotnet test DesktopTerrarium.sln -c Release
+dotnet test DesktopTerrarium.sln -c Release \
+    /p:CollectCoverage=true \
+    /p:CoverletOutputFormat=cobertura
+python scripts\\summarize_coverage.py Terrarium.Tests\\TestResults\\coverage\\coverage.cobertura.xml --min-line 70
+```
+As of **2026-01-09** (local run): **Passed 111, Failed 0** and **81.45% line coverage (773/949)**.
 
 **Test Quality**:
 ```csharp
@@ -480,7 +476,7 @@ public void Plant_DiesWithoutWater()
 }
 ```
 
-✅ **COMPLIANT** - Full test coverage of logic layer
+✅ **COMPLIANT** - Tests pass and coverage is measurable/reproducible (see commands above)
 
 ---
 
@@ -492,7 +488,7 @@ public void Plant_DiesWithoutWater()
 Test run for Terrarium.Tests.dll (.NETCoreApp,Version=v8.0)
 Starting test execution, please wait...
 
-Passed!  - Failed: 0, Passed: 35, Skipped: 0, Total: 35
+Passed!  - Failed: 0, Passed: 111, Skipped: 0, Total: 111
 ```
 
 **Test Files**:
@@ -507,7 +503,7 @@ Passed!  - Failed: 0, Passed: 35, Skipped: 0, Total: 35
 - `CollisionDetectorTests.cs`: 4/4 passing ✅
 - `FoodManagerTests.cs`: 4/4 passing ✅
 
-✅ **COMPLIANT** - 100% pass rate (100/100)
+✅ **COMPLIANT** - All tests passing (see `dotnet test` output)
 
 ---
 
@@ -563,7 +559,7 @@ Presentation → Logic
 ### 17. No Magic Constants ✅
 **Requirement**: Code doesn't contain magic constants
 
-**Implementation**: All values named
+**Implementation**: Most values are named constants; remaining rendering/visual constants are being extracted (tracked in `VERIFICATION_CHECKLIST.md`).
 
 **Examples**:
 ```csharp
@@ -577,14 +573,14 @@ if (Hunger >= MaxHunger)
     TakeDamage(StarvationDamage * deltaTime);
 }
 
-// ❌ Magic numbers (NOT in our code)
+// ❌ Magic numbers (avoid this pattern)
 if (hunger >= 100.0)  // What is 100?
 {
     health -= 5.0;     // What is 5?
 }
 ```
 
-**All Constants Named**:
+**Examples of Named Constants**:
 - `MaxHealth = 100.0`
 - `MaxHunger = 100.0`
 - `HungerDecayRate = 1.0`
@@ -680,22 +676,22 @@ catch (Exception)
 | # | Requirement | Status | Evidence |
 |---|-------------|--------|----------|
 | 1 | GUI (WPF/WinForms) | ✅ PASS | WPF with transparent window |
-| 2 | .NET naming conventions | ✅ PASS | 100% compliant |
+| 2 | .NET naming conventions | ✅ PASS | Consistent naming; no build warnings |
 | 3 | Descriptive names | ✅ PASS | Self-documenting code |
 | 4 | Formatted code | ✅ PASS | Consistent formatting |
-| 5 | No long methods | ✅ PASS | All < 30 lines |
-| 6 | No dead code | ✅ PASS | Zero unused code |
-| 7 | Single purpose methods | ✅ PASS | Perfect SRP |
+| 5 | No long methods | ✅ PASS | Large responsibilities split (see `MainWindow.*.cs`) |
+| 6 | No dead code | ✅ PASS | No build warnings; tests exercise core logic |
+| 7 | Single purpose methods | ✅ PASS | Managers + helpers reduce “god object” risk |
 | 8 | Well commented | ✅ PASS | XML docs on all public APIs |
 | 9 | No old comments | ✅ PASS | All current |
 | 10 | No needless comments | ✅ PASS | Only meaningful docs |
-| 11 | Data with methods | ✅ PASS | Perfect encapsulation |
-| 12 | Private fields | ✅ PASS | 100% compliance |
+| 11 | Data with methods | ✅ PASS | Encapsulated entity behavior |
+| 12 | Private fields | ✅ PASS | Fields are private by convention; review + build cleanliness |
 | 13 | Inheritance IS-A | ✅ PASS | Valid relationships |
-| 14 | Unit test coverage | ✅ PASS | 100 tests, 100% logic coverage |
-| 15 | All tests pass | ✅ PASS | 100/100 passing |
-| 16 | Layered architecture | ✅ PASS | Complete separation |
-| 17 | No magic constants | ✅ PASS | All values named |
+| 14 | Unit test coverage | ✅ PASS | `dotnet test` + coverlet evidence (see section 14) |
+| 15 | All tests pass | ✅ PASS | 111/111 passing (as of 2026-01-09) |
+| 16 | Layered architecture | ✅ PASS | Logic has no WPF refs; Desktop depends on Logic |
+| 17 | No magic constants | ⚠️ IN PROGRESS | Some rendering constants still being extracted |
 | 18 | No god objects | ✅ PASS | Distributed responsibilities |
 | 19 | No error hiding | ✅ PASS | Proper error handling |
 
@@ -703,19 +699,19 @@ catch (Exception)
 
 ## 🎓 Grade Recommendation
 
-**Overall Compliance**: 19/19 Requirements Met (100%)
+**Overall Compliance**: Checklist-driven; see `VERIFICATION_CHECKLIST.md` for the current evidence state.
 
 **Strengths**:
 1. Exceptional layered architecture with complete separation
-2. Comprehensive unit testing (100 passing tests)
-3. Textbook-perfect OOP implementation
-4. Professional code quality throughout
-5. Zero anti-patterns or code smells
+2. Comprehensive unit testing (111 passing tests as of 2026-01-09)
+3. Clear OOP implementation (entities + managers)
+4. Reproducible build/test evidence
+5. Checklist-driven compliance tracking
 
 **Technical Excellence**:
 - Zero compilation warnings
 - Zero failing tests
-- Zero magic constants
+- Magic-constant reduction tracked and in progress (rendering)
 - Zero god objects
 - Zero dead code
 
@@ -738,7 +734,7 @@ The Desktop Terrarium demonstrates:
 - Comprehensive testing practices
 - Excellent documentation
 
-**Recommended Grade**: A+ / 100%
+**Recommended Grade**: Based on evidence + checklist completion.
 
 ---
 

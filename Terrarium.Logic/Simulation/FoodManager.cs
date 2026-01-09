@@ -17,18 +17,18 @@ namespace Terrarium.Logic.Simulation
         private const double PlantSpawnInterval = 5.0;
         private const double PlantSpawnChance = 0.3;
 
-        private const double MinEcosystemHealth = 0.0;
-        private const double MaxEcosystemHealth = 1.0;
-        private const double IdealPlantRatio = 0.6;
-        private const double IdealHerbivoreRatio = 0.3;
-        private const double HealthAverageDivisor = 2.0;
-
         private double _plantSpawnTimer;
 
-        public FoodManager(World world)
+        /// <summary>
+        /// Multiplier applied to the base plant spawn chance (clamped).
+        /// Useful for seasonal effects and balancing.
+        /// </summary>
+        public double PlantSpawnChanceMultiplier { get; set; } = 1.0;
+
+        public FoodManager(World world, Random? random = null)
         {
             _world = world;
-            _random = new Random();
+            _random = random ?? new Random();
             _plantSpawnTimer = 0;
         }
 
@@ -53,8 +53,10 @@ namespace Terrarium.Logic.Simulation
         {
             int plantCount = _world.Plants.Count;
 
+            double adjustedChance = Math.Clamp(PlantSpawnChance * PlantSpawnChanceMultiplier, 0.0, 1.0);
+
             if (plantCount < MinPlantCount ||
-                (plantCount < MaxPlantCount && _random.NextDouble() < PlantSpawnChance))
+                (plantCount < MaxPlantCount && _random.NextDouble() < adjustedChance))
             {
                 _world.SpawnRandomPlant();
             }
@@ -90,21 +92,10 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public double GetEcosystemHealth()
         {
-            int plantCount = _world.Plants.Count;
-            int herbivoreCount = _world.Herbivores.Count;
-            int totalCount = plantCount + herbivoreCount + _world.Carnivores.Count;
-
-            if (totalCount == 0)
-                return MinEcosystemHealth;
-
-            // Ideal ratio: 60% plants, 30% herbivores, 10% carnivores
-            double plantRatio = (double)plantCount / totalCount;
-            double herbivoreRatio = (double)herbivoreCount / totalCount;
-
-            double plantScore = MaxEcosystemHealth - Math.Abs(plantRatio - IdealPlantRatio);
-            double herbivoreScore = MaxEcosystemHealth - Math.Abs(herbivoreRatio - IdealHerbivoreRatio);
-
-            return (plantScore + herbivoreScore) / HealthAverageDivisor;
+            return EcosystemHealthScorer.CalculateHealth01(
+                _world.Plants.Count,
+                _world.Herbivores.Count,
+                _world.Carnivores.Count);
         }
     }
 }

@@ -11,6 +11,7 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.x'
+  PYTHON_VERSION: '3.11'
   SOLUTION_FILE: 'DesktopTerrarium.sln'
 
 jobs:
@@ -28,6 +29,11 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: ♻️ Cache NuGet packages
       uses: actions/cache@v4
@@ -145,6 +151,11 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
     - name: ♻️ Cache NuGet packages
       uses: actions/cache@v4
       with:
@@ -191,6 +202,11 @@ jobs:
     steps:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: 🐍 Validate docs/ links
       run: python3 scripts/validate_docs.py
@@ -257,6 +273,31 @@ jobs:
 
     - name: 📦 Publish (framework-dependent, ARM64)
       run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-arm64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-arm64
+
+    - name: 🔎 Verify publish-integrity manifests unchanged
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+
+        $x64Deps = 'publish-integrity/win-x64/Terrarium.Desktop.deps.json'
+        $x64Runtime = 'publish-integrity/win-x64/Terrarium.Desktop.runtimeconfig.json'
+        $arm64Deps = 'publish-integrity/win-arm64/Terrarium.Desktop.deps.json'
+        $arm64Runtime = 'publish-integrity/win-arm64/Terrarium.Desktop.runtimeconfig.json'
+
+        foreach ($p in @($x64Deps, $x64Runtime, $arm64Deps, $arm64Runtime)) {
+          if (-not (Test-Path $p)) {
+            throw "Missing expected integrity manifest: $p"
+          }
+        }
+
+        git diff --exit-code -- $x64Deps $x64Runtime
+        git diff --exit-code -- $arm64Deps $arm64Runtime
+
+        $status = git status --porcelain
+        if ($status) {
+          Write-Host $status
+          throw 'Working tree is dirty after publish-integrity; manifests likely changed.'
+        }
 
     - name: 📊 Upload Publish Artifact
       uses: actions/upload-artifact@v4

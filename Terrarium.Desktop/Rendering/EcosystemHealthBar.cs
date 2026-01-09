@@ -133,7 +133,7 @@ namespace Terrarium.Desktop.Rendering
                 _container.Visibility = Visibility.Visible;
 
             // Calculate health score based on ecosystem balance
-            _currentHealth = CalculateHealthScore(plantCount, herbivoreCount, carnivoreCount);
+            _currentHealth = EcosystemHealthScorer.CalculateHealthPercent(plantCount, herbivoreCount, carnivoreCount);
 
             // Animate display health
             _displayHealth += (_currentHealth - _displayHealth) * AnimationSpeed * deltaTime;
@@ -142,51 +142,6 @@ namespace Terrarium.Desktop.Rendering
             _pulsePhase += deltaTime * 2;
 
             UpdateVisuals();
-        }
-
-        private double CalculateHealthScore(int plants, int herbivores, int carnivores)
-        {
-            double score = 100;
-
-            // Penalty for extinction
-            if (plants == 0)
-                score -= 40;
-            if (herbivores == 0)
-                score -= 30;
-            if (carnivores == 0)
-                score -= 20;
-
-            // Check for imbalance
-            int total = plants + herbivores + carnivores;
-            if (total > 0)
-            {
-                double plantRatio = (double)plants / total;
-                double herbRatio = (double)herbivores / total;
-                double carnRatio = (double)carnivores / total;
-
-                // Ideal ratios: ~50% plants, ~35% herbivores, ~15% carnivores
-                double plantBalance = 1 - Math.Abs(plantRatio - 0.5) * 1.5;
-                double herbBalance = 1 - Math.Abs(herbRatio - 0.35) * 2.0;
-                double carnBalance = 1 - Math.Abs(carnRatio - 0.15) * 3.0;
-
-                double balanceScore = (plantBalance + herbBalance + carnBalance) / 3;
-                score *= Math.Max(0.3, balanceScore);
-            }
-            else
-            {
-                score = 0; // Total extinction
-            }
-
-            // Bonus for diversity
-            int speciesCount = (plants > 0 ? 1 : 0) + (herbivores > 0 ? 1 : 0) + (carnivores > 0 ? 1 : 0);
-            if (speciesCount == 3)
-                score = Math.Min(100, score * 1.1);
-
-            // Population size bonus
-            if (total >= 20 && total <= 100)
-                score = Math.Min(100, score * 1.05);
-
-            return Math.Clamp(score, 0, 100);
         }
 
         private void UpdateVisuals()

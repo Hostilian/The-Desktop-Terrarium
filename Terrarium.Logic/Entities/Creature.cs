@@ -95,7 +95,11 @@ namespace Terrarium.Logic.Entities
         public virtual void Feed(double nutritionValue)
         {
             Hunger = Math.Max(MinHunger, Hunger - nutritionValue);
-            Heal(nutritionValue * FeedHealMultiplier);
+
+            if (nutritionValue > 0)
+            {
+                Heal(nutritionValue * FeedHealMultiplier);
+            }
         }
 
         /// <summary>

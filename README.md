@@ -68,7 +68,7 @@ WorldEntity (base)
 ### ✅ Encapsulation
 - All fields are `private` (e.g., `_health`, `_hunger`)
 - Public properties with controlled access
-- No magic numbers - all constants are named
+- Most values are named constants; remaining rendering constants are tracked in `VERIFICATION_CHECKLIST.md`
 
 ### ✅ Single Responsibility Principle
 - `Creature` doesn't draw itself - `Renderer` does

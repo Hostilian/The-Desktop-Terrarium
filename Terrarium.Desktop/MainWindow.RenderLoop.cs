@@ -136,11 +136,11 @@ namespace Terrarium.Desktop
 
             // Color health bar based on value
             if (healthPercent >= 0.7)
-                HealthBar.Background = _healthGoodBrush ?? new SolidColorBrush(Color.FromRgb(46, 204, 113));
+                HealthBar.Background = _healthGoodBrush ??= CreateFrozenBrush(Color.FromRgb(46, 204, 113));
             else if (healthPercent >= 0.4)
-                HealthBar.Background = _healthWarnBrush ?? new SolidColorBrush(Color.FromRgb(241, 196, 15));
+                HealthBar.Background = _healthWarnBrush ??= CreateFrozenBrush(Color.FromRgb(241, 196, 15));
             else
-                HealthBar.Background = _healthBadBrush ?? new SolidColorBrush(Color.FromRgb(231, 76, 60));
+                HealthBar.Background = _healthBadBrush ??= CreateFrozenBrush(Color.FromRgb(231, 76, 60));
 
             // Weather display with icons
             bool isStormy = _simulationEngine.WeatherIntensity > StormyWeatherThreshold;
@@ -217,6 +217,13 @@ namespace Terrarium.Desktop
                     DayNightIcon.Text = "🌙";
                     break;
             }
+        }
+
+        private static Brush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

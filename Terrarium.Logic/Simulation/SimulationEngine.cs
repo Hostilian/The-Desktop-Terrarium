@@ -13,9 +13,13 @@ namespace Terrarium.Logic.Simulation
         private readonly CollisionDetector _collisionDetector;
         private readonly FoodManager _foodManager;
         private readonly DayNightCycle _dayNightCycle;
+        private readonly SeasonCycle _seasonCycle;
+        private readonly DiseaseManager _diseaseManager;
         private readonly ReproductionManager _reproductionManager;
         private readonly StatisticsTracker _statisticsTracker;
         private readonly EventSystem _eventSystem;
+
+        private readonly List<Creature> _creatureCollisionBuffer = new();
 
         // Simulation timing constants
         private const double LogicTickRate = 0.2; // Logic updates 5 times per second
@@ -44,6 +48,11 @@ namespace Terrarium.Logic.Simulation
         /// The day/night cycle manager.
         /// </summary>
         public DayNightCycle DayNightCycle => _dayNightCycle;
+
+        /// <summary>
+        /// The season cycle manager.
+        /// </summary>
+        public SeasonCycle SeasonCycle => _seasonCycle;
 
         /// <summary>
         /// The statistics tracker.
@@ -80,9 +89,11 @@ namespace Terrarium.Logic.Simulation
             _collisionDetector = new CollisionDetector();
             _foodManager = new FoodManager(_world);
             _dayNightCycle = new DayNightCycle();
-            _reproductionManager = new ReproductionManager(_world);
+            _seasonCycle = new SeasonCycle();
+            _diseaseManager = new DiseaseManager();
             _statisticsTracker = new StatisticsTracker();
             _eventSystem = new EventSystem();
+            _reproductionManager = new ReproductionManager(_world, _eventSystem);
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
@@ -95,9 +106,11 @@ namespace Terrarium.Logic.Simulation
             _collisionDetector = new CollisionDetector();
             _foodManager = new FoodManager(_world);
             _dayNightCycle = new DayNightCycle();
-            _reproductionManager = new ReproductionManager(_world);
+            _seasonCycle = new SeasonCycle();
+            _diseaseManager = new DiseaseManager();
             _statisticsTracker = new StatisticsTracker();
             _eventSystem = new EventSystem();
+            _reproductionManager = new ReproductionManager(_world, _eventSystem);
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
@@ -179,6 +192,14 @@ namespace Terrarium.Logic.Simulation
             var oldPhase = _dayNightCycle.CurrentPhase;
             _dayNightCycle.Update(deltaTime);
 
+            // Update season cycle
+            var oldSeason = _seasonCycle.CurrentSeason;
+            _seasonCycle.Update(deltaTime);
+            if (oldSeason != _seasonCycle.CurrentSeason)
+            {
+                // No UI dependency required; season is exposed via SeasonCycle.
+            }
+
             // Check for day phase change
             string currentPhase = GetTimeOfDayString();
             if (currentPhase != _previousDayPhase)
@@ -194,8 +215,24 @@ namespace Terrarium.Logic.Simulation
             }
 
             // Update managers
+            _foodManager.PlantSpawnChanceMultiplier = _seasonCycle.PlantSpawnChanceMultiplier;
             _foodManager.Update(deltaTime);
+
+            // Gentle population pressure: encourage reproduction when resources/prey are abundant.
+            int plantCount = _world.Plants.Count;
+            int herbivoreCount = _world.Herbivores.Count;
+            int carnivoreCount = _world.Carnivores.Count;
+
+            double plantsPerHerb = plantCount / Math.Max(1.0, herbivoreCount);
+            double herbPerCarn = herbivoreCount / Math.Max(1.0, carnivoreCount);
+
+            _reproductionManager.HerbivoreReproductionChanceMultiplier = Math.Clamp(plantsPerHerb, 0.2, 1.5);
+            _reproductionManager.CarnivoreReproductionChanceMultiplier = Math.Clamp(herbPerCarn, 0.2, 1.5);
+
             _reproductionManager.Update(deltaTime);
+
+            // Disease pressure (low-impact)
+            _diseaseManager.Update(_world, deltaTime);
 
             // Update statistics
             _statisticsTracker.UpdateTime(deltaTime);
@@ -229,12 +266,21 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void ResolveCreatureCollisions()
         {
-            var allCreatures = _world.Herbivores.Cast<Creature>()
-                .Concat(_world.Carnivores)
-                .Where(c => c.IsAlive)
-                .ToList();
+            _creatureCollisionBuffer.Clear();
 
-            _collisionDetector.ResolveCreatureCollisions(allCreatures);
+            foreach (var herbivore in _world.Herbivores)
+            {
+                if (herbivore.IsAlive)
+                    _creatureCollisionBuffer.Add(herbivore);
+            }
+
+            foreach (var carnivore in _world.Carnivores)
+            {
+                if (carnivore.IsAlive)
+                    _creatureCollisionBuffer.Add(carnivore);
+            }
+
+            _collisionDetector.ResolveCreatureCollisions(_creatureCollisionBuffer);
         }
 
         /// <summary>
@@ -266,7 +312,7 @@ namespace Terrarium.Logic.Simulation
                         herbivore.MoveToward(nearestPlant.X, nearestPlant.Y);
                         if (herbivore.TryEat(nearestPlant))
                         {
-                            EventSystem.Instance.OnEntityFed(herbivore, nearestPlant, 30.0);
+                            _eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
                             _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
                         }
                     }
@@ -358,12 +404,12 @@ namespace Terrarium.Logic.Simulation
                         carnivore.Hunt(nearestPrey);
                         if (carnivore.TryEat(nearestPrey))
                         {
-                            EventSystem.Instance.OnEntityFed(carnivore, nearestPrey, 50.0);
+                            _eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
                             _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
 
                             if (!nearestPrey.IsAlive)
                             {
-                                EventSystem.Instance.OnEntityDied(nearestPrey, DeathCause.Predation);
+                                _eventSystem.OnEntityDied(nearestPrey, DeathCause.Predation);
                                 _statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
                             }
                         }

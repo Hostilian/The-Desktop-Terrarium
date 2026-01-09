@@ -4,6 +4,27 @@ import sys
 from pathlib import Path
 
 
+def validate_basic_html_structure(html: str) -> list[str]:
+    errors: list[str] = []
+
+    lowered = html.lower()
+    if "<!doctype html" not in lowered:
+        errors.append("Missing <!DOCTYPE html> declaration")
+
+    required_tags = ["<html", "<head", "<body"]
+    for tag in required_tags:
+        if tag not in lowered:
+            errors.append(f"Missing required tag: {tag}")
+
+    if "</html>" not in lowered:
+        errors.append("Missing closing </html> tag")
+
+    if "<title" not in lowered:
+        errors.append("Missing <title> tag")
+
+    return errors
+
+
 def iter_local_refs(html: str):
     # Very small validator: find href/src attributes and validate local file refs.
     # Skips: absolute URLs, anchors, mailto:, data:, javascript:.
@@ -38,6 +59,14 @@ def main() -> int:
         return 2
 
     html = index.read_text(encoding="utf-8", errors="replace")
+
+    structure_errors = validate_basic_html_structure(html)
+    if structure_errors:
+        print("ERROR: docs/index.html basic structure check failed:")
+        for err in structure_errors:
+            print(f" - {err}")
+        return 4
+
     missing = []
 
     for ref in sorted(set(iter_local_refs(html))):

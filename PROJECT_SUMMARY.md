@@ -151,7 +151,7 @@ private const double MinPlantSpawnInterval = 5.0;
 ---
 
 ### Step 5: Unit Tests for Logic Layer ✅
-**Status**: Complete - **75/75 Tests Passing**  
+**Status**: Complete - tests are passing (see reproducible command outputs below)  
 **Details**:
 
 **Entity Tests** (18 tests):
@@ -171,12 +171,20 @@ private const double MinPlantSpawnInterval = 5.0;
 - ✅ StatisticsTracker: Birth/death tracking, peak populations, session time
 - ✅ EventSystem: Observer pattern, event notifications
 
-**Test Results**:
+**Test Results (reproducible evidence)**:
+```bash
+dotnet test DesktopTerrarium.sln -c Release
 ```
-Passed!  - Failed: 0, Passed: 75, Skipped: 0, Total: 75
-```
+As of **2026-01-09** (local run): **Passed 111, Failed 0**.
 
-**Coverage**: 100% of core logic classes
+**Coverage (reproducible evidence)**:
+```bash
+dotnet test DesktopTerrarium.sln -c Release \
+  /p:CollectCoverage=true \
+  /p:CoverletOutputFormat=cobertura
+python scripts\\summarize_coverage.py Terrarium.Tests\\TestResults\\coverage\\coverage.cobertura.xml --min-line 70
+```
+As of **2026-01-09** (local run): **81.45% line coverage (773/949)**.
 
 **Files Created**:
 - `Terrarium.Tests/Entities/WorldEntityTests.cs` (85 lines)
@@ -410,7 +418,7 @@ dotnet test --verbosity detailed
 dotnet test --filter "FullyQualifiedName~Entities"
 ```
 
-**Results**: 100% pass rate, all edge cases covered
+**Results**: All tests pass in the current suite (see `dotnet test` output above).
 
 ---
 
@@ -420,11 +428,11 @@ dotnet test --filter "FullyQualifiedName~Entities"
 - **Total Lines of Code**: ~5,500
 - **Classes**: 35+
 - **Interfaces**: 2
-- **Unit Tests**: 75 (100% passing)
+- **Unit Tests**: 111 passing (as of 2026-01-09)
 - **Projects**: 3
 - **Build Time**: ~2.5 seconds
 - **Compilation Warnings**: 0
-- **Code Coverage**: 100% of logic layer
+- **Code Coverage**: 81.45% line coverage for `Terrarium.Logic` (as of 2026-01-09)
 
 ### Project Breakdown
 | Project | Files | Lines | Purpose |
@@ -549,8 +557,8 @@ dotnet test --filter "FullyQualifiedName~Entities"
 | Inheritance (IS-A) | ✅ Complete | WorldEntity→LivingEntity→Plant/Creature |
 | Interfaces (CAN-DO) | ✅ Complete | IClickable, IMovable |
 | Encapsulation | ✅ Complete | All fields private, properties public |
-| Unit tests | ✅ Complete | 100 passing tests |
-| No magic constants | ✅ Complete | All values named |
+| Unit tests | ✅ Complete | 111 passing tests (as of 2026-01-09) |
+| No magic constants | ⚠️ In progress | Rendering constants still being extracted |
 | Single Responsibility | ✅ Complete | Specialized classes (Renderer, MovementCalculator) |
 | No God objects | ✅ Complete | Logic split across managers |
 | Mouse interaction | ✅ Complete | Hover shakes, click feeds |
@@ -561,7 +569,7 @@ dotnet test --filter "FullyQualifiedName~Entities"
 
 ## 🎉 Conclusion
 
-**The Desktop Terrarium is a complete, polished, production-ready application that demonstrates mastery of:**
+**The Desktop Terrarium is a complete application that demonstrates:**
 
 - Object-Oriented Programming principles
 - Software architecture best practices
@@ -570,9 +578,9 @@ dotnet test --filter "FullyQualifiedName~Entities"
 - Professional code quality standards
 
 **All 6 implementation steps completed.**  
-**All 3 further considerations addressed.**  
+**Further considerations tracked via `VERIFICATION_CHECKLIST.md`.**  
 **Enhanced with advanced simulation systems.**  
-**All project requirements exceeded.**
+**Project requirements are evidenced in `VERIFICATION_CHECKLIST.md`.**
 
 🌟 **Project Status: SUCCESS** 🌟
 
@@ -581,4 +589,4 @@ dotnet test --filter "FullyQualifiedName~Entities"
 **Ready for submission, presentation, or portfolio use!**
 
 *Generated: January 9, 2026*  
-*Build: PASSING ✅ | Tests: 75/75 ✅ | Quality: EXCELLENT ✅*
+*Build: PASSING ✅ | Tests: 111 passing ✅ | Quality: Checklist-driven ✅*

@@ -40,7 +40,7 @@ namespace Terrarium.Tests.Entities
             plant.Grow(deltaTime: 5.0);
 
             // Assert
-            Assert.IsGreaterThan(initialExperience, plant.Experience, "Plant should gain experience from growing");
+            Assert.IsTrue(plant.Experience > initialExperience, "Plant should gain experience from growing");
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace Terrarium.Tests.Entities
             plant.Water(30.0);
 
             // Assert
-            Assert.IsGreaterThan(initialExperience, plant.Experience, "Plant should gain experience from being watered");
+            Assert.IsTrue(plant.Experience > initialExperience, "Plant should gain experience from being watered");
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace Terrarium.Tests.Entities
             herbivore.Feed(30.0);
 
             // Assert
-            Assert.IsGreaterThan(initialExperience, herbivore.Experience, "Creature should gain experience from eating");
+            Assert.IsTrue(herbivore.Experience > initialExperience, "Creature should gain experience from eating");
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Terrarium.Tests.Entities
             // Assert
             double growth1 = plant1.Size - initialSize1;
             double growth2 = plant2.Size - initialSize2;
-            Assert.IsGreaterThan(growth1, growth2, "Higher level plant should grow faster");
+            Assert.IsTrue(growth2 > growth1, "Higher level plant should grow faster");
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ namespace Terrarium.Tests.Entities
             }
 
             // Assert - should be able to grow past 50 (original max)
-            Assert.IsGreaterThan(50.0, plant.Size, "Higher level plant should have higher max size");
+            Assert.IsTrue(plant.Size > 50.0, "Higher level plant should have higher max size");
         }
 
         [TestMethod]
@@ -165,7 +165,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             double newSpeed = herbivore.GetEffectiveSpeed();
-            Assert.IsGreaterThan(initialSpeed, newSpeed, "Higher level creature should be faster");
+            Assert.IsTrue(newSpeed > initialSpeed, "Higher level creature should be faster");
         }
 
         [TestMethod]
@@ -204,7 +204,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert - prey should take more damage from a higher level carnivore
             double damageTaken = preyInitialHealth - prey.Health;
-            Assert.IsGreaterThan(80.0, damageTaken, "Higher level carnivore should deal more damage");
+            Assert.IsTrue(damageTaken > 80.0, "Higher level carnivore should deal more damage");
         }
 
         [TestMethod]
@@ -239,7 +239,7 @@ namespace Terrarium.Tests.Entities
             plant.GainExperience(100.0); // Level up
 
             // Assert
-            Assert.IsGreaterThan(healthBeforeLevelUp, plant.Health, "Leveling up should restore some health");
+            Assert.IsTrue(plant.Health > healthBeforeLevelUp, "Leveling up should restore some health");
         }
 
         [TestMethod]

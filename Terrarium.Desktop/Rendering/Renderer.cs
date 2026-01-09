@@ -48,6 +48,7 @@ namespace Terrarium.Desktop.Rendering
         // Animation constants
         private const double ShakeDuration = 0.5;
         private const double ShakeMagnitude = 5.0;
+        private const double ShakeFrequencyRadiansPerSecond = 20.0;
         private const double ApproxFrameDeltaSecondsAt60Fps = 0.016;
 
         // Common numeric constants
@@ -57,6 +58,66 @@ namespace Terrarium.Desktop.Rendering
         private const double CreatureAnchorOffset = 15.0;
         private const double CreatureDeadOpacity = 0.3;
         private const double DefaultSpriteSize = 40.0;
+
+        // Herbivore shape (bunny-like)
+        private const double HerbivoreBodyWidth = 28.0;
+        private const double HerbivoreBodyHeight = 24.0;
+        private const double HerbivoreBodyStrokeThickness = 1.5;
+        private const double HerbivoreBellyWidth = 16.0;
+        private const double HerbivoreBellyHeight = 12.0;
+        private const double HerbivoreBellyOpacity = 0.8;
+        private const double HerbivoreEarWidth = 8.0;
+        private const double HerbivoreEarHeight = 16.0;
+        private const double HerbivoreEyeSize = 6.0;
+        private const double HerbivorePupilSize = 3.0;
+        private const double HerbivoreNoseWidth = 4.0;
+        private const double HerbivoreNoseHeight = 3.0;
+
+        private const double HerbivoreLeftEarX = 5.0;
+        private const double HerbivoreEarY = -10.0;
+        private const double HerbivoreRightEarX = 15.0;
+        private const double HerbivoreBodyX = 1.0;
+        private const double HerbivoreBodyY = 3.0;
+        private const double HerbivoreBellyX = 7.0;
+        private const double HerbivoreBellyY = 10.0;
+        private const double HerbivoreLeftEyeX = 7.0;
+        private const double HerbivoreEyesY = 8.0;
+        private const double HerbivoreRightEyeX = 17.0;
+        private const double HerbivoreLeftPupilX = 9.0;
+        private const double HerbivorePupilsY = 10.0;
+        private const double HerbivoreRightPupilX = 19.0;
+        private const double HerbivoreNoseX = 13.0;
+        private const double HerbivoreNoseY = 16.0;
+
+        // Carnivore shape (wolf-like)
+        private const double CarnivoreBodyWidth = 32.0;
+        private const double CarnivoreBodyHeight = 26.0;
+        private const double CarnivoreBodyStrokeThickness = 2.0;
+        private const double CarnivoreSnoutWidth = 14.0;
+        private const double CarnivoreSnoutHeight = 10.0;
+        private const double CarnivoreEarStrokeThickness = 1.0;
+        private const double CarnivoreEyeWidth = 7.0;
+        private const double CarnivoreEyeHeight = 5.0;
+        private const double CarnivorePupilWidth = 3.0;
+        private const double CarnivorePupilHeight = 4.0;
+        private const double CarnivoreNoseWidth = 5.0;
+        private const double CarnivoreNoseHeight = 4.0;
+
+        private const double CarnivoreLeftEarX = 2.0;
+        private const double CarnivoreEarY = -6.0;
+        private const double CarnivoreRightEarX = 18.0;
+        private const double CarnivoreBodyX = 0.0;
+        private const double CarnivoreBodyY = 4.0;
+        private const double CarnivoreSnoutX = 9.0;
+        private const double CarnivoreSnoutY = 18.0;
+        private const double CarnivoreLeftEyeX = 6.0;
+        private const double CarnivoreEyesY = 10.0;
+        private const double CarnivoreRightEyeX = 19.0;
+        private const double CarnivoreLeftPupilX = 8.0;
+        private const double CarnivorePupilsY = 10.0;
+        private const double CarnivoreRightPupilX = 21.0;
+        private const double CarnivoreNoseX = 14.0;
+        private const double CarnivoreNoseY = 20.0;
 
         // Plant visual tuning (shape mode)
         private const double PlantStemWidth = 4.0;
@@ -75,6 +136,23 @@ namespace Terrarium.Desktop.Rendering
         private const double PlantAccentTopOffsetRatio = 0.4;
         private const double PlantMinAliveOpacity = 0.5;
         private const double PlantDeadOpacity = 0.3;
+
+        private const int PlantStemChildIndex = 0;
+        private const int PlantLeavesChildIndex = 1;
+        private const int PlantHighlightChildIndex = 2;
+
+        // Carnivore ear geometry
+        private const double CarnivoreEarBaseY = 12.0;
+        private const double CarnivoreEarApexX = 6.0;
+        private const double CarnivoreEarApexY = 0.0;
+        private const double CarnivoreEarBaseWidth = 12.0;
+
+        private static readonly PointCollection CarnivoreEarPoints = new()
+        {
+            new Point(0, CarnivoreEarBaseY),
+            new Point(CarnivoreEarApexX, CarnivoreEarApexY),
+            new Point(CarnivoreEarBaseWidth, CarnivoreEarBaseY)
+        };
 
         public Renderer(Canvas canvas)
         {
@@ -230,7 +308,7 @@ namespace Terrarium.Desktop.Rendering
             // Apply shake animation if active
             if (_plantShakeTimers.TryGetValue(plant.Id, out double shakeTimer))
             {
-                x += Math.Sin(shakeTimer * 20) * ShakeMagnitude;
+                x += Math.Sin(shakeTimer * ShakeFrequencyRadiansPerSecond) * ShakeMagnitude;
             }
 
             Canvas.SetLeft(visual, x);
@@ -243,13 +321,13 @@ namespace Terrarium.Desktop.Rendering
             if (visual is Canvas plantCanvas && plantCanvas.Children.Count >= 3)
             {
                 // Update stem height
-                if (plantCanvas.Children[0] is Rectangle stem)
+                if (plantCanvas.Children[PlantStemChildIndex] is Rectangle stem)
                 {
                     stem.Height = plant.Size;
                 }
 
                 // Update main leaves size
-                if (plantCanvas.Children[1] is Ellipse leaves)
+                if (plantCanvas.Children[PlantLeavesChildIndex] is Ellipse leaves)
                 {
                     leaves.Width = plant.Size * PlantLeavesSizeRatio;
                     leaves.Height = plant.Size * PlantLeavesSizeRatio;
@@ -258,7 +336,7 @@ namespace Terrarium.Desktop.Rendering
                 }
 
                 // Update highlight leaves
-                if (plantCanvas.Children[2] is Ellipse highlight)
+                if (plantCanvas.Children[PlantHighlightChildIndex] is Ellipse highlight)
                 {
                     highlight.Width = plant.Size * PlantHighlightSizeRatio;
                     highlight.Height = plant.Size * PlantHighlightSizeRatio;
@@ -317,46 +395,46 @@ namespace Terrarium.Desktop.Rendering
                     // Body
                     var body = new Ellipse
                     {
-                        Width = 28,
-                        Height = 24,
+                        Width = HerbivoreBodyWidth,
+                        Height = HerbivoreBodyHeight,
                         Fill = HerbivoreBodyColor,
                         Stroke = HerbivoreOutlineColor,
-                        StrokeThickness = 1.5
+                        StrokeThickness = HerbivoreBodyStrokeThickness
                     };
 
                     // Belly highlight
                     var belly = new Ellipse
                     {
-                        Width = 16,
-                        Height = 12,
+                        Width = HerbivoreBellyWidth,
+                        Height = HerbivoreBellyHeight,
                         Fill = HerbivoreBellyColor,
-                        Opacity = 0.8
+                        Opacity = HerbivoreBellyOpacity
                     };
 
                     // Left ear
                     var leftEar = new Ellipse
                     {
-                        Width = 8,
-                        Height = 16,
+                        Width = HerbivoreEarWidth,
+                        Height = HerbivoreEarHeight,
                         Fill = HerbivoreEarColor
                     };
 
                     // Right ear
                     var rightEar = new Ellipse
                     {
-                        Width = 8,
-                        Height = 16,
+                        Width = HerbivoreEarWidth,
+                        Height = HerbivoreEarHeight,
                         Fill = HerbivoreEarColor
                     };
 
                     // Eyes
-                    var leftEye = new Ellipse { Width = 6, Height = 6, Fill = Brushes.White };
-                    var rightEye = new Ellipse { Width = 6, Height = 6, Fill = Brushes.White };
-                    var leftPupil = new Ellipse { Width = 3, Height = 3, Fill = Brushes.Black };
-                    var rightPupil = new Ellipse { Width = 3, Height = 3, Fill = Brushes.Black };
+                    var leftEye = new Ellipse { Width = HerbivoreEyeSize, Height = HerbivoreEyeSize, Fill = Brushes.White };
+                    var rightEye = new Ellipse { Width = HerbivoreEyeSize, Height = HerbivoreEyeSize, Fill = Brushes.White };
+                    var leftPupil = new Ellipse { Width = HerbivorePupilSize, Height = HerbivorePupilSize, Fill = Brushes.Black };
+                    var rightPupil = new Ellipse { Width = HerbivorePupilSize, Height = HerbivorePupilSize, Fill = Brushes.Black };
 
                     // Nose
-                    var nose = new Ellipse { Width = 4, Height = 3, Fill = HerbivoreEarColor };
+                    var nose = new Ellipse { Width = HerbivoreNoseWidth, Height = HerbivoreNoseHeight, Fill = HerbivoreEarColor };
 
 
                     creatureGroup.Children.Add(leftEar);
@@ -369,24 +447,24 @@ namespace Terrarium.Desktop.Rendering
                     creatureGroup.Children.Add(rightPupil);
                     creatureGroup.Children.Add(nose);
 
-                    Canvas.SetLeft(leftEar, 5);
-                    Canvas.SetTop(leftEar, -10);
-                    Canvas.SetLeft(rightEar, 15);
-                    Canvas.SetTop(rightEar, -10);
-                    Canvas.SetLeft(body, 1);
-                    Canvas.SetTop(body, 3);
-                    Canvas.SetLeft(belly, 7);
-                    Canvas.SetTop(belly, 10);
-                    Canvas.SetLeft(leftEye, 7);
-                    Canvas.SetTop(leftEye, 8);
-                    Canvas.SetLeft(rightEye, 17);
-                    Canvas.SetTop(rightEye, 8);
-                    Canvas.SetLeft(leftPupil, 9);
-                    Canvas.SetTop(leftPupil, 10);
-                    Canvas.SetLeft(rightPupil, 19);
-                    Canvas.SetTop(rightPupil, 10);
-                    Canvas.SetLeft(nose, 13);
-                    Canvas.SetTop(nose, 16);
+                    Canvas.SetLeft(leftEar, HerbivoreLeftEarX);
+                    Canvas.SetTop(leftEar, HerbivoreEarY);
+                    Canvas.SetLeft(rightEar, HerbivoreRightEarX);
+                    Canvas.SetTop(rightEar, HerbivoreEarY);
+                    Canvas.SetLeft(body, HerbivoreBodyX);
+                    Canvas.SetTop(body, HerbivoreBodyY);
+                    Canvas.SetLeft(belly, HerbivoreBellyX);
+                    Canvas.SetTop(belly, HerbivoreBellyY);
+                    Canvas.SetLeft(leftEye, HerbivoreLeftEyeX);
+                    Canvas.SetTop(leftEye, HerbivoreEyesY);
+                    Canvas.SetLeft(rightEye, HerbivoreRightEyeX);
+                    Canvas.SetTop(rightEye, HerbivoreEyesY);
+                    Canvas.SetLeft(leftPupil, HerbivoreLeftPupilX);
+                    Canvas.SetTop(leftPupil, HerbivorePupilsY);
+                    Canvas.SetLeft(rightPupil, HerbivoreRightPupilX);
+                    Canvas.SetTop(rightPupil, HerbivorePupilsY);
+                    Canvas.SetLeft(nose, HerbivoreNoseX);
+                    Canvas.SetTop(nose, HerbivoreNoseY);
                 }
                 else
                 {
@@ -394,47 +472,47 @@ namespace Terrarium.Desktop.Rendering
                     // Body
                     var body = new Ellipse
                     {
-                        Width = 32,
-                        Height = 26,
+                        Width = CarnivoreBodyWidth,
+                        Height = CarnivoreBodyHeight,
                         Fill = CarnivoreBodyColor,
                         Stroke = CarnivoreOutlineColor,
-                        StrokeThickness = 2
+                        StrokeThickness = CarnivoreBodyStrokeThickness
                     };
 
                     // Snout
                     var snout = new Ellipse
                     {
-                        Width = 14,
-                        Height = 10,
+                        Width = CarnivoreSnoutWidth,
+                        Height = CarnivoreSnoutHeight,
                         Fill = CarnivoreFurColor
                     };
 
                     // Left ear (pointy)
                     var leftEar = new Polygon
                     {
-                        Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
+                        Points = CarnivoreEarPoints,
                         Fill = CarnivoreBodyColor,
                         Stroke = CarnivoreOutlineColor,
-                        StrokeThickness = 1
+                        StrokeThickness = CarnivoreEarStrokeThickness
                     };
 
                     // Right ear
                     var rightEar = new Polygon
                     {
-                        Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
+                        Points = CarnivoreEarPoints,
                         Fill = CarnivoreBodyColor,
                         Stroke = CarnivoreOutlineColor,
-                        StrokeThickness = 1
+                        StrokeThickness = CarnivoreEarStrokeThickness
                     };
 
                     // Eyes (menacing)
-                    var leftEye = new Ellipse { Width = 7, Height = 5, Fill = CarnivoreEyeColor }; // Yellow
-                    var rightEye = new Ellipse { Width = 7, Height = 5, Fill = CarnivoreEyeColor };
-                    var leftPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
-                    var rightPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
+                    var leftEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = CarnivoreEyeColor }; // Yellow
+                    var rightEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = CarnivoreEyeColor };
+                    var leftPupil = new Ellipse { Width = CarnivorePupilWidth, Height = CarnivorePupilHeight, Fill = Brushes.Black };
+                    var rightPupil = new Ellipse { Width = CarnivorePupilWidth, Height = CarnivorePupilHeight, Fill = Brushes.Black };
 
                     // Nose
-                    var nose = new Ellipse { Width = 5, Height = 4, Fill = Brushes.Black };
+                    var nose = new Ellipse { Width = CarnivoreNoseWidth, Height = CarnivoreNoseHeight, Fill = Brushes.Black };
 
                     creatureGroup.Children.Add(leftEar);
                     creatureGroup.Children.Add(rightEar);
@@ -446,24 +524,24 @@ namespace Terrarium.Desktop.Rendering
                     creatureGroup.Children.Add(rightPupil);
                     creatureGroup.Children.Add(nose);
 
-                    Canvas.SetLeft(leftEar, 2);
-                    Canvas.SetTop(leftEar, -6);
-                    Canvas.SetLeft(rightEar, 18);
-                    Canvas.SetTop(rightEar, -6);
-                    Canvas.SetLeft(body, 0);
-                    Canvas.SetTop(body, 4);
-                    Canvas.SetLeft(snout, 9);
-                    Canvas.SetTop(snout, 18);
-                    Canvas.SetLeft(leftEye, 6);
-                    Canvas.SetTop(leftEye, 10);
-                    Canvas.SetLeft(rightEye, 19);
-                    Canvas.SetTop(rightEye, 10);
-                    Canvas.SetLeft(leftPupil, 8);
-                    Canvas.SetTop(leftPupil, 10);
-                    Canvas.SetLeft(rightPupil, 21);
-                    Canvas.SetTop(rightPupil, 10);
-                    Canvas.SetLeft(nose, 14);
-                    Canvas.SetTop(nose, 20);
+                    Canvas.SetLeft(leftEar, CarnivoreLeftEarX);
+                    Canvas.SetTop(leftEar, CarnivoreEarY);
+                    Canvas.SetLeft(rightEar, CarnivoreRightEarX);
+                    Canvas.SetTop(rightEar, CarnivoreEarY);
+                    Canvas.SetLeft(body, CarnivoreBodyX);
+                    Canvas.SetTop(body, CarnivoreBodyY);
+                    Canvas.SetLeft(snout, CarnivoreSnoutX);
+                    Canvas.SetTop(snout, CarnivoreSnoutY);
+                    Canvas.SetLeft(leftEye, CarnivoreLeftEyeX);
+                    Canvas.SetTop(leftEye, CarnivoreEyesY);
+                    Canvas.SetLeft(rightEye, CarnivoreRightEyeX);
+                    Canvas.SetTop(rightEye, CarnivoreEyesY);
+                    Canvas.SetLeft(leftPupil, CarnivoreLeftPupilX);
+                    Canvas.SetTop(leftPupil, CarnivorePupilsY);
+                    Canvas.SetLeft(rightPupil, CarnivoreRightPupilX);
+                    Canvas.SetTop(rightPupil, CarnivorePupilsY);
+                    Canvas.SetLeft(nose, CarnivoreNoseX);
+                    Canvas.SetTop(nose, CarnivoreNoseY);
                 }
 
                 _canvas.Children.Add(creatureGroup);

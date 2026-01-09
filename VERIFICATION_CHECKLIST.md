@@ -13,7 +13,7 @@
 - [x] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
     - Evidence: `Terrarium.Desktop/MainWindow.xaml.cs`, `Terrarium.Desktop/MainWindow.Win32.cs`, `Terrarium.Desktop/MainWindow.Initialization.cs`, `Terrarium.Desktop/MainWindow.RenderLoop.cs`, `Terrarium.Desktop/MainWindow.Interaction.cs`
 - [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
-    - Started: plant rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs`
+    - In progress: plant + creature shape rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs` (includes shake frequency + carnivore ear geometry extraction)
 - [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
@@ -28,17 +28,17 @@
 ### 1. Solution Compiles
 ```bash
 cd c:\Users\Hostilian\The-Desktop-Terrarium
-dotnet build
+dotnet build -c Release
 ```
 **Expected**: "Build succeeded" with 0 warnings, 0 errors  
-**Status**: ✅ Verified (via `dotnet test`; warnings still present)
+**Status**: ✅ Verified (`dotnet build -c Release`: Build succeeded, 0 warnings, 0 errors)
 
 ### 2. All Tests Pass
 ```bash
-dotnet test
+dotnet test -c Release
 ```
 **Expected**: "Failed: 0" (test count may change as suite evolves)  
-**Status**: ✅ Verified (`dotnet test`: Passed 111, Failed 0; analyzer warnings still present)
+**Status**: ✅ Verified (`dotnet test -c Release`: Passed 111, Failed 0)
 
 ### 3. Application Runs
 ```bash

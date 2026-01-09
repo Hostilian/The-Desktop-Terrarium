@@ -136,6 +136,7 @@ WorldEntity (base)
 | **Ctrl+L** | Load game |
 | **Ctrl+Alt+S** | Save game (global hotkey) |
 | **Ctrl+Alt+L** | Load game (global hotkey) |
+| **Ctrl+Alt+F1** | Toggle UI panels (global hotkey) |
 
 ### Visual Systems
 - 🏆 **Achievement System**: Unlock achievements as you play

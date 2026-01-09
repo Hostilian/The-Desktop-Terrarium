@@ -132,9 +132,13 @@ private const double MinPlantSpawnInterval = 5.0;
 - ✅ Real-time performance counter integration
 
 **Keyboard Controls**:
-- ✅ F1 - Manual save
-- ✅ F2 - Load saved game
-- ✅ F3 - Toggle status panel visibility
+- ✅ F1 - Toggle UI panels
+- ✅ F2 - Toggle settings panel
+- ✅ Ctrl+S - Save game
+- ✅ Ctrl+L - Load game
+- ✅ Ctrl+Alt+S - Save game (global hotkey)
+- ✅ Ctrl+Alt+L - Load game (global hotkey)
+- ✅ Ctrl+Alt+F1 - Toggle UI panels (global hotkey)
 
 **Files Created**:
 - `Terrarium.Desktop/App.xaml` & `App.xaml.cs`

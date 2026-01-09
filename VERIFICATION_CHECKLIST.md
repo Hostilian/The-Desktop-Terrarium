@@ -136,9 +136,9 @@ class GameManager  // Does EVERYTHING
 ### Save/Load ✅
 **Test manually**:
 1. [ ] Run application
-2. [ ] Press F1 (save)
+2. [ ] Press Ctrl+S (save)
 3. [ ] Close application
-4. [ ] Reopen and press F2 (load)
+4. [ ] Reopen and press Ctrl+L (load)
 5. [ ] Verify entities appear in same positions
 
 **Code location**: `SaveManager.cs`, `MainWindow.xaml.cs` (keyboard handling)

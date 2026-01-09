@@ -51,8 +51,8 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
-              "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
+            "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj": {
+              "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj"
             }
           }
         }

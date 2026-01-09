@@ -12,6 +12,9 @@ namespace Terrarium.Logic.Simulation
         private readonly MovementCalculator _movementCalculator;
         private readonly CollisionDetector _collisionDetector;
         private readonly FoodManager _foodManager;
+        private readonly DayNightCycle _dayNightCycle;
+        private readonly ReproductionManager _reproductionManager;
+        private readonly StatisticsTracker _statisticsTracker;
 
         // Simulation timing constants
         private const double LogicTickRate = 0.2; // Logic updates 5 times per second
@@ -21,12 +24,30 @@ namespace Terrarium.Logic.Simulation
         private const double CarnivoreHungryThreshold = 20.0;
         private const double StormWeatherThreshold = 0.5;
         private const double StormPlantDamageRate = 0.1;
+        private const double StormPlantWaterBonus = 5.0;
+        
+        // Fleeing behavior constants
+        private const double FleeDetectionRange = 100.0;
+        private const double FleeSpeedMultiplier = 1.5;
+
         private double _logicAccumulator;
+        private double _previousWeatherIntensity;
+        private DayPhase _previousDayPhase;
 
         /// <summary>
         /// The simulation world.
         /// </summary>
         public World World => _world;
+
+        /// <summary>
+        /// The day/night cycle manager.
+        /// </summary>
+        public DayNightCycle DayNightCycle => _dayNightCycle;
+
+        /// <summary>
+        /// The statistics tracker.
+        /// </summary>
+        public StatisticsTracker Statistics => _statisticsTracker;
 
         /// <summary>
         /// Weather intensity (0.0 = calm, 1.0 = stormy).
@@ -39,8 +60,13 @@ namespace Terrarium.Logic.Simulation
             _movementCalculator = new MovementCalculator(_world);
             _collisionDetector = new CollisionDetector();
             _foodManager = new FoodManager(_world);
+            _dayNightCycle = new DayNightCycle();
+            _reproductionManager = new ReproductionManager(_world);
+            _statisticsTracker = new StatisticsTracker();
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
+            _previousWeatherIntensity = 0.0;
+            _previousDayPhase = DayPhase.Dawn;
         }
 
         public SimulationEngine(World world)
@@ -49,8 +75,13 @@ namespace Terrarium.Logic.Simulation
             _movementCalculator = new MovementCalculator(_world);
             _collisionDetector = new CollisionDetector();
             _foodManager = new FoodManager(_world);
+            _dayNightCycle = new DayNightCycle();
+            _reproductionManager = new ReproductionManager(_world);
+            _statisticsTracker = new StatisticsTracker();
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
+            _previousWeatherIntensity = 0.0;
+            _previousDayPhase = DayPhase.Dawn;
         }
 
         /// <summary>
@@ -87,8 +118,31 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void UpdateLogic(double deltaTime)
         {
+            // Update day/night cycle
+            var oldPhase = _dayNightCycle.CurrentPhase;
+            _dayNightCycle.Update(deltaTime);
+            if (_dayNightCycle.CurrentPhase != oldPhase)
+            {
+                EventSystem.Instance.OnDayPhaseChanged(_dayNightCycle.CurrentPhase, oldPhase);
+            }
+
+            // Check for weather changes
+            if (Math.Abs(WeatherIntensity - _previousWeatherIntensity) > 0.1)
+            {
+                EventSystem.Instance.OnWeatherChanged(WeatherIntensity, _previousWeatherIntensity);
+                _previousWeatherIntensity = WeatherIntensity;
+            }
+
             // Update managers
             _foodManager.Update(deltaTime);
+            _reproductionManager.Update(deltaTime);
+
+            // Update statistics
+            _statisticsTracker.UpdateTime(deltaTime);
+            _statisticsTracker.UpdateSnapshot(
+                _world.Plants.Count,
+                _world.Herbivores.Count,
+                _world.Carnivores.Count);
 
             // Update all entities
             foreach (var entity in _world.GetAllEntities())
@@ -100,11 +154,36 @@ namespace Terrarium.Logic.Simulation
             UpdateHerbivores(deltaTime);
             UpdateCarnivores(deltaTime);
 
+            // Resolve creature collisions
+            ResolveCreatureCollisions();
+
             // Apply weather effects
             ApplyWeatherEffects(deltaTime);
 
             // Clean up dead entities
             _world.RemoveDeadEntities();
+        }
+
+        /// <summary>
+        /// Resolves collisions between all creatures.
+        /// </summary>
+        private void ResolveCreatureCollisions()
+        {
+            var allCreatures = _world.Herbivores.Cast<Creature>()
+                .Concat(_world.Carnivores)
+                .Where(c => c.IsAlive)
+                .ToList();
+
+            for (int i = 0; i < allCreatures.Count; i++)
+            {
+                for (int j = i + 1; j < allCreatures.Count; j++)
+                {
+                    if (_collisionDetector.AreColliding(allCreatures[i], allCreatures[j]))
+                    {
+                        _collisionDetector.ResolveCreatureCollision(allCreatures[i], allCreatures[j]);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -116,19 +195,41 @@ namespace Terrarium.Logic.Simulation
             {
                 if (!herbivore.IsAlive) continue;
 
-                // Look for nearby plants if hungry
-                if (herbivore.Hunger > HerbivoreHungryThreshold)
+                // Apply day/night speed modifier
+                double speedModifier = _dayNightCycle.SpeedMultiplier;
+
+                // Check for nearby predators and flee if necessary
+                var nearestPredator = FindNearestPredator(herbivore);
+                if (nearestPredator != null)
+                {
+                    // Flee from predator!
+                    FleeFrom(herbivore, nearestPredator);
+                    _movementCalculator.EnforceBoundaries(herbivore);
+                    continue;
+                }
+
+                // Look for nearby plants if hungry (only during daytime)
+                if (herbivore.Hunger > HerbivoreHungryThreshold && _dayNightCycle.IsDay)
                 {
                     var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
                     if (nearestPlant != null)
                     {
                         herbivore.MoveToward(nearestPlant.X, nearestPlant.Y);
-                        herbivore.TryEat(nearestPlant);
+                        if (herbivore.TryEat(nearestPlant))
+                        {
+                            EventSystem.Instance.OnEntityFed(herbivore, nearestPlant, 30.0);
+                            _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
+                        }
                     }
                     else
                     {
                         _movementCalculator.UpdateWandering(herbivore, deltaTime);
                     }
+                }
+                else if (_dayNightCycle.IsNight)
+                {
+                    // Rest at night (slower, random movement)
+                    herbivore.Stop();
                 }
                 else
                 {
@@ -140,6 +241,50 @@ namespace Terrarium.Logic.Simulation
         }
 
         /// <summary>
+        /// Finds the nearest predator to a herbivore within detection range.
+        /// </summary>
+        private Carnivore? FindNearestPredator(Herbivore herbivore)
+        {
+            Carnivore? nearest = null;
+            double minDistance = FleeDetectionRange;
+
+            foreach (var carnivore in _world.Carnivores)
+            {
+                if (!carnivore.IsAlive) continue;
+
+                double distance = herbivore.DistanceTo(carnivore);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearest = carnivore;
+                }
+            }
+
+            return nearest;
+        }
+
+        /// <summary>
+        /// Makes a herbivore flee from a predator.
+        /// </summary>
+        private void FleeFrom(Herbivore herbivore, Carnivore predator)
+        {
+            // Move in the opposite direction from the predator
+            double dx = herbivore.X - predator.X;
+            double dy = herbivore.Y - predator.Y;
+
+            // Normalize and apply flee speed boost
+            double length = Math.Sqrt(dx * dx + dy * dy);
+            if (length > 0)
+            {
+                dx /= length;
+                dy /= length;
+            }
+
+            // Set direction with enhanced speed
+            herbivore.SetDirection(dx * FleeSpeedMultiplier, dy * FleeSpeedMultiplier);
+        }
+
+        /// <summary>
         /// Updates carnivore AI behavior.
         /// </summary>
         private void UpdateCarnivores(double deltaTime)
@@ -148,19 +293,39 @@ namespace Terrarium.Logic.Simulation
             {
                 if (!carnivore.IsAlive) continue;
 
-                // Hunt herbivores if hungry
-                if (carnivore.Hunger > CarnivoreHungryThreshold)
+                // Apply day/night behavior - carnivores are more active at dawn/dusk
+                bool isHuntingTime = _dayNightCycle.CurrentPhase == DayPhase.Dawn ||
+                                    _dayNightCycle.CurrentPhase == DayPhase.Dusk ||
+                                    _dayNightCycle.CurrentPhase == DayPhase.Day;
+
+                // Hunt herbivores if hungry and it's hunting time
+                if (carnivore.Hunger > CarnivoreHungryThreshold && isHuntingTime)
                 {
                     var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
                     if (nearestPrey != null)
                     {
                         carnivore.Hunt(nearestPrey);
-                        carnivore.TryEat(nearestPrey);
+                        if (carnivore.TryEat(nearestPrey))
+                        {
+                            EventSystem.Instance.OnEntityFed(carnivore, nearestPrey, 50.0);
+                            _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
+                            
+                            if (!nearestPrey.IsAlive)
+                            {
+                                EventSystem.Instance.OnEntityDied(nearestPrey, DeathCause.Predation);
+                                _statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
+                            }
+                        }
                     }
                     else
                     {
                         _movementCalculator.UpdateWandering(carnivore, deltaTime);
                     }
+                }
+                else if (_dayNightCycle.IsNight)
+                {
+                    // Rest at night
+                    carnivore.Stop();
                 }
                 else
                 {

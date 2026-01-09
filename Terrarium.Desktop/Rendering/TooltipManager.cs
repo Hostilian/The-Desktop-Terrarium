@@ -168,11 +168,12 @@ namespace Terrarium.Desktop.Rendering
                 return;
 
             // Title
-            AddTooltipHeader("🌿 Plant", Color.FromRgb(76, 175, 80));
+            AddTooltipHeader($"🌿 Plant Lv.{plant.Level}", Color.FromRgb(76, 175, 80));
 
             // Stats
             AddStatBar("Health", plant.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
             AddStatBar("Water", plant.WaterLevel, 100, Color.FromRgb(52, 152, 219), Color.FromRgb(52, 152, 219));
+            AddStatBar("XP", plant.Experience, 100, Color.FromRgb(155, 89, 182), Color.FromRgb(155, 89, 182));
             AddStatText($"Size: {plant.Size:F1}");
             AddStatText($"Age: {plant.Age:F0}s");
 
@@ -189,12 +190,13 @@ namespace Terrarium.Desktop.Rendering
                 return;
 
             // Title
-            AddTooltipHeader($"🐰 {herbivore.Type}", Color.FromRgb(255, 183, 77));
+            AddTooltipHeader($"🐰 {herbivore.Type} Lv.{herbivore.Level}", Color.FromRgb(255, 183, 77));
 
             // Stats
             AddStatBar("Health", herbivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
             AddStatBar("Hunger", 100 - herbivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
-            AddStatText($"Speed: {herbivore.Speed:F1}");
+            AddStatBar("XP", herbivore.Experience, 100, Color.FromRgb(155, 89, 182), Color.FromRgb(155, 89, 182));
+            AddStatText($"Speed: {herbivore.GetEffectiveSpeed():F1}");
             AddStatText($"Age: {herbivore.Age:F0}s");
 
             // Status
@@ -208,12 +210,13 @@ namespace Terrarium.Desktop.Rendering
                 return;
 
             // Title
-            AddTooltipHeader($"🐺 {carnivore.Type}", Color.FromRgb(120, 120, 130));
+            AddTooltipHeader($"🐺 {carnivore.Type} Lv.{carnivore.Level}", Color.FromRgb(120, 120, 130));
 
             // Stats
             AddStatBar("Health", carnivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
             AddStatBar("Hunger", 100 - carnivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
-            AddStatText($"Speed: {carnivore.Speed:F1}");
+            AddStatBar("XP", carnivore.Experience, 100, Color.FromRgb(155, 89, 182), Color.FromRgb(155, 89, 182));
+            AddStatText($"Speed: {carnivore.GetEffectiveSpeed():F1}");
             AddStatText($"Age: {carnivore.Age:F0}s");
 
             // Status  

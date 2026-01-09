@@ -10,6 +10,8 @@ namespace Terrarium.Logic.Entities
         private const double AttackRange = 20.0;
         private const double AttackDamage = 80.0;
         private const double DefaultPreyDetectionRange = 300.0;
+        private const double AttackDamageLevelBonus = 5.0; // Attack damage increase per level
+        private const double DetectionRangeLevelBonus = 15.0; // Detection range increase per level
 
         /// <summary>
         /// Type name for the carnivore (e.g., "Wolf", "Fox").
@@ -33,8 +35,9 @@ namespace Terrarium.Logic.Entities
             double distance = DistanceTo(prey);
             if (distance <= AttackRange)
             {
-                // Attack the prey
-                prey.TakeDamage(AttackDamage);
+                // Attack the prey with level-based damage
+                double effectiveAttackDamage = AttackDamage + ((Level - 1) * AttackDamageLevelBonus);
+                prey.TakeDamage(effectiveAttackDamage);
 
                 // If prey is dead, consume it
                 if (!prey.IsAlive)
@@ -53,7 +56,8 @@ namespace Terrarium.Logic.Entities
         public Herbivore? FindNearestPrey(IEnumerable<Herbivore> herbivores, double detectionRange = DefaultPreyDetectionRange)
         {
             Herbivore? nearest = null;
-            double minDistance = detectionRange;
+            double effectiveDetectionRange = detectionRange + ((Level - 1) * DetectionRangeLevelBonus);
+            double minDistance = effectiveDetectionRange;
 
             foreach (var herbivore in herbivores)
             {

@@ -22,6 +22,8 @@ namespace Terrarium.Logic.Entities
         private const double StarvationDamageRate = 0.5;
         private const double FeedHealMultiplier = 0.5;
         private const double ClickRadius = 25.0;
+        protected const double SpeedLevelBonus = 2.0; // Speed increase per level
+        protected const double EatingExperienceMultiplier = 0.5; // XP = nutrition * multiplier
 
         /// <summary>
         /// Movement speed of the creature.
@@ -30,6 +32,14 @@ namespace Terrarium.Logic.Entities
         {
             get => _speed;
             protected set => _speed = Math.Max(0, value);
+        }
+
+        /// <summary>
+        /// Gets the effective speed based on base speed and level.
+        /// </summary>
+        public double GetEffectiveSpeed()
+        {
+            return Speed + ((Level - 1) * SpeedLevelBonus);
         }
 
         /// <summary>
@@ -99,6 +109,8 @@ namespace Terrarium.Logic.Entities
             if (nutritionValue > 0)
             {
                 Heal(nutritionValue * FeedHealMultiplier);
+                // Gain experience from eating
+                GainExperience(nutritionValue * EatingExperienceMultiplier);
             }
         }
 
@@ -111,8 +123,9 @@ namespace Terrarium.Logic.Entities
             double magnitude = Math.Sqrt(directionX * directionX + directionY * directionY);
             if (magnitude > 0)
             {
-                VelocityX = (directionX / magnitude) * Speed;
-                VelocityY = (directionY / magnitude) * Speed;
+                double effectiveSpeed = GetEffectiveSpeed();
+                VelocityX = (directionX / magnitude) * effectiveSpeed;
+                VelocityY = (directionY / magnitude) * effectiveSpeed;
             }
         }
 

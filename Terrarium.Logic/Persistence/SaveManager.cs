@@ -92,7 +92,9 @@ namespace Terrarium.Logic.Persistence
                 X = entity.X,
                 Y = entity.Y,
                 Health = entity.Health,
-                Age = entity.Age
+                Age = entity.Age,
+                Level = entity.Level,
+                Experience = entity.Experience
             };
 
             if (entity is Plant plant)
@@ -127,6 +129,12 @@ namespace Terrarium.Logic.Persistence
             entity.X = data.X;
             entity.Y = data.Y;
             entity.RestoreVitalStats(data.Health, data.Age);
+            
+            // Restore level and experience
+            if (data.Level.HasValue && data.Experience.HasValue)
+            {
+                entity.RestoreLevelStats(data.Level.Value, data.Experience.Value);
+            }
 
             if (entity is Plant plant && data.WaterLevel.HasValue)
             {
@@ -173,6 +181,8 @@ namespace Terrarium.Logic.Persistence
         public double Y { get; set; }
         public double Health { get; set; }
         public double Age { get; set; }
+        public int? Level { get; set; }
+        public double? Experience { get; set; }
         public double? Hunger { get; set; }
         public double VelocityX { get; set; }
         public double VelocityY { get; set; }

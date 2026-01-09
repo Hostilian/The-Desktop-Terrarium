@@ -21,6 +21,10 @@ namespace Terrarium.Logic.Entities
         private const double WaterSufficientThreshold = 20.0;
         private const double GrowthHealRate = 0.1;
         private const double ClickRadiusPadding = 10.0;
+        private const double GrowthExperienceRate = 0.5; // XP per unit of growth
+        private const double WaterExperienceAmount = 5.0; // XP gained when watered
+        private const double GrowthRateLevelBonus = 0.1; // Growth rate increase per level
+        private const double MaxSizeLevelBonus = 2.0; // Max size increase per level
 
         private double _waterLevel;
 
@@ -30,7 +34,15 @@ namespace Terrarium.Logic.Entities
         public double Size
         {
             get => _size;
-            private set => _size = Math.Clamp(value, MinSize, MaxSize);
+            private set => _size = Math.Clamp(value, MinSize, GetMaxSize());
+        }
+
+        /// <summary>
+        /// Gets the maximum size for the plant based on its level.
+        /// </summary>
+        private double GetMaxSize()
+        {
+            return MaxSize + ((Level - 1) * MaxSizeLevelBonus);
         }
 
         /// <summary>
@@ -85,11 +97,18 @@ namespace Terrarium.Logic.Entities
         /// </summary>
         public void Grow(double deltaTime)
         {
-            if (Size < MaxSize && IsAlive)
+            double maxSize = GetMaxSize();
+            if (Size < maxSize && IsAlive)
             {
-                Size += GrowthRate * deltaTime;
+                double oldSize = Size;
+                double effectiveGrowthRate = GrowthRate + ((Level - 1) * GrowthRateLevelBonus);
+                Size += effectiveGrowthRate * deltaTime;
                 // Growing consumes health
                 Heal(GrowthHealRate * deltaTime);
+                
+                // Gain experience from growing
+                double growthAmount = Size - oldSize;
+                GainExperience(growthAmount * GrowthExperienceRate);
             }
         }
 
@@ -99,6 +118,8 @@ namespace Terrarium.Logic.Entities
         public void Water(double amount)
         {
             WaterLevel += amount;
+            // Gain experience from being watered
+            GainExperience(WaterExperienceAmount);
         }
 
         /// <summary>

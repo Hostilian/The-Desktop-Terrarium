@@ -47,6 +47,10 @@ jobs:
     - name: 🧪 Run Tests
       run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults
+
     - name: 📊 Upload Test Results
       uses: actions/upload-artifact@v4
       if: always()
@@ -101,6 +105,44 @@ jobs:
     - name: 🛡️ Scan NuGet vulnerabilities
       run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable --include-transitive
 
+  # Logic/Test Integrity on Linux (cross-platform)
+  logic-tests-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 🧪 Build & Test (Logic layer)
+      run: |
+        dotnet restore Terrarium.Tests/Terrarium.Tests.csproj
+        dotnet test Terrarium.Tests/Terrarium.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python3 scripts/summarize_coverage.py TestResults
+
+    - name: 🧾 Upload Code Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage-linux
+        path: ./TestResults/**/coverage.cobertura.xml
+
   # Docs Website Validation
   docs-validation:
     runs-on: ubuntu-latest
@@ -127,11 +169,20 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: 📦 Restore Dependencies
       run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: 🏗️ Build Release
-      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
 
     - name: 📤 Publish Application
       run: |

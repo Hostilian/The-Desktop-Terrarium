@@ -172,7 +172,7 @@ jobs:
 
     - name: 🧮 Coverage Summary
       if: always()
-      run: python3 scripts/summarize_coverage.py TestResults
+      run: python scripts/summarize_coverage.py TestResults
 
     - name: 🧾 Upload Code Coverage
       uses: actions/upload-artifact@v4
@@ -209,7 +209,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
 
     - name: 🐍 Validate docs/ links
-      run: python3 scripts/validate_docs.py
+      run: python scripts/validate_docs.py
 
   # Publish Job (only on tags)
   publish:

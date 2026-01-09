@@ -70,9 +70,10 @@ namespace Terrarium.Tests.Simulation
             var cycle = new DayNightCycle();
 
             // Act - Advance past full cycle (90 seconds total)
-            cycle.Update(95.0);
+            // 90 seconds = full cycle, 92 seconds puts us at 2 seconds into new Dawn
+            cycle.Update(92.0);
 
-            // Assert - Should be back to dawn
+            // Assert - Should be back to dawn (CurrentTime = 2.0 which is < 5.0)
             Assert.AreEqual(DayPhase.Dawn, cycle.CurrentPhase);
         }
 

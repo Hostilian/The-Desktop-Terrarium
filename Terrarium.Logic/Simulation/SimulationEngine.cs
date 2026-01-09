@@ -32,7 +32,6 @@ namespace Terrarium.Logic.Simulation
 
         private double _logicAccumulator;
         private double _previousWeatherIntensity;
-        private DayPhase _previousDayPhase;
 
         /// <summary>
         /// The simulation world.
@@ -66,7 +65,6 @@ namespace Terrarium.Logic.Simulation
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
-            _previousDayPhase = DayPhase.Dawn;
         }
 
         public SimulationEngine(World world)
@@ -81,7 +79,6 @@ namespace Terrarium.Logic.Simulation
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
-            _previousDayPhase = DayPhase.Dawn;
         }
 
         /// <summary>

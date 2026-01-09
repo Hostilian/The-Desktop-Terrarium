@@ -9,6 +9,7 @@ namespace Terrarium.Logic.Entities
         private const double PlantNutritionValue = 30.0;
         private const double EatingRange = 15.0;
         private const double DefaultPlantDetectionRange = 200.0;
+        private const double DetectionRangeLevelBonus = 10.0; // Detection range increase per level
 
         /// <summary>
         /// Type name for the herbivore (e.g., "Sheep", "Rabbit").
@@ -51,7 +52,8 @@ namespace Terrarium.Logic.Entities
         public Plant? FindNearestPlant(IEnumerable<Plant> plants, double detectionRange = DefaultPlantDetectionRange)
         {
             Plant? nearest = null;
-            double minDistance = detectionRange;
+            double effectiveDetectionRange = detectionRange + ((Level - 1) * DetectionRangeLevelBonus);
+            double minDistance = effectiveDetectionRange;
 
             foreach (var plant in plants)
             {

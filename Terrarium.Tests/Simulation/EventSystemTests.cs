@@ -106,7 +106,7 @@ namespace Terrarium.Tests.Simulation
             };
 
             // Act
-            EventSystem.Instance.OnDayPhaseChanged(DayPhase.Night, DayPhase.Dusk);
+            EventSystem.Instance.RaiseDayPhaseChanged(DayPhase.Night, DayPhase.Dusk);
 
             // Assert
             Assert.AreEqual(DayPhase.Night, capturedNewPhase);

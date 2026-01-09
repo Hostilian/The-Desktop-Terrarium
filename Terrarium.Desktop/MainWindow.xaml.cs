@@ -23,6 +23,11 @@ namespace Terrarium.Desktop
         private Renderer? _renderer;
         private WeatherEffects? _weatherEffects;
         private SoundManager? _soundManager;
+        private ParticleSystem? _particleSystem;
+        private NotificationManager? _notificationManager;
+        private TooltipManager? _tooltipManager;
+        private SettingsPanel? _settingsPanel;
+        private MiniMap? _miniMap;
         private DispatcherTimer? _renderTimer;
         private DispatcherTimer? _systemMonitorTimer;
         private Stopwatch _frameStopwatch;
@@ -143,9 +148,7 @@ namespace Terrarium.Desktop
                         return IntPtr.Zero;
 
                     case HotkeyToggleStatus:
-                        StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible
-                            ? Visibility.Collapsed
-                            : Visibility.Visible;
+                        ToggleUIVisibility();
                         handled = true;
                         return IntPtr.Zero;
                 }
@@ -239,6 +242,77 @@ namespace Terrarium.Desktop
             _renderer = new Renderer(RenderCanvas);
             _weatherEffects = new WeatherEffects(RenderCanvas);
             _soundManager = new SoundManager();
+            _particleSystem = new ParticleSystem(RenderCanvas);
+            _notificationManager = new NotificationManager(RenderCanvas);
+            _tooltipManager = new TooltipManager(RenderCanvas);
+            _settingsPanel = new SettingsPanel(RenderCanvas);
+            _miniMap = new MiniMap(RenderCanvas);
+
+            // Connect settings panel events
+            _settingsPanel.SimulationSpeedChanged += speed =>
+            {
+                if (_simulationEngine != null)
+                    _simulationEngine.SimulationSpeed = speed;
+            };
+
+            _settingsPanel.ParticlesToggled += enabled =>
+            {
+                if (_particleSystem != null)
+                    _particleSystem.IsEnabled = enabled;
+            };
+
+            _settingsPanel.NotificationsToggled += enabled =>
+            {
+                if (_notificationManager != null)
+                    _notificationManager.IsEnabled = enabled;
+            };
+
+            _settingsPanel.WeatherEffectsToggled += enabled =>
+            {
+                if (_weatherEffects != null)
+                    _weatherEffects.IsEnabled = enabled;
+            };
+
+            _settingsPanel.SoundToggled += enabled =>
+            {
+                if (_soundManager != null)
+                    _soundManager.IsEnabled = enabled;
+            };
+
+            // Subscribe to simulation events for particles and notifications
+            if (_simulationEngine != null)
+            {
+                _simulationEngine.EventSystem.OnCreatureBorn += (creature, parent1, parent2) =>
+                {
+                    _particleSystem?.SpawnBirthEffect(creature.X, creature.Y);
+                    string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
+                                         creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
+                    _notificationManager?.NotifyBirth(creatureType);
+                };
+
+                _simulationEngine.EventSystem.OnCreatureDied += (creature, cause) =>
+                {
+                    _particleSystem?.SpawnDeathEffect(creature.X, creature.Y);
+                    string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
+                                         creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
+                    _notificationManager?.NotifyDeath(creatureType, cause);
+                };
+
+                _simulationEngine.EventSystem.OnPlantEaten += (plant, creature) =>
+                {
+                    _particleSystem?.SpawnEatEffect(plant.X, plant.Y);
+                };
+
+                _simulationEngine.EventSystem.OnDayPhaseChanged += phase =>
+                {
+                    _notificationManager?.NotifyDayPhaseChange(phase);
+                };
+
+                _simulationEngine.EventSystem.OnMilestoneReached += (name, value) =>
+                {
+                    _notificationManager?.NotifyMilestone(name, value);
+                };
+            }
 
             // Setup render timer (60 FPS)
             _renderTimer = new DispatcherTimer
@@ -314,8 +388,20 @@ namespace Terrarium.Desktop
             // Update weather effects
             _weatherEffects?.Update(deltaTime, _simulationEngine.WeatherIntensity);
 
+            // Update particle system
+            _particleSystem?.Update(deltaTime);
+
+            // Update notifications
+            _notificationManager?.Update(deltaTime);
+
+            // Update tooltips (live data refresh)
+            _tooltipManager?.Update();
+
             // Update sound manager
             _soundManager?.Update(deltaTime, _simulationEngine.DayNightCycle.IsDay, _simulationEngine.WeatherIntensity);
+
+            // Update mini-map
+            _miniMap?.Update(_simulationEngine.World, RenderCanvas.ActualWidth, RenderCanvas.ActualHeight);
 
             // Render
             _renderer.Clear();
@@ -371,25 +457,45 @@ namespace Terrarium.Desktop
         {
             if (_simulationEngine == null) return;
 
-            FpsText.Text = $"FPS: {_currentFps:F1}";
+            // FPS Display
+            FpsText.Text = $"{_currentFps:F0}";
 
-            int totalEntities = _simulationEngine.World.Plants.Count +
-                              _simulationEngine.World.Herbivores.Count +
-                              _simulationEngine.World.Carnivores.Count;
+            // Entity counts with new separate fields
+            PlantCountText.Text = _simulationEngine.World.Plants.Count.ToString();
+            HerbivoreCountText.Text = _simulationEngine.World.Herbivores.Count.ToString();
+            CarnivoreCountText.Text = _simulationEngine.World.Carnivores.Count.ToString();
 
-            EntityCountText.Text = $"Entities: {totalEntities} " +
-                                 $"(P:{_simulationEngine.World.Plants.Count} " +
-                                 $"H:{_simulationEngine.World.Herbivores.Count} " +
-                                 $"C:{_simulationEngine.World.Carnivores.Count})";
+            // Health bar with visual
+            double healthPercent = _simulationEngine.GetEcosystemHealth();
+            EcosystemHealthText.Text = $"{healthPercent:P0}";
+            HealthBar.Width = Math.Max(0, Math.Min(100, healthPercent * 100));
+            
+            // Color health bar based on value
+            if (healthPercent >= 0.7)
+                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(46, 204, 113)); // Green
+            else if (healthPercent >= 0.4)
+                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(241, 196, 15)); // Yellow
+            else
+                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(231, 76, 60)); // Red
 
-            EcosystemHealthText.Text = $"Ecosystem: {_simulationEngine.GetEcosystemHealth():P0} " +
-                                      $"({(_simulationEngine.IsEcosystemBalanced() ? "Balanced" : "Unbalanced")})";
+            // Weather display with icons
+            bool isStormy = _simulationEngine.WeatherIntensity > StormyWeatherThreshold;
+            WeatherIcon.Text = isStormy ? "⛈️" : "☀️";
+            WeatherText.Text = isStormy ? "Stormy" : "Calm";
 
-            string weatherStatus = _simulationEngine.WeatherIntensity > StormyWeatherThreshold ? "Stormy" : "Calm";
+            // Time of day display
             string timeOfDay = _simulationEngine.GetTimeOfDayString();
-            WeatherText.Text = $"Weather: {weatherStatus} | Time: {timeOfDay}";
+            string timeIcon = GetTimeIcon(timeOfDay);
+            TimeOfDayText.Text = $"{timeIcon} {timeOfDay}";
 
-            // Calculate background opacity based on both weather and time of day
+            // Update day/night orb
+            UpdateDayNightOrb(timeOfDay);
+
+            // Statistics panel
+            var stats = _simulationEngine.Statistics;
+            StatsText.Text = $"Births: {stats.TotalBirths} | Deaths: {stats.TotalDeaths} | Peak Pop: {stats.PeakPopulation}";
+
+            // Background opacity based on time and weather
             double weatherOpacity = _simulationEngine.WeatherIntensity * (StormMaxBackgroundOpacity - CalmBackgroundOpacity);
             double nightOpacity = (1.0 - _simulationEngine.GetLightLevel()) * NightBackgroundOpacity;
             double totalOpacity = Math.Min(weatherOpacity + nightOpacity, StormMaxBackgroundOpacity);
@@ -398,6 +504,55 @@ namespace Terrarium.Desktop
                 CalmBackgroundOpacity + totalOpacity,
                 CalmBackgroundOpacity,
                 StormMaxBackgroundOpacity);
+        }
+
+        /// <summary>
+        /// Gets the appropriate icon for the time of day.
+        /// </summary>
+        private static string GetTimeIcon(string timeOfDay)
+        {
+            return timeOfDay.ToLower() switch
+            {
+                "dawn" => "🌅",
+                "day" => "☀️",
+                "dusk" => "🌇",
+                "night" => "🌙",
+                _ => "🌍"
+            };
+        }
+
+        /// <summary>
+        /// Updates the day/night indicator orb.
+        /// </summary>
+        private void UpdateDayNightOrb(string timeOfDay)
+        {
+            switch (timeOfDay.ToLower())
+            {
+                case "dawn":
+                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 182, 193); // Light pink
+                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(255, 140, 105); // Coral
+                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 140, 105);
+                    DayNightIcon.Text = "🌅";
+                    break;
+                case "day":
+                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 215, 0); // Gold
+                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(255, 165, 0); // Orange
+                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 215, 0);
+                    DayNightIcon.Text = "☀️";
+                    break;
+                case "dusk":
+                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 99, 71); // Tomato
+                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(148, 0, 211); // Purple
+                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 99, 71);
+                    DayNightIcon.Text = "🌇";
+                    break;
+                case "night":
+                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(70, 130, 180); // Steel blue
+                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(25, 25, 112); // Midnight blue
+                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(135, 206, 250);
+                    DayNightIcon.Text = "🌙";
+                    break;
+            }
         }
 
         /// <summary>
@@ -417,7 +572,7 @@ namespace Terrarium.Desktop
         }
 
         /// <summary>
-        /// Handles mouse move events (for hover effects).
+        /// Handles mouse move events (for hover effects and tooltips).
         /// </summary>
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
@@ -425,13 +580,41 @@ namespace Terrarium.Desktop
 
             var position = e.GetPosition(RenderCanvas);
 
-            var hoveredPlant = _simulationEngine.World.Plants
+            // Check for entity under cursor for tooltip
+            Terrarium.Logic.Entities.WorldEntity? hoveredEntity = null;
+
+            // Check plants first
+            hoveredEntity = _simulationEngine.World.Plants
                 .FirstOrDefault(p => p.IsAlive && p.ContainsPoint(position.X, position.Y));
 
-            if (hoveredPlant != null)
+            // Check herbivores
+            if (hoveredEntity == null)
             {
-                hoveredPlant.Shake();
-                _renderer?.TriggerPlantShake(hoveredPlant);
+                hoveredEntity = _simulationEngine.World.Herbivores
+                    .FirstOrDefault(h => h.IsAlive && h.ContainsPoint(position.X, position.Y));
+            }
+
+            // Check carnivores
+            if (hoveredEntity == null)
+            {
+                hoveredEntity = _simulationEngine.World.Carnivores
+                    .FirstOrDefault(c => c.IsAlive && c.ContainsPoint(position.X, position.Y));
+            }
+
+            if (hoveredEntity != null)
+            {
+                _tooltipManager?.ShowTooltip(hoveredEntity, position.X, position.Y);
+
+                // Plant shake effect
+                if (hoveredEntity is Terrarium.Logic.Entities.Plant plant)
+                {
+                    plant.Shake();
+                    _renderer?.TriggerPlantShake(plant);
+                }
+            }
+            else
+            {
+                _tooltipManager?.HideTooltip();
             }
         }
 
@@ -459,6 +642,9 @@ namespace Terrarium.Desktop
                 case Key.P:
                     // P: Spawn plant
                     _simulationEngine.World.SpawnRandomPlant();
+                    _particleSystem?.SpawnFeedEffect(
+                        _simulationEngine.World.Plants.LastOrDefault()?.X ?? 400,
+                        _simulationEngine.World.Plants.LastOrDefault()?.Y ?? 100);
                     e.Handled = true;
                     break;
 
@@ -476,18 +662,57 @@ namespace Terrarium.Desktop
 
                 case Key.F1:
                     // F1: Toggle status panel
-                    StatusPanel.Visibility = StatusPanel.Visibility == Visibility.Visible
-                        ? Visibility.Collapsed
-                        : Visibility.Visible;
+                    ToggleUIVisibility();
+                    e.Handled = true;
+                    break;
+
+                case Key.F2:
+                    // F2: Toggle settings panel
+                    _settingsPanel?.Toggle();
+                    e.Handled = true;
+                    break;
+
+                case Key.M:
+                    // M: Toggle mini-map
+                    _miniMap?.Toggle();
+                    e.Handled = true;
+                    break;
+
+                case Key.W:
+                    // W: Water plants (spawn rain particles)
+                    WaterAllPlants();
                     e.Handled = true;
                     break;
 
                 case Key.Escape:
-                    // ESC: Close application
-                    Close();
+                    // ESC: Close settings or close application
+                    if (_settingsPanel?.IsVisible == true)
+                    {
+                        _settingsPanel.Hide();
+                    }
+                    else
+                    {
+                        Close();
+                    }
                     e.Handled = true;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Waters all plants and shows particle effects.
+        /// </summary>
+        private void WaterAllPlants()
+        {
+            if (_simulationEngine == null) return;
+
+            foreach (var plant in _simulationEngine.World.Plants.Where(p => p.IsAlive).Take(10))
+            {
+                plant.Water(20);
+                _particleSystem?.SpawnWaterEffect(plant.X, plant.Y);
+            }
+
+            _notificationManager?.Notify("💧 Watered plants!", NotificationType.Info);
         }
 
         /// <summary>
@@ -531,6 +756,27 @@ namespace Terrarium.Desktop
         }
 
         /// <summary>
+        /// Toggles the visibility of all UI panels.
+        /// </summary>
+        private void ToggleUIVisibility()
+        {
+            var newVisibility = StatusPanel.Visibility == Visibility.Visible
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            StatusPanel.Visibility = newVisibility;
+            StatsPanel.Visibility = newVisibility;
+            HotkeyPanel.Visibility = newVisibility;
+            DayNightOrb.Visibility = newVisibility;
+
+            // Toggle minimap visibility
+            if (_miniMap != null)
+            {
+                _miniMap.IsVisible = newVisibility == Visibility.Visible;
+            }
+        }
+
+        /// <summary>
         /// Cleanup when window closes.
         /// </summary>
         protected override void OnClosed(EventArgs e)
@@ -548,6 +794,8 @@ namespace Terrarium.Desktop
             _systemMonitor?.Dispose();
             _soundManager?.Dispose();
             _weatherEffects?.Clear();
+            _particleSystem?.Clear();
+            _notificationManager?.ClearAll();
             base.OnClosed(e);
         }
     }

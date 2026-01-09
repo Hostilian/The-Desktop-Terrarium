@@ -15,6 +15,7 @@ namespace Terrarium.Logic.Simulation
         private readonly DayNightCycle _dayNightCycle;
         private readonly ReproductionManager _reproductionManager;
         private readonly StatisticsTracker _statisticsTracker;
+        private readonly EventSystem _eventSystem;
 
         // Simulation timing constants
         private const double LogicTickRate = 0.2; // Logic updates 5 times per second
@@ -32,6 +33,7 @@ namespace Terrarium.Logic.Simulation
 
         private double _logicAccumulator;
         private double _previousWeatherIntensity;
+        private string _previousDayPhase = "";
 
         /// <summary>
         /// The simulation world.
@@ -49,9 +51,19 @@ namespace Terrarium.Logic.Simulation
         public StatisticsTracker Statistics => _statisticsTracker;
 
         /// <summary>
+        /// The event system for notifications.
+        /// </summary>
+        public EventSystem EventSystem => _eventSystem;
+
+        /// <summary>
         /// Weather intensity (0.0 = calm, 1.0 = stormy).
         /// </summary>
         public double WeatherIntensity { get; set; }
+
+        /// <summary>
+        /// Simulation speed multiplier (default 1.0).
+        /// </summary>
+        public double SimulationSpeed { get; set; } = 1.0;
 
         public SimulationEngine(double worldWidth, double worldHeight)
         {
@@ -62,6 +74,7 @@ namespace Terrarium.Logic.Simulation
             _dayNightCycle = new DayNightCycle();
             _reproductionManager = new ReproductionManager(_world);
             _statisticsTracker = new StatisticsTracker();
+            _eventSystem = new EventSystem();
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
@@ -76,6 +89,7 @@ namespace Terrarium.Logic.Simulation
             _dayNightCycle = new DayNightCycle();
             _reproductionManager = new ReproductionManager(_world);
             _statisticsTracker = new StatisticsTracker();
+            _eventSystem = new EventSystem();
             _logicAccumulator = 0;
             WeatherIntensity = 0.0;
             _previousWeatherIntensity = 0.0;
@@ -99,8 +113,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void Update(double deltaTime)
         {
+            // Apply simulation speed multiplier
+            double scaledDelta = deltaTime * SimulationSpeed;
+
             // Accumulate time for fixed logic updates
-            _logicAccumulator += deltaTime;
+            _logicAccumulator += scaledDelta;
 
             // Run logic updates at a fixed rate
             while (_logicAccumulator >= LogicTickRate)
@@ -118,15 +135,18 @@ namespace Terrarium.Logic.Simulation
             // Update day/night cycle
             var oldPhase = _dayNightCycle.CurrentPhase;
             _dayNightCycle.Update(deltaTime);
-            if (_dayNightCycle.CurrentPhase != oldPhase)
+
+            // Check for day phase change
+            string currentPhase = GetTimeOfDayString();
+            if (currentPhase != _previousDayPhase)
             {
-                EventSystem.Instance.OnDayPhaseChanged(_dayNightCycle.CurrentPhase, oldPhase);
+                _eventSystem.RaiseDayPhaseChanged(currentPhase);
+                _previousDayPhase = currentPhase;
             }
 
             // Check for weather changes
             if (Math.Abs(WeatherIntensity - _previousWeatherIntensity) > 0.1)
             {
-                EventSystem.Instance.OnWeatherChanged(WeatherIntensity, _previousWeatherIntensity);
                 _previousWeatherIntensity = WeatherIntensity;
             }
 

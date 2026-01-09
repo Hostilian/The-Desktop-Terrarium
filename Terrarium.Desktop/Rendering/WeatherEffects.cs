@@ -35,6 +35,11 @@ namespace Terrarium.Desktop.Rendering
         private double _nextLightningTime;
         private Rectangle? _lightningFlash;
 
+        /// <summary>
+        /// Gets or sets whether weather effects are enabled.
+        /// </summary>
+        public bool IsEnabled { get; set; } = true;
+
         public WeatherEffects(Canvas canvas)
         {
             _canvas = canvas;
@@ -51,6 +56,12 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime, double weatherIntensity)
         {
+            if (!IsEnabled)
+            {
+                if (_isRaining) StopRain();
+                return;
+            }
+
             _currentIntensity = weatherIntensity;
             bool shouldRain = weatherIntensity > 0.5;
 

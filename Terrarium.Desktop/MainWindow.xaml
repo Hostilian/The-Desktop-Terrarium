@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Desktop Terrarium"
-        Height="200"
+        Height="220"
         Width="1920"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -17,9 +17,76 @@
         KeyDown="Window_KeyDown"
         Loaded="Window_Loaded">
 
+    <Window.Resources>
+        <!-- Modern Color Palette -->
+        <Color x:Key="PrimaryGreen">#2ECC71</Color>
+        <Color x:Key="DarkGreen">#1A5A3C</Color>
+        <Color x:Key="AccentBlue">#3498DB</Color>
+        <Color x:Key="AccentOrange">#E67E22</Color>
+        <Color x:Key="NightBlue">#1A1A2E</Color>
+        <Color x:Key="DawnPink">#FF6B6B</Color>
+        
+        <!-- Gradient Brushes -->
+        <LinearGradientBrush x:Key="GrassGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#2D5016" Offset="0"/>
+            <GradientStop Color="#1A3009" Offset="0.5"/>
+            <GradientStop Color="#0D1804" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="StatusPanelGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#DD1E1E2E" Offset="0"/>
+            <GradientStop Color="#CC252535" Offset="0.5"/>
+            <GradientStop Color="#DD1E1E2E" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <!-- Drop Shadow Effect -->
+        <DropShadowEffect x:Key="PanelShadow" Color="Black" Direction="315" ShadowDepth="4" BlurRadius="10" Opacity="0.5"/>
+        <DropShadowEffect x:Key="GlowEffect" Color="#2ECC71" Direction="0" ShadowDepth="0" BlurRadius="15" Opacity="0.8"/>
+        
+        <!-- Text Styles -->
+        <Style x:Key="ModernText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI, Arial"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        
+        <Style x:Key="StatLabel" TargetType="TextBlock" BasedOn="{StaticResource ModernText}">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        
+        <Style x:Key="StatValue" TargetType="TextBlock" BasedOn="{StaticResource ModernText}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <!-- Semi-transparent background for development (can be removed for full transparency) -->
-        <Rectangle x:Name="BackgroundRect" Fill="#20000000" />
+        <!-- Animated Background Layer -->
+        <Rectangle x:Name="BackgroundRect" RadiusX="0" RadiusY="0">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop x:Name="BackgroundTopColor" Color="#10000000" Offset="0"/>
+                    <GradientStop x:Name="BackgroundMidColor" Color="#20000000" Offset="0.3"/>
+                    <GradientStop x:Name="BackgroundBottomColor" Color="#40102010" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        
+        <!-- Ground Layer with Gradient -->
+        <Rectangle x:Name="GroundRect" VerticalAlignment="Bottom" Height="40">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#40228B22" Offset="0"/>
+                    <GradientStop Color="#60154015" Offset="0.5"/>
+                    <GradientStop Color="#80102010" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
 
         <!-- Canvas for rendering entities -->
         <Canvas x:Name="RenderCanvas"
@@ -27,16 +94,128 @@
                 Background="Transparent">
         </Canvas>
 
-        <!-- Status display (can be toggled) -->
-        <StackPanel x:Name="StatusPanel"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Margin="10"
-                    Background="#AA000000">
-            <TextBlock x:Name="FpsText" Foreground="White" Padding="5" FontSize="10"/>
-            <TextBlock x:Name="EntityCountText" Foreground="White" Padding="5" FontSize="10"/>
-            <TextBlock x:Name="EcosystemHealthText" Foreground="White" Padding="5" FontSize="10"/>
-            <TextBlock x:Name="WeatherText" Foreground="White" Padding="5" FontSize="10"/>
-        </StackPanel>
+        <!-- Modern Status Panel (Top Right) -->
+        <Border x:Name="StatusPanel"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="15"
+                CornerRadius="12"
+                Background="{StaticResource StatusPanelGradient}"
+                Effect="{StaticResource PanelShadow}"
+                BorderBrush="#33FFFFFF"
+                BorderThickness="1">
+            <Grid Margin="12,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- FPS Counter -->
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                    <TextBlock Text="FPS" Style="{StaticResource StatLabel}" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="FpsText" Text="60" Style="{StaticResource StatValue}" HorizontalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Entity Count with Icons -->
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                    <TextBlock Text="ECOSYSTEM" Style="{StaticResource StatLabel}" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="🌿" FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="PlantCountText" Text="0" Style="{StaticResource StatValue}" Margin="2,0,8,0"/>
+                        <TextBlock Text="🐰" FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="HerbivoreCountText" Text="0" Style="{StaticResource StatValue}" Margin="2,0,8,0"/>
+                        <TextBlock Text="🐺" FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="CarnivoreCountText" Text="0" Style="{StaticResource StatValue}" Margin="2,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                
+                <!-- Ecosystem Health Bar -->
+                <StackPanel Grid.Column="4" HorizontalAlignment="Center" MinWidth="100">
+                    <TextBlock Text="HEALTH" Style="{StaticResource StatLabel}" HorizontalAlignment="Center"/>
+                    <Grid Height="20" Margin="0,2,0,0">
+                        <Border Background="#333333" CornerRadius="4"/>
+                        <Border x:Name="HealthBar" Background="#2ECC71" CornerRadius="4" HorizontalAlignment="Left" Width="100"/>
+                        <TextBlock x:Name="EcosystemHealthText" Text="100%" Foreground="White" FontSize="11" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </Grid>
+                </StackPanel>
+                
+                <!-- Weather & Time Display -->
+                <StackPanel Grid.Column="6" HorizontalAlignment="Center" MinWidth="80">
+                    <TextBlock x:Name="TimeOfDayText" Text="🌅 Dawn" Style="{StaticResource StatLabel}" HorizontalAlignment="Center" FontSize="11"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock x:Name="WeatherIcon" Text="☀️" FontSize="20" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="WeatherText" Text="Calm" Style="{StaticResource StatValue}" Margin="4,0,0,0" FontSize="14"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Statistics Mini Panel (Bottom Left) -->
+        <Border x:Name="StatsPanel"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="15,0,0,50"
+                CornerRadius="8"
+                Background="#AA1E1E2E"
+                BorderBrush="#22FFFFFF"
+                BorderThickness="1"
+                Padding="10,6">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="📊" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBlock x:Name="StatsText" Text="Births: 0 | Deaths: 0" 
+                           Foreground="#AAAAAA" FontSize="10" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Hotkey Hints (Bottom Right) -->
+        <Border x:Name="HotkeyPanel"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,15,50"
+                CornerRadius="8"
+                Background="#661E1E2E"
+                BorderBrush="#22FFFFFF"
+                BorderThickness="1"
+                Padding="10,6"
+                Opacity="0.7">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="⌨️" FontSize="10" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBlock Text="P/H/C Spawn | W Water | M Map | F2 Settings" 
+                               Foreground="#AAAAAA" FontSize="9" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="Ctrl+Alt+S Save | Ctrl+Alt+L Load | F1 Toggle UI" 
+                           Foreground="#666666" FontSize="8" Margin="16,2,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Day/Night Indicator Orb (Top Left) -->
+        <Border x:Name="DayNightOrb"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="15"
+                Width="50"
+                Height="50"
+                CornerRadius="25"
+                BorderBrush="#44FFFFFF"
+                BorderThickness="2">
+            <Border.Background>
+                <RadialGradientBrush>
+                    <GradientStop x:Name="OrbCenterColor" Color="#FFD700" Offset="0"/>
+                    <GradientStop x:Name="OrbEdgeColor" Color="#FFA500" Offset="1"/>
+                </RadialGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect x:Name="OrbGlow" Color="#FFD700" Direction="0" ShadowDepth="0" BlurRadius="20" Opacity="0.6"/>
+            </Border.Effect>
+            <TextBlock x:Name="DayNightIcon" Text="☀️" FontSize="24" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>

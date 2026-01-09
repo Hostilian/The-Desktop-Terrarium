@@ -25,10 +25,19 @@ namespace Terrarium.Desktop.Rendering
         // Rendering mode
         private bool _useSpriteMode = false; // Set to true to use sprites instead of shapes
 
-        // Color constants for shape mode
-        private static readonly Brush PlantColor = new SolidColorBrush(Color.FromRgb(34, 139, 34));
-        private static readonly Brush HerbivoreColor = new SolidColorBrush(Color.FromRgb(255, 218, 185));
-        private static readonly Brush CarnivoreColor = new SolidColorBrush(Color.FromRgb(178, 34, 34));
+        // Modern color palette for shape mode
+        private static readonly Brush PlantStemColor = new SolidColorBrush(Color.FromRgb(46, 125, 50));
+        private static readonly Brush PlantLeafColor = new SolidColorBrush(Color.FromRgb(76, 175, 80));
+        private static readonly Brush PlantLeafHighlight = new SolidColorBrush(Color.FromRgb(129, 199, 132));
+        
+        private static readonly Brush HerbivoreBodyColor = new SolidColorBrush(Color.FromRgb(255, 183, 77)); // Warm orange
+        private static readonly Brush HerbivoreBellyColor = new SolidColorBrush(Color.FromRgb(255, 224, 178)); // Light cream
+        private static readonly Brush HerbivoreEarColor = new SolidColorBrush(Color.FromRgb(255, 138, 128)); // Pink
+        
+        private static readonly Brush CarnivoreBodyColor = new SolidColorBrush(Color.FromRgb(120, 120, 130)); // Gray
+        private static readonly Brush CarnivoreFurColor = new SolidColorBrush(Color.FromRgb(150, 150, 160)); // Light gray
+        private static readonly Brush CarnivoreAccentColor = new SolidColorBrush(Color.FromRgb(200, 80, 80)); // Red accent
+        
         private static readonly Brush DeadColor = new SolidColorBrush(Color.FromRgb(128, 128, 128));
 
         // Animation constants
@@ -119,30 +128,56 @@ namespace Terrarium.Desktop.Rendering
             }
             else
             {
-                // Shape mode: Draw simple plant shape
+                // Shape mode: Draw modern plant shape with multiple layers
                 var plantGroup = new Canvas();
 
-                // Stem
+                // Stem with gradient effect
                 var stem = new Rectangle
                 {
                     Width = 4,
                     Height = plant.Size,
-                    Fill = PlantColor
+                    Fill = PlantStemColor,
+                    RadiusX = 2,
+                    RadiusY = 2
                 };
 
-                // Leaves (ellipse on top)
+                // Main leaf cluster (larger ellipse)
                 var leaves = new Ellipse
                 {
-                    Width = plant.Size * 0.8,
-                    Height = plant.Size * 0.8,
-                    Fill = PlantColor
+                    Width = plant.Size * 0.9,
+                    Height = plant.Size * 0.9,
+                    Fill = PlantLeafColor
+                };
+
+                // Highlight leaf (smaller, lighter)
+                var leafHighlight = new Ellipse
+                {
+                    Width = plant.Size * 0.5,
+                    Height = plant.Size * 0.5,
+                    Fill = PlantLeafHighlight,
+                    Opacity = 0.7
+                };
+
+                // Small berry or flower accent
+                var accent = new Ellipse
+                {
+                    Width = 6,
+                    Height = 6,
+                    Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54)), // Red berry
+                    Opacity = 0.9
                 };
 
                 plantGroup.Children.Add(stem);
                 plantGroup.Children.Add(leaves);
+                plantGroup.Children.Add(leafHighlight);
+                plantGroup.Children.Add(accent);
 
-                Canvas.SetLeft(leaves, -plant.Size * 0.4 + 2);
-                Canvas.SetTop(leaves, -plant.Size * 0.6);
+                Canvas.SetLeft(leaves, -plant.Size * 0.45 + 2);
+                Canvas.SetTop(leaves, -plant.Size * 0.7);
+                Canvas.SetLeft(leafHighlight, -plant.Size * 0.25 + 2);
+                Canvas.SetTop(leafHighlight, -plant.Size * 0.5);
+                Canvas.SetLeft(accent, plant.Size * 0.2);
+                Canvas.SetTop(accent, -plant.Size * 0.4);
 
                 _canvas.Children.Add(plantGroup);
                 _entityVisuals[plant.Id] = plantGroup;
@@ -170,9 +205,9 @@ namespace Terrarium.Desktop.Rendering
 
             // Update size and color based on health
             double healthRatio = plant.Health / 100.0;
-            visual.Opacity = plant.IsAlive ? healthRatio : 0.5;
+            visual.Opacity = plant.IsAlive ? Math.Max(0.5, healthRatio) : 0.3;
 
-            if (visual is Canvas plantCanvas)
+            if (visual is Canvas plantCanvas && plantCanvas.Children.Count >= 3)
             {
                 // Update stem height
                 if (plantCanvas.Children[0] is Rectangle stem)
@@ -180,13 +215,22 @@ namespace Terrarium.Desktop.Rendering
                     stem.Height = plant.Size;
                 }
 
-                // Update leaves size
+                // Update main leaves size
                 if (plantCanvas.Children[1] is Ellipse leaves)
                 {
-                    leaves.Width = plant.Size * 0.8;
-                    leaves.Height = plant.Size * 0.8;
-                    Canvas.SetLeft(leaves, -plant.Size * 0.4 + 2);
-                    Canvas.SetTop(leaves, -plant.Size * 0.6);
+                    leaves.Width = plant.Size * 0.9;
+                    leaves.Height = plant.Size * 0.9;
+                    Canvas.SetLeft(leaves, -plant.Size * 0.45 + 2);
+                    Canvas.SetTop(leaves, -plant.Size * 0.7);
+                }
+
+                // Update highlight leaves
+                if (plantCanvas.Children[2] is Ellipse highlight)
+                {
+                    highlight.Width = plant.Size * 0.5;
+                    highlight.Height = plant.Size * 0.5;
+                    Canvas.SetLeft(highlight, -plant.Size * 0.25 + 2);
+                    Canvas.SetTop(highlight, -plant.Size * 0.5);
                 }
             }
         }
@@ -198,7 +242,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!_entityVisuals.ContainsKey(herbivore.Id))
             {
-                CreateCreatureVisual(herbivore, HerbivoreColor);
+                CreateCreatureVisual(herbivore, HerbivoreBodyColor);
             }
 
             UpdateCreatureVisual(herbivore);
@@ -211,7 +255,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!_entityVisuals.ContainsKey(carnivore.Id))
             {
-                CreateCreatureVisual(carnivore, CarnivoreColor);
+                CreateCreatureVisual(carnivore, CarnivoreBodyColor);
             }
 
             UpdateCreatureVisual(carnivore);
@@ -231,40 +275,144 @@ namespace Terrarium.Desktop.Rendering
             }
             else
             {
-                // Shape mode: Draw circle with eyes
+                // Shape mode: Draw cute creature with modern design
                 var creatureGroup = new Canvas();
 
-                var body = new Ellipse
+                if (creature is Herbivore)
                 {
-                    Width = 30,
-                    Height = 30,
-                    Fill = color,
-                    Stroke = Brushes.Black,
-                    StrokeThickness = 2
-                };
+                    // Herbivore: Cute bunny-like creature
+                    // Body
+                    var body = new Ellipse
+                    {
+                        Width = 28,
+                        Height = 24,
+                        Fill = HerbivoreBodyColor,
+                        Stroke = new SolidColorBrush(Color.FromRgb(230, 150, 50)),
+                        StrokeThickness = 1.5
+                    };
 
-                var leftEye = new Ellipse
+                    // Belly highlight
+                    var belly = new Ellipse
+                    {
+                        Width = 16,
+                        Height = 12,
+                        Fill = HerbivoreBellyColor,
+                        Opacity = 0.8
+                    };
+
+                    // Left ear
+                    var leftEar = new Ellipse
+                    {
+                        Width = 8,
+                        Height = 16,
+                        Fill = HerbivoreEarColor
+                    };
+
+                    // Right ear  
+                    var rightEar = new Ellipse
+                    {
+                        Width = 8,
+                        Height = 16,
+                        Fill = HerbivoreEarColor
+                    };
+
+                    // Eyes
+                    var leftEye = new Ellipse { Width = 6, Height = 6, Fill = Brushes.White };
+                    var rightEye = new Ellipse { Width = 6, Height = 6, Fill = Brushes.White };
+                    var leftPupil = new Ellipse { Width = 3, Height = 3, Fill = Brushes.Black };
+                    var rightPupil = new Ellipse { Width = 3, Height = 3, Fill = Brushes.Black };
+
+                    // Nose
+                    var nose = new Ellipse { Width = 4, Height = 3, Fill = new SolidColorBrush(Color.FromRgb(255, 138, 128)) };
+
+                    creatureGroup.Children.Add(leftEar);
+                    creatureGroup.Children.Add(rightEar);
+                    creatureGroup.Children.Add(body);
+                    creatureGroup.Children.Add(belly);
+                    creatureGroup.Children.Add(leftEye);
+                    creatureGroup.Children.Add(rightEye);
+                    creatureGroup.Children.Add(leftPupil);
+                    creatureGroup.Children.Add(rightPupil);
+                    creatureGroup.Children.Add(nose);
+
+                    Canvas.SetLeft(leftEar, 5); Canvas.SetTop(leftEar, -10);
+                    Canvas.SetLeft(rightEar, 15); Canvas.SetTop(rightEar, -10);
+                    Canvas.SetLeft(body, 1); Canvas.SetTop(body, 3);
+                    Canvas.SetLeft(belly, 7); Canvas.SetTop(belly, 10);
+                    Canvas.SetLeft(leftEye, 7); Canvas.SetTop(leftEye, 8);
+                    Canvas.SetLeft(rightEye, 17); Canvas.SetTop(rightEye, 8);
+                    Canvas.SetLeft(leftPupil, 9); Canvas.SetTop(leftPupil, 10);
+                    Canvas.SetLeft(rightPupil, 19); Canvas.SetTop(rightPupil, 10);
+                    Canvas.SetLeft(nose, 13); Canvas.SetTop(nose, 16);
+                }
+                else
                 {
-                    Width = 6,
-                    Height = 6,
-                    Fill = Brushes.Black
-                };
+                    // Carnivore: Wolf-like creature
+                    // Body
+                    var body = new Ellipse
+                    {
+                        Width = 32,
+                        Height = 26,
+                        Fill = CarnivoreBodyColor,
+                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        StrokeThickness = 2
+                    };
 
-                var rightEye = new Ellipse
-                {
-                    Width = 6,
-                    Height = 6,
-                    Fill = Brushes.Black
-                };
+                    // Snout
+                    var snout = new Ellipse
+                    {
+                        Width = 14,
+                        Height = 10,
+                        Fill = CarnivoreFurColor
+                    };
 
-                creatureGroup.Children.Add(body);
-                creatureGroup.Children.Add(leftEye);
-                creatureGroup.Children.Add(rightEye);
+                    // Left ear (pointy)
+                    var leftEar = new Polygon
+                    {
+                        Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
+                        Fill = CarnivoreBodyColor,
+                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        StrokeThickness = 1
+                    };
 
-                Canvas.SetLeft(leftEye, 8);
-                Canvas.SetTop(leftEye, 10);
-                Canvas.SetLeft(rightEye, 16);
-                Canvas.SetTop(rightEye, 10);
+                    // Right ear
+                    var rightEar = new Polygon
+                    {
+                        Points = new PointCollection { new Point(0, 12), new Point(6, 0), new Point(12, 12) },
+                        Fill = CarnivoreBodyColor,
+                        Stroke = new SolidColorBrush(Color.FromRgb(90, 90, 100)),
+                        StrokeThickness = 1
+                    };
+
+                    // Eyes (menacing)
+                    var leftEye = new Ellipse { Width = 7, Height = 5, Fill = new SolidColorBrush(Color.FromRgb(255, 193, 7)) }; // Yellow
+                    var rightEye = new Ellipse { Width = 7, Height = 5, Fill = new SolidColorBrush(Color.FromRgb(255, 193, 7)) };
+                    var leftPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
+                    var rightPupil = new Ellipse { Width = 3, Height = 4, Fill = Brushes.Black };
+
+                    // Nose
+                    var nose = new Ellipse { Width = 5, Height = 4, Fill = Brushes.Black };
+
+                    creatureGroup.Children.Add(leftEar);
+                    creatureGroup.Children.Add(rightEar);
+                    creatureGroup.Children.Add(body);
+                    creatureGroup.Children.Add(snout);
+                    creatureGroup.Children.Add(leftEye);
+                    creatureGroup.Children.Add(rightEye);
+                    creatureGroup.Children.Add(leftPupil);
+                    creatureGroup.Children.Add(rightPupil);
+                    creatureGroup.Children.Add(nose);
+
+                    Canvas.SetLeft(leftEar, 2); Canvas.SetTop(leftEar, -6);
+                    Canvas.SetLeft(rightEar, 18); Canvas.SetTop(rightEar, -6);
+                    Canvas.SetLeft(body, 0); Canvas.SetTop(body, 4);
+                    Canvas.SetLeft(snout, 9); Canvas.SetTop(snout, 18);
+                    Canvas.SetLeft(leftEye, 6); Canvas.SetTop(leftEye, 10);
+                    Canvas.SetLeft(rightEye, 19); Canvas.SetTop(rightEye, 10);
+                    Canvas.SetLeft(leftPupil, 8); Canvas.SetTop(leftPupil, 10);
+                    Canvas.SetLeft(rightPupil, 21); Canvas.SetTop(rightPupil, 10);
+                    Canvas.SetLeft(nose, 14); Canvas.SetTop(nose, 20);
+                }
 
                 _canvas.Children.Add(creatureGroup);
                 _entityVisuals[creature.Id] = creatureGroup;

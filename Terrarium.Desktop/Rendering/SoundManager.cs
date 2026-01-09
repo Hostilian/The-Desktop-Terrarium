@@ -31,6 +31,11 @@ namespace Terrarium.Desktop.Rendering
         private const string ClickSound = "Assets/Sounds/click.wav";
 
         /// <summary>
+        /// Gets or sets whether sounds are enabled.
+        /// </summary>
+        public bool IsEnabled { get; set; } = true;
+
+        /// <summary>
         /// Whether sounds are muted.
         /// </summary>
         public bool IsMuted

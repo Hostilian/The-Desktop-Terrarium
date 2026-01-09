@@ -42,6 +42,32 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public event EventHandler<WeatherEventArgs>? WeatherChanged;
 
+        // Simple delegate-based events for UI integration
+        /// <summary>
+        /// Simple event for creature births: (creature, parent1, parent2)
+        /// </summary>
+        public event Action<Creature, Creature?, Creature?>? OnCreatureBorn;
+
+        /// <summary>
+        /// Simple event for creature deaths: (creature, cause)
+        /// </summary>
+        public event Action<Creature, string>? OnCreatureDied;
+
+        /// <summary>
+        /// Simple event for plant eaten: (plant, eater)
+        /// </summary>
+        public event Action<Plant, Creature>? OnPlantEaten;
+
+        /// <summary>
+        /// Simple event for day phase change: (phase)
+        /// </summary>
+        public event Action<string>? OnDayPhaseChanged;
+
+        /// <summary>
+        /// Simple event for milestone reached: (name, value)
+        /// </summary>
+        public event Action<string, int>? OnMilestoneReached;
+
         /// <summary>
         /// Triggers the EntityBorn event.
         /// </summary>
@@ -56,6 +82,12 @@ namespace Terrarium.Logic.Simulation
         public void OnEntityDied(WorldEntity entity, DeathCause cause)
         {
             EntityDied?.Invoke(this, new EntityDeathEventArgs(entity, cause));
+
+            // Also trigger simple event for UI
+            if (entity is Creature creature)
+            {
+                OnCreatureDied?.Invoke(creature, cause.ToString());
+            }
         }
 
         /// <summary>
@@ -64,6 +96,12 @@ namespace Terrarium.Logic.Simulation
         public void OnEntityFed(Creature eater, WorldEntity food, double nutritionValue)
         {
             EntityFed?.Invoke(this, new EntityFeedEventArgs(eater, food, nutritionValue));
+
+            // Also trigger simple event for UI
+            if (food is Plant plant)
+            {
+                OnPlantEaten?.Invoke(plant, eater);
+            }
         }
 
         /// <summary>
@@ -72,14 +110,34 @@ namespace Terrarium.Logic.Simulation
         public void OnEntityReproduced(Creature parent1, Creature? parent2, Creature offspring)
         {
             EntityReproduced?.Invoke(this, new ReproductionEventArgs(parent1, parent2, offspring));
+
+            // Also trigger simple event for UI
+            OnCreatureBorn?.Invoke(offspring, parent1, parent2);
+        }
+
+        /// <summary>
+        /// Raises a day phase changed event.
+        /// </summary>
+        public void RaiseDayPhaseChanged(string phase)
+        {
+            OnDayPhaseChanged?.Invoke(phase);
+        }
+
+        /// <summary>
+        /// Raises a milestone reached event.
+        /// </summary>
+        public void RaiseMilestoneReached(string name, int value)
+        {
+            OnMilestoneReached?.Invoke(name, value);
         }
 
         /// <summary>
         /// Triggers the DayPhaseChanged event.
         /// </summary>
-        public void OnDayPhaseChanged(DayPhase newPhase, DayPhase oldPhase)
+        public void RaiseDayPhaseChanged(DayPhase newPhase, DayPhase oldPhase)
         {
             DayPhaseChanged?.Invoke(this, new DayPhaseEventArgs(newPhase, oldPhase));
+            OnDayPhaseChanged?.Invoke(newPhase.ToString());
         }
 
         /// <summary>

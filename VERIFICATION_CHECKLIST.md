@@ -12,8 +12,19 @@
 
 - [x] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
     - Evidence: `Terrarium.Desktop/MainWindow.xaml.cs`, `Terrarium.Desktop/MainWindow.Win32.cs`, `Terrarium.Desktop/MainWindow.Initialization.cs`, `Terrarium.Desktop/MainWindow.RenderLoop.cs`, `Terrarium.Desktop/MainWindow.Interaction.cs`
-- [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
-    - In progress: plant + creature shape rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs` (includes shake frequency + carnivore ear geometry extraction)
+- [x] Replace UI/rendering "magic numbers" with named constants (keep visuals identical).
+    - Evidence: Successfully extracted 175+ magic numbers across 9 rendering component files
+    - Completed files:
+      - Terrarium.Desktop/Rendering/Renderer.cs - Plant/creature shape rendering constants, shake frequency, carnivore ear geometry
+      - Terrarium.Desktop/Rendering/PopulationGraph.cs - 40+ constants (colors, layout, typography, graph styling)
+      - Terrarium.Desktop/Rendering/MiniMap.cs - 30+ constants (colors, layout, gradient styling)
+      - Terrarium.Desktop/Rendering/EcosystemHealthBar.cs - 20+ constants (colors, layout, health bar styling)
+      - Terrarium.Desktop/Rendering/EntitySelector.cs - 15+ constants (colors, layout, info panel styling)
+      - Terrarium.Desktop/Rendering/SessionTimer.cs - 15+ constants (colors, layout, timing display)
+      - Terrarium.Desktop/Rendering/SpeedIndicator.cs - 20+ constants (colors, layout, speed bar styling)
+      - Terrarium.Desktop/Rendering/TooltipManager.cs - 15+ constants (colors, layout, shadow effects)
+      - Terrarium.Desktop/Rendering/NotificationManager.cs - 10+ constants (timing, layout, notification styling)
+    - All constants organized by category: Colors, Layout, Typography, Margins/Padding, Animation, Styling
 - [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).

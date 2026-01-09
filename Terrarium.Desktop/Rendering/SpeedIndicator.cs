@@ -20,15 +20,39 @@ namespace Terrarium.Desktop.Rendering
         private double _displaySpeed;
         private double _hideTimer;
 
+        // Animation constants
         private const double HideDelay = 3.0;
         private const double AnimationSpeed = 8.0;
+
+        // UI Layout constants
+        private const int SpeedBarCount = 5;
+        private const double SpeedBarWidth = 4;
+        private const double SpeedBarBaseHeight = 8;
+        private const double SpeedBarHeightIncrement = 3;
+        private const double SpeedBarMarginHorizontal = 2;
+
+        // Colors
+        private static readonly Color ContainerBackgroundColor = Color.FromArgb(200, 20, 30, 40);
+        private static readonly Color ContainerBorderColor = Color.FromRgb(100, 100, 100);
+        private static readonly Color SpeedBarInactiveColor = Color.FromRgb(60, 60, 60);
+
+        // Typography
+        private const double IconFontSize = 14;
+
+        // Margins and padding
+        private const double ContainerBorderThickness = 1;
+        private const double ContainerCornerRadius = 6;
+        private const double ContainerPaddingVertical = 8;
+        private const double ContainerPaddingHorizontal = 12;
+        private const double IconMarginRight = 8;
+        private const double BarsPanelMarginRight = 8;
 
         public bool IsEnabled { get; set; } = true;
 
         public SpeedIndicator(Canvas canvas)
         {
             _canvas = canvas;
-            _speedBars = new Rectangle[5];
+            _speedBars = new Rectangle[SpeedBarCount];
             _currentSpeed = 1.0;
             _displaySpeed = 1.0;
             CreateUI();
@@ -38,11 +62,11 @@ namespace Terrarium.Desktop.Rendering
         {
             _container = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(6),
-                Padding = new Thickness(12, 8, 12, 8),
+                Background = new SolidColorBrush(ContainerBackgroundColor),
+                BorderBrush = new SolidColorBrush(ContainerBorderColor),
+                BorderThickness = new Thickness(ContainerBorderThickness),
+                CornerRadius = new CornerRadius(ContainerCornerRadius),
+                Padding = new Thickness(ContainerPaddingHorizontal, ContainerPaddingVertical, ContainerPaddingHorizontal, ContainerPaddingVertical),
                 Opacity = 0
             };
 
@@ -56,8 +80,8 @@ namespace Terrarium.Desktop.Rendering
             var icon = new TextBlock
             {
                 Text = "⏱️",
-                FontSize = 14,
-                Margin = new Thickness(0, 0, 8, 0),
+                FontSize = IconFontSize,
+                Margin = new Thickness(0, 0, IconMarginRight, 0),
                 VerticalAlignment = VerticalAlignment.Center
             };
             stack.Children.Add(icon);
@@ -67,17 +91,17 @@ namespace Terrarium.Desktop.Rendering
             {
                 Orientation = Orientation.Horizontal,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 8, 0)
+                Margin = new Thickness(0, 0, BarsPanelMarginRight, 0)
             };
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < SpeedBarCount; i++)
             {
                 _speedBars[i] = new Rectangle
                 {
-                    Width = 4,
-                    Height = 8 + i * 3,
-                    Fill = new SolidColorBrush(Color.FromRgb(60, 60, 60)),
-                    Margin = new Thickness(2, 0, 2, 0),
+                    Width = SpeedBarWidth,
+                    Height = SpeedBarBaseHeight + i * SpeedBarHeightIncrement,
+                    Fill = new SolidColorBrush(SpeedBarInactiveColor),
+                    Margin = new Thickness(SpeedBarMarginHorizontal, 0, SpeedBarMarginHorizontal, 0),
                     RadiusX = 1,
                     RadiusY = 1,
                     VerticalAlignment = VerticalAlignment.Bottom

@@ -20,6 +20,28 @@ namespace Terrarium.Desktop.Rendering
         private Border? _infoPanel;
         private readonly Dictionary<string, TextBlock> _infoLabels;
 
+        // UI Layout constants
+        private const double InfoPanelWidth = 180;
+        private const double ZIndexInfoPanel = 900;
+
+        // Colors
+        private static readonly Color InfoPanelBackgroundColor = Color.FromArgb(200, 20, 30, 40);
+        private static readonly Color InfoPanelBorderColor = Color.FromRgb(80, 200, 255);
+        private static readonly Color TitleTextColor = Color.FromRgb(80, 200, 255);
+        private static readonly Color HintTextColor = Color.FromRgb(150, 150, 150);
+
+        // Typography
+        private const double TitleFontSize = 12;
+        private const double InfoLabelFontSize = 10;
+        private const double HintFontSize = 9;
+
+        // Margins and padding
+        private const double InfoPanelPadding = 10;
+        private const double InfoPanelBorderThickness = 2;
+        private const double InfoPanelCornerRadius = 8;
+        private const double TitleMarginBottom = 8;
+        private const double HintMarginTop = 8;
+
         public bool IsEnabled { get; set; } = true;
         public LivingEntity? SelectedEntity => _selectedEntity;
 
@@ -37,12 +59,12 @@ namespace Terrarium.Desktop.Rendering
         {
             _infoPanel = new Border
             {
-                Width = 180,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(80, 200, 255)),
-                BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(10),
+                Width = InfoPanelWidth,
+                Background = new SolidColorBrush(InfoPanelBackgroundColor),
+                BorderBrush = new SolidColorBrush(InfoPanelBorderColor),
+                BorderThickness = new Thickness(InfoPanelBorderThickness),
+                CornerRadius = new CornerRadius(InfoPanelCornerRadius),
+                Padding = new Thickness(InfoPanelPadding),
                 Visibility = Visibility.Collapsed
             };
 
@@ -52,10 +74,10 @@ namespace Terrarium.Desktop.Rendering
             var title = new TextBlock
             {
                 Text = "🔍 Selected Entity",
-                FontSize = 12,
+                FontSize = TitleFontSize,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(80, 200, 255)),
-                Margin = new Thickness(0, 0, 0, 8)
+                Foreground = new SolidColorBrush(TitleTextColor),
+                Margin = new Thickness(0, 0, 0, TitleMarginBottom)
             };
             stack.Children.Add(title);
             _infoLabels["title"] = title;
@@ -66,7 +88,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 var tb = new TextBlock
                 {
-                    FontSize = 10,
+                    FontSize = InfoLabelFontSize,
                     Foreground = Brushes.White
                 };
                 stack.Children.Add(tb);
@@ -77,15 +99,15 @@ namespace Terrarium.Desktop.Rendering
             var hint = new TextBlock
             {
                 Text = "Press F to follow • Esc to deselect",
-                FontSize = 9,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
-                Margin = new Thickness(0, 8, 0, 0),
+                FontSize = HintFontSize,
+                Foreground = new SolidColorBrush(HintTextColor),
+                Margin = new Thickness(0, HintMarginTop, 0, 0),
                 TextWrapping = TextWrapping.Wrap
             };
             stack.Children.Add(hint);
 
             _infoPanel.Child = stack;
-            Canvas.SetZIndex(_infoPanel, 900);
+            Canvas.SetZIndex(_infoPanel, ZIndexInfoPanel);
             _canvas.Children.Add(_infoPanel);
         }
 

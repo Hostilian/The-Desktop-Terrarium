@@ -22,7 +22,29 @@ namespace Terrarium.Desktop.Rendering
         private double _displayHealth;
         private double _pulsePhase;
 
+        // Animation constants
         private const double AnimationSpeed = 3.0;
+
+        // UI Layout constants
+        private const double ContainerWidth = 200;
+        private const double HealthBarHeight = 12;
+        private const double HealthBarCornerRadius = 6;
+
+        // Colors
+        private static readonly Color ContainerBackgroundColor = Color.FromArgb(200, 20, 30, 40);
+        private static readonly Color ContainerBorderColor = Color.FromRgb(80, 80, 80);
+        private static readonly Color BarBackgroundColor = Color.FromRgb(40, 40, 40);
+        private static readonly Color ScoreTextColor = Color.FromRgb(100, 255, 150);
+
+        // Typography
+        private const double TitleFontSize = 11;
+        private const double ScoreFontSize = 11;
+
+        // Margins and padding
+        private const double ContainerPadding = 10;
+        private const double ContainerBorderThickness = 1;
+        private const double ContainerCornerRadius = 8;
+        private const double BarMarginVertical = 6;
 
         public bool IsEnabled { get; set; } = true;
 
@@ -38,12 +60,12 @@ namespace Terrarium.Desktop.Rendering
         {
             _container = new Border
             {
-                Width = 200,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(10)
+                Width = ContainerWidth,
+                Background = new SolidColorBrush(ContainerBackgroundColor),
+                BorderBrush = new SolidColorBrush(ContainerBorderColor),
+                BorderThickness = new Thickness(ContainerBorderThickness),
+                CornerRadius = new CornerRadius(ContainerCornerRadius),
+                Padding = new Thickness(ContainerPadding)
             };
 
             var stack = new StackPanel();
@@ -56,7 +78,7 @@ namespace Terrarium.Desktop.Rendering
             var title = new TextBlock
             {
                 Text = "🌍 Ecosystem Health",
-                FontSize = 11,
+                FontSize = TitleFontSize,
                 FontWeight = FontWeights.Bold,
                 Foreground = Brushes.White
             };
@@ -66,9 +88,9 @@ namespace Terrarium.Desktop.Rendering
             _scoreText = new TextBlock
             {
                 Text = "100%",
-                FontSize = 11,
+                FontSize = ScoreFontSize,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 150))
+                Foreground = new SolidColorBrush(ScoreTextColor)
             };
             Grid.SetColumn(_scoreText, 1);
             titleRow.Children.Add(_scoreText);
@@ -78,17 +100,17 @@ namespace Terrarium.Desktop.Rendering
             // Health bar background
             var barBg = new Border
             {
-                Height = 12,
-                Background = new SolidColorBrush(Color.FromRgb(40, 40, 40)),
-                CornerRadius = new CornerRadius(6),
-                Margin = new Thickness(0, 6, 0, 6)
+                Height = HealthBarHeight,
+                Background = new SolidColorBrush(BarBackgroundColor),
+                CornerRadius = new CornerRadius(HealthBarCornerRadius),
+                Margin = new Thickness(0, BarMarginVertical, 0, BarMarginVertical)
             };
 
             _healthBar = new Rectangle
             {
-                Height = 12,
-                RadiusX = 6,
-                RadiusY = 6,
+                Height = HealthBarHeight,
+                RadiusX = HealthBarCornerRadius,
+                RadiusY = HealthBarCornerRadius,
                 Fill = CreateHealthGradient(100)
             };
 

@@ -67,42 +67,50 @@ namespace Terrarium.Logic.Persistence
             {
                 var herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
                 RestoreEntityData(herbivore, herbData);
-                var data = new EntitySaveData
-                {
-                    Id = entity.Id,
-                    X = entity.X,
-                    Y = entity.Y,
-                    Health = entity.Health,
-                    Age = entity.Age
-                };
-
-                if (entity is Plant plant)
-                {
-                    data.Size = plant.Size;
-                    data.WaterLevel = plant.WaterLevel;
-                }
-                else if (entity is Creature creature)
-                {
-                    data.Hunger = creature.Hunger;
-                    data.VelocityX = creature.VelocityX;
-                    data.VelocityY = creature.VelocityY;
-
-                    if (creature is Herbivore herbivore)
-                    {
-                        data.Type = herbivore.Type;
-                    }
-                    else if (creature is Carnivore carnivore)
-                    {
-                        data.Type = carnivore.Type;
-                    }
-                }
-
-                return data;
+                world.AddHerbivore(herbivore);
             }
 
-            /// <summary>
-            /// Restores entity data from save data.
-            /// </summary>
+            // Restore carnivores
+            foreach (var carnData in saveData.Carnivores)
+            {
+                var carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
+                RestoreEntityData(carnivore, carnData);
+                world.AddCarnivore(carnivore);
+            }
+
+            return world;
+        }
+
+        /// <summary>
+        /// Converts an entity to save data.
+        /// </summary>
+        private EntitySaveData EntityToData(LivingEntity entity)
+        {
+            var data = new EntitySaveData
+            {
+                Id = entity.Id,
+                X = entity.X,
+                Y = entity.Y,
+                Health = entity.Health,
+                Age = entity.Age
+            };
+
+            if (entity is Plant plant)
+            {
+                data.Size = plant.Size;
+                data.WaterLevel = plant.WaterLevel;
+            }
+            else if (entity is Creature creature)
+            {
+                data.Hunger = creature.Hunger;
+                data.VelocityX = creature.VelocityX;
+                data.VelocityY = creature.VelocityY;
+
+                if (creature is Herbivore herbivore)
+                {
+                    data.Type = herbivore.Type;
+                }
+                else if (creature is Carnivore carnivore)
                 {
                     data.Type = carnivore.Type;
                 }
@@ -116,10 +124,8 @@ namespace Terrarium.Logic.Persistence
         /// </summary>
         private void RestoreEntityData(LivingEntity entity, EntitySaveData data)
         {
-            // Use reflection or direct property access to restore state
             entity.X = data.X;
             entity.Y = data.Y;
-
             entity.RestoreVitalStats(data.Health, data.Age);
 
             if (entity is Plant plant && data.WaterLevel.HasValue)
@@ -162,6 +168,7 @@ namespace Terrarium.Logic.Persistence
     /// </summary>
     public class EntitySaveData
     {
+        public int? Id { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Health { get; set; }

@@ -33,7 +33,7 @@ namespace Terrarium.Tests.Simulation
             var world = new World(500, 500);
             var manager = new ReproductionManager(world);
             var herbivore = new Herbivore(100, 100);
-            
+
             // Make the creature hungry by updating many times
             for (int i = 0; i < 200; i++)
             {
@@ -70,7 +70,7 @@ namespace Terrarium.Tests.Simulation
             var world = new World(500, 500);
             var manager = new ReproductionManager(world);
             var herbivore = new Herbivore(100, 100);
-            
+
             // Feed well and age the creature
             herbivore.Feed(50);
             for (int i = 0; i < 15; i++)
@@ -131,7 +131,7 @@ namespace Terrarium.Tests.Simulation
             var world = new World(500, 500);
             var manager = new ReproductionManager(world);
             var herbivore = new Herbivore(100, 100);
-            
+
             // Set up and clear cooldown
             manager.ClearCooldown(herbivore.Id);
 

@@ -341,7 +341,7 @@ namespace Terrarium.Desktop.Rendering
                         Fill = HerbivoreEarColor
                     };
 
-                    // Right ear  
+                    // Right ear
                     var rightEar = new Ellipse
                     {
                         Width = 8,
@@ -357,7 +357,7 @@ namespace Terrarium.Desktop.Rendering
 
                     // Nose
                     var nose = new Ellipse { Width = 4, Height = 3, Fill = HerbivoreEarColor };
-                    
+
 
                     creatureGroup.Children.Add(leftEar);
                     creatureGroup.Children.Add(rightEar);

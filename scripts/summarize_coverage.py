@@ -4,6 +4,27 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+def parse_args(argv):
+    root = None
+    min_line = None
+
+    it = iter(argv)
+    for token in it:
+        if token == "--min-line":
+            try:
+                min_line = float(next(it))
+            except (StopIteration, ValueError):
+                raise ValueError("--min-line expects a number")
+        else:
+            # First positional argument is the root folder
+            if root is None:
+                root = token
+            else:
+                raise ValueError(f"Unexpected argument: {token}")
+
+    return root, min_line
+
+
 def find_reports(root: Path):
     # Support both typical names:
     # - coverage.cobertura.xml (common default)
@@ -70,7 +91,14 @@ def append_step_summary(markdown: str):
 
 
 def main() -> int:
-    root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path("TestResults").resolve()
+    try:
+        root_arg, min_line = parse_args(sys.argv[1:])
+    except ValueError as ex:
+        print(f"ERROR: {ex}")
+        print("Usage: python summarize_coverage.py [TestResultsPath] [--min-line PERCENT]")
+        return 2
+
+    root = Path(root_arg).resolve() if root_arg else Path("TestResults").resolve()
 
     reports = find_reports(root)
     if not reports:
@@ -103,6 +131,10 @@ def main() -> int:
         f"- Reports found: {len(reports)}\n"
     )
     append_step_summary(md)
+
+    if min_line is not None and percent + 1e-9 < min_line:
+        print(f"ERROR: Line coverage {percent:.2f}% is below minimum {min_line:.2f}%")
+        return 4
 
     return 0
 

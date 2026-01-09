@@ -51,6 +51,10 @@ jobs:
       if: always()
       run: python scripts/summarize_coverage.py TestResults
 
+    - name: ✅ Coverage Gate
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults --min-line 70
+
     - name: 📊 Upload Test Results
       uses: actions/upload-artifact@v4
       if: always()
@@ -183,6 +187,42 @@ jobs:
 
     - name: 🏗️ Build Release
       run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
+
+  # Publish Integrity (every push/PR)
+  publish-integrity:
+    runs-on: windows-latest
+    needs: [build-and-test, code-quality]
+    if: github.event_name != 'workflow_dispatch'
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
+
+    - name: 📦 Publish (framework-dependent)
+      run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-x64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-x64
+
+    - name: 📊 Upload Publish Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: publish-integrity-win-x64
+        path: ./publish-integrity/win-x64/
 
     - name: 📤 Publish Application
       run: |

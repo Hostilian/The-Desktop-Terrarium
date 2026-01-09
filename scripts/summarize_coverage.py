@@ -5,7 +5,20 @@ from pathlib import Path
 
 
 def find_reports(root: Path):
-    return sorted(root.rglob("coverage.cobertura.xml"))
+    # Support both typical names:
+    # - coverage.cobertura.xml (common default)
+    # - *.cobertura.xml (when a custom CoverletOutput prefix is used)
+    reports = list(root.rglob("coverage.cobertura.xml"))
+    reports.extend(root.rglob("*.cobertura.xml"))
+    # De-dupe while preserving stable order
+    unique = []
+    seen = set()
+    for p in sorted(reports):
+        if p in seen:
+            continue
+        seen.add(p)
+        unique.append(p)
+    return unique
 
 
 def parse_cobertura(path: Path):
@@ -60,6 +73,13 @@ def main() -> int:
     root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path("TestResults").resolve()
 
     reports = find_reports(root)
+    if not reports:
+        # Common local path when CoverletOutput is relative to the test project directory.
+        fallback = (Path.cwd() / "Terrarium.Tests" / "TestResults").resolve()
+        if fallback != root and fallback.exists():
+            reports = find_reports(fallback)
+            if reports:
+                root = fallback
     if not reports:
         print(f"No coverage reports found under: {root}")
         append_step_summary("## Code coverage\n\nNo coverage report found.\n")

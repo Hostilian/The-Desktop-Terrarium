@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Terrarium.Desktop")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+507841ceec69a60b732dc191870bde2f049ccff5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6dab5e8f6af407fbac24429ebf05d42a2ff451fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("Terrarium.Desktop")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Terrarium.Desktop")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

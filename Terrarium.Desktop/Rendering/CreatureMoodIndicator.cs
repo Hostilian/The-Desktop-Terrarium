@@ -20,6 +20,21 @@ namespace Terrarium.Desktop.Rendering
         private const double IndicatorOffsetY = -25;
         private const double FadeInDuration = 0.2;
 
+        private const double IndicatorOffsetX = -8;
+        private const double MoodFontSize = 14;
+        private const int MoodZIndex = 500;
+
+        private const double CriticalHealthThreshold = 20.0;
+        private const double StarvingHungerThreshold = 80.0;
+        private const double HungryHungerThreshold = 50.0;
+
+        private const double HerbivoreFleeSpeedThreshold = 30.0;
+        private const double CarnivoreHuntSpeedThreshold = 20.0;
+
+        private const double HappyHealthThreshold = 80.0;
+        private const double HappyHungerThreshold = 30.0;
+        private const double NeutralHealthThreshold = 50.0;
+
         public bool IsEnabled { get; set; } = true;
 
         public CreatureMoodIndicator(Canvas canvas)
@@ -77,7 +92,7 @@ namespace Terrarium.Desktop.Rendering
                 else
                 {
                     // Update position
-                    Canvas.SetLeft(kvp.Value.Visual, kvp.Key.X - 8);
+                    Canvas.SetLeft(kvp.Value.Visual, kvp.Key.X + IndicatorOffsetX);
                     Canvas.SetTop(kvp.Value.Visual, kvp.Key.Y + IndicatorOffsetY);
                 }
             }
@@ -91,27 +106,27 @@ namespace Terrarium.Desktop.Rendering
         private string GetMoodEmoji(Creature creature)
         {
             // Priority-based mood selection
-            if (creature.Health < 20)
+            if (creature.Health < CriticalHealthThreshold)
                 return "💔"; // Very low health
 
-            if (creature.Hunger > 80)
+            if (creature.Hunger > StarvingHungerThreshold)
                 return "🍖"; // Starving, needs food
 
-            if (creature.Hunger > 50)
+            if (creature.Hunger > HungryHungerThreshold)
                 return "😋"; // Hungry
 
             // Check if being chased (for herbivores)
-            if (creature is Herbivore && Math.Abs(creature.VelocityX) > 30 || Math.Abs(creature.VelocityY) > 30)
+            if (creature is Herbivore && (Math.Abs(creature.VelocityX) > HerbivoreFleeSpeedThreshold || Math.Abs(creature.VelocityY) > HerbivoreFleeSpeedThreshold))
                 return "😰"; // Fleeing
 
             // Check if hunting (for carnivores)
-            if (creature is Carnivore && (Math.Abs(creature.VelocityX) > 20 || Math.Abs(creature.VelocityY) > 20))
+            if (creature is Carnivore && (Math.Abs(creature.VelocityX) > CarnivoreHuntSpeedThreshold || Math.Abs(creature.VelocityY) > CarnivoreHuntSpeedThreshold))
                 return "🎯"; // Hunting
 
-            if (creature.Health > 80 && creature.Hunger < 30)
+            if (creature.Health > HappyHealthThreshold && creature.Hunger < HappyHungerThreshold)
                 return "😊"; // Happy and well-fed
 
-            if (creature.Health > 50)
+            if (creature.Health > NeutralHealthThreshold)
                 return "😐"; // Neutral
 
             return "😟"; // Worried (low-ish health)
@@ -134,13 +149,13 @@ namespace Terrarium.Desktop.Rendering
                 var textBlock = new TextBlock
                 {
                     Text = mood,
-                    FontSize = 14,
+                    FontSize = MoodFontSize,
                     HorizontalAlignment = HorizontalAlignment.Center
                 };
 
-                Canvas.SetLeft(textBlock, creature.X - 8);
+                Canvas.SetLeft(textBlock, creature.X + IndicatorOffsetX);
                 Canvas.SetTop(textBlock, creature.Y + IndicatorOffsetY);
-                Canvas.SetZIndex(textBlock, 500);
+                Canvas.SetZIndex(textBlock, MoodZIndex);
 
                 _canvas.Children.Add(textBlock);
                 _moodVisuals[creature] = new MoodVisual { Visual = textBlock, CurrentMood = mood };

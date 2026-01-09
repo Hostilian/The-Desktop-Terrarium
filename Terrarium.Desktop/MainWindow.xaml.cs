@@ -21,6 +21,8 @@ namespace Terrarium.Desktop
     {
         private SimulationEngine? _simulationEngine;
         private Renderer? _renderer;
+        private WeatherEffects? _weatherEffects;
+        private SoundManager? _soundManager;
         private DispatcherTimer? _renderTimer;
         private DispatcherTimer? _systemMonitorTimer;
         private Stopwatch _frameStopwatch;
@@ -59,6 +61,7 @@ namespace Terrarium.Desktop
         // Visual tuning constants (uses existing BackgroundRect)
         private const double CalmBackgroundOpacity = 0.0;
         private const double StormMaxBackgroundOpacity = 1.0;
+        private const double NightBackgroundOpacity = 0.6;
 
         private int _frameCount;
         private double _fpsAccumulator;
@@ -234,6 +237,8 @@ namespace Terrarium.Desktop
         private void InitializeRendering()
         {
             _renderer = new Renderer(RenderCanvas);
+            _weatherEffects = new WeatherEffects(RenderCanvas);
+            _soundManager = new SoundManager();
 
             // Setup render timer (60 FPS)
             _renderTimer = new DispatcherTimer
@@ -306,6 +311,12 @@ namespace Terrarium.Desktop
             // Update simulation
             _simulationEngine.Update(deltaTime);
 
+            // Update weather effects
+            _weatherEffects?.Update(deltaTime, _simulationEngine.WeatherIntensity);
+
+            // Update sound manager
+            _soundManager?.Update(deltaTime, _simulationEngine.DayNightCycle.IsDay, _simulationEngine.WeatherIntensity);
+
             // Render
             _renderer.Clear();
             _renderer.RenderWorld(_simulationEngine.World, _simulationEngine.WeatherIntensity);
@@ -374,11 +385,17 @@ namespace Terrarium.Desktop
             EcosystemHealthText.Text = $"Ecosystem: {_simulationEngine.GetEcosystemHealth():P0} " +
                                       $"({(_simulationEngine.IsEcosystemBalanced() ? "Balanced" : "Unbalanced")})";
 
-            WeatherText.Text = $"Weather: {(_simulationEngine.WeatherIntensity > StormyWeatherThreshold ? "Stormy" : "Calm")}";
+            string weatherStatus = _simulationEngine.WeatherIntensity > StormyWeatherThreshold ? "Stormy" : "Calm";
+            string timeOfDay = _simulationEngine.GetTimeOfDayString();
+            WeatherText.Text = $"Weather: {weatherStatus} | Time: {timeOfDay}";
 
-            // Darken slightly as storms intensify.
+            // Calculate background opacity based on both weather and time of day
+            double weatherOpacity = _simulationEngine.WeatherIntensity * (StormMaxBackgroundOpacity - CalmBackgroundOpacity);
+            double nightOpacity = (1.0 - _simulationEngine.GetLightLevel()) * NightBackgroundOpacity;
+            double totalOpacity = Math.Min(weatherOpacity + nightOpacity, StormMaxBackgroundOpacity);
+
             BackgroundRect.Opacity = Math.Clamp(
-                CalmBackgroundOpacity + (_simulationEngine.WeatherIntensity * (StormMaxBackgroundOpacity - CalmBackgroundOpacity)),
+                CalmBackgroundOpacity + totalOpacity,
                 CalmBackgroundOpacity,
                 StormMaxBackgroundOpacity);
         }
@@ -529,6 +546,8 @@ namespace Terrarium.Desktop
             _renderTimer?.Stop();
             _systemMonitorTimer?.Stop();
             _systemMonitor?.Dispose();
+            _soundManager?.Dispose();
+            _weatherEffects?.Clear();
             base.OnClosed(e);
         }
     }

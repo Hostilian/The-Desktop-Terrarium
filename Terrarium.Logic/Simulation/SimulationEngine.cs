@@ -178,10 +178,11 @@ namespace Terrarium.Logic.Simulation
         {
             if (WeatherIntensity > StormWeatherThreshold)
             {
-                // Storm damages plants
                 foreach (var plant in _world.Plants)
                 {
+                    // Storm damages plants but also waters them (rain!)
                     plant.TakeDamage(WeatherIntensity * StormPlantDamageRate * deltaTime);
+                    plant.Water(WeatherIntensity * StormPlantWaterBonus * deltaTime);
                 }
             }
         }
@@ -216,6 +217,22 @@ namespace Terrarium.Logic.Simulation
         public double GetEcosystemHealth()
         {
             return _foodManager.GetEcosystemHealth();
+        }
+
+        /// <summary>
+        /// Gets the current time of day as a string.
+        /// </summary>
+        public string GetTimeOfDayString()
+        {
+            return _dayNightCycle.CurrentPhase.ToString();
+        }
+
+        /// <summary>
+        /// Gets the light level (0.0-1.0) for rendering purposes.
+        /// </summary>
+        public double GetLightLevel()
+        {
+            return _dayNightCycle.LightLevel;
         }
     }
 }

@@ -28,11 +28,20 @@ namespace Terrarium.Desktop
         private TooltipManager? _tooltipManager;
         private SettingsPanel? _settingsPanel;
         private MiniMap? _miniMap;
+        private AchievementSystem? _achievementSystem;
+        private CreatureMoodIndicator? _moodIndicator;
+        private PopulationGraph? _populationGraph;
+        private PredatorWarningSystem? _predatorWarning;
+        private EntitySelector? _entitySelector;
+        private SpeedIndicator? _speedIndicator;
+        private BreedingIndicator? _breedingIndicator;
+        private EcosystemHealthBar? _ecosystemHealthBar;
         private DispatcherTimer? _renderTimer;
         private DispatcherTimer? _systemMonitorTimer;
         private Stopwatch _frameStopwatch;
         private SystemMonitor? _systemMonitor;
         private SaveManager? _saveManager;
+        private bool _isFollowingEntity;
 
         // Weather from CPU constants
         private const double CpuStormStartThreshold = 0.70;
@@ -247,6 +256,26 @@ namespace Terrarium.Desktop
             _tooltipManager = new TooltipManager(RenderCanvas);
             _settingsPanel = new SettingsPanel(RenderCanvas);
             _miniMap = new MiniMap(RenderCanvas);
+            _achievementSystem = new AchievementSystem(RenderCanvas);
+            _moodIndicator = new CreatureMoodIndicator(RenderCanvas);
+            _populationGraph = new PopulationGraph(RenderCanvas);
+            _predatorWarning = new PredatorWarningSystem(RenderCanvas);
+            _entitySelector = new EntitySelector(RenderCanvas);
+            _speedIndicator = new SpeedIndicator(RenderCanvas);
+            _breedingIndicator = new BreedingIndicator(RenderCanvas);
+            _ecosystemHealthBar = new EcosystemHealthBar(RenderCanvas);
+
+            // Connect achievement system events
+            _achievementSystem.OnAchievementUnlocked += (id, name) =>
+            {
+                _notificationManager?.Notify($"🏆 Achievement: {name}!", NotificationType.Achievement);
+            };
+
+            // Connect entity selector events
+            _entitySelector.OnEntitySelected += (sender, entity) =>
+            {
+                _notificationManager?.Notify($"Selected: {GetEntityName(entity)}", NotificationType.Info);
+            };
 
             // Connect settings panel events
             _settingsPanel.SimulationSpeedChanged += speed =>
@@ -402,6 +431,31 @@ namespace Terrarium.Desktop
 
             // Update mini-map
             _miniMap?.Update(_simulationEngine.World, RenderCanvas.ActualWidth, RenderCanvas.ActualHeight);
+
+            // Update new visual systems
+            var herbivores = _simulationEngine.World.Herbivores;
+            var carnivores = _simulationEngine.World.Carnivores;
+            var plants = _simulationEngine.World.Plants;
+
+            _moodIndicator?.Update(deltaTime, herbivores, carnivores);
+            _populationGraph?.Update(deltaTime, plants.Count, herbivores.Count, carnivores.Count);
+            _predatorWarning?.Update(deltaTime, herbivores, carnivores);
+            _entitySelector?.Update(deltaTime);
+            _speedIndicator?.SetSpeed(_simulationEngine.SimulationSpeed);
+            _speedIndicator?.Update(deltaTime);
+            _breedingIndicator?.Update(deltaTime, herbivores, carnivores);
+            _ecosystemHealthBar?.Update(deltaTime, plants.Count, herbivores.Count, carnivores.Count);
+
+            // Check achievements
+            var stats = _simulationEngine.Statistics;
+            _achievementSystem?.CheckAchievements(
+                stats.TotalBirths,
+                stats.TotalDeaths,
+                stats.PeakPopulation,
+                stats.CurrentPlants,
+                stats.CurrentHerbivores,
+                stats.CurrentCarnivores,
+                stats.SessionTime);
 
             // Render
             _renderer.Clear();
@@ -563,6 +617,19 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null) return;
 
             var position = e.GetPosition(RenderCanvas);
+
+            // Try entity selection first (left click)
+            if (e.ChangedButton == MouseButton.Left && _entitySelector != null)
+            {
+                bool selected = _entitySelector.TrySelect(
+                    position.X, position.Y,
+                    _simulationEngine.World.Plants,
+                    _simulationEngine.World.Herbivores,
+                    _simulationEngine.World.Carnivores);
+
+                if (selected) return;
+            }
+
             var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
 
             if (clickable != null)
@@ -678,6 +745,30 @@ namespace Terrarium.Desktop
                     e.Handled = true;
                     break;
 
+                case Key.G:
+                    // G: Toggle population graph
+                    if (_populationGraph != null)
+                    {
+                        _populationGraph.IsVisible = !_populationGraph.IsVisible;
+                        _notificationManager?.Notify(
+                            _populationGraph.IsVisible ? "📊 Population Graph ON" : "📊 Population Graph OFF",
+                            NotificationType.Info);
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Key.F:
+                    // F: Toggle follow mode for selected entity
+                    if (_entitySelector?.SelectedEntity != null)
+                    {
+                        _isFollowingEntity = !_isFollowingEntity;
+                        _notificationManager?.Notify(
+                            _isFollowingEntity ? "👁️ Following entity" : "👁️ Stopped following",
+                            NotificationType.Info);
+                    }
+                    e.Handled = true;
+                    break;
+
                 case Key.W:
                     // W: Water plants (spawn rain particles)
                     WaterAllPlants();
@@ -685,10 +776,15 @@ namespace Terrarium.Desktop
                     break;
 
                 case Key.Escape:
-                    // ESC: Close settings or close application
+                    // ESC: Close settings, deselect entity, or close application
                     if (_settingsPanel?.IsVisible == true)
                     {
                         _settingsPanel.Hide();
+                    }
+                    else if (_entitySelector?.SelectedEntity != null)
+                    {
+                        _entitySelector.Deselect();
+                        _isFollowingEntity = false;
                     }
                     else
                     {
@@ -796,7 +892,25 @@ namespace Terrarium.Desktop
             _weatherEffects?.Clear();
             _particleSystem?.Clear();
             _notificationManager?.ClearAll();
+            _moodIndicator?.Clear();
+            _predatorWarning?.Clear();
+            _breedingIndicator?.Clear();
+            _entitySelector?.Clear();
             base.OnClosed(e);
+        }
+
+        /// <summary>
+        /// Gets a display name for an entity.
+        /// </summary>
+        private static string GetEntityName(Terrarium.Logic.Entities.LivingEntity entity)
+        {
+            return entity switch
+            {
+                Terrarium.Logic.Entities.Carnivore c => $"🔴 {c.Type}",
+                Terrarium.Logic.Entities.Herbivore h => $"🟢 {h.Type}",
+                Terrarium.Logic.Entities.Plant _ => "🌿 Plant",
+                _ => "Entity"
+            };
         }
     }
 }

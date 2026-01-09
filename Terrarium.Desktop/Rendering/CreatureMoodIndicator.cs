@@ -32,7 +32,7 @@ namespace Terrarium.Desktop.Rendering
         /// <summary>
         /// Updates mood indicators for all creatures.
         /// </summary>
-        public void Update(double deltaTime, IEnumerable<Creature> creatures)
+        public void Update(double deltaTime, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores)
         {
             if (!IsEnabled) return;
 
@@ -43,13 +43,22 @@ namespace Terrarium.Desktop.Rendering
             // Track which creatures still exist
             var existingCreatures = new HashSet<Creature>();
 
-            foreach (var creature in creatures)
+            foreach (var herbivore in herbivores)
             {
-                if (!creature.IsAlive) continue;
+                if (!herbivore.IsAlive) continue;
 
-                existingCreatures.Add(creature);
-                string mood = GetMoodEmoji(creature);
-                UpdateOrCreateMoodVisual(creature, mood);
+                existingCreatures.Add(herbivore);
+                string mood = GetMoodEmoji(herbivore);
+                UpdateOrCreateMoodVisual(herbivore, mood);
+            }
+
+            foreach (var carnivore in carnivores)
+            {
+                if (!carnivore.IsAlive) continue;
+
+                existingCreatures.Add(carnivore);
+                string mood = GetMoodEmoji(carnivore);
+                UpdateOrCreateMoodVisual(carnivore, mood);
             }
 
             // Remove visuals for dead/removed creatures

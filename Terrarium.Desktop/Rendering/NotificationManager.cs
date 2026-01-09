@@ -16,7 +16,8 @@ namespace Terrarium.Desktop.Rendering
         Birth,
         Death,
         Warning,
-        Milestone
+        Milestone,
+        Achievement
     }
 
     /// <summary>
@@ -272,6 +273,7 @@ namespace Terrarium.Desktop.Rendering
                 NotificationType.Death => new SolidColorBrush(Color.FromArgb(220, 128, 128, 128)), // Gray
                 NotificationType.Warning => new SolidColorBrush(Color.FromArgb(220, 230, 126, 34)), // Orange
                 NotificationType.Milestone => new SolidColorBrush(Color.FromArgb(220, 155, 89, 182)), // Purple
+                NotificationType.Achievement => new SolidColorBrush(Color.FromArgb(220, 241, 196, 15)), // Gold
                 NotificationType.Info => new SolidColorBrush(Color.FromArgb(220, 52, 152, 219)),   // Blue
                 _ => new SolidColorBrush(Color.FromArgb(220, 52, 73, 94))                           // Dark gray
             };

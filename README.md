@@ -120,15 +120,31 @@ WorldEntity (base)
 
 | Key | Action |
 |-----|--------|
-| **Left Click** | Feed creature / Water plant |
-| **Mouse Hover** | Make plants shake |
-| **Ctrl+S** | Save game |
-| **Ctrl+L** | Load game |
+| **Left Click** | Select entity / Feed creature / Water plant |
+| **Mouse Hover** | Make plants shake / Show tooltip |
 | **P** | Spawn random plant |
 | **H** | Spawn random herbivore |
 | **C** | Spawn random carnivore |
+| **W** | Water all plants |
+| **M** | Toggle mini-map |
+| **G** | Toggle population graph |
+| **F** | Follow selected entity |
 | **F1** | Toggle status display |
-| **ESC** | Exit application |
+| **F2** | Open settings panel |
+| **ESC** | Deselect entity / Close settings / Exit |
+| **Ctrl+S** | Save game |
+| **Ctrl+L** | Load game |
+| **Ctrl+Alt+S** | Save game (global hotkey) |
+| **Ctrl+Alt+L** | Load game (global hotkey) |
+
+### Visual Systems
+- 🏆 **Achievement System**: Unlock achievements as you play
+- 😊 **Mood Indicators**: Emoji show creature emotions
+- ⚠️ **Predator Warnings**: Alerts when herbivores are in danger
+- 💕 **Breeding Indicators**: Hearts show when creatures can breed
+- 📊 **Population Graph**: Real-time population history
+- 🌍 **Ecosystem Health Bar**: Shows overall ecosystem balance
+- 🗺️ **Mini-Map**: Bird's eye view of the terrarium
 
 ## 🧪 Running Unit Tests
 
@@ -183,18 +199,38 @@ The-Desktop-Terrarium/
 │   └── Rendering/
 │       ├── Renderer.cs           # Entity rendering
 │       ├── SystemMonitor.cs      # CPU monitoring
-│       └── AnimationController.cs # Animation system
-│
+│       ├── AnimationController.cs # Animation system
+│       ├── WeatherEffects.cs     # Weather visuals
+│       ├── ParticleSystem.cs     # Particle effects
+│       ├── NotificationManager.cs # Toast notifications
+│       ├── TooltipManager.cs     # Entity tooltips
+│       ├── SettingsPanel.cs      # Settings UI
+│       ├── MiniMap.cs            # Mini-map display
+│       ├── AchievementSystem.cs  # Achievement tracking
+│       ├── CreatureMoodIndicator.cs # Mood emojis
+│       ├── PopulationGraph.cs    # Population history
+│       ├── PredatorWarningSystem.cs # Danger alerts
+│       ├── EntitySelector.cs     # Entity selection
+│       ├── SpeedIndicator.cs     # Speed display
+│       ├── BreedingIndicator.cs  # Breeding status
+│       └── EcosystemHealthBar.cs # Health display
+
 ├── Terrarium.Tests/              # Unit Tests
 │   ├── Entities/
 │   │   ├── PlantTests.cs
 │   │   ├── CreatureTests.cs
 │   │   ├── HerbivoreTests.cs
 │   │   └── CarnivoreTests.cs
-│   └── Simulation/
-│       ├── MovementCalculatorTests.cs
-│       ├── CollisionDetectorTests.cs
-│       └── SimulationEngineTests.cs
+│   ├── Simulation/
+│   │   ├── MovementCalculatorTests.cs
+│   │   ├── CollisionDetectorTests.cs
+│   │   └── SimulationEngineTests.cs
+│   └── Rendering/
+│       ├── AchievementSystemTests.cs
+│       ├── EcosystemHealthTests.cs
+│       ├── CreatureMoodTests.cs
+│       ├── BreedingIndicatorTests.cs
+│       └── PredatorWarningTests.cs
 │
 └── DesktopTerrarium.sln          # Visual Studio solution
 ```

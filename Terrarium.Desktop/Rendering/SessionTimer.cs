@@ -20,7 +20,24 @@ namespace Terrarium.Desktop.Rendering
         private int _dayCount;
         private int _generationCount;
 
+        // Timing constants
         private const double DayDuration = 120.0; // 2 minutes per in-game day
+
+        // UI Layout constants
+        private static readonly Color ContainerBackgroundColor = Color.FromArgb(180, 20, 30, 40);
+        private static readonly Color ContainerBorderColor = Color.FromRgb(70, 70, 70);
+
+        // Typography
+        private const double IconFontSize = 11;
+        private const double TextFontSize = 11;
+
+        // Margins and padding
+        private const double ContainerBorderThickness = 1;
+        private const double ContainerCornerRadius = 6;
+        private const double ContainerPaddingHorizontal = 8;
+        private const double ContainerPaddingVertical = 4;
+        private const double IconMarginRight = 4;
+        private const double TimeTextMarginRight = 10;
 
         public bool IsEnabled { get; set; } = true;
 
@@ -37,11 +54,11 @@ namespace Terrarium.Desktop.Rendering
         {
             _container = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(180, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(70, 70, 70)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(6),
-                Padding = new Thickness(8, 4, 8, 4)
+                Background = new SolidColorBrush(ContainerBackgroundColor),
+                BorderBrush = new SolidColorBrush(ContainerBorderColor),
+                BorderThickness = new Thickness(ContainerBorderThickness),
+                CornerRadius = new CornerRadius(ContainerCornerRadius),
+                Padding = new Thickness(ContainerPaddingHorizontal, ContainerPaddingVertical, ContainerPaddingHorizontal, ContainerPaddingVertical)
             };
 
             var stack = new StackPanel
@@ -53,20 +70,20 @@ namespace Terrarium.Desktop.Rendering
             var clockIcon = new TextBlock
             {
                 Text = "⏱️",
-                FontSize = 11,
+                FontSize = IconFontSize,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 4, 0)
+                Margin = new Thickness(0, 0, IconMarginRight, 0)
             };
             stack.Children.Add(clockIcon);
 
             _timeText = new TextBlock
             {
                 Text = "00:00",
-                FontSize = 11,
+                FontSize = TextFontSize,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = Brushes.White,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 10, 0)
+                Margin = new Thickness(0, 0, TimeTextMarginRight, 0)
             };
             stack.Children.Add(_timeText);
 
@@ -74,9 +91,9 @@ namespace Terrarium.Desktop.Rendering
             var dayIcon = new TextBlock
             {
                 Text = "📅",
-                FontSize = 11,
+                FontSize = IconFontSize,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 4, 0)
+                Margin = new Thickness(0, 0, IconMarginRight, 0)
             };
             stack.Children.Add(dayIcon);
 

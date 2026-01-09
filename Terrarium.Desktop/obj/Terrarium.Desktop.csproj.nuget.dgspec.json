@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {}
+    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {
+    "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
+        "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
         "projectName": "Terrarium.Desktop",
-        "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
+        "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\Terrarium.Desktop.csproj",
         "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\obj\\",
+        "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Desktop\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"

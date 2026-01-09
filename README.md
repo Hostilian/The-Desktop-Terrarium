@@ -129,6 +129,8 @@ WorldEntity (base)
 | **M** | Toggle mini-map |
 | **G** | Toggle population graph |
 | **F** | Follow selected entity |
+| **Space** | Pause / Resume simulation |
+| **+ / -** | Increase / Decrease simulation speed |
 | **F1** | Toggle status display |
 | **F2** | Open settings panel |
 | **ESC** | Deselect entity / Close settings / Exit |

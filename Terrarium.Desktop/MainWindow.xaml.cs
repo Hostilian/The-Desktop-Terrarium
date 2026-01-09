@@ -10,6 +10,7 @@ using Terrarium.Logic.Persistence;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace Terrarium.Desktop
 {
@@ -43,6 +44,20 @@ namespace Terrarium.Desktop
         private SystemMonitor? _systemMonitor;
         private SaveManager? _saveManager;
         private bool _isFollowingEntity;
+
+        private Brush? _healthGoodBrush;
+        private Brush? _healthWarnBrush;
+        private Brush? _healthBadBrush;
+
+        private Color _orbDawnCenter;
+        private Color _orbDawnEdge;
+        private Color _orbDayCenter;
+        private Color _orbDayEdge;
+        private Color _orbDuskCenter;
+        private Color _orbDuskEdge;
+        private Color _orbNightCenter;
+        private Color _orbNightEdge;
+        private Color _orbNightGlow;
 
         // Weather from CPU constants
         private const double CpuStormStartThreshold = 0.70;
@@ -86,6 +101,7 @@ namespace Terrarium.Desktop
         {
             InitializeComponent();
             _frameStopwatch = new Stopwatch();
+            InitializeUiResources();
 
             SourceInitialized += (_, _) =>
             {
@@ -96,6 +112,29 @@ namespace Terrarium.Desktop
                     hwndSource.AddHook(WndProc);
                 }
             };
+        }
+
+        private void InitializeUiResources()
+        {
+            _healthGoodBrush = TryFindResource("HealthGoodBrush") as Brush;
+            _healthWarnBrush = TryFindResource("HealthWarnBrush") as Brush;
+            _healthBadBrush = TryFindResource("HealthBadBrush") as Brush;
+
+            _orbDawnCenter = TryGetColorResource("OrbDawnCenter", Color.FromRgb(255, 182, 193));
+            _orbDawnEdge = TryGetColorResource("OrbDawnEdge", Color.FromRgb(255, 140, 105));
+            _orbDayCenter = TryGetColorResource("OrbDayCenter", Color.FromRgb(255, 215, 0));
+            _orbDayEdge = TryGetColorResource("OrbDayEdge", Color.FromRgb(255, 165, 0));
+            _orbDuskCenter = TryGetColorResource("OrbDuskCenter", Color.FromRgb(255, 99, 71));
+            _orbDuskEdge = TryGetColorResource("OrbDuskEdge", Color.FromRgb(148, 0, 211));
+            _orbNightCenter = TryGetColorResource("OrbNightCenter", Color.FromRgb(70, 130, 180));
+            _orbNightEdge = TryGetColorResource("OrbNightEdge", Color.FromRgb(25, 25, 112));
+            _orbNightGlow = TryGetColorResource("OrbNightGlow", Color.FromRgb(135, 206, 250));
+        }
+
+        private Color TryGetColorResource(string key, Color fallback)
+        {
+            object resource = TryFindResource(key);
+            return resource is Color color ? color : fallback;
         }
 
         private void RegisterGlobalHotkeys(IntPtr hwnd)
@@ -532,11 +571,11 @@ namespace Terrarium.Desktop
 
             // Color health bar based on value
             if (healthPercent >= 0.7)
-                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(46, 204, 113)); // Green
+                HealthBar.Background = _healthGoodBrush ?? new SolidColorBrush(Color.FromRgb(46, 204, 113));
             else if (healthPercent >= 0.4)
-                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(241, 196, 15)); // Yellow
+                HealthBar.Background = _healthWarnBrush ?? new SolidColorBrush(Color.FromRgb(241, 196, 15));
             else
-                HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(231, 76, 60)); // Red
+                HealthBar.Background = _healthBadBrush ?? new SolidColorBrush(Color.FromRgb(231, 76, 60));
 
             // Weather display with icons
             bool isStormy = _simulationEngine.WeatherIntensity > StormyWeatherThreshold;
@@ -589,27 +628,27 @@ namespace Terrarium.Desktop
             switch (timeOfDay.ToLower())
             {
                 case "dawn":
-                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 182, 193); // Light pink
-                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(255, 140, 105); // Coral
-                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 140, 105);
+                    OrbCenterColor.Color = _orbDawnCenter;
+                    OrbEdgeColor.Color = _orbDawnEdge;
+                    OrbGlow.Color = _orbDawnEdge;
                     DayNightIcon.Text = "🌅";
                     break;
                 case "day":
-                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 215, 0); // Gold
-                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(255, 165, 0); // Orange
-                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 215, 0);
+                    OrbCenterColor.Color = _orbDayCenter;
+                    OrbEdgeColor.Color = _orbDayEdge;
+                    OrbGlow.Color = _orbDayCenter;
                     DayNightIcon.Text = "☀️";
                     break;
                 case "dusk":
-                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(255, 99, 71); // Tomato
-                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(148, 0, 211); // Purple
-                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(255, 99, 71);
+                    OrbCenterColor.Color = _orbDuskCenter;
+                    OrbEdgeColor.Color = _orbDuskEdge;
+                    OrbGlow.Color = _orbDuskCenter;
                     DayNightIcon.Text = "🌇";
                     break;
                 case "night":
-                    OrbCenterColor.Color = System.Windows.Media.Color.FromRgb(70, 130, 180); // Steel blue
-                    OrbEdgeColor.Color = System.Windows.Media.Color.FromRgb(25, 25, 112); // Midnight blue
-                    OrbGlow.Color = System.Windows.Media.Color.FromRgb(135, 206, 250);
+                    OrbCenterColor.Color = _orbNightCenter;
+                    OrbEdgeColor.Color = _orbNightEdge;
+                    OrbGlow.Color = _orbNightGlow;
                     DayNightIcon.Text = "🌙";
                     break;
             }

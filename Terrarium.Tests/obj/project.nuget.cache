@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "CvMNwWoet/k=",
+  "dgSpecHash": "KtBHjMgNNHM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
+  "projectFilePath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Tests\\Terrarium.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hostilian\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
     "C:\\Users\\Hostilian\\.nuget\\packages\\microsoft.codecoverage\\17.6.0\\microsoft.codecoverage.17.6.0.nupkg.sha512",

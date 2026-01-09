@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+      "projectUniqueName": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
       "projectName": "Terrarium.Logic",
-      "projectPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
+      "projectPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\Terrarium.Logic.csproj",
       "packagesPath": "C:\\Users\\Hostilian\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
+      "outputPath": "c:\\Users\\Hostilian\\The-Desktop-Terrarium\\Terrarium.Logic\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Hostilian\\AppData\\Roaming\\NuGet\\NuGet.Config"

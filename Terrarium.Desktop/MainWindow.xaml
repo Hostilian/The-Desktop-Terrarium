@@ -25,6 +25,24 @@
         <Color x:Key="AccentOrange">#E67E22</Color>
         <Color x:Key="NightBlue">#1A1A2E</Color>
         <Color x:Key="DawnPink">#FF6B6B</Color>
+
+        <!-- Status/Orb Colors (centralized to avoid code-behind hardcoding) -->
+        <Color x:Key="HealthYellow">#F1C40F</Color>
+        <Color x:Key="HealthRed">#E74C3C</Color>
+
+        <Color x:Key="OrbDawnCenter">#FFB6C1</Color>
+        <Color x:Key="OrbDawnEdge">#FF8C69</Color>
+        <Color x:Key="OrbDayCenter">#FFD700</Color>
+        <Color x:Key="OrbDayEdge">#FFA500</Color>
+        <Color x:Key="OrbDuskCenter">#FF6347</Color>
+        <Color x:Key="OrbDuskEdge">#9400D3</Color>
+        <Color x:Key="OrbNightCenter">#4682B4</Color>
+        <Color x:Key="OrbNightEdge">#191970</Color>
+        <Color x:Key="OrbNightGlow">#87CEFA</Color>
+
+        <SolidColorBrush x:Key="HealthGoodBrush" Color="{StaticResource PrimaryGreen}" />
+        <SolidColorBrush x:Key="HealthWarnBrush" Color="{StaticResource HealthYellow}" />
+        <SolidColorBrush x:Key="HealthBadBrush" Color="{StaticResource HealthRed}" />
         
         <!-- Gradient Brushes -->
         <LinearGradientBrush x:Key="GrassGradient" StartPoint="0,0" EndPoint="0,1">

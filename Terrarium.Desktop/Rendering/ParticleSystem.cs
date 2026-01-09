@@ -19,6 +19,48 @@ namespace Terrarium.Desktop.Rendering
         // Particle limits
         private const int MaxParticles = 200;
 
+        private const double ParticleBaseSizeMin = 4.0;
+        private const double ParticleBaseSizeRange = 4.0;
+        private const double ParticleDefaultLifetimeMinSeconds = 0.5;
+        private const double ParticleDefaultLifetimeRangeSeconds = 0.5;
+        private const double ParticleDefaultSpeedMin = 30.0;
+        private const double ParticleDefaultSpeedRange = 50.0;
+        private const double FullCircleRadians = Math.PI * 2.0;
+
+        private const double HeartLifetimeMinSeconds = 1.0;
+        private const double HeartLifetimeRangeSeconds = 0.5;
+        private const double HeartSpeedMin = 20.0;
+        private const double HeartSpeedRange = 30.0;
+        private const double HeartFontSizeMultiplier = 2.0;
+
+        private const double WispLifetimeMinSeconds = 1.5;
+        private const double WispLifetimeRangeSeconds = 1.0;
+        private const double WispSpeedMin = 10.0;
+        private const double WispSpeedRange = 20.0;
+        private const double WispBaseAngleRadians = -Math.PI / 2.0;
+        private const double WispAngleJitterRadians = Math.PI / 4.0;
+
+        private const double DropletLifetimeMinSeconds = 0.8;
+        private const double DropletLifetimeRangeSeconds = 0.4;
+        private const double DropletBaseAngleRadians = Math.PI / 2.0;
+        private const double DropletAngleJitterRadians = Math.PI / 3.0;
+        private const double DropletOpacity = 0.8;
+
+        private const double DefaultGravity = 0.0;
+        private const double DropletGravity = 100.0;
+        private const double WispGravity = -20.0;
+
+        private const double GradientStopInnerPosition = 0.0;
+        private const double GradientStopOuterPosition = 1.0;
+
+        private const double WispWidthMultiplier = 1.5;
+        private const double WispHeightMultiplier = 2.0;
+        private const double DropletWidthMultiplier = 0.6;
+
+        private const byte TransparentAlpha = 0;
+        private const byte WispGradientAlpha = 180;
+        private const double RandomCenterOffset = 0.5;
+
         /// <summary>
         /// Gets or sets whether the particle system is enabled.
         /// </summary>
@@ -133,30 +175,30 @@ namespace Terrarium.Desktop.Rendering
         private Particle CreateParticle(double x, double y, Color color, ParticleType type)
         {
             UIElement visual;
-            double size = 4 + _random.NextDouble() * 4;
-            double lifetime = 0.5 + _random.NextDouble() * 0.5;
-            double speed = 30 + _random.NextDouble() * 50;
-            double angle = _random.NextDouble() * Math.PI * 2;
+            double size = ParticleBaseSizeMin + _random.NextDouble() * ParticleBaseSizeRange;
+            double lifetime = ParticleDefaultLifetimeMinSeconds + _random.NextDouble() * ParticleDefaultLifetimeRangeSeconds;
+            double speed = ParticleDefaultSpeedMin + _random.NextDouble() * ParticleDefaultSpeedRange;
+            double angle = _random.NextDouble() * FullCircleRadians;
 
             switch (type)
             {
                 case ParticleType.Heart:
                     visual = CreateHeartVisual(color, size);
-                    lifetime = 1.0 + _random.NextDouble() * 0.5;
-                    speed = 20 + _random.NextDouble() * 30;
+                    lifetime = HeartLifetimeMinSeconds + _random.NextDouble() * HeartLifetimeRangeSeconds;
+                    speed = HeartSpeedMin + _random.NextDouble() * HeartSpeedRange;
                     break;
 
                 case ParticleType.Wisp:
                     visual = CreateWispVisual(color, size);
-                    lifetime = 1.5 + _random.NextDouble();
-                    speed = 10 + _random.NextDouble() * 20;
-                    angle = -Math.PI / 2 + (_random.NextDouble() - 0.5) * Math.PI / 4; // Mostly upward
+                    lifetime = WispLifetimeMinSeconds + _random.NextDouble() * WispLifetimeRangeSeconds;
+                    speed = WispSpeedMin + _random.NextDouble() * WispSpeedRange;
+                    angle = WispBaseAngleRadians + (_random.NextDouble() - RandomCenterOffset) * WispAngleJitterRadians; // Mostly upward
                     break;
 
                 case ParticleType.Droplet:
                     visual = CreateDropletVisual(color, size);
-                    lifetime = 0.8 + _random.NextDouble() * 0.4;
-                    angle = Math.PI / 2 + (_random.NextDouble() - 0.5) * Math.PI / 3; // Mostly downward
+                    lifetime = DropletLifetimeMinSeconds + _random.NextDouble() * DropletLifetimeRangeSeconds;
+                    angle = DropletBaseAngleRadians + (_random.NextDouble() - RandomCenterOffset) * DropletAngleJitterRadians; // Mostly downward
                     break;
 
                 case ParticleType.Sparkle:
@@ -169,8 +211,8 @@ namespace Terrarium.Desktop.Rendering
             double vy = Math.Sin(angle) * speed;
 
             // Adjust for gravity on some types
-            double gravity = type == ParticleType.Droplet ? 100 :
-                             type == ParticleType.Wisp ? -20 : 0;
+            double gravity = type == ParticleType.Droplet ? DropletGravity :
+                             type == ParticleType.Wisp ? WispGravity : DefaultGravity;
 
             Canvas.SetLeft(visual, x);
             Canvas.SetTop(visual, y);
@@ -199,8 +241,8 @@ namespace Terrarium.Desktop.Rendering
                 {
                     GradientStops = new GradientStopCollection
                     {
-                        new GradientStop(color, 0),
-                        new GradientStop(Color.FromArgb(0, color.R, color.G, color.B), 1)
+                        new GradientStop(color, GradientStopInnerPosition),
+                        new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
                     }
                 }
             };
@@ -211,7 +253,7 @@ namespace Terrarium.Desktop.Rendering
             var textBlock = new TextBlock
             {
                 Text = "❤",
-                FontSize = size * 2,
+                FontSize = size * HeartFontSizeMultiplier,
                 Foreground = new SolidColorBrush(color)
             };
             return textBlock;
@@ -221,14 +263,14 @@ namespace Terrarium.Desktop.Rendering
         {
             return new Ellipse
             {
-                Width = size * 1.5,
-                Height = size * 2,
+                Width = size * WispWidthMultiplier,
+                Height = size * WispHeightMultiplier,
                 Fill = new RadialGradientBrush
                 {
                     GradientStops = new GradientStopCollection
                     {
-                        new GradientStop(Color.FromArgb(180, color.R, color.G, color.B), 0),
-                        new GradientStop(Color.FromArgb(0, color.R, color.G, color.B), 1)
+                        new GradientStop(Color.FromArgb(WispGradientAlpha, color.R, color.G, color.B), GradientStopInnerPosition),
+                        new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
                     }
                 }
             };
@@ -238,10 +280,10 @@ namespace Terrarium.Desktop.Rendering
         {
             return new Ellipse
             {
-                Width = size * 0.6,
+                Width = size * DropletWidthMultiplier,
                 Height = size,
                 Fill = new SolidColorBrush(color),
-                Opacity = 0.8
+                Opacity = DropletOpacity
             };
         }
     }

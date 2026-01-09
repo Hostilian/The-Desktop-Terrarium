@@ -25,6 +25,20 @@ namespace Terrarium.Desktop.Rendering
         private const double RainDropWidth = 2.0;
         private const double RainAngle = 15.0; // Degrees from vertical
 
+        private const double RainIntensityThreshold = 0.5;
+        private const double RainSpawnStartYOffset = -20.0;
+        private const double RainDriftSpeedMultiplier = 0.3;
+        private const double RainOffscreenBottomPadding = 30.0;
+
+        private const double LightningIntensityThreshold = 0.8;
+        private const double InitialLightningIntervalMinSeconds = 5.0;
+        private const double InitialLightningIntervalRangeSeconds = 10.0;
+        private const double LightningIntervalMinSeconds = 2.0;
+        private const double LightningIntervalRangeSeconds = 8.0;
+        private const double LightningFlashInitialOpacity = 0.6;
+        private const double LightningFlashFadeRate = 5.0;
+        private const int LightningFlashZIndex = 1000;
+
         // Visual properties
         private static readonly Brush RainColor = new SolidColorBrush(Color.FromArgb(180, 150, 180, 220));
         private static readonly Brush LightningColor = new SolidColorBrush(Color.FromArgb(200, 255, 255, 200));
@@ -48,7 +62,7 @@ namespace Terrarium.Desktop.Rendering
             _currentIntensity = 0;
             _isRaining = false;
             _lightningTimer = 0;
-            _nextLightningTime = _random.NextDouble() * 10 + 5; // 5-15 seconds
+            _nextLightningTime = _random.NextDouble() * InitialLightningIntervalRangeSeconds + InitialLightningIntervalMinSeconds; // 5-15 seconds
         }
 
         /// <summary>
@@ -64,7 +78,7 @@ namespace Terrarium.Desktop.Rendering
             }
 
             _currentIntensity = weatherIntensity;
-            bool shouldRain = weatherIntensity > 0.5;
+            bool shouldRain = weatherIntensity > RainIntensityThreshold;
 
             if (shouldRain && !_isRaining)
             {
@@ -118,7 +132,7 @@ namespace Terrarium.Desktop.Rendering
         private void SpawnRainDrop(bool randomizeY = false)
         {
             double x = _random.NextDouble() * _canvas.ActualWidth;
-            double y = randomizeY ? _random.NextDouble() * _canvas.ActualHeight : -20;
+            double y = randomizeY ? _random.NextDouble() * _canvas.ActualHeight : RainSpawnStartYOffset;
             double speed = RainDropMinSpeed + _random.NextDouble() * (RainDropMaxSpeed - RainDropMinSpeed);
             double length = RainDropMinLength + _random.NextDouble() * (RainDropMaxLength - RainDropMinLength);
 
@@ -168,13 +182,13 @@ namespace Terrarium.Desktop.Rendering
             {
                 // Move the drop
                 drop.Y += drop.Speed * deltaTime;
-                drop.X += Math.Sin(RainAngle * Math.PI / 180) * drop.Speed * deltaTime * 0.3;
+                drop.X += Math.Sin(RainAngle * Math.PI / 180) * drop.Speed * deltaTime * RainDriftSpeedMultiplier;
 
                 Canvas.SetTop(drop.Visual, drop.Y);
                 Canvas.SetLeft(drop.Visual, drop.X);
 
                 // Check if drop is off screen
-                if (drop.Y > _canvas.ActualHeight + 30)
+                if (drop.Y > _canvas.ActualHeight + RainOffscreenBottomPadding)
                 {
                     dropsToRemove.Add(drop);
                 }
@@ -194,7 +208,7 @@ namespace Terrarium.Desktop.Rendering
         private void UpdateLightning(double deltaTime, double weatherIntensity)
         {
             // Only show lightning during intense storms
-            if (weatherIntensity < 0.8)
+            if (weatherIntensity < LightningIntensityThreshold)
                 return;
 
             _lightningTimer += deltaTime;
@@ -204,13 +218,13 @@ namespace Terrarium.Desktop.Rendering
             {
                 ShowLightningFlash();
                 _lightningTimer = 0;
-                _nextLightningTime = _random.NextDouble() * 8 + 2; // 2-10 seconds
+                _nextLightningTime = _random.NextDouble() * LightningIntervalRangeSeconds + LightningIntervalMinSeconds; // 2-10 seconds
             }
 
             // Fade out flash
             if (_lightningFlash != null && _lightningFlash.Opacity > 0)
             {
-                _lightningFlash.Opacity -= deltaTime * 5; // Fast fade
+                _lightningFlash.Opacity -= deltaTime * LightningFlashFadeRate; // Fast fade
                 if (_lightningFlash.Opacity <= 0)
                 {
                     _canvas.Children.Remove(_lightningFlash);
@@ -234,12 +248,12 @@ namespace Terrarium.Desktop.Rendering
                 Width = _canvas.ActualWidth,
                 Height = _canvas.ActualHeight,
                 Fill = LightningColor,
-                Opacity = 0.6
+                Opacity = LightningFlashInitialOpacity
             };
 
             Canvas.SetLeft(_lightningFlash, 0);
             Canvas.SetTop(_lightningFlash, 0);
-            Panel.SetZIndex(_lightningFlash, 1000); // On top of everything
+            Panel.SetZIndex(_lightningFlash, LightningFlashZIndex); // On top of everything
 
             _canvas.Children.Add(_lightningFlash);
         }

@@ -141,6 +141,8 @@ namespace Terrarium.Desktop.Rendering
         private const int PlantLeavesChildIndex = 1;
         private const int PlantHighlightChildIndex = 2;
 
+        private const int PlantVisualMinimumChildCount = PlantHighlightChildIndex + 1;
+
         // Carnivore ear geometry
         private const double CarnivoreEarBaseY = 12.0;
         private const double CarnivoreEarApexX = 6.0;
@@ -318,7 +320,7 @@ namespace Terrarium.Desktop.Rendering
             double healthRatio = plant.Health / PercentMax;
             visual.Opacity = plant.IsAlive ? Math.Max(PlantMinAliveOpacity, healthRatio) : PlantDeadOpacity;
 
-            if (visual is Canvas plantCanvas && plantCanvas.Children.Count >= 3)
+            if (visual is Canvas plantCanvas && plantCanvas.Children.Count >= PlantVisualMinimumChildCount)
             {
                 // Update stem height
                 if (plantCanvas.Children[PlantStemChildIndex] is Rectangle stem)

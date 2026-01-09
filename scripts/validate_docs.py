@@ -52,48 +52,61 @@ def iter_local_refs(html: str):
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     docs_dir = repo_root / "docs"
-    index = docs_dir / "index.html"
 
-    if not index.exists():
-        print("ERROR: docs/index.html not found")
+    if not docs_dir.exists():
+        print("ERROR: docs/ directory not found")
         return 2
 
-    html = index.read_text(encoding="utf-8", errors="replace")
+    html_files = sorted(docs_dir.rglob("*.html"))
+    if not html_files:
+        print("ERROR: no .html files found under docs/")
+        return 2
 
-    structure_errors = validate_basic_html_structure(html)
-    if structure_errors:
-        print("ERROR: docs/index.html basic structure check failed:")
-        for err in structure_errors:
-            print(f" - {err}")
-        return 4
+    docs_root_resolved = docs_dir.resolve()
+    any_errors = False
 
-    missing = []
+    for html_path in html_files:
+        html = html_path.read_text(encoding="utf-8", errors="replace")
 
-    for ref in sorted(set(iter_local_refs(html))):
-        # Normalize leading './'
-        ref_path = ref[2:] if ref.startswith("./") else ref
+        structure_errors = validate_basic_html_structure(html)
+        if structure_errors:
+            any_errors = True
+            rel = html_path.relative_to(docs_dir)
+            print(f"ERROR: docs/{rel} basic structure check failed:")
+            for err in structure_errors:
+                print(f" - {err}")
 
-        # Root-relative within docs isn't expected; treat as docs-relative.
-        ref_path = ref_path.lstrip("/")
+        missing = []
+        for ref in sorted(set(iter_local_refs(html))):
+            # Normalize leading './'
+            ref_path = ref[2:] if ref.startswith("./") else ref
 
-        candidate = (docs_dir / ref_path).resolve()
-        # Ensure candidate stays under docs/
-        try:
-            candidate.relative_to(docs_dir.resolve())
-        except ValueError:
-            missing.append(ref)
-            continue
+            # Root-relative within docs isn't expected; treat as docs-relative.
+            ref_path = ref_path.lstrip("/")
 
-        if not candidate.exists():
-            missing.append(ref)
+            candidate = (docs_dir / ref_path).resolve()
 
-    if missing:
-        print("ERROR: docs/index.html contains missing local references:")
-        for ref in missing:
-            print(f" - {ref}")
+            # Ensure candidate stays under docs/
+            try:
+                candidate.relative_to(docs_root_resolved)
+            except ValueError:
+                missing.append(ref)
+                continue
+
+            if not candidate.exists():
+                missing.append(ref)
+
+        if missing:
+            any_errors = True
+            rel = html_path.relative_to(docs_dir)
+            print(f"ERROR: docs/{rel} contains missing local references:")
+            for ref in missing:
+                print(f" - {ref}")
+
+    if any_errors:
         return 3
 
-    print("OK: docs/index.html local references look valid")
+    print("OK: docs/*.html local references look valid")
     return 0
 
 

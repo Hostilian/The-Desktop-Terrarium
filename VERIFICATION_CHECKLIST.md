@@ -12,8 +12,10 @@
 
 - [x] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
     - Evidence: `Terrarium.Desktop/MainWindow.xaml.cs`, `Terrarium.Desktop/MainWindow.Win32.cs`, `Terrarium.Desktop/MainWindow.Initialization.cs`, `Terrarium.Desktop/MainWindow.RenderLoop.cs`, `Terrarium.Desktop/MainWindow.Interaction.cs`
-- [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
-    - In progress: plant + creature shape rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs` (includes shake frequency + carnivore ear geometry extraction)
+- [x] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
+    - Evidence: `Terrarium.Desktop/Rendering/Renderer.cs` (shape geometry + animation constants; plant visual child-count check uses a named constant)
+- [x] Replace simulation “magic numbers” used for feeding events/stats with named constants (keep gameplay identical).
+    - Evidence: `Terrarium.Logic/Simulation/SimulationEngine.cs` (`HerbivorePlantNutritionValue`, `CarnivorePreyNutritionValue`)
 - [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).

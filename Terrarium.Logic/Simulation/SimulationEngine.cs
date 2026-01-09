@@ -31,6 +31,9 @@ namespace Terrarium.Logic.Simulation
         private const double StormPlantDamageRate = 0.1;
         private const double StormPlantWaterBonus = 5.0;
 
+        private const double HerbivorePlantNutritionValue = 30.0;
+        private const double CarnivorePreyNutritionValue = 50.0;
+
         // Fleeing behavior constants
         private const double FleeDetectionRange = 100.0;
         private const double FleeSpeedMultiplier = 1.5;
@@ -312,8 +315,8 @@ namespace Terrarium.Logic.Simulation
                         herbivore.MoveToward(nearestPlant.X, nearestPlant.Y);
                         if (herbivore.TryEat(nearestPlant))
                         {
-                            _eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
-                            _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
+                            _eventSystem.OnEntityFed(herbivore, nearestPlant, HerbivorePlantNutritionValue);
+                            _statisticsTracker.RecordFeeding(herbivore, nearestPlant, HerbivorePlantNutritionValue);
                         }
                     }
                     else
@@ -404,8 +407,8 @@ namespace Terrarium.Logic.Simulation
                         carnivore.Hunt(nearestPrey);
                         if (carnivore.TryEat(nearestPrey))
                         {
-                            _eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
-                            _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
+                            _eventSystem.OnEntityFed(carnivore, nearestPrey, CarnivorePreyNutritionValue);
+                            _statisticsTracker.RecordFeeding(carnivore, nearestPrey, CarnivorePreyNutritionValue);
 
                             if (!nearestPrey.IsAlive)
                             {

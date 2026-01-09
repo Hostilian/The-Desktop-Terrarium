@@ -290,6 +290,19 @@ jobs:
           }
         }
 
+        foreach ($p in @(
+          'publish-integrity/win-x64/Terrarium.Desktop.dll',
+          'publish-integrity/win-x64/Terrarium.Desktop.runtimeconfig.json',
+          'publish-integrity/win-x64/Terrarium.Desktop.deps.json',
+          'publish-integrity/win-arm64/Terrarium.Desktop.dll',
+          'publish-integrity/win-arm64/Terrarium.Desktop.runtimeconfig.json',
+          'publish-integrity/win-arm64/Terrarium.Desktop.deps.json'
+        )) {
+          if (-not (Test-Path $p)) {
+            throw "Missing expected publish output: $p"
+          }
+        }
+
         git diff --exit-code -- $x64Deps $x64Runtime
         git diff --exit-code -- $arm64Deps $arm64Runtime
 

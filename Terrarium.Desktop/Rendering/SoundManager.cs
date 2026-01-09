@@ -30,6 +30,8 @@ namespace Terrarium.Desktop.Rendering
         private const string DeathSound = "Assets/Sounds/death.wav";
         private const string ClickSound = "Assets/Sounds/click.wav";
 
+        private const double RainSoundStartThreshold = 0.5;
+
         /// <summary>
         /// Gets or sets whether sounds are enabled.
         /// </summary>
@@ -109,8 +111,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (_isMuted)
                 return;
-            // Placeholder: Play ambient_day sound in loop
-            // Console.WriteLine("[Sound] Playing day ambient");
+            // Placeholder: Play ambient_day sound in loop.
         }
 
         /// <summary>
@@ -120,8 +121,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (_isMuted)
                 return;
-            // Placeholder: Play ambient_night sound in loop
-            // Console.WriteLine("[Sound] Playing night ambient");
+            // Placeholder: Play ambient_night sound in loop.
         }
 
         /// <summary>
@@ -131,8 +131,7 @@ namespace Terrarium.Desktop.Rendering
         {
             if (_isMuted)
                 return;
-            // Placeholder: Play rain sound with volume based on intensity
-            // Console.WriteLine($"[Sound] Playing rain at intensity {intensity:P0}");
+            // Placeholder: Play rain sound with volume based on intensity.
         }
 
         /// <summary>
@@ -140,8 +139,7 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void StopRain()
         {
-            // Placeholder: Stop rain sound
-            // Console.WriteLine("[Sound] Stopping rain");
+            // Placeholder: Stop rain sound.
         }
 
         /// <summary>
@@ -193,8 +191,7 @@ namespace Terrarium.Desktop.Rendering
                 return;
 
             double volume = _masterVolume * _effectsVolume;
-            // Placeholder: Actually play the sound at the calculated volume
-            // Console.WriteLine($"[Sound] Playing effect '{effectName}' at volume {volume:P0}");
+            // Placeholder: Actually play the sound at the calculated volume.
         }
 
         /// <summary>
@@ -209,7 +206,7 @@ namespace Terrarium.Desktop.Rendering
             // Placeholder: Fade between day/night ambient based on isDay
 
             // Handle rain sounds
-            if (weatherIntensity > 0.5)
+            if (weatherIntensity > RainSoundStartThreshold)
             {
                 PlayRain(weatherIntensity);
             }

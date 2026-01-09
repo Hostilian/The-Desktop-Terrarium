@@ -17,11 +17,53 @@ namespace Terrarium.Desktop.Rendering
         private readonly Canvas _graphCanvas;
         private readonly List<PopulationSnapshot> _history;
 
+        // Graph dimensions
         private const double GraphWidth = 200;
         private const double GraphHeight = 80;
         private const double Margin = 10;
         private const int MaxHistoryPoints = 60; // 60 seconds of history
         private const double SampleInterval = 1.0;
+
+        // UI Layout constants
+        private const double ContainerWidthPadding = 16;
+        private const double ContainerHeightPadding = 50;
+        private const double GraphTopOffset = 80; // Below the day/night orb area
+        private const double ZIndexGraphContainer = 800;
+
+        // Colors
+        private static readonly Color PlantLineColor = Color.FromRgb(76, 175, 80);
+        private static readonly Color HerbivoreLineColor = Color.FromRgb(255, 183, 77);
+        private static readonly Color CarnivoreLineColor = Color.FromRgb(192, 57, 43);
+        private static readonly Color HeaderTextColor = Color.FromRgb(150, 150, 150);
+        private static readonly Color GridLineColor = Color.FromArgb(40, 255, 255, 255);
+        private static readonly Color GraphBackgroundColor = Color.FromArgb(100, 20, 20, 30);
+        private static readonly Color ContainerBackgroundColor = Color.FromArgb(200, 20, 20, 30);
+        private static readonly Color ContainerBorderColor = Color.FromArgb(100, 255, 255, 255);
+
+        // Typography
+        private const double HeaderFontSize = 10;
+        private const double LegendFontSize = 10;
+
+        // Legend constants
+        private const double LegendDotSize = 6;
+        private const double LegendDotMargin = 3;
+        private const double LegendItemSpacing = 8;
+
+        // Graph styling
+        private const double LineThickness = 2;
+        private const double GlowLineThickness = 4;
+        private const byte GlowAlpha = 80;
+        private const double GridLineThickness = 1;
+        private const int GridLineCount = 3;
+        private const double HeadroomMultiplier = 1.2; // Add 20% headroom
+
+        // Margins and padding
+        private const double LegendMarginTop = 4;
+        private const double LegendMarginLeft = 8;
+        private const double InnerGraphMargin = 4;
+        private const double ContainerBorderThickness = 1;
+        private const double ContainerCornerRadius = 8;
+        private const double GraphCornerRadius = 4;
 
         private double _sampleTimer;
         private bool _isVisible = true;
@@ -55,44 +97,44 @@ namespace Terrarium.Desktop.Rendering
             var legend = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(8, 4, 0, 0)
+                Margin = new Thickness(LegendMarginLeft, LegendMarginTop, 0, 0)
             };
-            legend.Children.Add(CreateLegendItem("🌿", Color.FromRgb(76, 175, 80)));
-            legend.Children.Add(CreateLegendItem("🐰", Color.FromRgb(255, 183, 77)));
-            legend.Children.Add(CreateLegendItem("🐺", Color.FromRgb(192, 57, 43)));
+            legend.Children.Add(CreateLegendItem("🌿", PlantLineColor));
+            legend.Children.Add(CreateLegendItem("🐰", HerbivoreLineColor));
+            legend.Children.Add(CreateLegendItem("🐺", CarnivoreLineColor));
 
             // Main container
             var content = new StackPanel();
             content.Children.Add(new TextBlock
             {
                 Text = "📈 Population",
-                FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
-                Margin = new Thickness(8, 4, 0, 0),
+                FontSize = HeaderFontSize,
+                Foreground = new SolidColorBrush(HeaderTextColor),
+                Margin = new Thickness(LegendMarginLeft, LegendMarginTop, 0, 0),
                 FontWeight = FontWeights.SemiBold
             });
             content.Children.Add(legend);
             content.Children.Add(new Border
             {
                 Child = _graphCanvas,
-                Margin = new Thickness(4),
-                Background = new SolidColorBrush(Color.FromArgb(100, 20, 20, 30)),
-                CornerRadius = new CornerRadius(4)
+                Margin = new Thickness(InnerGraphMargin),
+                Background = new SolidColorBrush(GraphBackgroundColor),
+                CornerRadius = new CornerRadius(GraphCornerRadius)
             });
 
             _graphContainer = new Border
             {
-                Width = GraphWidth + 16,
-                Height = GraphHeight + 50,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 20, 30)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8),
+                Width = GraphWidth + ContainerWidthPadding,
+                Height = GraphHeight + ContainerHeightPadding,
+                Background = new SolidColorBrush(ContainerBackgroundColor),
+                BorderBrush = new SolidColorBrush(ContainerBorderColor),
+                BorderThickness = new Thickness(ContainerBorderThickness),
+                CornerRadius = new CornerRadius(ContainerCornerRadius),
                 Child = content
             };
 
             // Position in top-right corner
-            Canvas.SetZIndex(_graphContainer, 800);
+            Canvas.SetZIndex(_graphContainer, ZIndexGraphContainer);
             _parentCanvas.Children.Add(_graphContainer);
             _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
             UpdatePosition();
@@ -100,19 +142,19 @@ namespace Terrarium.Desktop.Rendering
 
         private UIElement CreateLegendItem(string emoji, Color color)
         {
-            var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 8, 0) };
+            var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, LegendItemSpacing, 0) };
             panel.Children.Add(new Ellipse
             {
-                Width = 6,
-                Height = 6,
+                Width = LegendDotSize,
+                Height = LegendDotSize,
                 Fill = new SolidColorBrush(color),
-                Margin = new Thickness(0, 0, 3, 0),
+                Margin = new Thickness(0, 0, LegendDotMargin, 0),
                 VerticalAlignment = VerticalAlignment.Center
             });
             panel.Children.Add(new TextBlock
             {
                 Text = emoji,
-                FontSize = 10,
+                FontSize = LegendFontSize,
                 VerticalAlignment = VerticalAlignment.Center
             });
             return panel;
@@ -120,9 +162,9 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdatePosition()
         {
-            double x = _parentCanvas.ActualWidth - GraphWidth - 16 - Margin;
+            double x = _parentCanvas.ActualWidth - GraphWidth - ContainerWidthPadding - Margin;
             Canvas.SetLeft(_graphContainer, Math.Max(Margin, x));
-            Canvas.SetTop(_graphContainer, 80); // Below the day/night orb area
+            Canvas.SetTop(_graphContainer, GraphTopOffset); // Below the day/night orb area
         }
 
         /// <summary>
@@ -167,28 +209,28 @@ namespace Terrarium.Desktop.Rendering
             {
                 maxValue = Math.Max(maxValue, Math.Max(snapshot.Plants, Math.Max(snapshot.Herbivores, snapshot.Carnivores)));
             }
-            maxValue = (int)(maxValue * 1.2); // Add 20% headroom
+            maxValue = (int)(maxValue * HeadroomMultiplier); // Add headroom
 
             // Draw grid lines
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= GridLineCount; i++)
             {
-                double y = GraphHeight - (GraphHeight * i / 4);
+                double y = GraphHeight - (GraphHeight * i / (GridLineCount + 1));
                 var gridLine = new Line
                 {
                     X1 = 0,
                     Y1 = y,
                     X2 = GraphWidth,
                     Y2 = y,
-                    Stroke = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-                    StrokeThickness = 1
+                    Stroke = new SolidColorBrush(GridLineColor),
+                    StrokeThickness = GridLineThickness
                 };
                 _graphCanvas.Children.Add(gridLine);
             }
 
             // Draw lines for each population type
-            DrawPopulationLine(_history, s => s.Plants, Color.FromRgb(76, 175, 80), maxValue);
-            DrawPopulationLine(_history, s => s.Herbivores, Color.FromRgb(255, 183, 77), maxValue);
-            DrawPopulationLine(_history, s => s.Carnivores, Color.FromRgb(192, 57, 43), maxValue);
+            DrawPopulationLine(_history, s => s.Plants, PlantLineColor, maxValue);
+            DrawPopulationLine(_history, s => s.Herbivores, HerbivoreLineColor, maxValue);
+            DrawPopulationLine(_history, s => s.Carnivores, CarnivoreLineColor, maxValue);
         }
 
         private void DrawPopulationLine(List<PopulationSnapshot> history, Func<PopulationSnapshot, int> getValue, Color color, int maxValue)
@@ -210,7 +252,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Points = points,
                 Stroke = new SolidColorBrush(color),
-                StrokeThickness = 2,
+                StrokeThickness = LineThickness,
                 StrokeLineJoin = PenLineJoin.Round
             };
 
@@ -220,8 +262,8 @@ namespace Terrarium.Desktop.Rendering
             var glowPolyline = new Polyline
             {
                 Points = points,
-                Stroke = new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)),
-                StrokeThickness = 4,
+                Stroke = new SolidColorBrush(Color.FromArgb(GlowAlpha, color.R, color.G, color.B)),
+                StrokeThickness = GlowLineThickness,
                 StrokeLineJoin = PenLineJoin.Round
             };
             _graphCanvas.Children.Insert(0, glowPolyline);

@@ -18,9 +18,42 @@ namespace Terrarium.Desktop.Rendering
         private readonly Canvas _mapCanvas;
         private readonly Border _viewportIndicator;
 
+        // Map dimensions
         private const double MapWidth = 160;
         private const double MapHeight = 100;
         private const double Margin = 10;
+
+        // UI Layout constants
+        private const double BorderWidthPadding = 4;
+        private const double BorderHeightPadding = 24;
+        private const double ZIndexMap = 800;
+
+        // Colors
+        private static readonly Color ViewportBorderColor = Color.FromArgb(180, 255, 255, 255);
+        private static readonly Color ViewportFillColor = Color.FromArgb(30, 255, 255, 255);
+        private static readonly Color MapBackgroundColor = Color.FromArgb(200, 20, 20, 30);
+        private static readonly Color MapBorderColor = Color.FromArgb(100, 255, 255, 255);
+        private static readonly Color MapGradientStart = Color.FromRgb(34, 50, 34);
+        private static readonly Color MapGradientEnd = Color.FromRgb(28, 42, 28);
+        private static readonly Color HeaderTextColor = Color.FromRgb(150, 150, 150);
+
+        // Typography
+        private const double HeaderFontSize = 10;
+
+        // Border styling
+        private const double ViewportBorderThickness = 1.5;
+        private const double ViewportCornerRadius = 2;
+        private const double MapBorderThickness = 1;
+        private const double MapBorderCornerRadius = 8;
+        private const double MapInnerCornerRadius = 4;
+        private const double MapGradientAngle = 90;
+
+        // Margins
+        private const double HeaderMarginTop = 4;
+        private const double HeaderMarginLeft = 8;
+        private const double HeaderMarginBottom = 2;
+        private const double MapInnerMarginHorizontal = 2;
+        private const double MapInnerMarginBottom = 2;
 
         private bool _isVisible = true;
         private double _worldWidth;
@@ -51,21 +84,21 @@ namespace Terrarium.Desktop.Rendering
             // Viewport indicator (shows current view area)
             _viewportIndicator = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255)),
-                BorderThickness = new Thickness(1.5),
-                Background = new SolidColorBrush(Color.FromArgb(30, 255, 255, 255)),
-                CornerRadius = new CornerRadius(2)
+                BorderBrush = new SolidColorBrush(ViewportBorderColor),
+                BorderThickness = new Thickness(ViewportBorderThickness),
+                Background = new SolidColorBrush(ViewportFillColor),
+                CornerRadius = new CornerRadius(ViewportCornerRadius)
             };
 
             // Main border
             _mapBorder = new Border
             {
-                Width = MapWidth + 4,
-                Height = MapHeight + 24,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 20, 30)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8),
+                Width = MapWidth + BorderWidthPadding,
+                Height = MapHeight + BorderHeightPadding,
+                Background = new SolidColorBrush(MapBackgroundColor),
+                BorderBrush = new SolidColorBrush(MapBorderColor),
+                BorderThickness = new Thickness(MapBorderThickness),
+                CornerRadius = new CornerRadius(MapBorderCornerRadius),
                 Child = new StackPanel
                 {
                     Children =
@@ -73,27 +106,27 @@ namespace Terrarium.Desktop.Rendering
                         new TextBlock
                         {
                             Text = "🗺️ Map",
-                            FontSize = 10,
-                            Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
-                            Margin = new Thickness(8, 4, 0, 2),
+                            FontSize = HeaderFontSize,
+                            Foreground = new SolidColorBrush(HeaderTextColor),
+                            Margin = new Thickness(HeaderMarginLeft, HeaderMarginTop, 0, HeaderMarginBottom),
                             FontWeight = FontWeights.SemiBold
                         },
                         new Border
                         {
                             Child = _mapCanvas,
-                            Margin = new Thickness(2, 0, 2, 2),
+                            Margin = new Thickness(MapInnerMarginHorizontal, 0, MapInnerMarginHorizontal, MapInnerMarginBottom),
                             Background = new LinearGradientBrush(
-                                Color.FromRgb(34, 50, 34),
-                                Color.FromRgb(28, 42, 28),
-                                90),
-                            CornerRadius = new CornerRadius(4)
+                                MapGradientStart,
+                                MapGradientEnd,
+                                MapGradientAngle),
+                            CornerRadius = new CornerRadius(MapInnerCornerRadius)
                         }
                     }
                 }
             };
 
             // Position in bottom-left corner
-            Canvas.SetZIndex(_mapBorder, 800);
+            Canvas.SetZIndex(_mapBorder, ZIndexMap);
             _parentCanvas.Children.Add(_mapBorder);
 
             _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
@@ -104,7 +137,7 @@ namespace Terrarium.Desktop.Rendering
         {
             Canvas.SetLeft(_mapBorder, Margin);
             Canvas.SetBottom(_mapBorder, Margin);
-            Canvas.SetTop(_mapBorder, _parentCanvas.ActualHeight - MapHeight - 24 - Margin);
+            Canvas.SetTop(_mapBorder, _parentCanvas.ActualHeight - MapHeight - BorderHeightPadding - Margin);
         }
 
         /// <summary>

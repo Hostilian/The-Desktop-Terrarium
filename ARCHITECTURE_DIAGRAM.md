@@ -506,7 +506,7 @@ Each class does ONE thing:
                       ╱    ╲       • Run app, interact
                      ╱______╲      • Visual verification
                     ╱        ╲
-                   ╱  35 Unit  ╲   Unit Tests (Automated)
+                   ╱  100 Unit ╲   Unit Tests (Automated)
                   ╱   Tests     ╲  • Test logic in isolation
                  ╱              ╲ • Fast, reliable
                 ╱________________╲

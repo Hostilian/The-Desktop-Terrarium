@@ -107,7 +107,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayDayAmbient()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             // Placeholder: Play ambient_day sound in loop
             // Console.WriteLine("[Sound] Playing day ambient");
         }
@@ -117,7 +118,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayNightAmbient()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             // Placeholder: Play ambient_night sound in loop
             // Console.WriteLine("[Sound] Playing night ambient");
         }
@@ -127,7 +129,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayRain(double intensity)
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             // Placeholder: Play rain sound with volume based on intensity
             // Console.WriteLine($"[Sound] Playing rain at intensity {intensity:P0}");
         }
@@ -146,7 +149,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayEatSound()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             PlayEffect("eat");
         }
 
@@ -155,7 +159,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayBirthSound()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             PlayEffect("birth");
         }
 
@@ -164,7 +169,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayDeathSound()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             PlayEffect("death");
         }
 
@@ -173,7 +179,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void PlayClickSound()
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
             PlayEffect("click");
         }
 
@@ -182,7 +189,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void PlayEffect(string effectName)
         {
-            if (!_soundEffects.ContainsKey(effectName)) return;
+            if (!_soundEffects.ContainsKey(effectName))
+                return;
 
             double volume = _masterVolume * _effectsVolume;
             // Placeholder: Actually play the sound at the calculated volume
@@ -194,7 +202,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime, bool isDay, double weatherIntensity)
         {
-            if (_isMuted) return;
+            if (_isMuted)
+                return;
 
             // Handle ambient sound transitions
             // Placeholder: Fade between day/night ambient based on isDay

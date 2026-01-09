@@ -85,11 +85,13 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void TryReproduceHerbivores()
         {
-            if (_world.Herbivores.Count >= MaxHerbivores) return;
+            if (_world.Herbivores.Count >= MaxHerbivores)
+                return;
 
             foreach (var herbivore in _world.Herbivores.ToList())
             {
-                if (!CanReproduce(herbivore)) continue;
+                if (!CanReproduce(herbivore))
+                    continue;
 
                 var mate = FindMate(herbivore, _world.Herbivores);
                 if (mate != null && _random.NextDouble() < BaseReproductionChance)
@@ -115,11 +117,13 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void TryReproduceCarnivores()
         {
-            if (_world.Carnivores.Count >= MaxCarnivores) return;
+            if (_world.Carnivores.Count >= MaxCarnivores)
+                return;
 
             foreach (var carnivore in _world.Carnivores.ToList())
             {
-                if (!CanReproduce(carnivore)) continue;
+                if (!CanReproduce(carnivore))
+                    continue;
 
                 var mate = FindMate(carnivore, _world.Carnivores);
                 if (mate != null && _random.NextDouble() < BaseReproductionChance)
@@ -145,11 +149,16 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public bool CanReproduce(Creature creature)
         {
-            if (!creature.IsAlive) return false;
-            if (creature.Health < MinHealthForReproduction) return false;
-            if (creature.Hunger > MaxHungerForReproduction) return false;
-            if (creature.Age < MinAgeForReproduction) return false;
-            if (_reproductionCooldowns.ContainsKey(creature.Id)) return false;
+            if (!creature.IsAlive)
+                return false;
+            if (creature.Health < MinHealthForReproduction)
+                return false;
+            if (creature.Hunger > MaxHungerForReproduction)
+                return false;
+            if (creature.Age < MinAgeForReproduction)
+                return false;
+            if (_reproductionCooldowns.ContainsKey(creature.Id))
+                return false;
 
             return true;
         }
@@ -161,9 +170,12 @@ namespace Terrarium.Logic.Simulation
         {
             foreach (var potential in potentialMates)
             {
-                if (potential.Id == creature.Id) continue;
-                if (!CanReproduce(potential)) continue;
-                if (creature.DistanceTo(potential) > MatingRange) continue;
+                if (potential.Id == creature.Id)
+                    continue;
+                if (!CanReproduce(potential))
+                    continue;
+                if (creature.DistanceTo(potential) > MatingRange)
+                    continue;
 
                 return potential;
             }

@@ -72,7 +72,8 @@ namespace Terrarium.Logic.Entities
         {
             base.Update(deltaTime);
 
-            if (!IsAlive) return;
+            if (!IsAlive)
+                return;
 
             // Hunger increases over time
             Hunger += HungerIncreaseRate * deltaTime;

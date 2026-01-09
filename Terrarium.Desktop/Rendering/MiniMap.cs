@@ -17,7 +17,7 @@ namespace Terrarium.Desktop.Rendering
         private readonly Border _mapBorder;
         private readonly Canvas _mapCanvas;
         private readonly Border _viewportIndicator;
-        
+
         private const double MapWidth = 160;
         private const double MapHeight = 100;
         private const double Margin = 10;
@@ -112,7 +112,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(World world, double viewportWidth, double viewportHeight)
         {
-            if (!_isVisible) return;
+            if (!_isVisible)
+                return;
 
             _worldWidth = world.Width;
             _worldHeight = world.Height;

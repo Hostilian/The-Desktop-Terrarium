@@ -53,7 +53,7 @@ namespace Terrarium.Tests.Rendering
             double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
             // sqrt(70^2 + 70^2) = sqrt(9800) ≈ 98.99
 
-            Assert.IsTrue(distance < WarningRadius, 
+            Assert.IsTrue(distance < WarningRadius,
                 $"Diagonal distance {distance:F2} should be within {WarningRadius}");
         }
 
@@ -61,7 +61,7 @@ namespace Terrarium.Tests.Rendering
         public void NearestPredator_SelectsClosest()
         {
             double herbivoreX = 0, herbivoreY = 0;
-            
+
             var carnivores = new[]
             {
                 (x: 200.0, y: 0.0),   // 200 units away
@@ -76,7 +76,7 @@ namespace Terrarium.Tests.Rendering
                 nearestDistance = Math.Min(nearestDistance, dist);
             }
 
-            Assert.AreEqual(50, nearestDistance, 0.01, 
+            Assert.AreEqual(50, nearestDistance, 0.01,
                 "Nearest predator should be 50 units away");
         }
 

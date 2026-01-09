@@ -17,7 +17,7 @@ namespace Terrarium.Desktop.Rendering
         private Rectangle? _healthBar;
         private TextBlock? _statusText;
         private TextBlock? _scoreText;
-        
+
         private double _currentHealth;
         private double _displayHealth;
         private double _pulsePhase;
@@ -124,11 +124,13 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!IsEnabled)
             {
-                if (_container != null) _container.Visibility = Visibility.Collapsed;
+                if (_container != null)
+                    _container.Visibility = Visibility.Collapsed;
                 return;
             }
 
-            if (_container != null) _container.Visibility = Visibility.Visible;
+            if (_container != null)
+                _container.Visibility = Visibility.Visible;
 
             // Calculate health score based on ecosystem balance
             _currentHealth = CalculateHealthScore(plantCount, herbivoreCount, carnivoreCount);
@@ -147,9 +149,12 @@ namespace Terrarium.Desktop.Rendering
             double score = 100;
 
             // Penalty for extinction
-            if (plants == 0) score -= 40;
-            if (herbivores == 0) score -= 30;
-            if (carnivores == 0) score -= 20;
+            if (plants == 0)
+                score -= 40;
+            if (herbivores == 0)
+                score -= 30;
+            if (carnivores == 0)
+                score -= 20;
 
             // Check for imbalance
             int total = plants + herbivores + carnivores;
@@ -174,17 +179,20 @@ namespace Terrarium.Desktop.Rendering
 
             // Bonus for diversity
             int speciesCount = (plants > 0 ? 1 : 0) + (herbivores > 0 ? 1 : 0) + (carnivores > 0 ? 1 : 0);
-            if (speciesCount == 3) score = Math.Min(100, score * 1.1);
+            if (speciesCount == 3)
+                score = Math.Min(100, score * 1.1);
 
             // Population size bonus
-            if (total >= 20 && total <= 100) score = Math.Min(100, score * 1.05);
+            if (total >= 20 && total <= 100)
+                score = Math.Min(100, score * 1.05);
 
             return Math.Clamp(score, 0, 100);
         }
 
         private void UpdateVisuals()
         {
-            if (_healthBar == null || _scoreText == null || _statusText == null) return;
+            if (_healthBar == null || _scoreText == null || _statusText == null)
+                return;
 
             // Update bar width
             _healthBar.Width = (_displayHealth / 100) * 180;

@@ -57,7 +57,8 @@ namespace Terrarium.Logic.Entities
 
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
 
                 double distance = DistanceTo(herbivore);
                 if (distance < minDistance)

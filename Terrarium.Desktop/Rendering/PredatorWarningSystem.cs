@@ -52,7 +52,8 @@ namespace Terrarium.Desktop.Rendering
                 warning.Visual.Opacity = 0.5 + 0.3 * Math.Sin(warning.PulsePhase);
             }
 
-            if (_updateTimer < UpdateInterval) return;
+            if (_updateTimer < UpdateInterval)
+                return;
             _updateTimer = 0;
 
             var carnivoreList = new List<Carnivore>(carnivores);
@@ -60,15 +61,17 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
 
                 existingHerbivores.Add(herbivore);
-                
+
                 // Check distance to nearest carnivore
                 double nearestDistance = double.MaxValue;
                 foreach (var carnivore in carnivoreList)
                 {
-                    if (!carnivore.IsAlive) continue;
+                    if (!carnivore.IsAlive)
+                        continue;
                     double dist = Math.Sqrt(
                         Math.Pow(carnivore.X - herbivore.X, 2) +
                         Math.Pow(carnivore.Y - herbivore.Y, 2));
@@ -117,7 +120,7 @@ namespace Terrarium.Desktop.Rendering
                 // Update intensity based on distance
                 double intensity = 1.0 - (distance / WarningRadius);
                 var warning = _warnings[herbivore];
-                
+
                 // Closer = more red/urgent
                 byte red = (byte)(255 * intensity);
                 byte green = (byte)(100 * (1 - intensity));

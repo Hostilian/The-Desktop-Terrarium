@@ -130,7 +130,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime, int plants, int herbivores, int carnivores)
         {
-            if (!_isVisible) return;
+            if (!_isVisible)
+                return;
 
             _sampleTimer += deltaTime;
             if (_sampleTimer >= SampleInterval)
@@ -157,7 +158,8 @@ namespace Terrarium.Desktop.Rendering
         {
             _graphCanvas.Children.Clear();
 
-            if (_history.Count < 2) return;
+            if (_history.Count < 2)
+                return;
 
             // Find max value for scaling
             int maxValue = 1;
@@ -191,7 +193,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void DrawPopulationLine(List<PopulationSnapshot> history, Func<PopulationSnapshot, int> getValue, Color color, int maxValue)
         {
-            if (history.Count < 2) return;
+            if (history.Count < 2)
+                return;
 
             var points = new PointCollection();
             double xStep = GraphWidth / (MaxHistoryPoints - 1);

@@ -37,7 +37,7 @@ namespace Terrarium.Desktop.Rendering
         /// <summary>
         /// Checks and unlocks achievements based on current stats.
         /// </summary>
-        public void CheckAchievements(int totalBirths, int totalDeaths, int peakPopulation, 
+        public void CheckAchievements(int totalBirths, int totalDeaths, int peakPopulation,
                                        int currentPlants, int currentHerbivores, int currentCarnivores,
                                        double simulationTime)
         {
@@ -53,7 +53,7 @@ namespace Terrarium.Desktop.Rendering
             TryUnlock("births_100", "🎊 Baby Boom", "Witness 100 births", totalBirths >= 100);
 
             // Survival achievements
-            TryUnlock("survivor", "💪 Survivor", "Have at least one of each species alive", 
+            TryUnlock("survivor", "💪 Survivor", "Have at least one of each species alive",
                       currentPlants > 0 && currentHerbivores > 0 && currentCarnivores > 0);
 
             // Time achievements
@@ -206,7 +206,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void HideBanner()
         {
-            if (_achievementBanner == null) return;
+            if (_achievementBanner == null)
+                return;
 
             var slideOut = new DoubleAnimation
             {

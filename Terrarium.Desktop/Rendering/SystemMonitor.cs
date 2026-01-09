@@ -31,7 +31,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public double GetCpuUsage()
         {
-            if (_cpuCounter == null) return 0.0;
+            if (_cpuCounter == null)
+                return 0.0;
 
             try
             {
@@ -46,7 +47,8 @@ namespace Terrarium.Desktop.Rendering
 
         public void Dispose()
         {
-            if (_disposed) return;
+            if (_disposed)
+                return;
 
             _cpuCounter?.Dispose();
             _disposed = true;

@@ -58,7 +58,8 @@ namespace Terrarium.Logic.Entities
 
         public override void Update(double deltaTime)
         {
-            if (!IsAlive) return;
+            if (!IsAlive)
+                return;
 
             Age += deltaTime;
             UpdateHealth(deltaTime);

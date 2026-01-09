@@ -10,7 +10,7 @@ namespace Terrarium.Tests.Rendering
         {
             // Note: This test validates the achievement system's logic
             // without needing the WPF Canvas (which requires STA thread)
-            
+
             // Achievement thresholds are checked internally
             // Testing the logic patterns
             Assert.IsTrue(1 >= 1, "First birth threshold should be met with 1 birth");
@@ -38,15 +38,16 @@ namespace Terrarium.Tests.Rendering
 
             // Verify progression
             Assert.IsTrue(firstBirth < births10, "First birth should be before 10 births");
+            Assert.IsTrue(carnivores5 > 0, "Carnivore threshold should be positive");
             Assert.IsTrue(births10 < births50, "10 births should be before 50 births");
             Assert.IsTrue(births50 < births100, "50 births should be before 100 births");
-            
+
             Assert.IsTrue(population10 < population25, "Population progression makes sense");
             Assert.IsTrue(population25 < population50, "Population progression makes sense");
-            
+
             Assert.IsTrue(time5Min < time30Min, "Time progression makes sense");
             Assert.IsTrue(time30Min < time1Hour, "Time progression makes sense");
-            
+
             Assert.IsTrue(plants20 < plants40, "Plant progression makes sense");
         }
 
@@ -56,12 +57,12 @@ namespace Terrarium.Tests.Rendering
             // Test balance achievement logic
             int totalCreatures = 20;
             int herbivores = 14; // 70%
-            
+
             double herbivoreRatio = (double)herbivores / totalCreatures;
-            
+
             bool inBalanceRange = herbivoreRatio >= 0.6 && herbivoreRatio <= 0.8;
             Assert.IsTrue(inBalanceRange, "70% herbivores should be in balance range");
-            
+
             // Test imbalanced
             herbivores = 5; // 25%
             herbivoreRatio = (double)herbivores / totalCreatures;

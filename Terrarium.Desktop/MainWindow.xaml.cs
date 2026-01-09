@@ -36,6 +36,7 @@ namespace Terrarium.Desktop
         private SpeedIndicator? _speedIndicator;
         private BreedingIndicator? _breedingIndicator;
         private EcosystemHealthBar? _ecosystemHealthBar;
+        private SessionTimer? _sessionTimer;
         private DispatcherTimer? _renderTimer;
         private DispatcherTimer? _systemMonitorTimer;
         private Stopwatch _frameStopwatch;
@@ -264,6 +265,7 @@ namespace Terrarium.Desktop
             _speedIndicator = new SpeedIndicator(RenderCanvas);
             _breedingIndicator = new BreedingIndicator(RenderCanvas);
             _ecosystemHealthBar = new EcosystemHealthBar(RenderCanvas);
+            _sessionTimer = new SessionTimer(RenderCanvas);
 
             // Connect achievement system events
             _achievementSystem.OnAchievementUnlocked += (id, name) =>
@@ -405,7 +407,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void RenderTimer_Tick(object? sender, EventArgs e)
         {
-            if (_simulationEngine == null || _renderer == null) return;
+            if (_simulationEngine == null || _renderer == null)
+                return;
 
             // Calculate delta time
             double deltaTime = _frameStopwatch.Elapsed.TotalSeconds;
@@ -445,6 +448,7 @@ namespace Terrarium.Desktop
             _speedIndicator?.Update(deltaTime);
             _breedingIndicator?.Update(deltaTime, herbivores, carnivores);
             _ecosystemHealthBar?.Update(deltaTime, plants.Count, herbivores.Count, carnivores.Count);
+            _sessionTimer?.Update(deltaTime);
 
             // Check achievements
             var stats = _simulationEngine.Statistics;
@@ -471,7 +475,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void SystemMonitorTimer_Tick(object? sender, EventArgs e)
         {
-            if (_simulationEngine == null || _systemMonitor == null) return;
+            if (_simulationEngine == null || _systemMonitor == null)
+                return;
 
             double cpuUsage = _systemMonitor.GetCpuUsage();
 
@@ -509,7 +514,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void UpdateStatusDisplay()
         {
-            if (_simulationEngine == null) return;
+            if (_simulationEngine == null)
+                return;
 
             // FPS Display
             FpsText.Text = $"{_currentFps:F0}";
@@ -523,7 +529,7 @@ namespace Terrarium.Desktop
             double healthPercent = _simulationEngine.GetEcosystemHealth();
             EcosystemHealthText.Text = $"{healthPercent:P0}";
             HealthBar.Width = Math.Max(0, Math.Min(100, healthPercent * 100));
-            
+
             // Color health bar based on value
             if (healthPercent >= 0.7)
                 HealthBar.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(46, 204, 113)); // Green
@@ -614,7 +620,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (_simulationEngine == null) return;
+            if (_simulationEngine == null)
+                return;
 
             var position = e.GetPosition(RenderCanvas);
 
@@ -627,7 +634,8 @@ namespace Terrarium.Desktop
                     _simulationEngine.World.Herbivores,
                     _simulationEngine.World.Carnivores);
 
-                if (selected) return;
+                if (selected)
+                    return;
             }
 
             var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
@@ -643,7 +651,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_simulationEngine == null) return;
+            if (_simulationEngine == null)
+                return;
 
             var position = e.GetPosition(RenderCanvas);
 
@@ -690,7 +699,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (_simulationEngine == null) return;
+            if (_simulationEngine == null)
+                return;
 
             switch (e.Key)
             {
@@ -800,7 +810,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void WaterAllPlants()
         {
-            if (_simulationEngine == null) return;
+            if (_simulationEngine == null)
+                return;
 
             foreach (var plant in _simulationEngine.World.Plants.Where(p => p.IsAlive).Take(10))
             {
@@ -816,7 +827,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void SaveGame()
         {
-            if (_saveManager == null || _simulationEngine == null) return;
+            if (_saveManager == null || _simulationEngine == null)
+                return;
 
             try
             {
@@ -835,7 +847,8 @@ namespace Terrarium.Desktop
         /// </summary>
         private void LoadGame()
         {
-            if (_saveManager == null) return;
+            if (_saveManager == null)
+                return;
 
             try
             {

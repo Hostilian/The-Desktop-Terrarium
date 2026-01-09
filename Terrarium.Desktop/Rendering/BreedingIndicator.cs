@@ -52,13 +52,14 @@ namespace Terrarium.Desktop.Rendering
             {
                 double bounce = Math.Sin(_animationTime * 4 + heart.AnimOffset) * 3;
                 Canvas.SetTop(heart.Visual, heart.BaseY + bounce);
-                
+
                 // Pulse effect
                 double scale = 1.0 + 0.15 * Math.Sin(_animationTime * 3 + heart.AnimOffset);
                 heart.Visual.RenderTransform = new ScaleTransform(scale, scale, 6, 6);
             }
 
-            if (_updateTimer < UpdateInterval) return;
+            if (_updateTimer < UpdateInterval)
+                return;
             _updateTimer = 0;
 
             var existingCreatures = new HashSet<Creature>();
@@ -66,9 +67,10 @@ namespace Terrarium.Desktop.Rendering
             // Check herbivores
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
                 existingCreatures.Add(herbivore);
-                
+
                 if (CanBreed(herbivore))
                 {
                     ShowHeart(herbivore);
@@ -82,9 +84,10 @@ namespace Terrarium.Desktop.Rendering
             // Check carnivores
             foreach (var carnivore in carnivores)
             {
-                if (!carnivore.IsAlive) continue;
+                if (!carnivore.IsAlive)
+                    continue;
                 existingCreatures.Add(carnivore);
-                
+
                 if (CanBreed(carnivore))
                 {
                     ShowHeart(carnivore);
@@ -129,7 +132,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void ShowHeart(Creature creature)
         {
-            if (_hearts.ContainsKey(creature)) return;
+            if (_hearts.ContainsKey(creature))
+                return;
 
             var heart = new TextBlock
             {

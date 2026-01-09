@@ -61,7 +61,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void ShowTooltip(WorldEntity entity, double mouseX, double mouseY)
         {
-            if (_tooltipBorder == null || _tooltipContent == null) return;
+            if (_tooltipBorder == null || _tooltipContent == null)
+                return;
 
             _currentEntity = entity;
             UpdateTooltipContent(entity);
@@ -95,7 +96,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void HideTooltip()
         {
-            if (_tooltipBorder == null) return;
+            if (_tooltipBorder == null)
+                return;
 
             _tooltipBorder.Visibility = Visibility.Collapsed;
             _currentEntity = null;
@@ -107,7 +109,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void UpdatePosition(double mouseX, double mouseY)
         {
-            if (!_isVisible || _tooltipBorder == null) return;
+            if (!_isVisible || _tooltipBorder == null)
+                return;
 
             double x = mouseX + TooltipOffset;
             double y = mouseY + TooltipOffset;
@@ -140,7 +143,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdateTooltipContent(WorldEntity entity)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             _tooltipContent.Children.Clear();
 
@@ -160,7 +164,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdatePlantTooltip(Plant plant)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             // Title
             AddTooltipHeader("🌿 Plant", Color.FromRgb(76, 175, 80));
@@ -173,13 +178,15 @@ namespace Terrarium.Desktop.Rendering
 
             // Status
             string status = plant.IsAlive ? "Healthy" : "Dead";
-            if (plant.IsAlive && plant.WaterLevel < 30) status = "Thirsty! 💧";
+            if (plant.IsAlive && plant.WaterLevel < 30)
+                status = "Thirsty! 💧";
             AddTooltipFooter(status);
         }
 
         private void UpdateHerbivoreTooltip(Herbivore herbivore)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             // Title
             AddTooltipHeader($"🐰 {herbivore.Type}", Color.FromRgb(255, 183, 77));
@@ -197,7 +204,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdateCarnivoreTooltip(Carnivore carnivore)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             // Title
             AddTooltipHeader($"🐺 {carnivore.Type}", Color.FromRgb(120, 120, 130));
@@ -215,9 +223,12 @@ namespace Terrarium.Desktop.Rendering
 
         private string GetCreatureStatus(Creature creature)
         {
-            if (creature.Hunger > 80) return "Starving! 🍖";
-            if (creature.Hunger > 50) return "Hungry";
-            if (creature.Health < 30) return "Injured! 💔";
+            if (creature.Hunger > 80)
+                return "Starving! 🍖";
+            if (creature.Hunger > 50)
+                return "Hungry";
+            if (creature.Health < 30)
+                return "Injured! 💔";
             if (Math.Abs(creature.VelocityX) > 0.1 || Math.Abs(creature.VelocityY) > 0.1)
             {
                 return creature is Carnivore ? "Hunting 🎯" : "Foraging 🌿";
@@ -227,7 +238,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddTooltipHeader(string text, Color color)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             var header = new TextBlock
             {
@@ -242,7 +254,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddStatBar(string label, double value, double max, Color lowColor, Color highColor)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             var container = new StackPanel { Margin = new Thickness(0, 2, 0, 2) };
 
@@ -301,7 +314,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddStatText(string text)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             var textBlock = new TextBlock
             {
@@ -315,7 +329,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddTooltipFooter(string status)
         {
-            if (_tooltipContent == null) return;
+            if (_tooltipContent == null)
+                return;
 
             var separator = new Border
             {

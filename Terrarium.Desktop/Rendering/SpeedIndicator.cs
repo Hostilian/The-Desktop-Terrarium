@@ -108,7 +108,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdatePosition()
         {
-            if (_container == null) return;
+            if (_container == null)
+                return;
 
             double canvasWidth = _canvas.ActualWidth > 0 ? _canvas.ActualWidth : 800;
             Canvas.SetLeft(_container, (canvasWidth - 120) / 2);
@@ -134,7 +135,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime)
         {
-            if (!IsEnabled || _container == null) return;
+            if (!IsEnabled || _container == null)
+                return;
 
             // Animate display speed
             _displaySpeed += (_currentSpeed - _displaySpeed) * AnimationSpeed * deltaTime;
@@ -144,7 +146,7 @@ namespace Terrarium.Desktop.Rendering
             if (_speedText != null)
             {
                 _speedText.Text = $"{_displaySpeed:F1}x";
-                
+
                 // Color based on speed
                 _speedText.Foreground = _displaySpeed switch
                 {
@@ -195,7 +197,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void Show()
         {
-            if (_container == null) return;
+            if (_container == null)
+                return;
 
             var animation = new DoubleAnimation
             {
@@ -208,7 +211,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void Hide()
         {
-            if (_container == null) return;
+            if (_container == null)
+                return;
 
             var animation = new DoubleAnimation
             {

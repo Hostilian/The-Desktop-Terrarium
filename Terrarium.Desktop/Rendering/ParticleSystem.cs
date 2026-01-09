@@ -36,7 +36,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
 
             for (int i = _particles.Count - 1; i >= 0; i--)
             {
@@ -68,7 +69,7 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void SpawnEatEffect(double x, double y, bool isPlantEating = true)
         {
-            var color = isPlantEating 
+            var color = isPlantEating
                 ? Color.FromRgb(76, 175, 80)  // Green for plant eating
                 : Color.FromRgb(200, 80, 80); // Red for carnivore eating
 
@@ -115,7 +116,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void SpawnBurst(double x, double y, Color color, int count, ParticleType type)
         {
-            if (_particles.Count >= MaxParticles) return;
+            if (_particles.Count >= MaxParticles)
+                return;
 
             for (int i = 0; i < count && _particles.Count < MaxParticles; i++)
             {
@@ -167,7 +169,7 @@ namespace Terrarium.Desktop.Rendering
             double vy = Math.Sin(angle) * speed;
 
             // Adjust for gravity on some types
-            double gravity = type == ParticleType.Droplet ? 100 : 
+            double gravity = type == ParticleType.Droplet ? 100 :
                              type == ParticleType.Wisp ? -20 : 0;
 
             Canvas.SetLeft(visual, x);

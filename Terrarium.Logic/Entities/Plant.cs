@@ -63,7 +63,8 @@ namespace Terrarium.Logic.Entities
         {
             base.Update(deltaTime);
 
-            if (!IsAlive) return;
+            if (!IsAlive)
+                return;
 
             // Plants need water to survive
             WaterLevel -= WaterDecayRate * deltaTime;

@@ -54,7 +54,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
 
             // Update active notifications
             for (int i = _activeNotifications.Count - 1; i >= 0; i--)
@@ -102,7 +103,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Notify(string message, NotificationType type)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             QueueNotification(message, type);
         }
 
@@ -111,7 +113,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyBirth(string creatureType)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             QueueNotification($"🎉 New {creatureType} born!", NotificationType.Birth);
         }
 
@@ -120,7 +123,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyDeath(string creatureType, string cause)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             QueueNotification($"💀 {creatureType} died ({cause})", NotificationType.Death);
         }
 
@@ -129,7 +133,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyWarning(string message)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             QueueNotification($"⚠️ {message}", NotificationType.Warning);
         }
 
@@ -138,7 +143,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyMilestone(string name, int value)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             QueueNotification($"🏆 {name}: {value}", NotificationType.Milestone);
         }
 
@@ -147,7 +153,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyWeatherChange(bool isStormy)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             string msg = isStormy ? "⛈️ Storm approaching!" : "☀️ Weather clearing up";
             QueueNotification(msg, isStormy ? NotificationType.Warning : NotificationType.Info);
         }
@@ -157,7 +164,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void NotifyDayPhaseChange(string phase)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
             string icon = phase.ToLower() switch
             {
                 "dawn" => "🌅",

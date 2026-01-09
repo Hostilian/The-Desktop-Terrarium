@@ -55,7 +55,8 @@ namespace Terrarium.Logic.Entities
 
             foreach (var plant in plants)
             {
-                if (!plant.IsAlive) continue;
+                if (!plant.IsAlive)
+                    continue;
 
                 double distance = DistanceTo(plant);
                 if (distance < minDistance)

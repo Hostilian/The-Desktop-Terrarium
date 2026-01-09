@@ -180,7 +180,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddSliderSetting(string label, string icon, double min, double max, double initial, Action<double> onChanged, string format)
         {
-            if (_settingsContent == null) return;
+            if (_settingsContent == null)
+                return;
 
             var container = new StackPanel { Margin = new Thickness(0, 5, 0, 8) };
 
@@ -230,7 +231,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddToggleSetting(string label, string icon, bool initial, Action<bool> onChanged)
         {
-            if (_settingsContent == null) return;
+            if (_settingsContent == null)
+                return;
 
             var row = new Grid
             {
@@ -289,7 +291,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void AddSeparator()
         {
-            if (_settingsContent == null) return;
+            if (_settingsContent == null)
+                return;
 
             var separator = new Border
             {
@@ -302,7 +305,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdatePosition()
         {
-            if (_panelBorder == null) return;
+            if (_panelBorder == null)
+                return;
 
             // Center the panel
             double x = (_parentCanvas.ActualWidth - PanelWidth) / 2;
@@ -314,7 +318,8 @@ namespace Terrarium.Desktop.Rendering
 
         public void Show()
         {
-            if (_panelBorder == null) return;
+            if (_panelBorder == null)
+                return;
 
             UpdatePosition();
             _panelBorder.Visibility = Visibility.Visible;
@@ -335,7 +340,8 @@ namespace Terrarium.Desktop.Rendering
 
         public void Hide()
         {
-            if (_panelBorder == null) return;
+            if (_panelBorder == null)
+                return;
 
             _panelBorder.Visibility = Visibility.Collapsed;
             _isVisible = false;
@@ -343,8 +349,10 @@ namespace Terrarium.Desktop.Rendering
 
         public void Toggle()
         {
-            if (_isVisible) Hide();
-            else Show();
+            if (_isVisible)
+                Hide();
+            else
+                Show();
         }
 
         public bool IsVisible => _isVisible;

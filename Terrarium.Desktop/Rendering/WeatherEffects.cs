@@ -58,7 +58,8 @@ namespace Terrarium.Desktop.Rendering
         {
             if (!IsEnabled)
             {
-                if (_isRaining) StopRain();
+                if (_isRaining)
+                    StopRain();
                 return;
             }
 
@@ -193,7 +194,8 @@ namespace Terrarium.Desktop.Rendering
         private void UpdateLightning(double deltaTime, double weatherIntensity)
         {
             // Only show lightning during intense storms
-            if (weatherIntensity < 0.8) return;
+            if (weatherIntensity < 0.8)
+                return;
 
             _lightningTimer += deltaTime;
 

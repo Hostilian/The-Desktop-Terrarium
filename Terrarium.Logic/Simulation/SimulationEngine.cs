@@ -210,7 +210,8 @@ namespace Terrarium.Logic.Simulation
         {
             foreach (var herbivore in _world.Herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
 
                 // Check for nearby predators and flee if necessary
                 var nearestPredator = FindNearestPredator(herbivore);
@@ -264,7 +265,8 @@ namespace Terrarium.Logic.Simulation
 
             foreach (var carnivore in _world.Carnivores)
             {
-                if (!carnivore.IsAlive) continue;
+                if (!carnivore.IsAlive)
+                    continue;
 
                 double distance = herbivore.DistanceTo(carnivore);
                 if (distance < minDistance)
@@ -305,7 +307,8 @@ namespace Terrarium.Logic.Simulation
         {
             foreach (var carnivore in _world.Carnivores)
             {
-                if (!carnivore.IsAlive) continue;
+                if (!carnivore.IsAlive)
+                    continue;
 
                 // Apply day/night behavior - carnivores are more active at dawn/dusk
                 bool isHuntingTime = _dayNightCycle.CurrentPhase == DayPhase.Dawn ||

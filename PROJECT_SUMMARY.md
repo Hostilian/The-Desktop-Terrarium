@@ -545,7 +545,7 @@ dotnet test --filter "FullyQualifiedName~Entities"
 | Inheritance (IS-A) | ✅ Complete | WorldEntity→LivingEntity→Plant/Creature |
 | Interfaces (CAN-DO) | ✅ Complete | IClickable, IMovable |
 | Encapsulation | ✅ Complete | All fields private, properties public |
-| Unit tests | ✅ Complete | 35 passing tests |
+| Unit tests | ✅ Complete | 100 passing tests |
 | No magic constants | ✅ Complete | All values named |
 | Single Responsibility | ✅ Complete | Specialized classes (Renderer, MovementCalculator) |
 | No God objects | ✅ Complete | Logic split across managers |

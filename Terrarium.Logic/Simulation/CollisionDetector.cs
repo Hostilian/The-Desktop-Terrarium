@@ -55,7 +55,8 @@ namespace Terrarium.Logic.Simulation
 
             foreach (var entity in entities)
             {
-                if (entity.Id == center.Id) continue;
+                if (entity.Id == center.Id)
+                    continue;
 
                 double distance = center.DistanceTo(entity);
                 if (distance <= radius)

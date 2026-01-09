@@ -19,7 +19,7 @@ namespace Terrarium.Desktop.Rendering
         private Ellipse? _selectionRing;
         private Border? _infoPanel;
         private readonly Dictionary<string, TextBlock> _infoLabels;
-        
+
         public bool IsEnabled { get; set; } = true;
         public LivingEntity? SelectedEntity => _selectedEntity;
 
@@ -92,10 +92,11 @@ namespace Terrarium.Desktop.Rendering
         /// <summary>
         /// Attempts to select an entity at the given position.
         /// </summary>
-        public bool TrySelect(double x, double y, IEnumerable<Plant> plants, 
+        public bool TrySelect(double x, double y, IEnumerable<Plant> plants,
                              IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores)
         {
-            if (!IsEnabled) return false;
+            if (!IsEnabled)
+                return false;
 
             const double selectRadius = 20;
             LivingEntity? nearest = null;
@@ -104,7 +105,8 @@ namespace Terrarium.Desktop.Rendering
             // Check creatures first (on top visually)
             foreach (var carnivore in carnivores)
             {
-                if (!carnivore.IsAlive) continue;
+                if (!carnivore.IsAlive)
+                    continue;
                 double dist = Math.Sqrt(Math.Pow(carnivore.X - x, 2) + Math.Pow(carnivore.Y - y, 2));
                 if (dist < selectRadius && dist < nearestDist)
                 {
@@ -115,7 +117,8 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
                 double dist = Math.Sqrt(Math.Pow(herbivore.X - x, 2) + Math.Pow(herbivore.Y - y, 2));
                 if (dist < selectRadius && dist < nearestDist)
                 {
@@ -126,7 +129,8 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var plant in plants)
             {
-                if (!plant.IsAlive) continue;
+                if (!plant.IsAlive)
+                    continue;
                 double dist = Math.Sqrt(Math.Pow(plant.X - x, 2) + Math.Pow(plant.Y - y, 2));
                 if (dist < selectRadius && dist < nearestDist)
                 {
@@ -238,7 +242,8 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdateInfoLabels()
         {
-            if (_selectedEntity == null) return;
+            if (_selectedEntity == null)
+                return;
 
             string entityType = _selectedEntity switch
             {

@@ -34,10 +34,12 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         public void Update(double deltaTime, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+                return;
 
             _updateTimer += deltaTime;
-            if (_updateTimer < UpdateInterval) return;
+            if (_updateTimer < UpdateInterval)
+                return;
             _updateTimer = 0;
 
             // Track which creatures still exist
@@ -45,7 +47,8 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive) continue;
+                if (!herbivore.IsAlive)
+                    continue;
 
                 existingCreatures.Add(herbivore);
                 string mood = GetMoodEmoji(herbivore);
@@ -54,7 +57,8 @@ namespace Terrarium.Desktop.Rendering
 
             foreach (var carnivore in carnivores)
             {
-                if (!carnivore.IsAlive) continue;
+                if (!carnivore.IsAlive)
+                    continue;
 
                 existingCreatures.Add(carnivore);
                 string mood = GetMoodEmoji(carnivore);

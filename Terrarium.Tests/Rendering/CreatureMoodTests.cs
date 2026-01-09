@@ -55,26 +55,33 @@ namespace Terrarium.Tests.Rendering
         private string GetMoodEmoji(double health, double hunger, bool isMoving)
         {
             // Critical health
-            if (health < 20) return "💔";
-            
+            if (health < 20)
+                return "💔";
+
             // Very hungry
-            if (hunger > 80) return "😰";
-            
+            if (hunger > 80)
+                return "😰";
+
             // Hunting/active
-            if (isMoving && hunger > 30) return "🎯";
-            
+            if (isMoving && hunger > 30)
+                return "🎯";
+
             // Happy and healthy
-            if (health > 70 && hunger < 30) return "😊";
-            
+            if (health > 70 && hunger < 30)
+                return "😊";
+
             // Neutral
-            if (health > 40 && hunger < 60) return "😐";
-            
+            if (health > 40 && hunger < 60)
+                return "😐";
+
             // Worried
-            if (health < 40 || hunger > 60) return "😟";
-            
+            if (health < 40 || hunger > 60)
+                return "😟";
+
             // Just ate
-            if (hunger < 20) return "🍖";
-            
+            if (hunger < 20)
+                return "🍖";
+
             // Content
             return "😋";
         }

@@ -29,15 +29,15 @@ namespace Terrarium.Desktop.Rendering
         private static readonly Brush PlantStemColor = new SolidColorBrush(Color.FromRgb(46, 125, 50));
         private static readonly Brush PlantLeafColor = new SolidColorBrush(Color.FromRgb(76, 175, 80));
         private static readonly Brush PlantLeafHighlight = new SolidColorBrush(Color.FromRgb(129, 199, 132));
-        
+
         private static readonly Brush HerbivoreBodyColor = new SolidColorBrush(Color.FromRgb(255, 183, 77)); // Warm orange
         private static readonly Brush HerbivoreBellyColor = new SolidColorBrush(Color.FromRgb(255, 224, 178)); // Light cream
         private static readonly Brush HerbivoreEarColor = new SolidColorBrush(Color.FromRgb(255, 138, 128)); // Pink
-        
+
         private static readonly Brush CarnivoreBodyColor = new SolidColorBrush(Color.FromRgb(120, 120, 130)); // Gray
         private static readonly Brush CarnivoreFurColor = new SolidColorBrush(Color.FromRgb(150, 150, 160)); // Light gray
         private static readonly Brush CarnivoreAccentColor = new SolidColorBrush(Color.FromRgb(200, 80, 80)); // Red accent
-        
+
         private static readonly Brush DeadColor = new SolidColorBrush(Color.FromRgb(128, 128, 128));
 
         // Animation constants
@@ -189,7 +189,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void UpdatePlantVisual(Plant plant)
         {
-            if (!_entityVisuals.TryGetValue(plant.Id, out var visual)) return;
+            if (!_entityVisuals.TryGetValue(plant.Id, out var visual))
+                return;
 
             double x = plant.X;
             double y = plant.Y;
@@ -335,15 +336,24 @@ namespace Terrarium.Desktop.Rendering
                     creatureGroup.Children.Add(rightPupil);
                     creatureGroup.Children.Add(nose);
 
-                    Canvas.SetLeft(leftEar, 5); Canvas.SetTop(leftEar, -10);
-                    Canvas.SetLeft(rightEar, 15); Canvas.SetTop(rightEar, -10);
-                    Canvas.SetLeft(body, 1); Canvas.SetTop(body, 3);
-                    Canvas.SetLeft(belly, 7); Canvas.SetTop(belly, 10);
-                    Canvas.SetLeft(leftEye, 7); Canvas.SetTop(leftEye, 8);
-                    Canvas.SetLeft(rightEye, 17); Canvas.SetTop(rightEye, 8);
-                    Canvas.SetLeft(leftPupil, 9); Canvas.SetTop(leftPupil, 10);
-                    Canvas.SetLeft(rightPupil, 19); Canvas.SetTop(rightPupil, 10);
-                    Canvas.SetLeft(nose, 13); Canvas.SetTop(nose, 16);
+                    Canvas.SetLeft(leftEar, 5);
+                    Canvas.SetTop(leftEar, -10);
+                    Canvas.SetLeft(rightEar, 15);
+                    Canvas.SetTop(rightEar, -10);
+                    Canvas.SetLeft(body, 1);
+                    Canvas.SetTop(body, 3);
+                    Canvas.SetLeft(belly, 7);
+                    Canvas.SetTop(belly, 10);
+                    Canvas.SetLeft(leftEye, 7);
+                    Canvas.SetTop(leftEye, 8);
+                    Canvas.SetLeft(rightEye, 17);
+                    Canvas.SetTop(rightEye, 8);
+                    Canvas.SetLeft(leftPupil, 9);
+                    Canvas.SetTop(leftPupil, 10);
+                    Canvas.SetLeft(rightPupil, 19);
+                    Canvas.SetTop(rightPupil, 10);
+                    Canvas.SetLeft(nose, 13);
+                    Canvas.SetTop(nose, 16);
                 }
                 else
                 {
@@ -403,15 +413,24 @@ namespace Terrarium.Desktop.Rendering
                     creatureGroup.Children.Add(rightPupil);
                     creatureGroup.Children.Add(nose);
 
-                    Canvas.SetLeft(leftEar, 2); Canvas.SetTop(leftEar, -6);
-                    Canvas.SetLeft(rightEar, 18); Canvas.SetTop(rightEar, -6);
-                    Canvas.SetLeft(body, 0); Canvas.SetTop(body, 4);
-                    Canvas.SetLeft(snout, 9); Canvas.SetTop(snout, 18);
-                    Canvas.SetLeft(leftEye, 6); Canvas.SetTop(leftEye, 10);
-                    Canvas.SetLeft(rightEye, 19); Canvas.SetTop(rightEye, 10);
-                    Canvas.SetLeft(leftPupil, 8); Canvas.SetTop(leftPupil, 10);
-                    Canvas.SetLeft(rightPupil, 21); Canvas.SetTop(rightPupil, 10);
-                    Canvas.SetLeft(nose, 14); Canvas.SetTop(nose, 20);
+                    Canvas.SetLeft(leftEar, 2);
+                    Canvas.SetTop(leftEar, -6);
+                    Canvas.SetLeft(rightEar, 18);
+                    Canvas.SetTop(rightEar, -6);
+                    Canvas.SetLeft(body, 0);
+                    Canvas.SetTop(body, 4);
+                    Canvas.SetLeft(snout, 9);
+                    Canvas.SetTop(snout, 18);
+                    Canvas.SetLeft(leftEye, 6);
+                    Canvas.SetTop(leftEye, 10);
+                    Canvas.SetLeft(rightEye, 19);
+                    Canvas.SetTop(rightEye, 10);
+                    Canvas.SetLeft(leftPupil, 8);
+                    Canvas.SetTop(leftPupil, 10);
+                    Canvas.SetLeft(rightPupil, 21);
+                    Canvas.SetTop(rightPupil, 10);
+                    Canvas.SetLeft(nose, 14);
+                    Canvas.SetTop(nose, 20);
                 }
 
                 _canvas.Children.Add(creatureGroup);
@@ -424,7 +443,8 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void UpdateCreatureVisual(Creature creature)
         {
-            if (!_entityVisuals.TryGetValue(creature.Id, out var visual)) return;
+            if (!_entityVisuals.TryGetValue(creature.Id, out var visual))
+                return;
 
             Canvas.SetLeft(visual, creature.X - 15);
             Canvas.SetTop(visual, creature.Y - 15);

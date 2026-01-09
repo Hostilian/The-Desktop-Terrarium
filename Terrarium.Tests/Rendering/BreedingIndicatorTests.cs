@@ -41,8 +41,8 @@ namespace Terrarium.Tests.Rendering
         public void CanBreed_ExactThreshold_ReturnsTrue()
         {
             bool canBreed = CanBreed(
-                health: MinHealthForBreeding, 
-                hunger: MaxHungerForBreeding, 
+                health: MinHealthForBreeding,
+                hunger: MaxHungerForBreeding,
                 age: MinAgeForBreeding);
             Assert.IsTrue(canBreed, "Creature at exact thresholds should breed");
         }

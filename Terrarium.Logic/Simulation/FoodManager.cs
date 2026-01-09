@@ -94,7 +94,8 @@ namespace Terrarium.Logic.Simulation
             int herbivoreCount = _world.Herbivores.Count;
             int totalCount = plantCount + herbivoreCount + _world.Carnivores.Count;
 
-            if (totalCount == 0) return MinEcosystemHealth;
+            if (totalCount == 0)
+                return MinEcosystemHealth;
 
             // Ideal ratio: 60% plants, 30% herbivores, 10% carnivores
             double plantRatio = (double)plantCount / totalCount;

@@ -49,15 +49,20 @@ namespace Terrarium.Logic.Simulation
         public double CarnivoreReproductionChanceMultiplier { get; set; } = 1.0;
 
         public ReproductionManager(World world)
-            : this(world, EventSystem.Instance)
+            : this(world, EventSystem.Instance, random: null)
         {
         }
 
         public ReproductionManager(World world, EventSystem eventSystem)
+            : this(world, eventSystem, random: null)
+        {
+        }
+
+        public ReproductionManager(World world, EventSystem eventSystem, Random? random)
         {
             _world = world;
             _eventSystem = eventSystem;
-            _random = new Random();
+            _random = random ?? new Random();
             _collisionDetector = new CollisionDetector();
             _reproductionCooldowns = new Dictionary<int, double>();
         }

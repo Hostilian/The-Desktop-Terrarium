@@ -44,13 +44,18 @@ namespace Terrarium.Logic.Simulation
         public double Height { get; set; }
 
         public World(double width = MaxX, double height = MaxY)
+            : this(width, height, random: null)
+        {
+        }
+
+        public World(double width, double height, Random? random)
         {
             Width = width;
             Height = height;
             _plants = new List<Plant>();
             _herbivores = new List<Herbivore>();
             _carnivores = new List<Carnivore>();
-            _random = new Random();
+            _random = random ?? new Random();
         }
 
         /// <summary>

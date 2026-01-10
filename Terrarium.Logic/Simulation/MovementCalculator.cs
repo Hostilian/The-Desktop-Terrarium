@@ -19,9 +19,14 @@ namespace Terrarium.Logic.Simulation
         private double _wanderTimer;
 
         public MovementCalculator(World world)
+            : this(world, random: null)
+        {
+        }
+
+        public MovementCalculator(World world, Random? random)
         {
             _world = world;
-            _random = new Random();
+            _random = random ?? new Random();
             _wanderTimer = 0;
         }
 

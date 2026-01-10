@@ -62,7 +62,6 @@ namespace Terrarium.Tests.Persistence
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public void SaveManager_LoadWorld_InvalidJson_ThrowsInvalidDataException()
         {
             string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_test_{Guid.NewGuid():N}.json");
@@ -72,7 +71,15 @@ namespace Terrarium.Tests.Persistence
                 File.WriteAllText(filePath, "not valid json");
                 var saveManager = new SaveManager();
 
-                saveManager.LoadWorld(filePath);
+                try
+                {
+                    saveManager.LoadWorld(filePath);
+                    Assert.Fail("Expected InvalidDataException to be thrown for invalid JSON.");
+                }
+                catch (InvalidDataException)
+                {
+                    // expected
+                }
             }
             finally
             {

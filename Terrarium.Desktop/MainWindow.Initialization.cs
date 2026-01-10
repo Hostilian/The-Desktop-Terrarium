@@ -11,6 +11,13 @@ namespace Terrarium.Desktop
 {
     public partial class MainWindow
     {
+        private EventSystem? _wiredEventSystem;
+        private Action<Terrarium.Logic.Entities.Creature, Terrarium.Logic.Entities.Creature?, Terrarium.Logic.Entities.Creature?>? _onCreatureBornHandler;
+        private Action<Terrarium.Logic.Entities.Creature, string>? _onCreatureDiedHandler;
+        private Action<Terrarium.Logic.Entities.Plant, Terrarium.Logic.Entities.Creature>? _onPlantEatenHandler;
+        private Action<string>? _onDayPhaseChangedHandler;
+        private Action<string, int>? _onMilestoneReachedHandler;
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             PositionWindowAtBottom();
@@ -109,40 +116,9 @@ namespace Terrarium.Desktop
                     _soundManager.IsEnabled = enabled;
             };
 
-            // Subscribe to simulation events for particles and notifications
-            if (_simulationEngine != null)
-            {
-                _simulationEngine.EventSystem.OnCreatureBorn += (creature, parent1, parent2) =>
-                {
-                    _particleSystem?.SpawnBirthEffect(creature.X, creature.Y);
-                    string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
-                                         creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
-                    _notificationManager?.NotifyBirth(creatureType);
-                };
-
-                _simulationEngine.EventSystem.OnCreatureDied += (creature, cause) =>
-                {
-                    _particleSystem?.SpawnDeathEffect(creature.X, creature.Y);
-                    string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
-                                         creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
-                    _notificationManager?.NotifyDeath(creatureType, cause);
-                };
-
-                _simulationEngine.EventSystem.OnPlantEaten += (plant, creature) =>
-                {
-                    _particleSystem?.SpawnEatEffect(plant.X, plant.Y);
-                };
-
-                _simulationEngine.EventSystem.OnDayPhaseChanged += phase =>
-                {
-                    _notificationManager?.NotifyDayPhaseChange(phase);
-                };
-
-                _simulationEngine.EventSystem.OnMilestoneReached += (name, value) =>
-                {
-                    _notificationManager?.NotifyMilestone(name, value);
-                };
-            }
+            // Subscribe to simulation events for particles and notifications.
+            // IMPORTANT: this must be re-wired if we ever replace _simulationEngine (e.g., after loading a save).
+            WireSimulationEvents();
 
             // Setup render timer (60 FPS)
             _renderTimer = new DispatcherTimer
@@ -150,6 +126,70 @@ namespace Terrarium.Desktop
                 Interval = TimeSpan.FromMilliseconds(RenderInterval)
             };
             _renderTimer.Tick += RenderTimer_Tick;
+        }
+
+        private void WireSimulationEvents()
+        {
+            if (_simulationEngine == null)
+                return;
+
+            var eventSystem = _simulationEngine.EventSystem;
+
+            if (ReferenceEquals(_wiredEventSystem, eventSystem))
+                return;
+
+            if (_wiredEventSystem != null)
+            {
+                if (_onCreatureBornHandler != null)
+                    _wiredEventSystem.OnCreatureBorn -= _onCreatureBornHandler;
+                if (_onCreatureDiedHandler != null)
+                    _wiredEventSystem.OnCreatureDied -= _onCreatureDiedHandler;
+                if (_onPlantEatenHandler != null)
+                    _wiredEventSystem.OnPlantEaten -= _onPlantEatenHandler;
+                if (_onDayPhaseChangedHandler != null)
+                    _wiredEventSystem.OnDayPhaseChanged -= _onDayPhaseChangedHandler;
+                if (_onMilestoneReachedHandler != null)
+                    _wiredEventSystem.OnMilestoneReached -= _onMilestoneReachedHandler;
+            }
+
+            _onCreatureBornHandler ??= (creature, parent1, parent2) =>
+            {
+                _particleSystem?.SpawnBirthEffect(creature.X, creature.Y);
+                string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
+                                     creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
+                _notificationManager?.NotifyBirth(creatureType);
+            };
+
+            _onCreatureDiedHandler ??= (creature, cause) =>
+            {
+                _particleSystem?.SpawnDeathEffect(creature.X, creature.Y);
+                string creatureType = creature is Terrarium.Logic.Entities.Herbivore h ? h.Type :
+                                     creature is Terrarium.Logic.Entities.Carnivore c ? c.Type : "Creature";
+                _notificationManager?.NotifyDeath(creatureType, cause);
+            };
+
+            _onPlantEatenHandler ??= (plant, creature) =>
+            {
+                _particleSystem?.SpawnEatEffect(plant.X, plant.Y);
+            };
+
+            _onDayPhaseChangedHandler ??= phase =>
+            {
+                _notificationManager?.NotifyDayPhaseChange(phase);
+            };
+
+            _onMilestoneReachedHandler ??= (name, value) =>
+            {
+                _notificationManager?.NotifyMilestone(name, value);
+            };
+
+            eventSystem.OnCreatureBorn += _onCreatureBornHandler;
+            eventSystem.OnCreatureDied += _onCreatureDiedHandler;
+            eventSystem.OnPlantEaten += _onPlantEatenHandler;
+            eventSystem.OnDayPhaseChanged += _onDayPhaseChangedHandler;
+            eventSystem.OnMilestoneReached += _onMilestoneReachedHandler;
+
+            _wiredEventSystem = eventSystem;
         }
 
         /// <summary>
@@ -182,6 +222,7 @@ namespace Terrarium.Desktop
                     if (_simulationEngine != null)
                     {
                         _simulationEngine = new SimulationEngine(loadedWorld);
+                        WireSimulationEvents();
                     }
                 }
                 catch (Exception ex)

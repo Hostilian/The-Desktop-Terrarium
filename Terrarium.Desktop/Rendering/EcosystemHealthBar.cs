@@ -18,6 +18,14 @@ namespace Terrarium.Desktop.Rendering
         private TextBlock? _statusText;
         private TextBlock? _scoreText;
 
+        private LinearGradientBrush? _healthGradient;
+        private GradientStop? _healthGradientLightStop;
+        private GradientStop? _healthGradientDarkStop;
+        private SolidColorBrush? _scoreForegroundBrush;
+        private SolidColorBrush? _statusForegroundBrush;
+
+        private const double BarMaxWidth = 180;
+
         private double _currentHealth;
         private double _displayHealth;
         private double _pulsePhase;
@@ -63,12 +71,13 @@ namespace Terrarium.Desktop.Rendering
             Grid.SetColumn(title, 0);
             titleRow.Children.Add(title);
 
+            _scoreForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
             _scoreText = new TextBlock
             {
                 Text = "100%",
                 FontSize = 11,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 150))
+                Foreground = _scoreForegroundBrush
             };
             Grid.SetColumn(_scoreText, 1);
             titleRow.Children.Add(_scoreText);
@@ -84,12 +93,25 @@ namespace Terrarium.Desktop.Rendering
                 Margin = new Thickness(0, 6, 0, 6)
             };
 
+            _healthGradientLightStop = new GradientStop(Color.FromRgb(140, 255, 190), 0);
+            _healthGradientDarkStop = new GradientStop(Color.FromRgb(100, 255, 150), 1);
+            _healthGradient = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops = new GradientStopCollection
+                {
+                    _healthGradientLightStop,
+                    _healthGradientDarkStop
+                }
+            };
+
             _healthBar = new Rectangle
             {
                 Height = 12,
                 RadiusX = 6,
                 RadiusY = 6,
-                Fill = CreateHealthGradient(100)
+                Fill = _healthGradient
             };
 
             var barContainer = new Grid();
@@ -98,11 +120,12 @@ namespace Terrarium.Desktop.Rendering
             stack.Children.Add(barContainer);
 
             // Status text
+            _statusForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
             _statusText = new TextBlock
             {
                 Text = "✨ Thriving",
                 FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 150)),
+                Foreground = _statusForegroundBrush,
                 TextAlignment = TextAlignment.Center
             };
             stack.Children.Add(_statusText);
@@ -146,21 +169,30 @@ namespace Terrarium.Desktop.Rendering
 
         private void UpdateVisuals()
         {
-            if (_healthBar == null || _scoreText == null || _statusText == null)
+            if (_healthBar == null || _scoreText == null || _statusText == null ||
+                _healthGradientLightStop == null || _healthGradientDarkStop == null ||
+                _scoreForegroundBrush == null || _statusForegroundBrush == null)
                 return;
 
             // Update bar width
-            _healthBar.Width = (_displayHealth / 100) * 180;
-            _healthBar.Fill = CreateHealthGradient(_displayHealth);
+            _healthBar.Width = (_displayHealth / 100) * BarMaxWidth;
+
+            var color = GetHealthColor(_displayHealth);
+            var lighterColor = Color.FromRgb(
+                (byte)Math.Min(255, color.R + 40),
+                (byte)Math.Min(255, color.G + 40),
+                (byte)Math.Min(255, color.B + 40));
+            _healthGradientLightStop.Color = lighterColor;
+            _healthGradientDarkStop.Color = color;
 
             // Update score text
             _scoreText.Text = $"{_displayHealth:F0}%";
-            _scoreText.Foreground = new SolidColorBrush(GetHealthColor(_displayHealth));
+            _scoreForegroundBrush.Color = color;
 
             // Update status text
             var (status, color) = GetStatus(_displayHealth);
             _statusText.Text = status;
-            _statusText.Foreground = new SolidColorBrush(color);
+            _statusForegroundBrush.Color = color;
 
             // Pulse effect for critical health
             if (_displayHealth < 25 && _container != null)

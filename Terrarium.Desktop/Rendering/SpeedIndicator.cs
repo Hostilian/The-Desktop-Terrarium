@@ -16,9 +16,16 @@ namespace Terrarium.Desktop.Rendering
         private Border? _container;
         private TextBlock? _speedText;
         private Rectangle[] _speedBars;
+        private SolidColorBrush[] _speedBarBrushes;
         private double _currentSpeed;
         private double _displaySpeed;
         private double _hideTimer;
+
+        private readonly SolidColorBrush _speedTextSlowBrush = new(Color.FromRgb(100, 150, 255));
+        private readonly SolidColorBrush _speedTextFastBrush = new(Color.FromRgb(255, 150, 100));
+        private readonly SolidColorBrush _speedTextNormalBrush = new(Colors.White);
+
+        private static readonly Color InactiveBarColor = Color.FromRgb(60, 60, 60);
 
         private const double HideDelay = 3.0;
         private const double AnimationSpeed = 8.0;
@@ -29,6 +36,7 @@ namespace Terrarium.Desktop.Rendering
         {
             _canvas = canvas;
             _speedBars = new Rectangle[5];
+            _speedBarBrushes = new SolidColorBrush[5];
             _currentSpeed = 1.0;
             _displaySpeed = 1.0;
             CreateUI();
@@ -72,11 +80,13 @@ namespace Terrarium.Desktop.Rendering
 
             for (int i = 0; i < 5; i++)
             {
+                var brush = new SolidColorBrush(InactiveBarColor);
+                _speedBarBrushes[i] = brush;
                 _speedBars[i] = new Rectangle
                 {
                     Width = 4,
                     Height = 8 + i * 3,
-                    Fill = new SolidColorBrush(Color.FromRgb(60, 60, 60)),
+                    Fill = brush,
                     Margin = new Thickness(2, 0, 2, 0),
                     RadiusX = 1,
                     RadiusY = 1,
@@ -150,9 +160,9 @@ namespace Terrarium.Desktop.Rendering
                 // Color based on speed
                 _speedText.Foreground = _displaySpeed switch
                 {
-                    < 0.5 => new SolidColorBrush(Color.FromRgb(100, 150, 255)),
-                    > 2.0 => new SolidColorBrush(Color.FromRgb(255, 150, 100)),
-                    _ => Brushes.White
+                    < 0.5 => _speedTextSlowBrush,
+                    > 2.0 => _speedTextFastBrush,
+                    _ => _speedTextNormalBrush
                 };
             }
 
@@ -168,10 +178,8 @@ namespace Terrarium.Desktop.Rendering
 
             for (int i = 0; i < 5; i++)
             {
-                Color barColor = i < activeBars ?
-                    GetSpeedColor(_displaySpeed) :
-                    Color.FromRgb(60, 60, 60);
-                _speedBars[i].Fill = new SolidColorBrush(barColor);
+                Color barColor = i < activeBars ? GetSpeedColor(_displaySpeed) : InactiveBarColor;
+                _speedBarBrushes[i].Color = barColor;
             }
 
             // Auto-hide

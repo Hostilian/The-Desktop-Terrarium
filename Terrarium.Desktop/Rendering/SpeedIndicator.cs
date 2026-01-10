@@ -39,6 +39,14 @@ namespace Terrarium.Desktop.Rendering
             _speedBarBrushes = new SolidColorBrush[5];
             _currentSpeed = 1.0;
             _displaySpeed = 1.0;
+
+            if (_speedTextSlowBrush.CanFreeze)
+                _speedTextSlowBrush.Freeze();
+            if (_speedTextFastBrush.CanFreeze)
+                _speedTextFastBrush.Freeze();
+            if (_speedTextNormalBrush.CanFreeze)
+                _speedTextNormalBrush.Freeze();
+
             CreateUI();
         }
 
@@ -46,8 +54,8 @@ namespace Terrarium.Desktop.Rendering
         {
             _container = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+                Background = CreateFrozenBrush(Color.FromArgb(200, 20, 30, 40)),
+                BorderBrush = CreateFrozenBrush(Color.FromRgb(100, 100, 100)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(6),
                 Padding = new Thickness(12, 8, 12, 8),
@@ -238,6 +246,13 @@ namespace Terrarium.Desktop.Rendering
         {
             _hideTimer = HideDelay;
             Show();
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

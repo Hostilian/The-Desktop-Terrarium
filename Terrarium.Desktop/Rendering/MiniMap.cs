@@ -70,9 +70,9 @@ namespace Terrarium.Desktop.Rendering
             // Viewport indicator (shows current view area)
             _viewportIndicator = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255)),
+                BorderBrush = CreateFrozenBrush(Color.FromArgb(180, 255, 255, 255)),
                 BorderThickness = new Thickness(1.5),
-                Background = new SolidColorBrush(Color.FromArgb(30, 255, 255, 255)),
+                Background = CreateFrozenBrush(Color.FromArgb(30, 255, 255, 255)),
                 CornerRadius = new CornerRadius(2)
             };
 
@@ -81,8 +81,8 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = MapWidth + 4,
                 Height = MapHeight + 24,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 20, 30)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
+                Background = CreateFrozenBrush(Color.FromArgb(200, 20, 20, 30)),
+                BorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8),
                 Child = new StackPanel
@@ -93,7 +93,7 @@ namespace Terrarium.Desktop.Rendering
                         {
                             Text = "🗺️ Map",
                             FontSize = 10,
-                            Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+                            Foreground = CreateFrozenBrush(Color.FromRgb(150, 150, 150)),
                             Margin = new Thickness(8, 4, 0, 2),
                             FontWeight = FontWeights.SemiBold
                         },
@@ -101,10 +101,11 @@ namespace Terrarium.Desktop.Rendering
                         {
                             Child = _mapCanvas,
                             Margin = new Thickness(2, 0, 2, 2),
-                            Background = new LinearGradientBrush(
-                                Color.FromRgb(34, 50, 34),
-                                Color.FromRgb(28, 42, 28),
-                                90),
+                            Background = CreateFrozenBrush(
+                                new LinearGradientBrush(
+                                    Color.FromRgb(34, 50, 34),
+                                    Color.FromRgb(28, 42, 28),
+                                    90)),
                             CornerRadius = new CornerRadius(4)
                         }
                     }

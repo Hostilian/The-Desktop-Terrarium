@@ -20,6 +20,10 @@ namespace Terrarium.Desktop.Rendering
         private Border? _infoPanel;
         private readonly Dictionary<string, TextBlock> _infoLabels;
 
+        private static readonly Brush AccentBrush = CreateFrozenBrush(Color.FromRgb(80, 200, 255));
+        private static readonly Brush HintBrush = CreateFrozenBrush(Color.FromRgb(150, 150, 150));
+        private static readonly Brush PanelBackgroundBrush = CreateFrozenBrush(Color.FromArgb(200, 20, 30, 40));
+
         public bool IsEnabled { get; set; } = true;
         public LivingEntity? SelectedEntity => _selectedEntity;
 
@@ -38,8 +42,8 @@ namespace Terrarium.Desktop.Rendering
             _infoPanel = new Border
             {
                 Width = 180,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(80, 200, 255)),
+                Background = PanelBackgroundBrush,
+                BorderBrush = AccentBrush,
                 BorderThickness = new Thickness(2),
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(10),
@@ -54,7 +58,7 @@ namespace Terrarium.Desktop.Rendering
                 Text = "🔍 Selected Entity",
                 FontSize = 12,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(80, 200, 255)),
+                Foreground = AccentBrush,
                 Margin = new Thickness(0, 0, 0, 8)
             };
             stack.Children.Add(title);
@@ -78,7 +82,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = "Press F to follow • Esc to deselect",
                 FontSize = 9,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+                Foreground = HintBrush,
                 Margin = new Thickness(0, 8, 0, 0),
                 TextWrapping = TextWrapping.Wrap
             };
@@ -165,7 +169,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = 40,
                 Height = 40,
-                Stroke = new SolidColorBrush(Color.FromRgb(80, 200, 255)),
+                Stroke = AccentBrush,
                 StrokeThickness = 2,
                 StrokeDashArray = new DoubleCollection { 4, 2 },
                 Fill = Brushes.Transparent
@@ -286,6 +290,13 @@ namespace Terrarium.Desktop.Rendering
                 return null;
 
             return new Point(_selectedEntity.X, _selectedEntity.Y);
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
 
         /// <summary>

@@ -82,7 +82,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = "📈 Population",
                 FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+                Foreground = CreateFrozenBrush(Color.FromRgb(150, 150, 150)),
                 Margin = new Thickness(8, 4, 0, 0),
                 FontWeight = FontWeights.SemiBold
             });
@@ -91,7 +91,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Child = _graphCanvas,
                 Margin = new Thickness(4),
-                Background = new SolidColorBrush(Color.FromArgb(100, 20, 20, 30)),
+                Background = CreateFrozenBrush(Color.FromArgb(100, 20, 20, 30)),
                 CornerRadius = new CornerRadius(4)
             });
 
@@ -99,8 +99,8 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = GraphWidth + 16,
                 Height = GraphHeight + 50,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 20, 30)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
+                Background = CreateFrozenBrush(Color.FromArgb(200, 20, 20, 30)),
+                BorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8),
                 Child = content
@@ -122,7 +122,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = 6,
                 Height = 6,
-                Fill = new SolidColorBrush(color),
+                Fill = CreateFrozenBrush(color),
                 Margin = new Thickness(0, 0, 3, 0),
                 VerticalAlignment = VerticalAlignment.Center
             });

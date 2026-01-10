@@ -47,8 +47,8 @@ namespace Terrarium.Desktop.Rendering
             _container = new Border
             {
                 Width = 200,
-                Background = new SolidColorBrush(Color.FromArgb(200, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80)),
+                Background = CreateFrozenBrush(Color.FromArgb(200, 20, 30, 40)),
+                BorderBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 80)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(10)
@@ -88,7 +88,7 @@ namespace Terrarium.Desktop.Rendering
             var barBg = new Border
             {
                 Height = 12,
-                Background = new SolidColorBrush(Color.FromRgb(40, 40, 40)),
+                Background = CreateFrozenBrush(Color.FromRgb(40, 40, 40)),
                 CornerRadius = new CornerRadius(6),
                 Margin = new Thickness(0, 6, 0, 6)
             };
@@ -239,6 +239,13 @@ namespace Terrarium.Desktop.Rendering
             if (health >= 25)
                 return ("⚠️ Struggling", Color.FromRgb(255, 150, 100));
             return ("🆘 Critical", Color.FromRgb(255, 80, 80));
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

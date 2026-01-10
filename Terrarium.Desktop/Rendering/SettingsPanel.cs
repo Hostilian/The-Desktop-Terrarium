@@ -15,6 +15,11 @@ namespace Terrarium.Desktop.Rendering
         private readonly Canvas _parentCanvas;
         private Border? _panelBorder;
         private StackPanel? _settingsContent;
+
+        private static readonly Brush SettingsLabelBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly Brush SeparatorBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
+        private static readonly Brush ToggleOnBrush = CreateFrozenBrush(Color.FromRgb(76, 175, 80));
+        private static readonly Brush ToggleOffBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 90));
         private bool _isVisible;
 
         // Settings values
@@ -245,7 +250,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = $"{icon} {label}",
                 FontSize = 12,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
+                Foreground = SettingsLabelBrush,
                 VerticalAlignment = VerticalAlignment.Center
             };
 
@@ -255,9 +260,7 @@ namespace Terrarium.Desktop.Rendering
                 Width = 44,
                 Height = 22,
                 CornerRadius = new CornerRadius(11),
-                Background = initial ?
-                    new SolidColorBrush(Color.FromRgb(76, 175, 80)) :
-                    new SolidColorBrush(Color.FromRgb(80, 80, 90)),
+                Background = initial ? ToggleOnBrush : ToggleOffBrush,
                 Cursor = System.Windows.Input.Cursors.Hand
             };
 
@@ -278,9 +281,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 currentValue = !currentValue;
                 toggleKnob.HorizontalAlignment = currentValue ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-                toggleBorder.Background = currentValue ?
-                    new SolidColorBrush(Color.FromRgb(76, 175, 80)) :
-                    new SolidColorBrush(Color.FromRgb(80, 80, 90));
+                toggleBorder.Background = currentValue ? ToggleOnBrush : ToggleOffBrush;
                 onChanged(currentValue);
             };
 
@@ -297,10 +298,17 @@ namespace Terrarium.Desktop.Rendering
             var separator = new Border
             {
                 Height = 1,
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+                Background = SeparatorBrush,
                 Margin = new Thickness(0, 10, 0, 10)
             };
             _settingsContent.Children.Add(separator);
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
 
         private void UpdatePosition()

@@ -61,8 +61,8 @@ namespace Terrarium.Desktop.Rendering
             _tooltipBorder = new Border
             {
                 Width = TooltipWidth,
-                Background = new SolidColorBrush(Color.FromArgb(240, 30, 30, 46)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
+                Background = CreateFrozenBrush(Color.FromArgb(240, 30, 30, 46)),
+                BorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8),
                 Child = _tooltipContent,
@@ -115,7 +115,7 @@ namespace Terrarium.Desktop.Rendering
             _footerSeparator = new Border
             {
                 Height = 1,
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+                Background = CreateFrozenBrush(Color.FromRgb(60, 60, 70)),
                 Margin = new Thickness(0, 8, 0, 6)
             };
             _tooltipContent.Children.Add(_footerSeparator);
@@ -125,7 +125,7 @@ namespace Terrarium.Desktop.Rendering
                 Text = string.Empty,
                 FontSize = 11,
                 FontStyle = FontStyles.Italic,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+                Foreground = CreateFrozenBrush(Color.FromRgb(200, 200, 200))
             };
             _tooltipContent.Children.Add(_footerText);
         }
@@ -136,7 +136,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = string.Empty,
                 FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(180, 180, 180)),
+                Foreground = CreateFrozenBrush(Color.FromRgb(180, 180, 180)),
                 Margin = new Thickness(0, 2, 0, 0)
             };
         }
@@ -157,7 +157,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = string.Empty,
                 FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150))
+                Foreground = CreateFrozenBrush(Color.FromRgb(150, 150, 150))
             };
 
             valueText = new TextBlock
@@ -174,7 +174,7 @@ namespace Terrarium.Desktop.Rendering
             var barBackground = new Border
             {
                 Height = 6,
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+                Background = CreateFrozenBrush(Color.FromRgb(60, 60, 70)),
                 CornerRadius = new CornerRadius(3),
                 Margin = new Thickness(0, 2, 0, 0)
             };
@@ -429,6 +429,13 @@ namespace Terrarium.Desktop.Rendering
                 (byte)(from.G + (to.G - from.G) * ratio),
                 (byte)(from.B + (to.B - from.B) * ratio)
             );
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

@@ -300,3 +300,20 @@ namespace Terrarium.Desktop.Rendering
             brush.Freeze();
             return brush;
         }
+
+        /// <summary>
+        /// Toggles graph visibility.
+        /// </summary>
+        public void Toggle()
+        {
+            IsVisible = !IsVisible;
+        }
+    }
+
+    internal class PopulationSnapshot
+    {
+        public int Plants { get; set; }
+        public int Herbivores { get; set; }
+        public int Carnivores { get; set; }
+    }
+}

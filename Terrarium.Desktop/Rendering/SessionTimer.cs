@@ -16,6 +16,11 @@ namespace Terrarium.Desktop.Rendering
         private TextBlock? _dayText;
         private TextBlock? _generationText;
 
+        private static readonly SolidColorBrush TimeGreenBrush = CreateFrozenBrush(Color.FromRgb(100, 255, 150));
+        private static readonly SolidColorBrush MilestoneGoldBrush = CreateFrozenBrush(Color.FromRgb(255, 215, 0));
+        private static readonly SolidColorBrush MilestoneOrangeBrush = CreateFrozenBrush(Color.FromRgb(255, 180, 100));
+        private static readonly SolidColorBrush MilestoneGreenBrush = CreateFrozenBrush(Color.FromRgb(100, 255, 180));
+
         private double _sessionTime;
         private int _dayCount;
         private int _generationCount;
@@ -162,13 +167,19 @@ namespace Terrarium.Desktop.Rendering
                 _timeText.Text = $"{minutes:D2}:{seconds:D2}";
 
                 // Color based on session length
+                Brush desiredBrush = Brushes.White;
                 if (_sessionTime > 3600) // Over 1 hour
                 {
-                    _timeText.Foreground = new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold
+                    desiredBrush = MilestoneGoldBrush;
                 }
                 else if (_sessionTime > 1800) // Over 30 minutes
                 {
-                    _timeText.Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 150)); // Green
+                    desiredBrush = TimeGreenBrush;
+                }
+
+                if (!ReferenceEquals(_timeText.Foreground, desiredBrush))
+                {
+                    _timeText.Foreground = desiredBrush;
                 }
             }
 
@@ -186,19 +197,32 @@ namespace Terrarium.Desktop.Rendering
                 _generationText.Text = $"Gen {_generationCount}";
 
                 // Milestone colors
+                Brush? desiredBrush = null;
                 if (_generationCount >= 100)
                 {
-                    _generationText.Foreground = new SolidColorBrush(Color.FromRgb(255, 215, 0));
+                    desiredBrush = MilestoneGoldBrush;
                 }
                 else if (_generationCount >= 50)
                 {
-                    _generationText.Foreground = new SolidColorBrush(Color.FromRgb(255, 180, 100));
+                    desiredBrush = MilestoneOrangeBrush;
                 }
                 else if (_generationCount >= 20)
                 {
-                    _generationText.Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 180));
+                    desiredBrush = MilestoneGreenBrush;
+                }
+
+                if (desiredBrush != null && !ReferenceEquals(_generationText.Foreground, desiredBrush))
+                {
+                    _generationText.Foreground = desiredBrush;
                 }
             }
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
 
         /// <summary>

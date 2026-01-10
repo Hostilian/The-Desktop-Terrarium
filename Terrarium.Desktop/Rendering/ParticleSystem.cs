@@ -250,39 +250,47 @@ namespace Terrarium.Desktop.Rendering
 
         private UIElement CreateHeartVisual(Color color, double size)
         {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
             var textBlock = new TextBlock
             {
                 Text = "❤",
                 FontSize = size * HeartFontSizeMultiplier,
-                Foreground = new SolidColorBrush(color)
+                Foreground = brush,
+                RenderTransformOrigin = new Point(0.5, 0.5),
+                RenderTransform = new ScaleTransform(1, 1)
             };
             return textBlock;
         }
 
         private UIElement CreateWispVisual(Color color, double size)
         {
+            var wispBrush = new RadialGradientBrush
+            {
+                GradientStops = new GradientStopCollection
+                {
+                    new GradientStop(Color.FromArgb(WispGradientAlpha, color.R, color.G, color.B), GradientStopInnerPosition),
+                    new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
+                }
+            };
+            wispBrush.Freeze();
             return new Ellipse
             {
                 Width = size * WispWidthMultiplier,
                 Height = size * WispHeightMultiplier,
-                Fill = new RadialGradientBrush
-                {
-                    GradientStops = new GradientStopCollection
-                    {
-                        new GradientStop(Color.FromArgb(WispGradientAlpha, color.R, color.G, color.B), GradientStopInnerPosition),
-                        new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
-                    }
-                }
+                Fill = wispBrush
             };
         }
 
         private UIElement CreateDropletVisual(Color color, double size)
         {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
             return new Ellipse
             {
                 Width = size * DropletWidthMultiplier,
                 Height = size,
-                Fill = new SolidColorBrush(color),
+                Fill = brush,
                 Opacity = DropletOpacity
             };
         }
@@ -326,7 +334,16 @@ namespace Terrarium.Desktop.Rendering
             // Scale down hearts as they fade
             if (Type == ParticleType.Heart && Visual is TextBlock tb)
             {
-                tb.RenderTransform = new ScaleTransform(lifeRatio, lifeRatio);
+                if (tb.RenderTransform is ScaleTransform scaleTransform)
+                {
+                    scaleTransform.ScaleX = lifeRatio;
+                    scaleTransform.ScaleY = lifeRatio;
+                }
+                else
+                {
+                    tb.RenderTransformOrigin = new Point(0.5, 0.5);
+                    tb.RenderTransform = new ScaleTransform(lifeRatio, lifeRatio);
+                }
             }
         }
     }

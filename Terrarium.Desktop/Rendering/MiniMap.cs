@@ -340,6 +340,12 @@ namespace Terrarium.Desktop.Rendering
             return brush;
         }
 
+        private static T CreateFrozenBrush<T>(T brush) where T : Freezable
+        {
+            brush.Freeze();
+            return brush;
+        }
+
         /// <summary>
         /// Toggles mini-map visibility.
         /// </summary>

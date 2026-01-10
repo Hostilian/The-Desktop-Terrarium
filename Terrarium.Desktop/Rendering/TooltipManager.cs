@@ -17,6 +17,29 @@ namespace Terrarium.Desktop.Rendering
         private WorldEntity? _currentEntity;
         private bool _isVisible;
 
+        private TextBlock? _headerText;
+        private SolidColorBrush? _headerForeground;
+
+        private StackPanel? _barAContainer;
+        private TextBlock? _barALabelText;
+        private TextBlock? _barAValueText;
+        private Border? _barAFill;
+        private SolidColorBrush? _barAFillBrush;
+
+        private StackPanel? _barBContainer;
+        private TextBlock? _barBLabelText;
+        private TextBlock? _barBValueText;
+        private Border? _barBFill;
+        private SolidColorBrush? _barBFillBrush;
+
+        private TextBlock? _statText1;
+        private TextBlock? _statText2;
+        private TextBlock? _statText3;
+        private Border? _footerSeparator;
+        private TextBlock? _footerText;
+
+        private const double BarMaxWidth = TooltipWidth - 20;
+
         private const double TooltipWidth = 180;
         private const double TooltipOffset = 15;
 
@@ -32,6 +55,8 @@ namespace Terrarium.Desktop.Rendering
             {
                 Margin = new Thickness(10, 8, 10, 8)
             };
+
+            BuildTooltipTemplate();
 
             _tooltipBorder = new Border
             {
@@ -54,6 +79,124 @@ namespace Terrarium.Desktop.Rendering
 
             Canvas.SetZIndex(_tooltipBorder, 999);
             _canvas.Children.Add(_tooltipBorder);
+        }
+
+        private void BuildTooltipTemplate()
+        {
+            if (_tooltipContent == null)
+                return;
+
+            _tooltipContent.Children.Clear();
+
+            _headerForeground = new SolidColorBrush(Colors.White);
+            _headerText = new TextBlock
+            {
+                Text = string.Empty,
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = _headerForeground,
+                Margin = new Thickness(0, 0, 0, 8)
+            };
+            _tooltipContent.Children.Add(_headerText);
+
+            _barAContainer = CreateStatBar(out _barALabelText, out _barAValueText, out _barAFill, out _barAFillBrush);
+            _tooltipContent.Children.Add(_barAContainer);
+
+            _barBContainer = CreateStatBar(out _barBLabelText, out _barBValueText, out _barBFill, out _barBFillBrush);
+            _tooltipContent.Children.Add(_barBContainer);
+
+            _statText1 = CreateStatText();
+            _statText2 = CreateStatText();
+            _statText3 = CreateStatText();
+            _tooltipContent.Children.Add(_statText1);
+            _tooltipContent.Children.Add(_statText2);
+            _tooltipContent.Children.Add(_statText3);
+
+            _footerSeparator = new Border
+            {
+                Height = 1,
+                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+                Margin = new Thickness(0, 8, 0, 6)
+            };
+            _tooltipContent.Children.Add(_footerSeparator);
+
+            _footerText = new TextBlock
+            {
+                Text = string.Empty,
+                FontSize = 11,
+                FontStyle = FontStyles.Italic,
+                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+            };
+            _tooltipContent.Children.Add(_footerText);
+        }
+
+        private static TextBlock CreateStatText()
+        {
+            return new TextBlock
+            {
+                Text = string.Empty,
+                FontSize = 11,
+                Foreground = new SolidColorBrush(Color.FromRgb(180, 180, 180)),
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+        }
+
+        private static StackPanel CreateStatBar(
+            out TextBlock labelText,
+            out TextBlock valueText,
+            out Border barFill,
+            out SolidColorBrush fillBrush)
+        {
+            var container = new StackPanel { Margin = new Thickness(0, 2, 0, 2) };
+
+            var labelRow = new Grid();
+            labelRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            labelRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            labelText = new TextBlock
+            {
+                Text = string.Empty,
+                FontSize = 10,
+                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150))
+            };
+
+            valueText = new TextBlock
+            {
+                Text = string.Empty,
+                FontSize = 10,
+                Foreground = Brushes.White
+            };
+            Grid.SetColumn(valueText, 1);
+
+            labelRow.Children.Add(labelText);
+            labelRow.Children.Add(valueText);
+
+            var barBackground = new Border
+            {
+                Height = 6,
+                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+                CornerRadius = new CornerRadius(3),
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+
+            fillBrush = new SolidColorBrush(Color.FromRgb(46, 204, 113));
+            barFill = new Border
+            {
+                Height = 6,
+                Width = 0,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Background = fillBrush,
+                CornerRadius = new CornerRadius(3)
+            };
+
+            var barGrid = new Grid { Margin = new Thickness(0, 2, 0, 0) };
+            barGrid.Children.Add(barBackground);
+            barGrid.Children.Add(barFill);
+
+            container.Children.Add(labelRow);
+            container.Children.Add(barGrid);
+
+            return container;
         }
 
         /// <summary>
@@ -146,79 +289,122 @@ namespace Terrarium.Desktop.Rendering
             if (_tooltipContent == null)
                 return;
 
-            _tooltipContent.Children.Clear();
+            if (_headerText == null)
+            {
+                BuildTooltipTemplate();
+            }
 
             if (entity is Plant plant)
-            {
                 UpdatePlantTooltip(plant);
-            }
             else if (entity is Herbivore herbivore)
-            {
                 UpdateHerbivoreTooltip(herbivore);
-            }
             else if (entity is Carnivore carnivore)
-            {
                 UpdateCarnivoreTooltip(carnivore);
-            }
         }
 
         private void UpdatePlantTooltip(Plant plant)
         {
-            if (_tooltipContent == null)
+            if (_headerText == null || _headerForeground == null || _barAContainer == null || _barBContainer == null ||
+                _barALabelText == null || _barAValueText == null || _barAFill == null || _barAFillBrush == null ||
+                _barBLabelText == null || _barBValueText == null || _barBFill == null || _barBFillBrush == null ||
+                _statText1 == null || _statText2 == null || _statText3 == null || _footerSeparator == null || _footerText == null)
                 return;
 
-            // Title
-            AddTooltipHeader("🌿 Plant", Color.FromRgb(76, 175, 80));
+            _headerText.Text = "🌿 Plant";
+            _headerForeground.Color = Color.FromRgb(76, 175, 80);
 
-            // Stats
-            AddStatBar("Health", plant.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
-            AddStatBar("Water", plant.WaterLevel, 100, Color.FromRgb(52, 152, 219), Color.FromRgb(52, 152, 219));
-            AddStatText($"Size: {plant.Size:F1}");
-            AddStatText($"Age: {plant.Age:F0}s");
+            _barAContainer.Visibility = Visibility.Visible;
+            _barBContainer.Visibility = Visibility.Visible;
+            _statText3.Visibility = Visibility.Collapsed;
 
-            // Status
+            UpdateBar(_barALabelText, _barAValueText, _barAFill, _barAFillBrush,
+                "Health", plant.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
+
+            UpdateBar(_barBLabelText, _barBValueText, _barBFill, _barBFillBrush,
+                "Water", plant.WaterLevel, 100, Color.FromRgb(52, 152, 219), Color.FromRgb(52, 152, 219));
+
+            _statText1.Text = $"Size: {plant.Size:F1}";
+            _statText2.Text = $"Age: {plant.Age:F0}s";
+
             string status = plant.IsAlive ? "Healthy" : "Dead";
             if (plant.IsAlive && plant.WaterLevel < 30)
                 status = "Thirsty! 💧";
-            AddTooltipFooter(status);
+            _footerText.Text = status;
         }
 
         private void UpdateHerbivoreTooltip(Herbivore herbivore)
         {
-            if (_tooltipContent == null)
+            if (_headerText == null || _headerForeground == null || _barAContainer == null || _barBContainer == null ||
+                _barALabelText == null || _barAValueText == null || _barAFill == null || _barAFillBrush == null ||
+                _barBLabelText == null || _barBValueText == null || _barBFill == null || _barBFillBrush == null ||
+                _statText1 == null || _statText2 == null || _statText3 == null || _footerSeparator == null || _footerText == null)
                 return;
 
-            // Title
-            AddTooltipHeader($"🐰 {herbivore.Type}", Color.FromRgb(255, 183, 77));
+            _headerText.Text = $"🐰 {herbivore.Type}";
+            _headerForeground.Color = Color.FromRgb(255, 183, 77);
 
-            // Stats
-            AddStatBar("Health", herbivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
-            AddStatBar("Hunger", 100 - herbivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
-            AddStatText($"Speed: {herbivore.Speed:F1}");
-            AddStatText($"Age: {herbivore.Age:F0}s");
+            _barAContainer.Visibility = Visibility.Visible;
+            _barBContainer.Visibility = Visibility.Visible;
+            _statText3.Visibility = Visibility.Collapsed;
 
-            // Status
-            string status = herbivore.IsAlive ? GetCreatureStatus(herbivore) : "Dead";
-            AddTooltipFooter(status);
+            UpdateBar(_barALabelText, _barAValueText, _barAFill, _barAFillBrush,
+                "Health", herbivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
+
+            UpdateBar(_barBLabelText, _barBValueText, _barBFill, _barBFillBrush,
+                "Hunger", 100 - herbivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
+
+            _statText1.Text = $"Speed: {herbivore.Speed:F1}";
+            _statText2.Text = $"Age: {herbivore.Age:F0}s";
+
+            _footerText.Text = herbivore.IsAlive ? GetCreatureStatus(herbivore) : "Dead";
         }
 
         private void UpdateCarnivoreTooltip(Carnivore carnivore)
         {
-            if (_tooltipContent == null)
+            if (_headerText == null || _headerForeground == null || _barAContainer == null || _barBContainer == null ||
+                _barALabelText == null || _barAValueText == null || _barAFill == null || _barAFillBrush == null ||
+                _barBLabelText == null || _barBValueText == null || _barBFill == null || _barBFillBrush == null ||
+                _statText1 == null || _statText2 == null || _statText3 == null || _footerSeparator == null || _footerText == null)
                 return;
 
-            // Title
-            AddTooltipHeader($"🐺 {carnivore.Type}", Color.FromRgb(120, 120, 130));
+            _headerText.Text = $"🐺 {carnivore.Type}";
+            _headerForeground.Color = Color.FromRgb(120, 120, 130);
 
-            // Stats
-            AddStatBar("Health", carnivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
-            AddStatBar("Hunger", 100 - carnivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
-            AddStatText($"Speed: {carnivore.Speed:F1}");
-            AddStatText($"Age: {carnivore.Age:F0}s");
+            _barAContainer.Visibility = Visibility.Visible;
+            _barBContainer.Visibility = Visibility.Visible;
+            _statText3.Visibility = Visibility.Collapsed;
 
-            // Status  
-            string status = carnivore.IsAlive ? GetCreatureStatus(carnivore) : "Dead";
-            AddTooltipFooter(status);
+            UpdateBar(_barALabelText, _barAValueText, _barAFill, _barAFillBrush,
+                "Health", carnivore.Health, 100, Color.FromRgb(231, 76, 60), Color.FromRgb(46, 204, 113));
+
+            UpdateBar(_barBLabelText, _barBValueText, _barBFill, _barBFillBrush,
+                "Hunger", 100 - carnivore.Hunger, 100, Color.FromRgb(230, 126, 34), Color.FromRgb(46, 204, 113));
+
+            _statText1.Text = $"Speed: {carnivore.Speed:F1}";
+            _statText2.Text = $"Age: {carnivore.Age:F0}s";
+
+            _footerText.Text = carnivore.IsAlive ? GetCreatureStatus(carnivore) : "Dead";
+        }
+
+        private static void UpdateBar(
+            TextBlock labelText,
+            TextBlock valueText,
+            Border barFill,
+            SolidColorBrush fillBrush,
+            string label,
+            double value,
+            double max,
+            Color lowColor,
+            Color highColor)
+        {
+            double clampedValue = Math.Clamp(value, 0, max);
+            double ratio = max <= 0 ? 0 : Math.Clamp(clampedValue / max, 0, 1);
+
+            labelText.Text = label;
+            valueText.Text = $"{clampedValue:F0}%";
+
+            barFill.Width = BarMaxWidth * ratio;
+            fillBrush.Color = InterpolateColor(lowColor, highColor, ratio);
         }
 
         private string GetCreatureStatus(Creature creature)
@@ -234,120 +420,6 @@ namespace Terrarium.Desktop.Rendering
                 return creature is Carnivore ? "Hunting 🎯" : "Foraging 🌿";
             }
             return "Resting 😴";
-        }
-
-        private void AddTooltipHeader(string text, Color color)
-        {
-            if (_tooltipContent == null)
-                return;
-
-            var header = new TextBlock
-            {
-                Text = text,
-                FontSize = 14,
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(color),
-                Margin = new Thickness(0, 0, 0, 8)
-            };
-            _tooltipContent.Children.Add(header);
-        }
-
-        private void AddStatBar(string label, double value, double max, Color lowColor, Color highColor)
-        {
-            if (_tooltipContent == null)
-                return;
-
-            var container = new StackPanel { Margin = new Thickness(0, 2, 0, 2) };
-
-            // Label row
-            var labelRow = new Grid();
-            labelRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            labelRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            var labelText = new TextBlock
-            {
-                Text = label,
-                FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150))
-            };
-
-            var valueText = new TextBlock
-            {
-                Text = $"{value:F0}%",
-                FontSize = 10,
-                Foreground = Brushes.White
-            };
-            Grid.SetColumn(valueText, 1);
-
-            labelRow.Children.Add(labelText);
-            labelRow.Children.Add(valueText);
-
-            // Progress bar
-            double ratio = Math.Clamp(value / max, 0, 1);
-            Color barColor = InterpolateColor(lowColor, highColor, ratio);
-
-            var barBackground = new Border
-            {
-                Height = 6,
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
-                CornerRadius = new CornerRadius(3),
-                Margin = new Thickness(0, 2, 0, 0)
-            };
-
-            var barFill = new Border
-            {
-                Height = 6,
-                Width = (TooltipWidth - 20) * ratio,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Background = new SolidColorBrush(barColor),
-                CornerRadius = new CornerRadius(3)
-            };
-
-            var barGrid = new Grid { Margin = new Thickness(0, 2, 0, 0) };
-            barGrid.Children.Add(barBackground);
-            barGrid.Children.Add(barFill);
-
-            container.Children.Add(labelRow);
-            container.Children.Add(barGrid);
-            _tooltipContent.Children.Add(container);
-        }
-
-        private void AddStatText(string text)
-        {
-            if (_tooltipContent == null)
-                return;
-
-            var textBlock = new TextBlock
-            {
-                Text = text,
-                FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(180, 180, 180)),
-                Margin = new Thickness(0, 2, 0, 0)
-            };
-            _tooltipContent.Children.Add(textBlock);
-        }
-
-        private void AddTooltipFooter(string status)
-        {
-            if (_tooltipContent == null)
-                return;
-
-            var separator = new Border
-            {
-                Height = 1,
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
-                Margin = new Thickness(0, 8, 0, 6)
-            };
-            _tooltipContent.Children.Add(separator);
-
-            var footer = new TextBlock
-            {
-                Text = status,
-                FontSize = 11,
-                FontStyle = FontStyles.Italic,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
-            };
-            _tooltipContent.Children.Add(footer);
         }
 
         private static Color InterpolateColor(Color from, Color to, double ratio)

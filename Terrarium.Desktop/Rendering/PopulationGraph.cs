@@ -17,6 +17,21 @@ namespace Terrarium.Desktop.Rendering
         private readonly Canvas _graphCanvas;
         private readonly List<PopulationSnapshot> _history;
 
+        private readonly List<Line> _gridLines = new();
+        private bool _gridBuilt;
+        private readonly SolidColorBrush _gridLineBrush = CreateFrozenBrush(Color.FromArgb(40, 255, 255, 255));
+
+        private Polyline? _plantsGlowLine;
+        private Polyline? _plantsLine;
+        private Polyline? _herbGlowLine;
+        private Polyline? _herbLine;
+        private Polyline? _carnGlowLine;
+        private Polyline? _carnLine;
+
+        private PointCollection? _plantsPoints;
+        private PointCollection? _herbPoints;
+        private PointCollection? _carnPoints;
+
         private const double GraphWidth = 200;
         private const double GraphHeight = 80;
         private const double Margin = 10;
@@ -96,6 +111,8 @@ namespace Terrarium.Desktop.Rendering
             _parentCanvas.Children.Add(_graphContainer);
             _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
             UpdatePosition();
+
+            EnsureGraphVisuals();
         }
 
         private UIElement CreateLegendItem(string emoji, Color color)
@@ -156,10 +173,13 @@ namespace Terrarium.Desktop.Rendering
 
         private void RedrawGraph()
         {
-            _graphCanvas.Children.Clear();
+            EnsureGraphVisuals();
 
             if (_history.Count < 2)
+            {
+                HideLines();
                 return;
+            }
 
             // Find max value for scaling
             int maxValue = 1;
@@ -169,34 +189,98 @@ namespace Terrarium.Desktop.Rendering
             }
             maxValue = (int)(maxValue * 1.2); // Add 20% headroom
 
-            // Draw grid lines
-            for (int i = 1; i <= 3; i++)
-            {
-                double y = GraphHeight - (GraphHeight * i / 4);
-                var gridLine = new Line
-                {
-                    X1 = 0,
-                    Y1 = y,
-                    X2 = GraphWidth,
-                    Y2 = y,
-                    Stroke = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-                    StrokeThickness = 1
-                };
-                _graphCanvas.Children.Add(gridLine);
-            }
-
-            // Draw lines for each population type
-            DrawPopulationLine(_history, s => s.Plants, Color.FromRgb(76, 175, 80), maxValue);
-            DrawPopulationLine(_history, s => s.Herbivores, Color.FromRgb(255, 183, 77), maxValue);
-            DrawPopulationLine(_history, s => s.Carnivores, Color.FromRgb(192, 57, 43), maxValue);
+            UpdateLine(_history, s => s.Plants, _plantsGlowLine!, _plantsLine!, _plantsPoints!, maxValue);
+            UpdateLine(_history, s => s.Herbivores, _herbGlowLine!, _herbLine!, _herbPoints!, maxValue);
+            UpdateLine(_history, s => s.Carnivores, _carnGlowLine!, _carnLine!, _carnPoints!, maxValue);
         }
 
-        private void DrawPopulationLine(List<PopulationSnapshot> history, Func<PopulationSnapshot, int> getValue, Color color, int maxValue)
+        private void EnsureGraphVisuals()
         {
-            if (history.Count < 2)
+            if (!_gridBuilt)
+            {
+                // Draw grid lines once
+                for (int i = 1; i <= 3; i++)
+                {
+                    double y = GraphHeight - (GraphHeight * i / 4);
+                    var gridLine = new Line
+                    {
+                        X1 = 0,
+                        Y1 = y,
+                        X2 = GraphWidth,
+                        Y2 = y,
+                        Stroke = _gridLineBrush,
+                        StrokeThickness = 1,
+                        IsHitTestVisible = false
+                    };
+                    _gridLines.Add(gridLine);
+                    _graphCanvas.Children.Add(gridLine);
+                }
+                _gridBuilt = true;
+            }
+
+            if (_plantsLine != null)
                 return;
 
-            var points = new PointCollection();
+            _plantsPoints = new PointCollection(MaxHistoryPoints);
+            _herbPoints = new PointCollection(MaxHistoryPoints);
+            _carnPoints = new PointCollection(MaxHistoryPoints);
+
+            _plantsGlowLine = CreateLine(Color.FromArgb(80, 76, 175, 80), _plantsPoints, 4);
+            _plantsLine = CreateLine(Color.FromRgb(76, 175, 80), _plantsPoints, 2);
+            _herbGlowLine = CreateLine(Color.FromArgb(80, 255, 183, 77), _herbPoints, 4);
+            _herbLine = CreateLine(Color.FromRgb(255, 183, 77), _herbPoints, 2);
+            _carnGlowLine = CreateLine(Color.FromArgb(80, 192, 57, 43), _carnPoints, 4);
+            _carnLine = CreateLine(Color.FromRgb(192, 57, 43), _carnPoints, 2);
+
+            // Order: grid, glows, lines
+            _graphCanvas.Children.Add(_plantsGlowLine);
+            _graphCanvas.Children.Add(_herbGlowLine);
+            _graphCanvas.Children.Add(_carnGlowLine);
+            _graphCanvas.Children.Add(_plantsLine);
+            _graphCanvas.Children.Add(_herbLine);
+            _graphCanvas.Children.Add(_carnLine);
+        }
+
+        private static Polyline CreateLine(Color strokeColor, PointCollection points, double thickness)
+        {
+            var brush = new SolidColorBrush(strokeColor);
+            brush.Freeze();
+            return new Polyline
+            {
+                Points = points,
+                Stroke = brush,
+                StrokeThickness = thickness,
+                StrokeLineJoin = PenLineJoin.Round,
+                IsHitTestVisible = false,
+                Visibility = Visibility.Collapsed
+            };
+        }
+
+        private void HideLines()
+        {
+            if (_plantsLine != null)
+                _plantsLine.Visibility = Visibility.Collapsed;
+            if (_plantsGlowLine != null)
+                _plantsGlowLine.Visibility = Visibility.Collapsed;
+            if (_herbLine != null)
+                _herbLine.Visibility = Visibility.Collapsed;
+            if (_herbGlowLine != null)
+                _herbGlowLine.Visibility = Visibility.Collapsed;
+            if (_carnLine != null)
+                _carnLine.Visibility = Visibility.Collapsed;
+            if (_carnGlowLine != null)
+                _carnGlowLine.Visibility = Visibility.Collapsed;
+        }
+
+        private static void UpdateLine(
+            List<PopulationSnapshot> history,
+            Func<PopulationSnapshot, int> getValue,
+            Polyline glowLine,
+            Polyline line,
+            PointCollection points,
+            int maxValue)
+        {
+            points.Clear();
             double xStep = GraphWidth / (MaxHistoryPoints - 1);
 
             for (int i = 0; i < history.Count; i++)
@@ -206,40 +290,13 @@ namespace Terrarium.Desktop.Rendering
                 points.Add(new Point(x, Math.Max(0, Math.Min(GraphHeight, y))));
             }
 
-            var polyline = new Polyline
-            {
-                Points = points,
-                Stroke = new SolidColorBrush(color),
-                StrokeThickness = 2,
-                StrokeLineJoin = PenLineJoin.Round
-            };
-
-            _graphCanvas.Children.Add(polyline);
-
-            // Add glow effect for better visibility
-            var glowPolyline = new Polyline
-            {
-                Points = points,
-                Stroke = new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)),
-                StrokeThickness = 4,
-                StrokeLineJoin = PenLineJoin.Round
-            };
-            _graphCanvas.Children.Insert(0, glowPolyline);
+            glowLine.Visibility = Visibility.Visible;
+            line.Visibility = Visibility.Visible;
         }
 
-        /// <summary>
-        /// Toggles graph visibility.
-        /// </summary>
-        public void Toggle()
+        private static SolidColorBrush CreateFrozenBrush(Color color)
         {
-            IsVisible = !IsVisible;
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
-    }
-
-    internal class PopulationSnapshot
-    {
-        public int Plants { get; set; }
-        public int Herbivores { get; set; }
-        public int Carnivores { get; set; }
-    }
-}

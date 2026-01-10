@@ -190,9 +190,9 @@ namespace Terrarium.Desktop.Rendering
             _scoreForegroundBrush.Color = color;
 
             // Update status text
-            var (status, color) = GetStatus(_displayHealth);
+            var (status, statusColor) = GetStatus(_displayHealth);
             _statusText.Text = status;
-            _statusForegroundBrush.Color = color;
+            _statusForegroundBrush.Color = statusColor;
 
             // Pulse effect for critical health
             if (_displayHealth < 25 && _container != null)

@@ -29,6 +29,16 @@ namespace Terrarium.Desktop.Rendering
         private readonly Queue<NotificationItem> _pendingNotifications;
         private readonly List<NotificationItem> _activeNotifications;
 
+        private static readonly Brush NotificationBorderBrush = CreateFrozenBrush(Color.FromArgb(50, 255, 255, 255));
+
+        private static readonly Brush BirthBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 46, 204, 113));
+        private static readonly Brush DeathBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 128, 128, 128));
+        private static readonly Brush WarningBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 230, 126, 34));
+        private static readonly Brush MilestoneBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 155, 89, 182));
+        private static readonly Brush AchievementBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 241, 196, 15));
+        private static readonly Brush InfoBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 152, 219));
+        private static readonly Brush DefaultBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 73, 94));
+
         private const int MaxActiveNotifications = 3;
         private const double NotificationDuration = 3.0;
         private const double NotificationWidth = 250;
@@ -198,7 +208,7 @@ namespace Terrarium.Desktop.Rendering
                 Height = NotificationHeight,
                 CornerRadius = new CornerRadius(8),
                 Background = GetNotificationBackground(notification.Type),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255)),
+                BorderBrush = NotificationBorderBrush,
                 BorderThickness = new Thickness(1),
                 Effect = new System.Windows.Media.Effects.DropShadowEffect
                 {
@@ -277,14 +287,21 @@ namespace Terrarium.Desktop.Rendering
         {
             return type switch
             {
-                NotificationType.Birth => new SolidColorBrush(Color.FromArgb(220, 46, 204, 113)),   // Green
-                NotificationType.Death => new SolidColorBrush(Color.FromArgb(220, 128, 128, 128)), // Gray
-                NotificationType.Warning => new SolidColorBrush(Color.FromArgb(220, 230, 126, 34)), // Orange
-                NotificationType.Milestone => new SolidColorBrush(Color.FromArgb(220, 155, 89, 182)), // Purple
-                NotificationType.Achievement => new SolidColorBrush(Color.FromArgb(220, 241, 196, 15)), // Gold
-                NotificationType.Info => new SolidColorBrush(Color.FromArgb(220, 52, 152, 219)),   // Blue
-                _ => new SolidColorBrush(Color.FromArgb(220, 52, 73, 94))                           // Dark gray
+                NotificationType.Birth => BirthBackgroundBrush,
+                NotificationType.Death => DeathBackgroundBrush,
+                NotificationType.Warning => WarningBackgroundBrush,
+                NotificationType.Milestone => MilestoneBackgroundBrush,
+                NotificationType.Achievement => AchievementBackgroundBrush,
+                NotificationType.Info => InfoBackgroundBrush,
+                _ => DefaultBackgroundBrush
             };
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 

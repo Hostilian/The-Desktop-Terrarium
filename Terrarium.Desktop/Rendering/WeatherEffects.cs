@@ -42,8 +42,8 @@ namespace Terrarium.Desktop.Rendering
         private const int LightningFlashZIndex = 1000;
 
         // Visual properties
-        private static readonly Brush RainColor = new SolidColorBrush(Color.FromArgb(180, 150, 180, 220));
-        private static readonly Brush LightningColor = new SolidColorBrush(Color.FromArgb(200, 255, 255, 200));
+        private static readonly Brush RainColor = CreateFrozenBrush(Color.FromArgb(180, 150, 180, 220));
+        private static readonly Brush LightningColor = CreateFrozenBrush(Color.FromArgb(200, 255, 255, 200));
 
         private double _currentIntensity;
         private bool _isRaining;
@@ -177,31 +177,35 @@ namespace Terrarium.Desktop.Rendering
                 SpawnRainDrop();
             }
 
-            // Update existing drops
-            var dropsToRemove = new List<RainDrop>();
+            // Update existing drops (iterate backwards so we can remove in-place)
+            double driftStep = Math.Sin(RainAngleRadians) * RainDriftSpeedMultiplier;
+            double offscreenY = _canvas.ActualHeight + RainOffscreenBottomPadding;
 
-            foreach (var drop in _rainDrops)
+            for (int i = _rainDrops.Count - 1; i >= 0; i--)
             {
+                var drop = _rainDrops[i];
+
                 // Move the drop
                 drop.Y += drop.Speed * deltaTime;
-                drop.X += Math.Sin(RainAngleRadians) * drop.Speed * deltaTime * RainDriftSpeedMultiplier;
+                drop.X += driftStep * drop.Speed * deltaTime;
 
                 Canvas.SetTop(drop.Visual, drop.Y);
                 Canvas.SetLeft(drop.Visual, drop.X);
 
-                // Check if drop is off screen
-                if (drop.Y > _canvas.ActualHeight + RainOffscreenBottomPadding)
+                // Remove off-screen drops
+                if (drop.Y > offscreenY)
                 {
-                    dropsToRemove.Add(drop);
+                    _canvas.Children.Remove(drop.Visual);
+                    _rainDrops.RemoveAt(i);
                 }
             }
+        }
 
-            // Remove off-screen drops
-            foreach (var drop in dropsToRemove)
-            {
-                _canvas.Children.Remove(drop.Visual);
-                _rainDrops.Remove(drop);
-            }
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
 
         /// <summary>

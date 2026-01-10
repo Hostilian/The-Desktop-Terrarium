@@ -18,6 +18,9 @@ namespace Terrarium.Desktop.Rendering
         private double _updateTimer;
         private double _animationTime;
 
+        private readonly HashSet<Creature> _existingCreaturesBuffer = new();
+        private readonly List<Creature> _toRemoveBuffer = new();
+
         private const double UpdateInterval = 0.3;
         private const double MinHealthForBreeding = 60;
         private const double MaxHungerForBreeding = 40;
@@ -55,21 +58,22 @@ namespace Terrarium.Desktop.Rendering
 
                 // Pulse effect
                 double scale = 1.0 + 0.15 * Math.Sin(_animationTime * 3 + heart.AnimOffset);
-                heart.Visual.RenderTransform = new ScaleTransform(scale, scale, 6, 6);
+                heart.ScaleTransform.ScaleX = scale;
+                heart.ScaleTransform.ScaleY = scale;
             }
 
             if (_updateTimer < UpdateInterval)
                 return;
             _updateTimer = 0;
 
-            var existingCreatures = new HashSet<Creature>();
+            _existingCreaturesBuffer.Clear();
 
             // Check herbivores
             foreach (var herbivore in herbivores)
             {
                 if (!herbivore.IsAlive)
                     continue;
-                existingCreatures.Add(herbivore);
+                _existingCreaturesBuffer.Add(herbivore);
 
                 if (CanBreed(herbivore))
                 {
@@ -86,7 +90,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 if (!carnivore.IsAlive)
                     continue;
-                existingCreatures.Add(carnivore);
+                _existingCreaturesBuffer.Add(carnivore);
 
                 if (CanBreed(carnivore))
                 {
@@ -99,24 +103,25 @@ namespace Terrarium.Desktop.Rendering
             }
 
             // Clean up removed creatures
-            var toRemove = new List<Creature>();
-            foreach (var creature in _hearts.Keys)
+            _toRemoveBuffer.Clear();
+            foreach (var kvp in _hearts)
             {
-                if (!existingCreatures.Contains(creature))
+                var creature = kvp.Key;
+                var heart = kvp.Value;
+                if (!_existingCreaturesBuffer.Contains(creature))
                 {
-                    _canvas.Children.Remove(_hearts[creature].Visual);
-                    toRemove.Add(creature);
+                    _canvas.Children.Remove(heart.Visual);
+                    _toRemoveBuffer.Add(creature);
                 }
                 else
                 {
                     // Update position
-                    var heart = _hearts[creature];
                     Canvas.SetLeft(heart.Visual, creature.X - 6);
                     heart.BaseY = creature.Y - 28;
                 }
             }
 
-            foreach (var creature in toRemove)
+            foreach (var creature in _toRemoveBuffer)
             {
                 _hearts.Remove(creature);
             }
@@ -135,11 +140,13 @@ namespace Terrarium.Desktop.Rendering
             if (_hearts.ContainsKey(creature))
                 return;
 
+            var scaleTransform = new ScaleTransform(1.0, 1.0, 6, 6);
             var heart = new TextBlock
             {
                 Text = "💕",
                 FontSize = 12,
-                RenderTransformOrigin = new Point(0.5, 0.5)
+                RenderTransformOrigin = new Point(0.5, 0.5),
+                RenderTransform = scaleTransform
             };
 
             Canvas.SetLeft(heart, creature.X - 6);
@@ -152,7 +159,8 @@ namespace Terrarium.Desktop.Rendering
             {
                 Visual = heart,
                 BaseY = creature.Y - 28,
-                AnimOffset = new Random().NextDouble() * Math.PI * 2
+                AnimOffset = Random.Shared.NextDouble() * Math.PI * 2,
+                ScaleTransform = scaleTransform
             };
         }
 
@@ -183,5 +191,6 @@ namespace Terrarium.Desktop.Rendering
         public TextBlock Visual { get; set; } = null!;
         public double BaseY { get; set; }
         public double AnimOffset { get; set; }
+        public ScaleTransform ScaleTransform { get; set; } = null!;
     }
 }

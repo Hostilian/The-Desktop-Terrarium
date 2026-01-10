@@ -33,23 +33,23 @@ namespace Terrarium.Desktop.Rendering
         private bool _useSpriteMode = false; // Set to true to use sprites instead of shapes
 
         // Modern color palette for shape mode
-        private static readonly Brush PlantStemColor = new SolidColorBrush(Color.FromRgb(46, 125, 50));
-        private static readonly Brush PlantLeafColor = new SolidColorBrush(Color.FromRgb(76, 175, 80));
-        private static readonly Brush PlantLeafHighlight = new SolidColorBrush(Color.FromRgb(129, 199, 132));
-        private static readonly Brush PlantAccentColor = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+        private static readonly Brush PlantStemColor = CreateFrozenBrush(Color.FromRgb(46, 125, 50));
+        private static readonly Brush PlantLeafColor = CreateFrozenBrush(Color.FromRgb(76, 175, 80));
+        private static readonly Brush PlantLeafHighlight = CreateFrozenBrush(Color.FromRgb(129, 199, 132));
+        private static readonly Brush PlantAccentColor = CreateFrozenBrush(Color.FromRgb(244, 67, 54));
 
-        private static readonly Brush HerbivoreBodyColor = new SolidColorBrush(Color.FromRgb(255, 183, 77)); // Warm orange
-        private static readonly Brush HerbivoreBellyColor = new SolidColorBrush(Color.FromRgb(255, 224, 178)); // Light cream
-        private static readonly Brush HerbivoreEarColor = new SolidColorBrush(Color.FromRgb(255, 138, 128)); // Pink
-        private static readonly Brush HerbivoreOutlineColor = new SolidColorBrush(Color.FromRgb(230, 150, 50));
+        private static readonly Brush HerbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(255, 183, 77)); // Warm orange
+        private static readonly Brush HerbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(255, 224, 178)); // Light cream
+        private static readonly Brush HerbivoreEarColor = CreateFrozenBrush(Color.FromRgb(255, 138, 128)); // Pink
+        private static readonly Brush HerbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(230, 150, 50));
 
-        private static readonly Brush CarnivoreBodyColor = new SolidColorBrush(Color.FromRgb(120, 120, 130)); // Gray
-        private static readonly Brush CarnivoreFurColor = new SolidColorBrush(Color.FromRgb(150, 150, 160)); // Light gray
-        private static readonly Brush CarnivoreAccentColor = new SolidColorBrush(Color.FromRgb(200, 80, 80)); // Red accent
-        private static readonly Brush CarnivoreOutlineColor = new SolidColorBrush(Color.FromRgb(90, 90, 100));
-        private static readonly Brush CarnivoreEyeColor = new SolidColorBrush(Color.FromRgb(255, 193, 7));
+        private static readonly Brush CarnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(120, 120, 130)); // Gray
+        private static readonly Brush CarnivoreFurColor = CreateFrozenBrush(Color.FromRgb(150, 150, 160)); // Light gray
+        private static readonly Brush CarnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(200, 80, 80)); // Red accent
+        private static readonly Brush CarnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(90, 90, 100));
+        private static readonly Brush CarnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 193, 7));
 
-        private static readonly Brush DeadColor = new SolidColorBrush(Color.FromRgb(128, 128, 128));
+        private static readonly Brush DeadColor = CreateFrozenBrush(Color.FromRgb(128, 128, 128));
 
         // Animation constants
         private const double ShakeDuration = 0.5;
@@ -693,6 +693,13 @@ namespace Terrarium.Desktop.Rendering
                     _plantShakeTimers.Remove(id);
                 }
             }
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

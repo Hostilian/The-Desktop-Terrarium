@@ -16,6 +16,9 @@ namespace Terrarium.Desktop.Rendering
         private readonly Dictionary<Creature, MoodVisual> _moodVisuals;
         private double _updateTimer;
 
+        private readonly HashSet<Creature> _existingCreaturesBuffer = new();
+        private readonly List<Creature> _toRemoveBuffer = new();
+
         private const double UpdateInterval = 0.5; // Update moods every 0.5 seconds
         private const double IndicatorOffsetY = -25;
         private const double FadeInDuration = 0.2;
@@ -58,14 +61,14 @@ namespace Terrarium.Desktop.Rendering
             _updateTimer = 0;
 
             // Track which creatures still exist
-            var existingCreatures = new HashSet<Creature>();
+            _existingCreaturesBuffer.Clear();
 
             foreach (var herbivore in herbivores)
             {
                 if (!herbivore.IsAlive)
                     continue;
 
-                existingCreatures.Add(herbivore);
+                _existingCreaturesBuffer.Add(herbivore);
                 string mood = GetMoodEmoji(herbivore);
                 UpdateOrCreateMoodVisual(herbivore, mood);
             }
@@ -75,19 +78,19 @@ namespace Terrarium.Desktop.Rendering
                 if (!carnivore.IsAlive)
                     continue;
 
-                existingCreatures.Add(carnivore);
+                _existingCreaturesBuffer.Add(carnivore);
                 string mood = GetMoodEmoji(carnivore);
                 UpdateOrCreateMoodVisual(carnivore, mood);
             }
 
             // Remove visuals for dead/removed creatures
-            var toRemove = new List<Creature>();
+            _toRemoveBuffer.Clear();
             foreach (var kvp in _moodVisuals)
             {
-                if (!existingCreatures.Contains(kvp.Key))
+                if (!_existingCreaturesBuffer.Contains(kvp.Key))
                 {
                     _canvas.Children.Remove(kvp.Value.Visual);
-                    toRemove.Add(kvp.Key);
+                    _toRemoveBuffer.Add(kvp.Key);
                 }
                 else
                 {
@@ -97,7 +100,7 @@ namespace Terrarium.Desktop.Rendering
                 }
             }
 
-            foreach (var creature in toRemove)
+            foreach (var creature in _toRemoveBuffer)
             {
                 _moodVisuals.Remove(creature);
             }

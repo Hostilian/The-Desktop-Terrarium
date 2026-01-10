@@ -18,6 +18,24 @@ namespace Terrarium.Desktop.Rendering
         private readonly Canvas _mapCanvas;
         private readonly Border _viewportIndicator;
 
+        private readonly List<Line> _gridLines = new();
+        private readonly List<Ellipse> _dotPool = new();
+        private int _activeDotCount;
+
+        private readonly SolidColorBrush _gridBrush = CreateFrozenBrush(Color.FromArgb(30, 255, 255, 255));
+        private readonly SolidColorBrush _deadBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 80));
+        private readonly SolidColorBrush _herbivoreBrush = CreateFrozenBrush(Color.FromRgb(255, 183, 77));
+        private readonly SolidColorBrush _hungryBrush = CreateFrozenBrush(Color.FromRgb(231, 76, 60));
+        private readonly SolidColorBrush _carnivoreBrush = CreateFrozenBrush(Color.FromRgb(192, 57, 43));
+
+        private readonly Dictionary<int, SolidColorBrush> _brushCache = new();
+        private const int BrushCacheMax = 96;
+        private bool _gridBuilt;
+        private double _gridScaleX;
+        private double _gridScaleY;
+        private double _lastWorldWidth;
+        private double _lastWorldHeight;
+
         private const double MapWidth = 160;
         private const double MapHeight = 100;
         private const double Margin = 10;
@@ -118,31 +136,31 @@ namespace Terrarium.Desktop.Rendering
             _worldWidth = world.Width;
             _worldHeight = world.Height;
 
-            // Clear previous frame
-            _mapCanvas.Children.Clear();
-
             // Calculate scale
             double scaleX = MapWidth / _worldWidth;
             double scaleY = MapHeight / _worldHeight;
 
-            // Draw terrain features (subtle grid)
-            DrawTerrainGrid(scaleX, scaleY);
-
-            // Draw entities
-            foreach (var entity in world.GetAllEntities())
-            {
-                DrawEntityDot(entity, scaleX, scaleY);
-            }
+            EnsureTerrainGrid(scaleX, scaleY);
+            UpdateEntityDots(world, scaleX, scaleY);
 
             // Draw viewport indicator
             UpdateViewportIndicator(viewportWidth, viewportHeight, scaleX, scaleY);
         }
 
-        private void DrawTerrainGrid(double scaleX, double scaleY)
+        private void EnsureTerrainGrid(double scaleX, double scaleY)
         {
-            var gridBrush = new SolidColorBrush(Color.FromArgb(30, 255, 255, 255));
+            bool dimsChanged = _lastWorldWidth != _worldWidth || _lastWorldHeight != _worldHeight;
+            bool scaleChanged = Math.Abs(_gridScaleX - scaleX) > 0.0001 || Math.Abs(_gridScaleY - scaleY) > 0.0001;
 
-            // Draw subtle grid lines
+            if (_gridBuilt && !dimsChanged && !scaleChanged)
+                return;
+
+            foreach (var line in _gridLines)
+            {
+                _mapCanvas.Children.Remove(line);
+            }
+            _gridLines.Clear();
+
             int gridSize = 100;
             for (int x = 0; x < _worldWidth; x += gridSize)
             {
@@ -152,9 +170,11 @@ namespace Terrarium.Desktop.Rendering
                     Y1 = 0,
                     X2 = x * scaleX,
                     Y2 = MapHeight,
-                    Stroke = gridBrush,
-                    StrokeThickness = 0.5
+                    Stroke = _gridBrush,
+                    StrokeThickness = 0.5,
+                    IsHitTestVisible = false
                 };
+                _gridLines.Add(line);
                 _mapCanvas.Children.Add(line);
             }
 
@@ -166,76 +186,124 @@ namespace Terrarium.Desktop.Rendering
                     Y1 = y * scaleY,
                     X2 = MapWidth,
                     Y2 = y * scaleY,
-                    Stroke = gridBrush,
-                    StrokeThickness = 0.5
+                    Stroke = _gridBrush,
+                    StrokeThickness = 0.5,
+                    IsHitTestVisible = false
                 };
+                _gridLines.Add(line);
                 _mapCanvas.Children.Add(line);
+            }
+
+            _gridBuilt = true;
+            _gridScaleX = scaleX;
+            _gridScaleY = scaleY;
+            _lastWorldWidth = _worldWidth;
+            _lastWorldHeight = _worldHeight;
+        }
+
+        private void UpdateEntityDots(World world, double scaleX, double scaleY)
+        {
+            _activeDotCount = 0;
+
+            foreach (var plant in world.Plants)
+            {
+                UpdatePlantDot(plant, scaleX, scaleY);
+            }
+
+            foreach (var herbivore in world.Herbivores)
+            {
+                UpdateHerbivoreDot(herbivore, scaleX, scaleY);
+            }
+
+            foreach (var carnivore in world.Carnivores)
+            {
+                UpdateCarnivoreDot(carnivore, scaleX, scaleY);
+            }
+
+            for (int i = _activeDotCount; i < _dotPool.Count; i++)
+            {
+                _dotPool[i].Visibility = Visibility.Collapsed;
             }
         }
 
-        private void DrawEntityDot(WorldEntity entity, double scaleX, double scaleY)
+        private void UpdatePlantDot(Plant plant, double scaleX, double scaleY)
         {
-            double dotSize;
-            Brush dotBrush;
+            double dotSize = Math.Max(2, plant.Size * 0.3);
+            double intensity = plant.IsAlive ? 0.5 + (plant.Health / 200.0) : 0.2;
+            byte r = (byte)Math.Clamp(76 * intensity, 0, 255);
+            byte g = (byte)Math.Clamp(175 * intensity, 0, 255);
+            byte b = (byte)Math.Clamp(80 * intensity, 0, 255);
+            var brush = GetCachedBrush(Color.FromRgb(r, g, b));
 
-            if (entity is Plant plant)
+            var dot = GetDot(dotSize, brush);
+            Canvas.SetLeft(dot, plant.X * scaleX - dotSize / 2);
+            Canvas.SetTop(dot, plant.Y * scaleY - dotSize / 2);
+        }
+
+        private void UpdateHerbivoreDot(Herbivore herbivore, double scaleX, double scaleY)
+        {
+            double dotSize = 4;
+            Brush brush;
+
+            if (!herbivore.IsAlive)
+                brush = _deadBrush;
+            else if (herbivore.Hunger > 70)
+                brush = _hungryBrush;
+            else
+                brush = _herbivoreBrush;
+
+            var dot = GetDot(dotSize, brush);
+            Canvas.SetLeft(dot, herbivore.X * scaleX - dotSize / 2);
+            Canvas.SetTop(dot, herbivore.Y * scaleY - dotSize / 2);
+        }
+
+        private void UpdateCarnivoreDot(Carnivore carnivore, double scaleX, double scaleY)
+        {
+            double dotSize = 5;
+            Brush brush = carnivore.IsAlive ? _carnivoreBrush : _deadBrush;
+
+            var dot = GetDot(dotSize, brush);
+            Canvas.SetLeft(dot, carnivore.X * scaleX - dotSize / 2);
+            Canvas.SetTop(dot, carnivore.Y * scaleY - dotSize / 2);
+        }
+
+        private Ellipse GetDot(double dotSize, Brush fill)
+        {
+            Ellipse dot;
+            if (_activeDotCount < _dotPool.Count)
             {
-                dotSize = Math.Max(2, plant.Size * 0.3);
-                // Green with varying intensity based on health
-                double intensity = plant.IsAlive ? 0.5 + (plant.Health / 200.0) : 0.2;
-                dotBrush = new SolidColorBrush(Color.FromRgb(
-                    (byte)(76 * intensity),
-                    (byte)(175 * intensity),
-                    (byte)(80 * intensity)));
-            }
-            else if (entity is Herbivore herbivore)
-            {
-                dotSize = 4; // Fixed size for herbivores
-                // Orange/yellow
-                if (!herbivore.IsAlive)
-                {
-                    dotBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80));
-                }
-                else if (herbivore.Hunger > 70)
-                {
-                    // Pulsing red when hungry
-                    dotBrush = new SolidColorBrush(Color.FromRgb(231, 76, 60));
-                }
-                else
-                {
-                    dotBrush = new SolidColorBrush(Color.FromRgb(255, 183, 77));
-                }
-            }
-            else if (entity is Carnivore carnivore)
-            {
-                dotSize = 5; // Fixed size for carnivores (slightly bigger)
-                // Red/gray
-                if (!carnivore.IsAlive)
-                {
-                    dotBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80));
-                }
-                else
-                {
-                    dotBrush = new SolidColorBrush(Color.FromRgb(192, 57, 43));
-                }
+                dot = _dotPool[_activeDotCount];
             }
             else
             {
-                dotSize = 2;
-                dotBrush = Brushes.White;
+                dot = new Ellipse { IsHitTestVisible = false };
+                _dotPool.Add(dot);
+                _mapCanvas.Children.Add(dot);
             }
 
-            var dot = new Ellipse
+            dot.Width = dotSize;
+            dot.Height = dotSize;
+            dot.Fill = fill;
+            dot.Visibility = Visibility.Visible;
+
+            _activeDotCount++;
+            return dot;
+        }
+
+        private SolidColorBrush GetCachedBrush(Color color)
+        {
+            int key = (color.R << 16) | (color.G << 8) | color.B;
+            if (_brushCache.TryGetValue(key, out var brush))
+                return brush;
+
+            if (_brushCache.Count >= BrushCacheMax)
             {
-                Width = dotSize,
-                Height = dotSize,
-                Fill = dotBrush
-            };
+                _brushCache.Clear();
+            }
 
-            Canvas.SetLeft(dot, entity.X * scaleX - dotSize / 2);
-            Canvas.SetTop(dot, entity.Y * scaleY - dotSize / 2);
-
-            _mapCanvas.Children.Add(dot);
+            brush = CreateFrozenBrush(color);
+            _brushCache[key] = brush;
+            return brush;
         }
 
         private void UpdateViewportIndicator(double viewportWidth, double viewportHeight, double scaleX, double scaleY)
@@ -259,7 +327,15 @@ namespace Terrarium.Desktop.Rendering
             if (!_mapCanvas.Children.Contains(_viewportIndicator))
             {
                 _mapCanvas.Children.Add(_viewportIndicator);
+                Panel.SetZIndex(_viewportIndicator, 999);
             }
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
 
         /// <summary>

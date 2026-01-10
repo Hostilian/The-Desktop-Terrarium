@@ -17,6 +17,10 @@ namespace Terrarium.Desktop.Rendering
         private readonly Dictionary<Herbivore, WarningVisual> _warnings;
         private double _updateTimer;
 
+        private readonly List<Carnivore> _carnivoreBuffer = new();
+        private readonly HashSet<Herbivore> _existingHerbivoresBuffer = new();
+        private readonly List<Herbivore> _toRemoveBuffer = new();
+
         private const double UpdateInterval = 0.2;
         private const double WarningRadius = 100.0;
         private const double PulseSpeed = 3.0;
@@ -48,7 +52,8 @@ namespace Terrarium.Desktop.Rendering
             {
                 warning.PulsePhase += PulseSpeed * deltaTime;
                 double scale = 1.0 + 0.2 * Math.Sin(warning.PulsePhase);
-                warning.Visual.RenderTransform = new ScaleTransform(scale, scale, 10, 10);
+                warning.ScaleTransform.ScaleX = scale;
+                warning.ScaleTransform.ScaleY = scale;
                 warning.Visual.Opacity = 0.5 + 0.3 * Math.Sin(warning.PulsePhase);
             }
 
@@ -56,19 +61,24 @@ namespace Terrarium.Desktop.Rendering
                 return;
             _updateTimer = 0;
 
-            var carnivoreList = new List<Carnivore>(carnivores);
-            var existingHerbivores = new HashSet<Herbivore>();
+            _carnivoreBuffer.Clear();
+            foreach (var carnivore in carnivores)
+            {
+                _carnivoreBuffer.Add(carnivore);
+            }
+
+            _existingHerbivoresBuffer.Clear();
 
             foreach (var herbivore in herbivores)
             {
                 if (!herbivore.IsAlive)
                     continue;
 
-                existingHerbivores.Add(herbivore);
+                _existingHerbivoresBuffer.Add(herbivore);
 
                 // Check distance to nearest carnivore
                 double nearestDistance = double.MaxValue;
-                foreach (var carnivore in carnivoreList)
+                foreach (var carnivore in _carnivoreBuffer)
                 {
                     if (!carnivore.IsAlive)
                         continue;
@@ -91,13 +101,13 @@ namespace Terrarium.Desktop.Rendering
             }
 
             // Remove warnings for dead/removed herbivores
-            var toRemove = new List<Herbivore>();
+            _toRemoveBuffer.Clear();
             foreach (var kvp in _warnings)
             {
-                if (!existingHerbivores.Contains(kvp.Key))
+                if (!_existingHerbivoresBuffer.Contains(kvp.Key))
                 {
                     _canvas.Children.Remove(kvp.Value.Visual);
-                    toRemove.Add(kvp.Key);
+                    _toRemoveBuffer.Add(kvp.Key);
                 }
                 else
                 {
@@ -107,7 +117,7 @@ namespace Terrarium.Desktop.Rendering
                 }
             }
 
-            foreach (var herbivore in toRemove)
+            foreach (var herbivore in _toRemoveBuffer)
             {
                 _warnings.Remove(herbivore);
             }
@@ -124,17 +134,20 @@ namespace Terrarium.Desktop.Rendering
                 // Closer = more red/urgent
                 byte red = (byte)(255 * intensity);
                 byte green = (byte)(100 * (1 - intensity));
-                warning.Visual.Foreground = new SolidColorBrush(Color.FromRgb(red, green, 0));
+                warning.ForegroundBrush.Color = Color.FromRgb(red, green, 0);
                 return;
             }
 
             // Create new warning
+            var brush = new SolidColorBrush(Color.FromRgb(255, 100, 0));
+            var scaleTransform = new ScaleTransform(1.0, 1.0, 10, 10);
             var textBlock = new TextBlock
             {
                 Text = "⚠️",
                 FontSize = 16,
                 RenderTransformOrigin = new Point(0.5, 0.5),
-                Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 0))
+                Foreground = brush,
+                RenderTransform = scaleTransform
             };
 
             Canvas.SetLeft(textBlock, herbivore.X - 10);
@@ -142,7 +155,13 @@ namespace Terrarium.Desktop.Rendering
             Canvas.SetZIndex(textBlock, 600);
 
             _canvas.Children.Add(textBlock);
-            _warnings[herbivore] = new WarningVisual { Visual = textBlock, PulsePhase = 0 };
+            _warnings[herbivore] = new WarningVisual
+            {
+                Visual = textBlock,
+                PulsePhase = 0,
+                ForegroundBrush = brush,
+                ScaleTransform = scaleTransform
+            };
         }
 
         private void HideWarning(Herbivore herbivore)
@@ -171,5 +190,7 @@ namespace Terrarium.Desktop.Rendering
     {
         public TextBlock Visual { get; set; } = null!;
         public double PulsePhase { get; set; }
+        public SolidColorBrush ForegroundBrush { get; set; } = null!;
+        public ScaleTransform ScaleTransform { get; set; } = null!;
     }
 }

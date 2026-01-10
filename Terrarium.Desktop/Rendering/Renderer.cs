@@ -23,6 +23,12 @@ namespace Terrarium.Desktop.Rendering
         private readonly Dictionary<int, double> _plantShakeTimers;
         private readonly Random _random;
 
+        private readonly List<int> _orphanIdsBuffer = new();
+        private readonly List<int> _expiredShakeIdsBuffer = new();
+        private readonly List<int> _shakeKeyBuffer = new();
+        private readonly HashSet<int> _aliveIdsBuffer = new();
+        private readonly List<int> _deadIdsBuffer = new();
+
         // Rendering mode
         private bool _useSpriteMode = false; // Set to true to use sprites instead of shapes
 
@@ -168,12 +174,17 @@ namespace Terrarium.Desktop.Rendering
         public void Clear()
         {
             // Remove any orphaned visuals (e.g., removed from canvas elsewhere).
-            var orphanIds = _entityVisuals
-                .Where(kvp => !_canvas.Children.Contains(kvp.Value))
-                .Select(kvp => kvp.Key)
-                .ToList();
+            _orphanIdsBuffer.Clear();
 
-            foreach (var id in orphanIds)
+            foreach (var kvp in _entityVisuals)
+            {
+                if (!_canvas.Children.Contains(kvp.Value))
+                {
+                    _orphanIdsBuffer.Add(kvp.Key);
+                }
+            }
+
+            foreach (var id in _orphanIdsBuffer)
             {
                 _entityVisuals.Remove(id);
                 _plantShakeTimers.Remove(id);
@@ -626,22 +637,28 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void UpdateShakeAnimations()
         {
-            var expiredShakes = new List<int>();
+            _expiredShakeIdsBuffer.Clear();
+            _shakeKeyBuffer.Clear();
 
-            foreach (var kvp in _plantShakeTimers.ToList())
+            foreach (var id in _plantShakeTimers.Keys)
             {
-                double newTime = kvp.Value - ApproxFrameDeltaSecondsAt60Fps;
+                _shakeKeyBuffer.Add(id);
+            }
+
+            foreach (var id in _shakeKeyBuffer)
+            {
+                double newTime = _plantShakeTimers[id] - ApproxFrameDeltaSecondsAt60Fps;
                 if (newTime <= 0)
                 {
-                    expiredShakes.Add(kvp.Key);
+                    _expiredShakeIdsBuffer.Add(id);
                 }
                 else
                 {
-                    _plantShakeTimers[kvp.Key] = newTime;
+                    _plantShakeTimers[id] = newTime;
                 }
             }
 
-            foreach (var id in expiredShakes)
+            foreach (var id in _expiredShakeIdsBuffer)
             {
                 _plantShakeTimers.Remove(id);
             }
@@ -652,10 +669,22 @@ namespace Terrarium.Desktop.Rendering
         /// </summary>
         private void CleanupDeadEntities(World world)
         {
-            var aliveIds = world.GetAllEntities().Select(e => e.Id).ToHashSet();
-            var deadIds = _entityVisuals.Keys.Where(id => !aliveIds.Contains(id)).ToList();
+            _aliveIdsBuffer.Clear();
+            foreach (var entity in world.GetAllEntities())
+            {
+                _aliveIdsBuffer.Add(entity.Id);
+            }
 
-            foreach (var id in deadIds)
+            _deadIdsBuffer.Clear();
+            foreach (var id in _entityVisuals.Keys)
+            {
+                if (!_aliveIdsBuffer.Contains(id))
+                {
+                    _deadIdsBuffer.Add(id);
+                }
+            }
+
+            foreach (var id in _deadIdsBuffer)
             {
                 if (_entityVisuals.TryGetValue(id, out var visual))
                 {

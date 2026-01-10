@@ -112,9 +112,9 @@ namespace Terrarium.Tests.Persistence
 
                 var loaded = saveManager.LoadWorld(filePath);
 
-                Assert.IsTrue(loaded.Plants.Count == 0);
-                Assert.IsTrue(loaded.Herbivores.Count == 0);
-                Assert.IsTrue(loaded.Carnivores.Count == 0);
+                Assert.IsEmpty(loaded.Plants);
+                Assert.IsEmpty(loaded.Herbivores);
+                Assert.IsEmpty(loaded.Carnivores);
             }
             finally
             {

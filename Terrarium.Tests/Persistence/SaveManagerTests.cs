@@ -60,5 +60,62 @@ namespace Terrarium.Tests.Persistence
                 }
             }
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidDataException))]
+        public void SaveManager_LoadWorld_InvalidJson_ThrowsInvalidDataException()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_test_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                File.WriteAllText(filePath, "not valid json");
+                var saveManager = new SaveManager();
+
+                saveManager.LoadWorld(filePath);
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_LoadWorld_NullLists_DefaultToEmptyCollections()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_test_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                string json = "{" +
+                              "\"SchemaVersion\":1," +
+                              "\"Width\":800," +
+                              "\"Height\":200," +
+                              "\"Plants\":null," +
+                              "\"Herbivores\":null," +
+                              "\"Carnivores\":null," +
+                              "\"SaveDate\":\"2026-01-10T00:00:00Z\"" +
+                              "}";
+
+                File.WriteAllText(filePath, json);
+                var saveManager = new SaveManager();
+
+                var loaded = saveManager.LoadWorld(filePath);
+
+                Assert.IsTrue(loaded.Plants.Count == 0);
+                Assert.IsTrue(loaded.Herbivores.Count == 0);
+                Assert.IsTrue(loaded.Carnivores.Count == 0);
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
     }
 }

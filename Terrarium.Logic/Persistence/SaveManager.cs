@@ -16,8 +16,11 @@ namespace Terrarium.Logic.Persistence
         /// </summary>
         public void SaveWorld(Simulation.World world, string fileName = DefaultSaveFileName)
         {
+            ArgumentNullException.ThrowIfNull(world);
+
             var saveData = new WorldSaveData
             {
+                SchemaVersion = WorldSaveData.CurrentSchemaVersion,
                 Width = world.Width,
                 Height = world.Height,
                 Plants = world.Plants.Select(p => EntityToData(p)).ToList(),
@@ -31,7 +34,22 @@ namespace Terrarium.Logic.Persistence
                 WriteIndented = true
             });
 
-            File.WriteAllText(fileName, json);
+            string? directory = Path.GetDirectoryName(fileName);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            string tempFileName = fileName + ".tmp";
+            File.WriteAllText(tempFileName, json);
+
+            if (File.Exists(fileName))
+            {
+                string backupFileName = fileName + ".bak";
+                File.Copy(fileName, backupFileName, overwrite: true);
+            }
+
+            File.Move(tempFileName, fileName, overwrite: true);
         }
 
         /// <summary>
@@ -45,17 +63,33 @@ namespace Terrarium.Logic.Persistence
             }
 
             string json = File.ReadAllText(fileName);
-            var saveData = JsonSerializer.Deserialize<WorldSaveData>(json);
+            WorldSaveData? saveData;
+            try
+            {
+                saveData = JsonSerializer.Deserialize<WorldSaveData>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidDataException("Save file is corrupted or not valid JSON.", ex);
+            }
 
             if (saveData == null)
             {
                 throw new InvalidOperationException("Failed to deserialize save data");
             }
 
+            if (saveData.Width <= 0 || saveData.Height <= 0)
+            {
+                throw new InvalidDataException("Save file contains invalid world dimensions.");
+            }
+
             var world = new Simulation.World(saveData.Width, saveData.Height);
 
             // Restore plants
-            foreach (var plantData in saveData.Plants)
+            foreach (var plantData in saveData.Plants ?? new List<EntitySaveData>())
             {
                 var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
                 RestoreEntityData(plant, plantData);
@@ -63,7 +97,7 @@ namespace Terrarium.Logic.Persistence
             }
 
             // Restore herbivores
-            foreach (var herbData in saveData.Herbivores)
+            foreach (var herbData in saveData.Herbivores ?? new List<EntitySaveData>())
             {
                 var herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
                 RestoreEntityData(herbivore, herbData);
@@ -71,7 +105,7 @@ namespace Terrarium.Logic.Persistence
             }
 
             // Restore carnivores
-            foreach (var carnData in saveData.Carnivores)
+            foreach (var carnData in saveData.Carnivores ?? new List<EntitySaveData>())
             {
                 var carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
                 RestoreEntityData(carnivore, carnData);
@@ -79,6 +113,26 @@ namespace Terrarium.Logic.Persistence
             }
 
             return world;
+        }
+
+        /// <summary>
+        /// Attempts to load world state from a JSON file without throwing.
+        /// The thrown exception details (including stack trace) are returned in <paramref name="errorDetails"/>.
+        /// </summary>
+        public bool TryLoadWorld(string fileName, out Simulation.World? world, out string? errorDetails)
+        {
+            try
+            {
+                world = LoadWorld(fileName);
+                errorDetails = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                world = null;
+                errorDetails = ex.ToString();
+                return false;
+            }
         }
 
         /// <summary>
@@ -155,6 +209,9 @@ namespace Terrarium.Logic.Persistence
     /// </summary>
     public class WorldSaveData
     {
+        public const int CurrentSchemaVersion = 1;
+
+        public int SchemaVersion { get; set; } = CurrentSchemaVersion;
         public double Width { get; set; }
         public double Height { get; set; }
         public List<EntitySaveData> Plants { get; set; } = new();

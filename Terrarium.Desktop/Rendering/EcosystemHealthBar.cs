@@ -83,7 +83,6 @@ namespace Terrarium.Desktop.Rendering
 
             stack.Children.Add(titleRow);
 
-            // Health bar background
             var barBg = new Border
             {
                 Height = 12,

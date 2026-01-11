@@ -42,7 +42,6 @@ namespace Terrarium.Desktop.Rendering
         });
         private bool _isVisible;
 
-        // Settings values
         public double SimulationSpeed { get; private set; } = 1.0;
         public double SpawnRate { get; private set; } = 0.5;
         public bool ShowParticles { get; private set; } = true;
@@ -52,7 +51,6 @@ namespace Terrarium.Desktop.Rendering
         public int MaxPlants { get; private set; } = 50;
         public int MaxCreatures { get; private set; } = 30;
 
-        // Events for settings changes
         public event Action<double>? SimulationSpeedChanged;
         public event Action<double>? SpawnRateChanged;
         public event Action<bool>? ParticlesToggled;

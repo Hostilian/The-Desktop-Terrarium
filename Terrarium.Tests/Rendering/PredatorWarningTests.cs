@@ -16,7 +16,7 @@ namespace Terrarium.Tests.Rendering
             double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
             bool inDanger = distance < WarningRadius;
 
-            Assert.IsTrue(inDanger, "Herbivore 50 units from carnivore should be in danger");
+            Assert.IsTrue(inDanger);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Terrarium.Tests.Rendering
             double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
             bool inDanger = distance < WarningRadius;
 
-            Assert.IsFalse(inDanger, "Herbivore 200 units from carnivore should be safe");
+            Assert.IsFalse(inDanger);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace Terrarium.Tests.Rendering
             double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
             bool inDanger = distance < WarningRadius;
 
-            Assert.IsFalse(inDanger, "Exactly at radius boundary should be safe");
+            Assert.IsFalse(inDanger);
         }
 
         [TestMethod]

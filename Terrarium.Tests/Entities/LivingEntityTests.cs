@@ -17,7 +17,7 @@ namespace Terrarium.Tests.Entities
             var plant = new Plant(0, 0);
 
             // Assert
-            Assert.IsTrue(plant.IsAlive, "Living entities should start alive");
+            Assert.IsTrue(plant.IsAlive);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Terrarium.Tests.Entities
             var plant = new Plant(0, 0);
 
             // Assert
-            Assert.AreEqual(100.0, plant.Health, 0.01, "Living entities should start with full health");
+            Assert.AreEqual(100.0, plant.Health, 0.01);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Terrarium.Tests.Entities
             var herbivore = new Herbivore(0, 0);
 
             // Assert
-            Assert.AreEqual(0.0, herbivore.Age, 0.01, "Living entities should start with zero age");
+            Assert.AreEqual(0.0, herbivore.Age, 0.01);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Terrarium.Tests.Entities
             creature.TakeDamage(25);
 
             // Assert
-            Assert.AreEqual(initialHealth - 25, creature.Health, 0.01, "Health should decrease by damage amount");
+            Assert.AreEqual(initialHealth - 25, creature.Health, 0.01);
         }
 
         [TestMethod]
@@ -78,7 +78,7 @@ namespace Terrarium.Tests.Entities
             creature.TakeDamage(100);
 
             // Assert
-            Assert.IsFalse(creature.IsAlive, "Entity should die when health reaches zero");
+            Assert.IsFalse(creature.IsAlive);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Terrarium.Tests.Entities
             creature.Heal(25);
 
             // Assert
-            Assert.AreEqual(healthAfterDamage + 25, creature.Health, 0.01, "Health should increase by heal amount");
+            Assert.AreEqual(healthAfterDamage + 25, creature.Health, 0.01);
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace Terrarium.Tests.Entities
             creature.Heal(1000); // Try to heal way over max
 
             // Assert
-            Assert.AreEqual(100.0, creature.Health, 0.01, "Health should be clamped to maximum");
+            Assert.AreEqual(100.0, creature.Health, 0.01);
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace Terrarium.Tests.Entities
             creature.TakeDamage(1000); // Try to damage way below zero
 
             // Assert
-            Assert.AreEqual(0.0, creature.Health, 0.01, "Health should be clamped to minimum (zero)");
+            Assert.AreEqual(0.0, creature.Health, 0.01);
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace Terrarium.Tests.Entities
             creature.Update(10.0);
 
             // Assert
-            Assert.AreEqual(ageAtDeath, creature.Age, 0.01, "Dead entities should not update");
+            Assert.AreEqual(ageAtDeath, creature.Age, 0.01);
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace Terrarium.Tests.Entities
             creature.Update(0.5);
 
             // Assert
-            Assert.AreEqual(3.5, creature.Age, 0.01, "Age should accumulate across multiple updates");
+            Assert.AreEqual(3.5, creature.Age, 0.01);
         }
     }
 }

@@ -180,9 +180,9 @@ namespace Terrarium.Tests.Persistence
                 var loaded = saveManager.LoadWorld(fileName: filePath);
 
                 // Assert - Verify counts
-                Assert.AreEqual(3, loaded.Plants.Count, "Should have 3 plants");
-                Assert.AreEqual(2, loaded.Herbivores.Count, "Should have 2 herbivores");
-                Assert.AreEqual(2, loaded.Carnivores.Count, "Should have 2 carnivores");
+                Assert.HasCount(3, loaded.Plants, "Should have 3 plants");
+                Assert.HasCount(2, loaded.Herbivores, "Should have 2 herbivores");
+                Assert.HasCount(2, loaded.Carnivores, "Should have 2 carnivores");
 
                 // Verify world dimensions
                 Assert.AreEqual(1920, loaded.Width, "World width should be preserved");
@@ -191,20 +191,20 @@ namespace Terrarium.Tests.Persistence
                 // Verify plant states are restored
                 var loadedPlant1 = loaded.Plants.FirstOrDefault(p => Math.Abs(p.X - 100) < 1);
                 Assert.IsNotNull(loadedPlant1, "Plant 1 should be found at X=100");
-                Assert.IsTrue(loadedPlant1.Size > 5, "Plant 1 should have grown");
+                Assert.IsGreaterThan(5.0, loadedPlant1.Size, "Plant 1 should have grown");
 
                 var loadedPlant2 = loaded.Plants.FirstOrDefault(p => Math.Abs(p.X - 200) < 1);
                 Assert.IsNotNull(loadedPlant2, "Plant 2 should be found at X=200");
-                Assert.IsTrue(loadedPlant2.Health < 100, "Plant 2 should be damaged");
+                Assert.IsLessThan(100.0, loadedPlant2.Health, "Plant 2 should be damaged");
 
                 // Verify herbivore states
                 var loadedHerb1 = loaded.Herbivores.FirstOrDefault(h => h.Type == "Sheep");
                 Assert.IsNotNull(loadedHerb1, "Sheep herbivore should exist");
-                Assert.IsTrue(loadedHerb1.Age >= 5.0, "Sheep age should be preserved");
+                Assert.IsGreaterThanOrEqualTo(5.0, loadedHerb1.Age, "Sheep age should be preserved");
 
                 var loadedHerb2 = loaded.Herbivores.FirstOrDefault(h => h.Type == "Rabbit");
                 Assert.IsNotNull(loadedHerb2, "Rabbit herbivore should exist");
-                Assert.IsTrue(loadedHerb2.Hunger > loadedHerb1.Hunger, "Older rabbit should be hungrier");
+                Assert.IsGreaterThan(loadedHerb1.Hunger, loadedHerb2.Hunger, "Older rabbit should be hungrier");
 
                 // Verify carnivore states
                 var loadedCarn1 = loaded.Carnivores.FirstOrDefault(c => c.Type == "Wolf");
@@ -212,7 +212,7 @@ namespace Terrarium.Tests.Persistence
 
                 var loadedCarn2 = loaded.Carnivores.FirstOrDefault(c => c.Type == "Fox");
                 Assert.IsNotNull(loadedCarn2, "Fox carnivore should exist");
-                Assert.IsTrue(loadedCarn2.Age > loadedCarn1.Age, "Fox should be older than wolf");
+                Assert.IsGreaterThan(loadedCarn1.Age, loadedCarn2.Age, "Fox should be older than wolf");
             }
             finally
             {
@@ -247,7 +247,7 @@ namespace Terrarium.Tests.Persistence
                 Assert.IsFalse(success, "TryLoadWorld should return false for invalid JSON");
                 Assert.IsNull(world, "World should be null on failure");
                 Assert.IsNotNull(errorDetails, "Error details should be provided");
-                Assert.IsTrue(errorDetails.Contains("Exception"), "Error should contain exception info");
+                StringAssert.Contains(errorDetails, "Exception", "Error should contain exception info");
             }
             finally
             {
@@ -278,7 +278,7 @@ namespace Terrarium.Tests.Persistence
                 Assert.IsTrue(success, "TryLoadWorld should return true for valid save");
                 Assert.IsNotNull(loaded, "World should be loaded");
                 Assert.IsNull(errorDetails, "No error details on success");
-                Assert.AreEqual(1, loaded.Plants.Count, "Plant should be restored");
+                Assert.HasCount(1, loaded.Plants, "Plant should be restored");
             }
             finally
             {
@@ -364,7 +364,7 @@ namespace Terrarium.Tests.Persistence
                 }
                 catch (InvalidDataException ex)
                 {
-                    Assert.IsTrue(ex.Message.Contains("invalid"), "Should mention invalid dimensions");
+                    StringAssert.Contains(ex.Message, "invalid", "Should mention invalid dimensions");
                 }
             }
             finally

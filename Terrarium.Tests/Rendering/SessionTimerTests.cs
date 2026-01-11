@@ -13,7 +13,7 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 0;
             int dayCount = (int)(sessionTime / DayDuration) + 1;
 
-            Assert.AreEqual(1, dayCount, "Session should start at Day 1");
+            Assert.AreEqual(1, dayCount);
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 120; // Exactly 2 minutes
             int dayCount = (int)(sessionTime / DayDuration) + 1;
 
-            Assert.AreEqual(2, dayCount, "Day 2 should start at 120 seconds");
+            Assert.AreEqual(2, dayCount);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 360; // 6 minutes
             int dayCount = (int)(sessionTime / DayDuration) + 1;
 
-            Assert.AreEqual(4, dayCount, "Day 4 should be at 360 seconds");
+            Assert.AreEqual(4, dayCount);
         }
 
         [TestMethod]
@@ -41,8 +41,8 @@ namespace Terrarium.Tests.Rendering
             int minutes = (int)(sessionTime / 60);
             int seconds = (int)(sessionTime % 60);
 
-            Assert.AreEqual(3, minutes, "Minutes should be 3");
-            Assert.AreEqual(5, seconds, "Seconds should be 5");
+            Assert.AreEqual(3, minutes);
+            Assert.AreEqual(5, seconds);
         }
 
         [TestMethod]
@@ -51,10 +51,10 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 3700; // Just over 1 hour
             int minutes = (int)(sessionTime / 60);
 
-            Assert.IsGreaterThan(60, minutes, "Minutes should exceed 60 for long sessions");
+            Assert.IsTrue(minutes > 60);
 
             int dayCount = (int)(sessionTime / DayDuration) + 1;
-            Assert.AreEqual(31, dayCount, "Should be on day 31 after ~1 hour");
+            Assert.AreEqual(31, dayCount);
         }
 
         [TestMethod]
@@ -64,10 +64,10 @@ namespace Terrarium.Tests.Rendering
 
             // Simulate reproduction events
             generationCount++;
-            Assert.AreEqual(2, generationCount, "Generation should increment");
+            Assert.AreEqual(2, generationCount);
 
             generationCount += 10;
-            Assert.AreEqual(12, generationCount, "Multiple increments should work");
+            Assert.AreEqual(12, generationCount);
         }
 
         [TestMethod]
@@ -82,9 +82,9 @@ namespace Terrarium.Tests.Rendering
             dayCount = 1;
             generationCount = 1;
 
-            Assert.AreEqual(0, sessionTime, "Time should reset to 0");
-            Assert.AreEqual(1, dayCount, "Day should reset to 1");
-            Assert.AreEqual(1, generationCount, "Generation should reset to 1");
+            Assert.AreEqual(0, sessionTime);
+            Assert.AreEqual(1, dayCount);
+            Assert.AreEqual(1, generationCount);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Terrarium.Tests.Rendering
             // An hour session would have 30 days
             double hourInSeconds = 3600;
             int daysInHour = (int)(hourInSeconds / DayDuration);
-            Assert.AreEqual(30, daysInHour, "One hour should have 30 in-game days");
+            Assert.AreEqual(30, daysInHour);
         }
     }
 }

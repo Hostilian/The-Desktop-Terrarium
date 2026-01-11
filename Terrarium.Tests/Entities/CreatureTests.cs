@@ -51,7 +51,7 @@ namespace Terrarium.Tests.Entities
             sheep.Update(deltaTime: 1.0);
 
             // Assert
-            Assert.AreNotEqual(initialX, sheep.X, "X position should change after movement");
+            Assert.AreNotEqual(initialX, sheep.X);
         }
 
         [TestMethod]
@@ -64,9 +64,9 @@ namespace Terrarium.Tests.Entities
             sheep.SetDirection(1, 0); // Move right
 
             // Assert
-            Assert.IsGreaterThan(0, sheep.VelocityX, "VelocityX should be positive when moving right");
-            Assert.AreEqual(0, sheep.VelocityY, 0.01, "VelocityY should be zero when moving horizontally");
-            Assert.AreEqual(sheep.Speed, sheep.VelocityX, 0.01, "VelocityX magnitude should equal creature speed when moving purely horizontally");
+            Assert.IsTrue(sheep.VelocityX > 0);
+            Assert.AreEqual(0, sheep.VelocityY, 0.01);
+            Assert.AreEqual(sheep.Speed, sheep.VelocityX, 0.01);
         }
 
         [TestMethod]
@@ -80,8 +80,8 @@ namespace Terrarium.Tests.Entities
             sheep.Stop();
 
             // Assert
-            Assert.AreEqual(0, sheep.VelocityX, "VelocityX should be zero after stopping");
-            Assert.AreEqual(0, sheep.VelocityY, "VelocityY should be zero after stopping");
+            Assert.AreEqual(0, sheep.VelocityX);
+            Assert.AreEqual(0, sheep.VelocityY);
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace Terrarium.Tests.Entities
             sheep.OnClick();
 
             // Assert
-            Assert.IsLessThan(hungerBefore, sheep.Hunger, "Clicking should feed the creature");
+            Assert.IsTrue(hungerBefore > sheep.Hunger);
         }
 
         [TestMethod]

@@ -16,6 +16,11 @@ namespace Terrarium.Desktop.Rendering
         private TextBlock? _dayText;
         private TextBlock? _generationText;
 
+        private static readonly Brush ContainerBackgroundBrush = CreateFrozenBrush(Color.FromArgb(180, 20, 30, 40));
+        private static readonly Brush ContainerBorderBrush = CreateFrozenBrush(Color.FromRgb(70, 70, 70));
+        private static readonly Brush DayTextBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly Brush GenerationBaseBrush = CreateFrozenBrush(Color.FromRgb(180, 220, 255));
+
         private static readonly SolidColorBrush TimeGreenBrush = CreateFrozenBrush(Color.FromRgb(100, 255, 150));
         private static readonly SolidColorBrush MilestoneGoldBrush = CreateFrozenBrush(Color.FromRgb(255, 215, 0));
         private static readonly SolidColorBrush MilestoneOrangeBrush = CreateFrozenBrush(Color.FromRgb(255, 180, 100));
@@ -42,8 +47,8 @@ namespace Terrarium.Desktop.Rendering
         {
             _container = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(180, 20, 30, 40)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(70, 70, 70)),
+                Background = ContainerBackgroundBrush,
+                BorderBrush = ContainerBorderBrush,
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(6),
                 Padding = new Thickness(8, 4, 8, 4)
@@ -89,7 +94,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = "Day 1",
                 FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
+                Foreground = DayTextBrush,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(0, 0, 10, 0)
             };
@@ -109,7 +114,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = "Gen 1",
                 FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(180, 220, 255)),
+                Foreground = GenerationBaseBrush,
                 VerticalAlignment = VerticalAlignment.Center
             };
             stack.Children.Add(_generationText);

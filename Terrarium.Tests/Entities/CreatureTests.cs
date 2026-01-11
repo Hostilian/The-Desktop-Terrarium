@@ -66,6 +66,7 @@ namespace Terrarium.Tests.Entities
             // Assert
             Assert.IsGreaterThan(0, sheep.VelocityX, "VelocityX should be positive when moving right");
             Assert.AreEqual(0, sheep.VelocityY, 0.01, "VelocityY should be zero when moving horizontally");
+            Assert.AreEqual(sheep.Speed, sheep.VelocityX, 0.01, "VelocityX magnitude should equal creature speed when moving purely horizontally");
         }
 
         [TestMethod]

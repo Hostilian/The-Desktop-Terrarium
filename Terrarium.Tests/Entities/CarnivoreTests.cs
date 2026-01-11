@@ -50,11 +50,12 @@ namespace Terrarium.Tests.Entities
         {
             // Arrange
             var wolf = new Carnivore(100, 100);
+            var closePrey = new Herbivore(120, 110, "Sheep");
             var herbivores = new List<Herbivore>
             {
                 new Herbivore(300, 300, "Rabbit"), // Far
-                new Herbivore(120, 110, "Sheep"),  // Close
-                new Herbivore(400, 400, "Deer")    // Very far
+                closePrey,                          // Close
+                new Herbivore(400, 400, "Deer")     // Very far
             };
 
             // Act
@@ -62,7 +63,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             Assert.IsNotNull(nearestPrey, "Should find nearby prey");
-            Assert.AreEqual(120, nearestPrey.X, "Should find the closest prey");
+            Assert.AreSame(closePrey, nearestPrey, "Should return the exact closest prey instance");
         }
 
         [TestMethod]

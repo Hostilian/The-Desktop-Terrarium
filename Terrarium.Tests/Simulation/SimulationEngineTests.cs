@@ -68,13 +68,15 @@ namespace Terrarium.Tests.Simulation
         {
             // Arrange
             var engine = new SimulationEngine(800, 600);
-            engine.World.AddPlant(new Logic.Entities.Plant(100, 100));
+            var plant = new Logic.Entities.Plant(100, 100);
+            engine.World.AddPlant(plant);
 
             // Act
             var clickable = engine.FindClickableAt(100, 100);
 
             // Assert
             Assert.IsNotNull(clickable, "Should find clickable entity at position");
+            Assert.AreSame(plant, clickable, "Should return the exact entity instance that contains the point");
         }
 
         [TestMethod]
@@ -95,6 +97,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsLessThan(healthBefore, plant.Health, "Stormy weather should damage plants");
+            Assert.AreEqual(100.0, plant.WaterLevel, 1e-9, "Stormy weather should keep plants watered (clamped at max)");
         }
 
         [TestMethod]

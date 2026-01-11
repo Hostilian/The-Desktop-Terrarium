@@ -150,98 +150,50 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Checks if a creature can reproduce.
-        /// </summary>
-        public bool CanReproduce(Creature creature)
-        {
-            if (!creature.IsAlive)
-                return false;
-            if (creature.Health < MinHealthForReproduction)
-                return false;
-            if (creature.Hunger > MaxHungerForReproduction)
-                return false;
-            if (creature.Age < MinAgeForReproduction)
-                return false;
-            if (_reproductionCooldowns.ContainsKey(creature.Id))
-                return false;
+        public bool CanReproduce(Creature creature) =>
+            creature.IsAlive &&
+            creature.Health >= MinHealthForReproduction &&
+            creature.Hunger <= MaxHungerForReproduction &&
+            creature.Age >= MinAgeForReproduction &&
+            !_reproductionCooldowns.ContainsKey(creature.Id);
 
-            return true;
-        }
-
-        /// <summary>
-        /// Finds a suitable mate nearby.
-        /// </summary>
         private T? FindMate<T>(T creature, IEnumerable<T> potentialMates) where T : Creature
         {
             foreach (var potential in potentialMates)
             {
-                if (potential.Id == creature.Id)
+                if (potential.Id == creature.Id || !CanReproduce(potential) || creature.DistanceTo(potential) > MatingRange)
                     continue;
-                if (!CanReproduce(potential))
-                    continue;
-                if (creature.DistanceTo(potential) > MatingRange)
-                    continue;
-
                 return potential;
             }
-
             return null;
         }
 
-        /// <summary>
-        /// Creates offspring from two parents.
-        /// </summary>
         private Creature? CreateOffspring(Creature parent1, Creature parent2)
         {
-            // Calculate spawn position between parents
             double midX = (parent1.X + parent2.X) / 2;
             double midY = (parent1.Y + parent2.Y) / 2;
-
-            // Add random offset
             double angle = _random.NextDouble() * Math.PI * 2;
             double offsetX = Math.Cos(angle) * OffspringSpawnRadius * _random.NextDouble();
             double offsetY = Math.Sin(angle) * OffspringSpawnRadius * _random.NextDouble();
-
             double spawnX = Math.Clamp(midX + offsetX, 0, _world.Width);
             double spawnY = Math.Clamp(midY + offsetY, 0, _world.Height);
 
-            // Create offspring of the same type as parents
-            if (parent1 is Herbivore h1)
+            return parent1 switch
             {
-                return new Herbivore(spawnX, spawnY, h1.Type);
-            }
-            else if (parent1 is Carnivore c1)
-            {
-                return new Carnivore(spawnX, spawnY, c1.Type);
-            }
-
-            return null;
+                Herbivore h1 => new Herbivore(spawnX, spawnY, h1.Type),
+                Carnivore c1 => new Carnivore(spawnX, spawnY, c1.Type),
+                _ => null
+            };
         }
 
-        /// <summary>
-        /// Applies the energy cost of reproduction.
-        /// </summary>
         private void ApplyReproductionCost(Creature creature)
         {
             creature.TakeDamage(ReproductionHealthCost);
-            creature.Feed(-ReproductionHungerCost); // Negative feed = increase hunger
+            creature.Feed(-ReproductionHungerCost);
         }
 
-        /// <summary>
-        /// Sets reproduction cooldown for a creature.
-        /// </summary>
-        private void SetCooldown(Creature creature)
-        {
-            _reproductionCooldowns[creature.Id] = ReproductionCooldown;
-        }
+        private void SetCooldown(Creature creature) => _reproductionCooldowns[creature.Id] = ReproductionCooldown;
 
-        /// <summary>
-        /// Clears cooldown for a creature (for testing).
-        /// </summary>
-        public void ClearCooldown(int creatureId)
-        {
-            _reproductionCooldowns.Remove(creatureId);
-        }
+        public void ClearCooldown(int creatureId) => _reproductionCooldowns.Remove(creatureId);
     }
 }

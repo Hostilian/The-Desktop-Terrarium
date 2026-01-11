@@ -32,7 +32,7 @@ namespace Terrarium.Tests.Simulation
             cycle.Update(10.0);
 
             // Assert
-              Assert.IsGreaterThan(initialTime, cycle.CurrentTime);
+            Assert.IsGreaterThan(initialTime, cycle.CurrentTime);
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.AreEqual(1.0, dayCycle.SpeedMultiplier);
-              Assert.IsLessThan(1.0, nightCycle.SpeedMultiplier);
+            Assert.IsLessThan(1.0, nightCycle.SpeedMultiplier);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace Terrarium.Tests.Simulation
             cycle.SetPhase(DayPhase.Night);
 
             // Assert
-              Assert.IsLessThan(0.5, cycle.LightLevel);
+            Assert.IsLessThan(0.5, cycle.LightLevel);
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.AreEqual(1.0, dayCycle.HungerRateMultiplier);
-              Assert.IsLessThan(1.0, nightCycle.HungerRateMultiplier);
+            Assert.IsLessThan(1.0, nightCycle.HungerRateMultiplier);
         }
     }
 }

@@ -74,8 +74,9 @@ dotnet publish "Terrarium.Desktop\Terrarium.Desktop.csproj" -c Release -r win-x6
 This section mirrors the Moodle bullets and provides a place to record **evidence**.
 
 ### GUI (WPF/WinForms)
-- [ ] GUI exists (WPF) and starts successfully
-    - Evidence: `Terrarium.Desktop/MainWindow.xaml`, `Terrarium.Desktop/App.xaml`
+- [x] GUI exists (WPF) and starts successfully
+    - Evidence (GUI exists): `Terrarium.Desktop/MainWindow.xaml`, `Terrarium.Desktop/App.xaml`
+    - Evidence (starts): Build & Test Verification → "Application Runs" PowerShell snippet (process stays alive ~3s)
 
 ### Naming conventions + descriptive names
 - [ ] .NET naming conventions followed (PascalCase types/members; camelCase locals/params)
@@ -84,15 +85,27 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
 
 ### Formatting
 - [ ] Code is consistently formatted (indentation, spacing) and free of obvious style noise
-    - Evidence: `dotnet format` (optional) or IDE formatting; no massive diffs
+        - Evidence (Logic + Tests):
+            ```bash
+            dotnet format Terrarium.Logic/Terrarium.Logic.csproj --verify-no-changes
+            dotnet format Terrarium.Tests/Terrarium.Tests.csproj --verify-no-changes
+            ```
+            **Expected**: no output (clean)
+        - Note: `dotnet format` verification for the WPF project may fail in some environments due to XAML-generated members not being available during design-time evaluation; `dotnet build -c Release` remains authoritative for compilation/warnings.
 
 ### No long methods
 - [ ] Large methods are decomposed (reviewers typically expect ~<30–50 LOC per method)
     - Evidence: `Terrarium.Desktop/MainWindow*.cs`, `Terrarium.Desktop/Rendering/Renderer.cs`
 
 ### No dead code
-- [ ] No commented-out old implementations; no unused members/classes
-    - Evidence: grep for `// TODO remove`, `OLD`, `unused`, and compiler warnings
+- [x] No commented-out old implementations; no unused members/classes
+        - Evidence (commented-out markers / empty catch):
+            ```powershell
+            Get-ChildItem -Recurse -Filter *.cs -Path Terrarium.Desktop, Terrarium.Logic, Terrarium.Tests |
+                Select-String -Pattern '^\s*//\s*(TODO|FIXME|HACK|OLD)\b|catch\s*\{\s*\}'
+            ```
+            **Expected**: no matches
+        - Evidence (unused): `dotnet build -c Release` reports 0 warnings
 
 ### SRP: each method one purpose
 - [ ] Methods do one thing; orchestration delegates to helpers/managers
@@ -100,19 +113,30 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
 
 ### Comments are purposeful
 - [ ] Comments explain “why” / constraints; avoid narrating obvious code
-- [ ] No stale/old comments
-    - Evidence: spot-check Desktop + Logic files
+- [x] No stale/old comments
+        - Evidence:
+            ```powershell
+            Get-ChildItem -Recurse -Filter *.cs -Path Terrarium.Desktop, Terrarium.Logic, Terrarium.Tests |
+                Select-String -Pattern '^\s*//\s*(TODO|FIXME|HACK|OLD)\b'
+            ```
+            **Expected**: no matches
 
 ### Data + methods colocated
 - [ ] Data and methods that operate on it belong to the same class (no scattered logic)
     - Evidence: entity classes encapsulate their behavior; managers own their data
 
 ### Encapsulation
-- [ ] Non-constant fields are `private` and exposed via properties/methods
-    - Evidence: `Terrarium.Logic/Entities/*`
+- [x] Non-constant fields are `private` and exposed via properties/methods
+        - Evidence: `Terrarium.Logic/Entities/*` (private backing fields, public properties)
+        - Evidence (quick scan):
+            ```powershell
+            Get-ChildItem -Recurse -Filter *.cs -Path Terrarium.Logic\Entities |
+                Select-String -Pattern '^\s*public\s+.*;\s*$'
+            ```
+            **Expected**: matches should be properties/methods only (no `public <type> <field>;` fields)
 
 ### Inheritance is IS-A
-- [ ] Inheritance expresses IS-A relationships (entity tree)
+- [x] Inheritance expresses IS-A relationships (entity tree)
     - Evidence: `Terrarium.Logic/Entities/WorldEntity.cs` → `LivingEntity.cs` → (`Plant.cs`, `Creature.cs`) → (`Herbivore.cs`, `Carnivore.cs`)
 
 ### Unit tests (meaningful coverage)
@@ -120,8 +144,10 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
     - Evidence: `Terrarium.Tests/*`, `dotnet test` output
 
 ### Layering
-- [ ] Presentation layer separated from application logic
-    - Evidence: `Terrarium.Desktop` references `Terrarium.Logic`; Logic has no WPF refs
+- [x] Presentation layer separated from application logic
+    - Evidence: `Terrarium.Desktop/Terrarium.Desktop.csproj` references `Terrarium.Logic` and sets `<UseWPF>true</UseWPF>`
+    - Evidence: `Terrarium.Logic/Terrarium.Logic.csproj` has no WPF settings/references
+    - Evidence: `Terrarium.Tests/Terrarium.Tests.csproj` references `Terrarium.Logic` only
 
 ### No anti-patterns / smells
 - [ ] No “magic constants” (prefer named constants/config)
@@ -178,14 +204,14 @@ public double health;  // ❌ Public field - NOT PRESENT
 ## 🏛️ Architecture Verification
 
 ### Layered Separation ✅
-- [ ] **Terrarium.Logic**: Contains ZERO WPF references
-- [ ] **Terrarium.Desktop**: References Logic, contains WPF code
-- [ ] **Terrarium.Tests**: References Logic, tests without UI
+- [x] **Terrarium.Logic**: Contains ZERO WPF references
+- [x] **Terrarium.Desktop**: References Logic, contains WPF code
+- [x] **Terrarium.Tests**: References Logic, tests without UI
 
 **Verification**:
-```bash
-# Check Logic project dependencies
-grep "PresentationFramework" Terrarium.Logic/Terrarium.Logic.csproj
+```powershell
+# Check Logic project for WPF usage (should be empty)
+Select-String -Path Terrarium.Logic\Terrarium.Logic.csproj -Pattern 'UseWPF|PresentationFramework|WindowsBase'
 ```
 **Expected**: No matches (Logic has no UI dependencies)
 

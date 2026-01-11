@@ -57,7 +57,6 @@ namespace Terrarium.Desktop.Rendering
             _history = new List<PopulationSnapshot>();
             _sampleTimer = 0;
 
-            // Create graph canvas
             _graphCanvas = new Canvas
             {
                 Width = GraphWidth,
@@ -66,7 +65,6 @@ namespace Terrarium.Desktop.Rendering
                 Background = Brushes.Transparent
             };
 
-            // Legend
             var legend = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
@@ -76,7 +74,6 @@ namespace Terrarium.Desktop.Rendering
             legend.Children.Add(CreateLegendItem("🐰", Color.FromRgb(255, 183, 77)));
             legend.Children.Add(CreateLegendItem("🐺", Color.FromRgb(192, 57, 43)));
 
-            // Main container
             var content = new StackPanel();
             content.Children.Add(new TextBlock
             {

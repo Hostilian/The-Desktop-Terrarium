@@ -156,7 +156,6 @@ namespace Terrarium.Desktop.Rendering
                 SoundToggled?.Invoke(value);
             });
 
-            // Close button
             var closeButton = new Button
             {
                 Content = "Close",
@@ -171,7 +170,6 @@ namespace Terrarium.Desktop.Rendering
             closeButton.Click += (s, e) => Hide();
             _settingsContent.Children.Add(closeButton);
 
-            // Main panel container
             _panelBorder = new Border
             {
                 Width = PanelWidth,

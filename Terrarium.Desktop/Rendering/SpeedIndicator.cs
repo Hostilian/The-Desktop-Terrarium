@@ -107,7 +107,6 @@ namespace Terrarium.Desktop.Rendering
             }
             stack.Children.Add(barsPanel);
 
-            // Speed text
             _speedText = new TextBlock
             {
                 Text = "1.0x",

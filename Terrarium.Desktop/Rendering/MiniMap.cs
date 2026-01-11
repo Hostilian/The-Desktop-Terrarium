@@ -59,7 +59,6 @@ namespace Terrarium.Desktop.Rendering
         {
             _parentCanvas = parentCanvas;
 
-            // Create map canvas
             _mapCanvas = new Canvas
             {
                 Width = MapWidth,
@@ -67,7 +66,6 @@ namespace Terrarium.Desktop.Rendering
                 ClipToBounds = true
             };
 
-            // Viewport indicator (shows current view area)
             _viewportIndicator = new Border
             {
                 BorderBrush = CreateFrozenBrush(Color.FromArgb(180, 255, 255, 255)),
@@ -76,7 +74,6 @@ namespace Terrarium.Desktop.Rendering
                 CornerRadius = new CornerRadius(2)
             };
 
-            // Main border
             _mapBorder = new Border
             {
                 Width = MapWidth + 4,

@@ -56,7 +56,6 @@ namespace Terrarium.Desktop.Rendering
 
             var stack = new StackPanel();
 
-            // Title row
             var titleRow = new Grid();
             titleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             titleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });

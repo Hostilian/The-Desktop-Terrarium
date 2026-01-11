@@ -13,19 +13,31 @@ namespace Terrarium.Desktop
         private const double SpeedStep = 0.25;
         private const int WaterPlantsMaxPerKeypress = 10;
         private const double WaterAmountPerPlant = 20;
+        private bool _uiVisible = true;
 
         /// <summary>
-        /// Handles mouse click events.
+        /// Direct left-click handler for reliable entity interaction.
         /// </summary>
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (_simulationEngine == null)
                 return;
 
             var position = e.GetPosition(RenderCanvas);
 
-            // Try entity selection first (left click)
-            if (e.ChangedButton == MouseButton.Left && _entitySelector != null)
+            // First try to interact with clickable entities (feed creatures)
+            var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
+            if (clickable != null)
+            {
+                clickable.OnClick();
+                _particleSystem?.SpawnFeedEffect(position.X, position.Y);
+                _notificationManager?.Notify("🍖 Fed!", NotificationType.Success);
+                e.Handled = true;
+                return;
+            }
+
+            // Then try entity selection
+            if (_entitySelector != null)
             {
                 bool selected = _entitySelector.TrySelect(
                     position.X, position.Y,
@@ -34,14 +46,32 @@ namespace Terrarium.Desktop
                     _simulationEngine.World.Carnivores);
 
                 if (selected)
+                {
+                    e.Handled = true;
                     return;
+                }
             }
+        }
 
-            var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
+        /// <summary>
+        /// Handles mouse click events (backup handler).
+        /// </summary>
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_simulationEngine == null)
+                return;
 
-            if (clickable != null)
+            // Only handle non-left clicks here (left clicks go to Window_MouseLeftButtonDown)
+            if (e.ChangedButton == MouseButton.Left)
+                return;
+
+            var position = e.GetPosition(RenderCanvas);
+
+            // Right-click: deselect
+            if (e.ChangedButton == MouseButton.Right && _entitySelector != null)
             {
-                clickable.OnClick();
+                _entitySelector.Deselect();
+                _isFollowingEntity = false;
             }
         }
 
@@ -286,24 +316,44 @@ namespace Terrarium.Desktop
         }
 
         /// <summary>
-        /// Toggles the visibility of all UI panels.
+        /// Toggles the visibility of all UI panels for a clean minimalist view.
         /// </summary>
         private void ToggleUIVisibility()
         {
-            var newVisibility = StatusPanel.Visibility == Visibility.Visible
-                ? Visibility.Collapsed
-                : Visibility.Visible;
+            _uiVisible = !_uiVisible;
+            var newVisibility = _uiVisible ? Visibility.Visible : Visibility.Collapsed;
 
-            StatusPanel.Visibility = newVisibility;
-            StatsPanel.Visibility = newVisibility;
-            HotkeyPanel.Visibility = newVisibility;
-            DayNightOrb.Visibility = newVisibility;
+            // Toggle all UI panels
+            if (FindName("TopBar") is UIElement topBar)
+                topBar.Visibility = newVisibility;
+            if (FindName("BottomStats") is UIElement bottomStats)
+                bottomStats.Visibility = newVisibility;
+            if (FindName("SpeedPanel") is UIElement speedPanel)
+                speedPanel.Visibility = newVisibility;
+            if (FindName("FpsPanel") is UIElement fpsPanel)
+                fpsPanel.Visibility = newVisibility;
+            if (FindName("WeatherPanel") is UIElement weatherPanel)
+                weatherPanel.Visibility = newVisibility;
+
+            // Legacy panel names (fallback)
+            if (FindName("StatusPanel") is UIElement statusPanel)
+                statusPanel.Visibility = newVisibility;
+            if (FindName("StatsPanel") is UIElement statsPanel)
+                statsPanel.Visibility = newVisibility;
+            if (FindName("HotkeyPanel") is UIElement hotkeyPanel)
+                hotkeyPanel.Visibility = newVisibility;
+            if (FindName("DayNightOrb") is UIElement dayNightOrb)
+                dayNightOrb.Visibility = newVisibility;
 
             // Toggle minimap visibility
             if (_miniMap != null)
             {
-                _miniMap.IsVisible = newVisibility == Visibility.Visible;
+                _miniMap.IsVisible = _uiVisible;
             }
+
+            _notificationManager?.Notify(
+                _uiVisible ? "👁️ UI Visible" : "👁️ UI Hidden (F1 to show)",
+                NotificationType.Info);
         }
 
         /// <summary>

@@ -233,18 +233,20 @@ namespace Terrarium.Desktop.Rendering
 
         private UIElement CreateSparkleVisual(Color color, double size)
         {
+            var sparkleBrush = new RadialGradientBrush
+            {
+                GradientStops = new GradientStopCollection
+                {
+                    new GradientStop(color, GradientStopInnerPosition),
+                    new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
+                }
+            };
+            sparkleBrush.Freeze();
             return new Ellipse
             {
                 Width = size,
                 Height = size,
-                Fill = new RadialGradientBrush
-                {
-                    GradientStops = new GradientStopCollection
-                    {
-                        new GradientStop(color, GradientStopInnerPosition),
-                        new GradientStop(Color.FromArgb(TransparentAlpha, color.R, color.G, color.B), GradientStopOuterPosition)
-                    }
-                }
+                Fill = sparkleBrush
             };
         }
 
@@ -334,16 +336,15 @@ namespace Terrarium.Desktop.Rendering
             // Scale down hearts as they fade
             if (Type == ParticleType.Heart && Visual is TextBlock tb)
             {
-                if (tb.RenderTransform is ScaleTransform scaleTransform)
-                {
-                    scaleTransform.ScaleX = lifeRatio;
-                    scaleTransform.ScaleY = lifeRatio;
-                }
-                else
+                if (tb.RenderTransform is not ScaleTransform scaleTransform)
                 {
                     tb.RenderTransformOrigin = new Point(0.5, 0.5);
-                    tb.RenderTransform = new ScaleTransform(lifeRatio, lifeRatio);
+                    scaleTransform = new ScaleTransform(1.0, 1.0);
+                    tb.RenderTransform = scaleTransform;
                 }
+
+                scaleTransform.ScaleX = lifeRatio;
+                scaleTransform.ScaleY = lifeRatio;
             }
         }
     }

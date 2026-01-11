@@ -206,17 +206,6 @@ namespace Terrarium.Desktop.Rendering
             }
         }
 
-        private LinearGradientBrush CreateHealthGradient(double health)
-        {
-            var color = GetHealthColor(health);
-            var lighterColor = Color.FromRgb(
-                (byte)Math.Min(255, color.R + 40),
-                (byte)Math.Min(255, color.G + 40),
-                (byte)Math.Min(255, color.B + 40));
-
-            return new LinearGradientBrush(lighterColor, color, 90);
-        }
-
         private Color GetHealthColor(double health)
         {
             if (health >= 75)

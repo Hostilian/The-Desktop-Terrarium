@@ -20,6 +20,21 @@ namespace Terrarium.Desktop.Rendering
         private double _displayTimer;
         private bool _isDisplaying;
 
+        private static readonly SolidColorBrush GoldBrush = CreateFrozenBrush(Color.FromRgb(255, 215, 0));
+        private static readonly SolidColorBrush LightTextBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly LinearGradientBrush BannerBackgroundBrush = Freeze(new LinearGradientBrush(
+            Color.FromArgb(240, 40, 40, 55),
+            Color.FromArgb(240, 30, 30, 42),
+            90));
+        private static readonly System.Windows.Media.Effects.DropShadowEffect BannerShadowEffect = Freeze(new System.Windows.Media.Effects.DropShadowEffect
+        {
+            Color = Color.FromRgb(255, 215, 0),
+            Direction = 0,
+            ShadowDepth = 0,
+            BlurRadius = 20,
+            Opacity = 0.4
+        });
+
         private const double DisplayDuration = 4.0;
         private const double BannerWidth = 320;
         private const double BannerHeight = 80;
@@ -121,14 +136,14 @@ namespace Terrarium.Desktop.Rendering
                 Text = achievement.Title,
                 FontSize = 16,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(255, 215, 0)) // Gold
+                Foreground = GoldBrush // Gold
             };
 
             var descText = new TextBlock
             {
                 Text = achievement.Description,
                 FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
+                Foreground = LightTextBrush,
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = 220
             };
@@ -143,22 +158,12 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = BannerWidth,
                 Height = BannerHeight,
-                Background = new LinearGradientBrush(
-                    Color.FromArgb(240, 40, 40, 55),
-                    Color.FromArgb(240, 30, 30, 42),
-                    90),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(255, 215, 0)),
+                Background = BannerBackgroundBrush,
+                BorderBrush = GoldBrush,
                 BorderThickness = new Thickness(2),
                 CornerRadius = new CornerRadius(12),
                 Child = content,
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Color.FromRgb(255, 215, 0),
-                    Direction = 0,
-                    ShadowDepth = 0,
-                    BlurRadius = 20,
-                    Opacity = 0.4
-                }
+                Effect = BannerShadowEffect
             };
 
             // Position at top center
@@ -213,6 +218,20 @@ namespace Terrarium.Desktop.Rendering
         /// Gets total available achievements.
         /// </summary>
         public int TotalAchievements => AchievementEvaluator.TotalAchievements;
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+
+        private static T Freeze<T>(T freezable) where T : Freezable
+        {
+            if (freezable.CanFreeze)
+                freezable.Freeze();
+            return freezable;
+        }
     }
 
     internal class Achievement

@@ -17,9 +17,29 @@ namespace Terrarium.Desktop.Rendering
         private StackPanel? _settingsContent;
 
         private static readonly Brush SettingsLabelBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly Brush VisualHeaderBrush = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
         private static readonly Brush SeparatorBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
         private static readonly Brush ToggleOnBrush = CreateFrozenBrush(Color.FromRgb(76, 175, 80));
         private static readonly Brush ToggleOffBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 90));
+        private static readonly Brush SliderBackgroundBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
+
+        private static readonly Brush CloseButtonBackgroundBrush = CreateFrozenBrush(Color.FromRgb(70, 70, 80));
+        private static readonly Brush CloseButtonBorderBrush = CreateFrozenBrush(Color.FromRgb(100, 100, 110));
+
+        private static readonly LinearGradientBrush PanelBackgroundBrush = Freeze(new LinearGradientBrush(
+            Color.FromArgb(245, 30, 30, 46),
+            Color.FromArgb(245, 24, 24, 37),
+            90));
+        private static readonly Brush PanelBorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255));
+
+        private static readonly System.Windows.Media.Effects.DropShadowEffect PanelShadowEffect = Freeze(new System.Windows.Media.Effects.DropShadowEffect
+        {
+            Color = Colors.Black,
+            Direction = 270,
+            ShadowDepth = 8,
+            BlurRadius = 15,
+            Opacity = 0.7
+        });
         private bool _isVisible;
 
         // Settings values
@@ -106,7 +126,7 @@ namespace Terrarium.Desktop.Rendering
                 Text = "🎨 Visual Effects",
                 FontSize = 14,
                 FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(Color.FromRgb(180, 180, 180)),
+                Foreground = VisualHeaderBrush,
                 Margin = new Thickness(0, 5, 0, 10)
             };
             _settingsContent.Children.Add(visualHeader);
@@ -143,9 +163,9 @@ namespace Terrarium.Desktop.Rendering
                 Width = 100,
                 Height = 30,
                 Margin = new Thickness(0, 20, 0, 0),
-                Background = new SolidColorBrush(Color.FromRgb(70, 70, 80)),
+                Background = CloseButtonBackgroundBrush,
                 Foreground = Brushes.White,
-                BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 110)),
+                BorderBrush = CloseButtonBorderBrush,
                 Cursor = System.Windows.Input.Cursors.Hand
             };
             closeButton.Click += (s, e) => Hide();
@@ -156,24 +176,14 @@ namespace Terrarium.Desktop.Rendering
             {
                 Width = PanelWidth,
                 Height = PanelHeight,
-                Background = new LinearGradientBrush(
-                    Color.FromArgb(245, 30, 30, 46),
-                    Color.FromArgb(245, 24, 24, 37),
-                    90),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255)),
+                Background = PanelBackgroundBrush,
+                BorderBrush = PanelBorderBrush,
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(12),
                 Child = _settingsContent,
                 Visibility = Visibility.Collapsed,
                 RenderTransform = new TranslateTransform(0, 0),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Colors.Black,
-                    Direction = 270,
-                    ShadowDepth = 8,
-                    BlurRadius = 15,
-                    Opacity = 0.7
-                }
+                Effect = PanelShadowEffect
             };
 
             Canvas.SetZIndex(_panelBorder, 900);
@@ -199,7 +209,7 @@ namespace Terrarium.Desktop.Rendering
             {
                 Text = $"{icon} {label}",
                 FontSize = 12,
-                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+                Foreground = SettingsLabelBrush
             };
 
             var valueText = new TextBlock
@@ -220,7 +230,7 @@ namespace Terrarium.Desktop.Rendering
                 Maximum = max,
                 Value = initial,
                 Margin = new Thickness(0, 5, 0, 0),
-                Background = new SolidColorBrush(Color.FromRgb(60, 60, 70))
+                Background = SliderBackgroundBrush
             };
 
             slider.ValueChanged += (s, e) =>
@@ -309,6 +319,13 @@ namespace Terrarium.Desktop.Rendering
             var brush = new SolidColorBrush(color);
             brush.Freeze();
             return brush;
+        }
+
+        private static T Freeze<T>(T freezable) where T : Freezable
+        {
+            if (freezable.CanFreeze)
+                freezable.Freeze();
+            return freezable;
         }
 
         private void UpdatePosition()

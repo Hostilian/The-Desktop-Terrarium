@@ -175,16 +175,16 @@ private const double MinPlantSpawnInterval = 5.0;
 ```bash
 dotnet test DesktopTerrarium.sln -c Release
 ```
-As of **2026-01-09** (local run): **Passed 111, Failed 0**.
+As of **2026-01-11** (local run): **Passed 119, Failed 0**.
 
 **Coverage (reproducible evidence)**:
 ```bash
 dotnet test DesktopTerrarium.sln -c Release \
   /p:CollectCoverage=true \
   /p:CoverletOutputFormat=cobertura
-python scripts\\summarize_coverage.py Terrarium.Tests\\TestResults\\coverage\\coverage.cobertura.xml --min-line 70
+python scripts\\summarize_coverage.py Terrarium.Tests\\coverage.cobertura.xml --min-line 70
 ```
-As of **2026-01-09** (local run): **81.45% line coverage (773/949)**.
+As of **2026-01-11** (local run): **81.45% line coverage (773/949)**.
 
 **Files Created**:
 - `Terrarium.Tests/Entities/WorldEntityTests.cs` (85 lines)

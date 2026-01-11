@@ -23,6 +23,7 @@ namespace Terrarium.Desktop.Rendering
 
         private const double UpdateInterval = 0.2;
         private const double WarningRadius = 100.0;
+        private const double WarningRadiusSquared = WarningRadius * WarningRadius;
         private const double PulseSpeed = 3.0;
 
         public bool IsEnabled { get; set; } = true;
@@ -77,22 +78,26 @@ namespace Terrarium.Desktop.Rendering
                 _existingHerbivoresBuffer.Add(herbivore);
 
                 // Check distance to nearest carnivore
-                double nearestDistance = double.MaxValue;
+                double nearestDistanceSquared = double.MaxValue;
                 foreach (var carnivore in _carnivoreBuffer)
                 {
                     if (!carnivore.IsAlive)
                         continue;
-                    double dist = Math.Sqrt(
-                        Math.Pow(carnivore.X - herbivore.X, 2) +
-                        Math.Pow(carnivore.Y - herbivore.Y, 2));
-                    nearestDistance = Math.Min(nearestDistance, dist);
+
+                    var dx = carnivore.X - herbivore.X;
+                    var dy = carnivore.Y - herbivore.Y;
+                    var distSquared = (dx * dx) + (dy * dy);
+                    if (distSquared < nearestDistanceSquared)
+                    {
+                        nearestDistanceSquared = distSquared;
+                    }
                 }
 
-                bool inDanger = nearestDistance < WarningRadius;
+                bool inDanger = nearestDistanceSquared < WarningRadiusSquared;
 
                 if (inDanger)
                 {
-                    ShowWarning(herbivore, nearestDistance);
+                    ShowWarning(herbivore, Math.Sqrt(nearestDistanceSquared));
                 }
                 else
                 {
@@ -125,11 +130,10 @@ namespace Terrarium.Desktop.Rendering
 
         private void ShowWarning(Herbivore herbivore, double distance)
         {
-            if (_warnings.ContainsKey(herbivore))
+            if (_warnings.TryGetValue(herbivore, out var warning))
             {
                 // Update intensity based on distance
                 double intensity = 1.0 - (distance / WarningRadius);
-                var warning = _warnings[herbivore];
 
                 // Closer = more red/urgent
                 byte red = (byte)(255 * intensity);

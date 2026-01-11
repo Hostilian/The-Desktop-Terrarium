@@ -50,7 +50,7 @@ namespace Terrarium.Desktop.Rendering;
             // Update pulse animation
             foreach (var warning in _warnings.Values)
             {
-                warning.PulsePhase += PulseSpeed * deltaTime;
+                warning.PulsePhase += _pulseSpeed * deltaTime;
                 double scale = 1.0 + 0.2 * Math.Sin(warning.PulsePhase);
                 warning.ScaleTransform.ScaleX = scale;
                 warning.ScaleTransform.ScaleY = scale;
@@ -98,7 +98,7 @@ namespace Terrarium.Desktop.Rendering;
                     }
                 }
 
-                bool inDanger = nearestDistanceSquared < WarningRadiusSquared;
+                bool inDanger = nearestDistanceSquared < _warningRadiusSquared;
 
                 if (inDanger)
                 {
@@ -137,7 +137,7 @@ namespace Terrarium.Desktop.Rendering;
             if (_warnings.TryGetValue(herbivore, out var warning))
             {
                 // Update intensity based on distance
-                double intensity = 1.0 - (distance / WarningRadius);
+                double intensity = 1.0 - (distance / _warningRadius);
 
                 // Closer = more red/urgent
                 byte red = (byte)(255 * intensity);

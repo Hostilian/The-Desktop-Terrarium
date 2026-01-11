@@ -31,7 +31,7 @@ namespace Terrarium.Desktop
             {
                 clickable.OnClick();
                 _particleSystem?.SpawnFeedEffect(position.X, position.Y);
-                _notificationManager?.Notify("🍖 Fed!", NotificationType.Success);
+                _notificationManager?.Notify("🍖 Fed!", NotificationType.Info);
                 e.Handled = true;
                 return;
             }

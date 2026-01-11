@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Controls;
+using System.Windows;
 namespace Terrarium.Desktop.Rendering
 {
     /// <summary>
@@ -35,6 +37,10 @@ namespace Terrarium.Desktop.Rendering
         private static readonly Brush AchievementBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 241, 196, 15));
         private static readonly Brush InfoBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 152, 219));
         private static readonly Brush DefaultBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 73, 94));
+        private static readonly Brush BirthBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 76, 175, 80));
+        private static readonly Brush DeathBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 231, 76, 60));
+        private const double FadeOutDuration = 0.5;
+        private const int MaxActiveNotifications = 5;
         private const double NotificationDuration = 3.0;
         private const double NotificationWidth = 250;
         private const double NotificationHeight = 50;
@@ -50,16 +56,12 @@ namespace Terrarium.Desktop.Rendering
             _canvas = canvas;
             _pendingNotifications = new Queue<NotificationItem>();
             _activeNotifications = new List<NotificationItem>();
-
-        /// </summary>
+        }
         public void Update(double deltaTime)
         {
             if (!IsEnabled)
                 return;
-            if (!IsEnabled)
-            {
-                return;
-            }
+
             for (int i = _activeNotifications.Count - 1; i >= 0; i--)
             {
                 var notification = _activeNotifications[i];
@@ -75,6 +77,7 @@ namespace Terrarium.Desktop.Rendering
                     if (notification.Visual != null)
                         notification.Visual.Opacity = notification.TimeRemaining / FadeOutDuration;
                 }
+            }
 
             // Show pending notifications
             while (_activeNotifications.Count < MaxActiveNotifications && _pendingNotifications.Count > 0)
@@ -82,6 +85,7 @@ namespace Terrarium.Desktop.Rendering
                 var notification = _pendingNotifications.Dequeue();
                 ShowNotification(notification);
             }
+        }
 
         /// <summary>
         /// Clears all notifications.
@@ -95,10 +99,7 @@ namespace Terrarium.Desktop.Rendering
             }
             _activeNotifications.Clear();
             _pendingNotifications.Clear();
-
-        /// <summary>
-        /// Shows a generic notification.
-        /// </summary>
+        }
         public void Notify(string message, NotificationType type)
         {
             if (!IsEnabled)
@@ -281,14 +282,24 @@ namespace Terrarium.Desktop.Rendering
                 _ => DefaultBackgroundBrush
             };
         }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
     }
-public class NotificationItem
-{
-    public string Message { get; set; } = string.Empty;
-    public NotificationType Type { get; set; }
-    public double TimeRemaining { get; set; }
-    public Border? Visual { get; set; }
+    public class NotificationItem
+    {
+        public string Message { get; set; } = string.Empty;
+        public NotificationType Type { get; set; }
+        public double TimeRemaining { get; set; }
+        public Border? Visual { get; set; }
+    }
 }
+
+
 
 
 

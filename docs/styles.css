@@ -303,7 +303,9 @@ nav .container {
     padding: 2rem;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s;
+    transition: all 0.5s ease-out;
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .feature-card:hover {
@@ -450,23 +452,6 @@ nav .container {
 .requirements li::before {
     content: "✓";
     color: var(--primary);
-}
-
-/* Footer */
-footer {
-    padding: 3rem 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
-}
-
-footer p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-footer a {
-    color: var(--primary);
-    text-decoration: none;
 }
 
 /* Mobile Responsive */
@@ -905,18 +890,7 @@ footer .container {
 }
 
 /* Feature Cards Animation Ready */
-.feature-card {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.5s ease-out;
-}
-
 .feature-card.visible {
     opacity: 1;
     transform: translateY(0);
-}
-
-.feature-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
 }

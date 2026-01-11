@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering;
+namespace Terrarium.Desktop.Rendering
 {
     /// <summary>
     /// Shows visual indicators for breeding-ready creatures.
@@ -135,9 +135,9 @@ namespace Terrarium.Desktop.Rendering;
         private bool CanBreed(Creature creature)
         {
             return creature.IsAlive &&
-                   creature.Health >= MinHealthForBreeding &&
-                   creature.Hunger <= MaxHungerForBreeding &&
-                   creature.Age >= MinAgeForBreeding;
+                   creature.Health >= _minHealthForBreeding &&
+                   creature.Hunger <= _maxHungerForBreeding &&
+                   creature.Age >= _minAgeForBreeding;
         }
 
         private void ShowHeart(Creature creature)

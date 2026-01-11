@@ -50,9 +50,12 @@ namespace Terrarium.Tests.Simulation
             var foodManager = new FoodManager(world);
 
             // Create balanced ecosystem: plants > herbivores > carnivores
-            for (int i = 0; i < 10; i++) world.SpawnRandomPlant();
-            for (int i = 0; i < 5; i++) world.SpawnRandomHerbivore();
-            for (int i = 0; i < 2; i++) world.SpawnRandomCarnivore();
+            for (int i = 0; i < 10; i++)
+                world.SpawnRandomPlant();
+            for (int i = 0; i < 5; i++)
+                world.SpawnRandomHerbivore();
+            for (int i = 0; i < 2; i++)
+                world.SpawnRandomCarnivore();
 
             // Act
             bool isBalanced = foodManager.IsEcosystemBalanced();
@@ -69,9 +72,12 @@ namespace Terrarium.Tests.Simulation
             var foodManager = new FoodManager(world);
 
             // Create unbalanced ecosystem: carnivores > herbivores
-            for (int i = 0; i < 2; i++) world.SpawnRandomPlant();
-            for (int i = 0; i < 2; i++) world.SpawnRandomHerbivore();
-            for (int i = 0; i < 5; i++) world.SpawnRandomCarnivore();
+            for (int i = 0; i < 2; i++)
+                world.SpawnRandomPlant();
+            for (int i = 0; i < 2; i++)
+                world.SpawnRandomHerbivore();
+            for (int i = 0; i < 5; i++)
+                world.SpawnRandomCarnivore();
 
             // Act
             bool isBalanced = foodManager.IsEcosystemBalanced();

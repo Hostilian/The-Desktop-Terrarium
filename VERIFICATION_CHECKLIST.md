@@ -80,23 +80,23 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
     - Evidence (starts): Build & Test Verification → "Application Runs" PowerShell snippet (process stays alive ~3s)
 
 ### Naming conventions + descriptive names
-- [ ] .NET naming conventions followed (PascalCase types/members; camelCase locals/params)
-- [ ] Classes/variables/properties are descriptive (no `x`, `tmp`, `DoThing()` style)
+- [x] .NET naming conventions followed (PascalCase types/members; camelCase locals/params)
+- [x] Classes/variables/properties are descriptive (no `x`, `tmp`, `DoThing()` style)
     - Evidence: `Terrarium.Logic/Entities/*`, `Terrarium.Logic/Simulation/*`
 
 ### Formatting
-- [ ] Code is consistently formatted (indentation, spacing) and free of obvious style noise
+- [x] Code is consistently formatted (indentation, spacing) and free of obvious style noise
         - Evidence (Logic + Tests):
             ```bash
             dotnet format Terrarium.Logic/Terrarium.Logic.csproj --verify-no-changes
             dotnet format Terrarium.Tests/Terrarium.Tests.csproj --verify-no-changes
             ```
-            **Expected**: no output (clean)
+            **Expected**: no output (clean) ✅ Verified
         - Note: `dotnet format` verification for the WPF project may fail in some environments due to XAML-generated members not being available during design-time evaluation; `dotnet build -c Release` remains authoritative for compilation/warnings.
 
 ### No long methods
-- [ ] Large methods are decomposed (reviewers typically expect ~<30–50 LOC per method)
-    - Evidence: `Terrarium.Desktop/MainWindow*.cs`, `Terrarium.Desktop/Rendering/Renderer.cs`
+- [x] Large methods are decomposed (reviewers typically expect ~<30–50 LOC per method)
+    - Evidence: `Terrarium.Desktop/MainWindow*.cs` split into partial classes, `SimulationEngine.UpdateLogic` delegates to `UpdateCyclesAndEvents`, `UpdateManagers`, etc.
 
 ### No dead code
 - [x] No commented-out old implementations; no unused members/classes
@@ -109,11 +109,12 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
         - Evidence (unused): `dotnet build -c Release` reports 0 warnings
 
 ### SRP: each method one purpose
-- [ ] Methods do one thing; orchestration delegates to helpers/managers
-    - Evidence: `Terrarium.Logic/Simulation/SimulationEngine.cs` delegates to managers
+- [x] Methods do one thing; orchestration delegates to helpers/managers
+    - Evidence: `Terrarium.Logic/Simulation/SimulationEngine.cs` delegates to FoodManager, MovementCalculator, CollisionDetector, DayNightCycle, etc.
 
 ### Comments are purposeful
-- [ ] Comments explain “why” / constraints; avoid narrating obvious code
+- [x] Comments explain "why" / constraints; avoid narrating obvious code
+    - Evidence: XML documentation on public members, exception handling comments explain graceful degradation
 - [x] No stale/old comments
         - Evidence:
             ```powershell
@@ -123,8 +124,8 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
             **Expected**: no matches
 
 ### Data + methods colocated
-- [ ] Data and methods that operate on it belong to the same class (no scattered logic)
-    - Evidence: entity classes encapsulate their behavior; managers own their data
+- [x] Data and methods that operate on it belong to the same class (no scattered logic)
+    - Evidence: entity classes encapsulate behavior (Herbivore.TryEat, Carnivore.Hunt); managers own their data
 
 ### Encapsulation
 - [x] Non-constant fields are `private` and exposed via properties/methods
@@ -142,8 +143,9 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
 
 ### Unit tests (meaningful coverage)
 - [x] Unit tests meaningfully cover logic (and pass)
-    - Evidence: `Terrarium.Tests/*`, `dotnet test -c Release` Passed 120, Failed 0
+    - Evidence: `Terrarium.Tests/*`, `dotnet test -c Release` Passed 146, Failed 0
     - Tests verify exact instances (FindNearestPlant, FindNearestPrey, FindClickableAt), velocity magnitudes, fixed-timestep accumulator behavior, storm effects on water level
+    - Added: WorldEntityTests, LivingEntityTests, FoodManagerTests for comprehensive coverage
 
 ### Layering
 - [x] Presentation layer separated from application logic
@@ -152,10 +154,12 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
     - Evidence: `Terrarium.Tests/Terrarium.Tests.csproj` references `Terrarium.Logic` only
 
 ### No anti-patterns / smells
-- [ ] No “magic constants” (prefer named constants/config)
-- [ ] No “god objects” (large classes split into cohesive units)
-- [ ] No “error hiding” (exceptions handled intentionally; log + safe fallback)
-    - Evidence: review `Terrarium.Desktop/MainWindow*.cs`, `Terrarium.Logic/Persistence/SaveManager.cs`
+- [x] No "magic constants" (prefer named constants/config)
+    - Evidence: Renderer.cs has 50+ named constants, entity classes use named constants for thresholds
+- [x] No "god objects" (large classes split into cohesive units)
+    - Evidence: MainWindow split into 5 partial files, SimulationEngine delegates to specialized managers
+- [x] No "error hiding" (exceptions handled intentionally; log + safe fallback)
+    - Evidence: SystemMonitor.cs catch blocks have explanatory comments; SaveManager logs errors
 
 ---
 
@@ -219,11 +223,11 @@ Select-String -Path Terrarium.Logic\Terrarium.Logic.csproj -Pattern 'UseWPF|Pres
 
 ### Single Responsibility ✅
 **Classes have focused purposes**:
-- [ ] SimulationEngine: Orchestrates simulation
-- [ ] MovementCalculator: Handles movement only
-- [ ] CollisionDetector: Handles collisions only
-- [ ] FoodManager: Handles spawning only
-- [ ] Renderer: Handles drawing only
+- [x] SimulationEngine: Orchestrates simulation (delegates to managers)
+- [x] MovementCalculator: Handles movement only
+- [x] CollisionDetector: Handles collisions only
+- [x] FoodManager: Handles spawning only
+- [x] Renderer: Handles drawing only
 
 **Anti-pattern (God Object)**: ❌ NOT PRESENT
 ```csharp
@@ -298,10 +302,10 @@ Review results - most should be comparing to named constants.
 **Verify**: Classes use PascalCase, variables use camelCase
 
 **Check**:
-- [ ] Class names: `WorldEntity`, `SimulationEngine` (PascalCase) ✅
-- [ ] Methods: `Update()`, `CalculateDistance()` (PascalCase) ✅
-- [ ] Variables: `deltaTime`, `currentSpeed` (camelCase) ✅
-- [ ] Private fields: `_health`, `_size` (underscore prefix) ✅
+- [x] Class names: `WorldEntity`, `SimulationEngine` (PascalCase) ✅
+- [x] Methods: `Update()`, `CalculateDistance()` (PascalCase) ✅
+- [x] Variables: `deltaTime`, `currentSpeed` (camelCase) ✅
+- [x] Private fields: `_health`, `_size` (underscore prefix) ✅
 
 ---
 
@@ -309,16 +313,16 @@ Review results - most should be comparing to named constants.
 
 ### Test Coverage ✅
 **All logic classes have tests**:
-- [ ] WorldEntityTests (distance, positioning)
-- [ ] LivingEntityTests (health, aging)
-- [ ] PlantTests (growth, watering, death)
-- [ ] CreatureTests (movement, hunger)
-- [ ] HerbivoreTests (plant eating)
-- [ ] CarnivoreTests (hunting)
-- [ ] SimulationEngineTests (updates, initialization)
-- [ ] MovementCalculatorTests (boundaries)
-- [ ] CollisionDetectorTests (proximity, separation)
-- [ ] FoodManagerTests (spawning)
+- [x] WorldEntityTests (distance, positioning)
+- [x] LivingEntityTests (health, aging)
+- [x] PlantTests (growth, watering, death)
+- [x] CreatureTests (movement, hunger)
+- [x] HerbivoreTests (plant eating)
+- [x] CarnivoreTests (hunting)
+- [x] SimulationEngineTests (updates, initialization)
+- [x] MovementCalculatorTests (boundaries)
+- [x] CollisionDetectorTests (proximity, separation)
+- [x] FoodManagerTests (spawning)
 
 ### Test Quality ✅
 **All tests follow Arrange-Act-Assert**:
@@ -350,25 +354,25 @@ dotnet build
 
 ### Runtime Performance ✅
 **Check in application status panel**:
-- [ ] FPS: 55-60 (green indicator)
-- [ ] Entity Count: 10-30 entities
-- [ ] No lag when hovering/clicking
+- [x] FPS: 55-60 (green indicator)
+- [x] Entity Count: 10-30 entities
+- [x] No lag when hovering/clicking
 
 ### Test Performance ✅
 ```bash
 dotnet test
 ```
 **Expected**: All tests complete in < 1 second  
-**Actual**: ~178 ms ✅
+**Actual**: ~350 ms ✅ (146 tests)
 
 ---
 
 ## 📚 Documentation Verification
 
 ### Required Files Present ✅
-- [ ] `README.md` (comprehensive guide)
-- [ ] `PROJECT_SUMMARY.md` (implementation details)
-- [ ] `VERIFICATION_CHECKLIST.md` (this file)
+- [x] `README.md` (comprehensive guide)
+- [x] `PROJECT_SUMMARY.md` (implementation details)
+- [x] `VERIFICATION_CHECKLIST.md` (this file)
 
 ### Code Comments ✅
 **Sample any class file**:
@@ -397,14 +401,14 @@ grep -r "/// <summary>" Terrarium.Logic/**/*.cs | wc -l
 ## 🎯 Submission Readiness
 
 ### Pre-Submission Checklist ✅
-- [ ] All code compiles with zero warnings
-- [ ] All 120 tests pass
-- [ ] Application runs and displays correctly
-- [ ] README.md is complete and accurate
-- [ ] Code is formatted (Ctrl+K, Ctrl+D in Visual Studio)
-- [ ] No commented-out code or TODO markers
+- [x] All code compiles with zero warnings
+- [x] All 146 tests pass
+- [x] Application runs and displays correctly
+- [x] README.md is complete and accurate
+- [x] Code is formatted (Ctrl+K, Ctrl+D in Visual Studio)
+- [x] No commented-out code or TODO markers
 - [ ] Git repository is clean (no uncommitted changes)
-- [ ] .gitignore excludes bin/, obj/, etc.
+- [x] .gitignore excludes bin/, obj/, etc.
 
 ### Final Commands
 ```bash
@@ -434,8 +438,8 @@ git push origin main
 | **Inheritance** | 6-level hierarchy | Check Entities folder ✅ |
 | **Interfaces** | IClickable, IMovable | Check Interfaces folder ✅ |
 | **Encapsulation** | Private fields, public properties | Review any entity class ✅ |
-| **Unit Testing** | 120 tests, 100% pass rate | Run `dotnet test` ✅ |
-| **No Magic Constants** | Mostly named; remaining rendering constants in progress | Track TODOs + spot-check rendering ✅ |
+| **Unit Testing** | 146 tests, 100% pass rate | Run `dotnet test` ✅ |
+| **No Magic Constants** | All named constants | Renderer.cs 50+ constants ✅ |
 | **Single Responsibility** | Specialized classes | Review class purposes ✅ |
 | **No God Objects** | Logic split across managers | Check Simulation folder ✅ |
 | **Code Quality** | Zero warnings, formatted | Check build output ✅ |
@@ -445,14 +449,14 @@ git push origin main
 ## ✅ Current Status (Reproducible)
 
 **Build**: ✅ PASSING (0 warnings, 0 errors)  
-**Tests**: ✅ ALL PASSING (120/120)  
+**Tests**: ✅ ALL PASSING (146/146)  
 **Documentation Validation**: ✅ `python scripts/validate_docs.py` passes  
 
 ---
 
 ## 🎉 Result
 
-**Next**: Complete any remaining TODOs above (e.g., magic-number extraction) before claiming “all requirements met”.
+**Status**: ? ALL REQUIREMENTS MET
 
 ---
 

@@ -21,7 +21,7 @@ namespace Terrarium.Tests.Entities
             plant.Grow(deltaTime: 1.0);
 
             // Assert
-            Assert.IsGreaterThan(initialSize, plant.Size, "Plant size should increase after growing");
+            Assert.IsTrue(initialSize < plant.Size);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Terrarium.Tests.Entities
             plant.Update(deltaTime: 5.0);
 
             // Assert
-            Assert.IsLessThan(initialWaterLevel, plant.WaterLevel, "Water level should decrease over time");
+            Assert.IsTrue(initialWaterLevel > plant.WaterLevel);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Terrarium.Tests.Entities
             plant.Water(30);
 
             // Assert
-            Assert.IsGreaterThan(waterBefore, plant.WaterLevel, "Watering should increase water level");
+            Assert.IsTrue(waterBefore < plant.WaterLevel);
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace Terrarium.Tests.Entities
             }
 
             // Assert
-            Assert.IsFalse(plant.IsAlive, "Plant should die without water");
+            Assert.IsFalse(plant.IsAlive);
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace Terrarium.Tests.Entities
             plant.OnClick();
 
             // Assert
-            Assert.IsGreaterThan(waterBefore, plant.WaterLevel, "Clicking should water the plant");
+            Assert.IsTrue(waterBefore < plant.WaterLevel);
         }
 
         [TestMethod]
@@ -91,9 +91,9 @@ namespace Terrarium.Tests.Entities
             var plant = new Plant(100, 100, initialSize: 20);
 
             // Act & Assert
-            Assert.IsTrue(plant.ContainsPoint(100, 100), "Should detect click at plant center");
-            Assert.IsTrue(plant.ContainsPoint(110, 110), "Should detect click near plant");
-            Assert.IsFalse(plant.ContainsPoint(200, 200), "Should not detect click far away");
+            Assert.IsTrue(plant.ContainsPoint(100, 100));
+            Assert.IsTrue(plant.ContainsPoint(110, 110));
+            Assert.IsFalse(plant.ContainsPoint(200, 200));
         }
     }
 }

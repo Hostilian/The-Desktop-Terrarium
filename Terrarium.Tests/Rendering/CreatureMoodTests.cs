@@ -9,14 +9,14 @@ namespace Terrarium.Tests.Rendering
         public void MoodLogic_LowHealth_ReturnsCriticalMood()
         {
             string mood = GetMoodEmoji(health: 15, hunger: 50, isMoving: false);
-            Assert.AreEqual("💔", mood, "Low health should show critical mood");
+            Assert.AreEqual("💔", mood);
         }
 
         [TestMethod]
         public void MoodLogic_HighHunger_ReturnsHungryMood()
         {
             string mood = GetMoodEmoji(health: 80, hunger: 85, isMoving: false);
-            Assert.AreEqual("😰", mood, "High hunger should show hungry mood");
+            Assert.AreEqual("😰", mood);
         }
 
         [TestMethod]
@@ -24,21 +24,21 @@ namespace Terrarium.Tests.Rendering
         {
             // Creature moving with moderate hunger shows hunting
             string mood = GetMoodEmoji(health: 80, hunger: 50, isMoving: true);
-            Assert.AreEqual("🎯", mood, "Moving creature with hunger should show hunting mood");
+            Assert.AreEqual("🎯", mood);
         }
 
         [TestMethod]
         public void MoodLogic_Healthy_ReturnsHappyMood()
         {
             string mood = GetMoodEmoji(health: 90, hunger: 20, isMoving: false);
-            Assert.AreEqual("😊", mood, "Healthy, fed creature should be happy");
+            Assert.AreEqual("😊", mood);
         }
 
         [TestMethod]
         public void MoodLogic_MediumHealth_ReturnsNeutralMood()
         {
             string mood = GetMoodEmoji(health: 55, hunger: 45, isMoving: false);
-            Assert.AreEqual("😐", mood, "Medium state should show neutral mood");
+            Assert.AreEqual("😐", mood);
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace Terrarium.Tests.Rendering
         {
             // Even if hungry, critical health takes priority
             string mood = GetMoodEmoji(health: 10, hunger: 90, isMoving: true);
-            Assert.AreEqual("💔", mood, "Critical health should take priority");
+            Assert.AreEqual("💔", mood);
         }
 
         /// <summary>

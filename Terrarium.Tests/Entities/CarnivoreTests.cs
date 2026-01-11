@@ -22,7 +22,7 @@ namespace Terrarium.Tests.Entities
             wolf.TryEat(sheep);
 
             // Assert
-            Assert.IsLessThan(sheepHealthBefore, sheep.Health, "Wolf should damage prey");
+            Assert.IsTrue(sheepHealthBefore > sheep.Health);
         }
 
         [TestMethod]
@@ -41,8 +41,8 @@ namespace Terrarium.Tests.Entities
             }
 
             // Assert
-            Assert.IsFalse(sheep.IsAlive, "Sheep should be dead after wolf attack");
-            Assert.IsLessThan(wolfHungerBefore, wolf.Hunger, "Wolf should be less hungry after eating");
+            Assert.IsFalse(sheep.IsAlive);
+            Assert.IsTrue(wolfHungerBefore > wolf.Hunger);
         }
 
         [TestMethod]
@@ -62,8 +62,8 @@ namespace Terrarium.Tests.Entities
             var nearestPrey = wolf.FindNearestPrey(herbivores);
 
             // Assert
-            Assert.IsNotNull(nearestPrey, "Should find nearby prey");
-            Assert.AreSame(closePrey, nearestPrey, "Should return the exact closest prey instance");
+            Assert.IsNotNull(nearestPrey);
+            Assert.AreSame(closePrey, nearestPrey);
         }
 
         [TestMethod]

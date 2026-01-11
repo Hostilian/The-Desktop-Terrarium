@@ -22,8 +22,8 @@ namespace Terrarium.Tests.Entities
             bool ateSuccessfully = sheep.TryEat(plant);
 
             // Assert
-            Assert.IsTrue(ateSuccessfully, "Herbivore should eat nearby plant");
-            Assert.IsLessThan(50, sheep.Hunger, "Hunger should decrease after eating");
+            Assert.IsTrue(ateSuccessfully);
+            Assert.IsTrue(sheep.Hunger < 50);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Terrarium.Tests.Entities
             bool ateSuccessfully = sheep.TryEat(plant);
 
             // Assert
-            Assert.IsFalse(ateSuccessfully, "Herbivore should not eat plant that's too far");
+            Assert.IsFalse(ateSuccessfully);
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace Terrarium.Tests.Entities
             sheep.TryEat(plant);
 
             // Assert
-            Assert.IsLessThan(plantHealthBefore, plant.Health, "Eating should damage the plant");
+            Assert.IsTrue(plantHealthBefore > plant.Health);
         }
 
         [TestMethod]
@@ -72,8 +72,8 @@ namespace Terrarium.Tests.Entities
             var nearestPlant = sheep.FindNearestPlant(plants);
 
             // Assert
-            Assert.IsNotNull(nearestPlant, "Should find a nearby plant");
-            Assert.AreSame(closePlant, nearestPlant, "Should return the exact closest plant instance");
+            Assert.IsNotNull(nearestPlant);
+            Assert.AreSame(closePlant, nearestPlant);
         }
 
         [TestMethod]

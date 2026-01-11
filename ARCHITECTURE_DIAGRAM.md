@@ -438,7 +438,7 @@ The-Desktop-Terrarium/
          │ References                                 │ References
          ▼                                            ▼
 ┌──────────────────┐                         ┌──────────────────┐
-│ .NET 8.0         │                         │ WPF Framework    │
+│ .NET 10.0        │                         │ WPF Framework    │
 │ System libraries │                         │ PresentationCore │
 └──────────────────┘                         │ WindowsBase      │
                                              └──────────────────┘

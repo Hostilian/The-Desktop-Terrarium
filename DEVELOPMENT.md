@@ -4,7 +4,7 @@
 
 ### Prerequisites
 1. Visual Studio 2022 or later
-2. .NET 8.0 SDK
+2. .NET 10.0 SDK
 3. Windows 10/11
 
 ### First-Time Setup

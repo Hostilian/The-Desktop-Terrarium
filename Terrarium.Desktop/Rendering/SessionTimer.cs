@@ -30,6 +30,8 @@ namespace Terrarium.Desktop.Rendering
         private int _dayCount;
         private int _generationCount;
 
+        private int _lastDisplayedSessionSecond = -1;
+
         private const double DayDuration = 120.0; // 2 minutes per in-game day
 
         public bool IsEnabled { get; set; } = true;
@@ -167,9 +169,14 @@ namespace Terrarium.Desktop.Rendering
             // Update time display (MM:SS format)
             if (_timeText != null)
             {
-                int minutes = (int)(_sessionTime / 60);
-                int seconds = (int)(_sessionTime % 60);
-                _timeText.Text = $"{minutes:D2}:{seconds:D2}";
+                int totalSeconds = (int)_sessionTime;
+                if (totalSeconds != _lastDisplayedSessionSecond)
+                {
+                    _lastDisplayedSessionSecond = totalSeconds;
+                    int minutes = totalSeconds / 60;
+                    int seconds = totalSeconds % 60;
+                    _timeText.Text = $"{minutes:D2}:{seconds:D2}";
+                }
 
                 // Color based on session length
                 Brush desiredBrush = Brushes.White;

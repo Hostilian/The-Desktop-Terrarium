@@ -21,6 +21,9 @@ namespace Terrarium.Desktop.Rendering
         private double _displaySpeed;
         private double _hideTimer;
 
+        private int _lastDisplayedSpeedTenths = int.MinValue;
+        private Brush? _lastSpeedForeground;
+
         private readonly SolidColorBrush _speedTextSlowBrush = new(Color.FromRgb(100, 150, 255));
         private readonly SolidColorBrush _speedTextFastBrush = new(Color.FromRgb(255, 150, 100));
         private readonly SolidColorBrush _speedTextNormalBrush = new(Colors.White);
@@ -163,15 +166,26 @@ namespace Terrarium.Desktop.Rendering
             // Update text
             if (_speedText != null)
             {
-                _speedText.Text = $"{_displaySpeed:F1}x";
+                int speedTenths = (int)Math.Round(_displaySpeed * 10.0);
+                if (speedTenths != _lastDisplayedSpeedTenths)
+                {
+                    _speedText.Text = $"{speedTenths / 10.0:F1}x";
+                    _lastDisplayedSpeedTenths = speedTenths;
+                }
 
                 // Color based on speed
-                _speedText.Foreground = _displaySpeed switch
+                Brush desiredForeground = _displaySpeed switch
                 {
                     < 0.5 => _speedTextSlowBrush,
                     > 2.0 => _speedTextFastBrush,
                     _ => _speedTextNormalBrush
                 };
+
+                if (!ReferenceEquals(_lastSpeedForeground, desiredForeground))
+                {
+                    _speedText.Foreground = desiredForeground;
+                    _lastSpeedForeground = desiredForeground;
+                }
             }
 
             // Update speed bars
@@ -184,10 +198,15 @@ namespace Terrarium.Desktop.Rendering
                 _ => 5
             };
 
+            Color activeBarColor = GetSpeedColor(_displaySpeed);
+
             for (int i = 0; i < 5; i++)
             {
-                Color barColor = i < activeBars ? GetSpeedColor(_displaySpeed) : InactiveBarColor;
-                _speedBarBrushes[i].Color = barColor;
+                Color barColor = i < activeBars ? activeBarColor : InactiveBarColor;
+                if (_speedBarBrushes[i].Color != barColor)
+                {
+                    _speedBarBrushes[i].Color = barColor;
+                }
             }
 
             // Auto-hide

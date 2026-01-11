@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Media;
+using Terrarium.Logic.Simulation;
 
 namespace Terrarium.Desktop
 {
@@ -122,42 +123,90 @@ namespace Terrarium.Desktop
                 return;
 
             // FPS Display
-            FpsText.Text = $"{_currentFps:F0}";
+            int fpsDisplayed = (int)Math.Round(_currentFps);
+            if (fpsDisplayed != _lastFpsDisplayed)
+            {
+                FpsText.Text = fpsDisplayed.ToString();
+                _lastFpsDisplayed = fpsDisplayed;
+            }
 
             // Entity counts with new separate fields
-            PlantCountText.Text = _simulationEngine.World.Plants.Count.ToString();
-            HerbivoreCountText.Text = _simulationEngine.World.Herbivores.Count.ToString();
-            CarnivoreCountText.Text = _simulationEngine.World.Carnivores.Count.ToString();
+            int plantCount = _simulationEngine.World.Plants.Count;
+            int herbivoreCount = _simulationEngine.World.Herbivores.Count;
+            int carnivoreCount = _simulationEngine.World.Carnivores.Count;
+
+            if (plantCount != _lastPlantCountDisplayed)
+            {
+                PlantCountText.Text = plantCount.ToString();
+                _lastPlantCountDisplayed = plantCount;
+            }
+
+            if (herbivoreCount != _lastHerbivoreCountDisplayed)
+            {
+                HerbivoreCountText.Text = herbivoreCount.ToString();
+                _lastHerbivoreCountDisplayed = herbivoreCount;
+            }
+
+            if (carnivoreCount != _lastCarnivoreCountDisplayed)
+            {
+                CarnivoreCountText.Text = carnivoreCount.ToString();
+                _lastCarnivoreCountDisplayed = carnivoreCount;
+            }
 
             // Health bar with visual
             double healthPercent = _simulationEngine.GetEcosystemHealth();
-            EcosystemHealthText.Text = $"{healthPercent:P0}";
+            int healthPercentDisplayed = (int)Math.Round(healthPercent * 100);
+            if (healthPercentDisplayed != _lastHealthPercentDisplayed)
+            {
+                EcosystemHealthText.Text = $"{healthPercent:P0}";
+                _lastHealthPercentDisplayed = healthPercentDisplayed;
+            }
             HealthBar.Width = Math.Max(0, Math.Min(100, healthPercent * 100));
 
             // Color health bar based on value
-            if (healthPercent >= 0.7)
-                HealthBar.Background = _healthGoodBrush ??= CreateFrozenBrush(Color.FromRgb(46, 204, 113));
-            else if (healthPercent >= 0.4)
-                HealthBar.Background = _healthWarnBrush ??= CreateFrozenBrush(Color.FromRgb(241, 196, 15));
-            else
-                HealthBar.Background = _healthBadBrush ??= CreateFrozenBrush(Color.FromRgb(231, 76, 60));
+            int healthBand = healthPercent >= 0.7 ? 2 : (healthPercent >= 0.4 ? 1 : 0);
+            if (healthBand != _lastHealthBandDisplayed)
+            {
+                if (healthBand == 2)
+                    HealthBar.Background = _healthGoodBrush ??= CreateFrozenBrush(Color.FromRgb(46, 204, 113));
+                else if (healthBand == 1)
+                    HealthBar.Background = _healthWarnBrush ??= CreateFrozenBrush(Color.FromRgb(241, 196, 15));
+                else
+                    HealthBar.Background = _healthBadBrush ??= CreateFrozenBrush(Color.FromRgb(231, 76, 60));
+
+                _lastHealthBandDisplayed = healthBand;
+            }
 
             // Weather display with icons
             bool isStormy = _simulationEngine.WeatherIntensity > StormyWeatherThreshold;
-            WeatherIcon.Text = isStormy ? "⛈️" : "☀️";
-            WeatherText.Text = isStormy ? "Stormy" : "Calm";
+            if (_lastIsStormyDisplayed != isStormy)
+            {
+                WeatherIcon.Text = isStormy ? "⛈️" : "☀️";
+                WeatherText.Text = isStormy ? "Stormy" : "Calm";
+                _lastIsStormyDisplayed = isStormy;
+            }
 
             // Time of day display
-            string timeOfDay = _simulationEngine.GetTimeOfDayString();
-            string timeIcon = GetTimeIcon(timeOfDay);
-            TimeOfDayText.Text = $"{timeIcon} {timeOfDay}";
-
-            // Update day/night orb
-            UpdateDayNightOrb(timeOfDay);
+            DayPhase currentPhase = _simulationEngine.DayNightCycle.CurrentPhase;
+            if (_lastDayPhaseDisplayed != currentPhase)
+            {
+                string timeIcon = GetTimeIcon(currentPhase);
+                TimeOfDayText.Text = $"{timeIcon} {currentPhase}";
+                UpdateDayNightOrb(currentPhase);
+                _lastDayPhaseDisplayed = currentPhase;
+            }
 
             // Statistics panel
             var stats = _simulationEngine.Statistics;
-            StatsText.Text = $"Births: {stats.TotalBirths} | Deaths: {stats.TotalDeaths} | Peak Pop: {stats.PeakPopulation}";
+            if (stats.TotalBirths != _lastBirthsDisplayed ||
+                stats.TotalDeaths != _lastDeathsDisplayed ||
+                stats.PeakPopulation != _lastPeakPopulationDisplayed)
+            {
+                StatsText.Text = $"Births: {stats.TotalBirths} | Deaths: {stats.TotalDeaths} | Peak Pop: {stats.PeakPopulation}";
+                _lastBirthsDisplayed = stats.TotalBirths;
+                _lastDeathsDisplayed = stats.TotalDeaths;
+                _lastPeakPopulationDisplayed = stats.PeakPopulation;
+            }
 
             // Background opacity based on time and weather
             double weatherOpacity = _simulationEngine.WeatherIntensity * (StormMaxBackgroundOpacity - CalmBackgroundOpacity);
@@ -173,14 +222,14 @@ namespace Terrarium.Desktop
         /// <summary>
         /// Gets the appropriate icon for the time of day.
         /// </summary>
-        private static string GetTimeIcon(string timeOfDay)
+        private static string GetTimeIcon(DayPhase phase)
         {
-            return timeOfDay.ToLower() switch
+            return phase switch
             {
-                "dawn" => "🌅",
-                "day" => "☀️",
-                "dusk" => "🌇",
-                "night" => "🌙",
+                DayPhase.Dawn => "🌅",
+                DayPhase.Day => "☀️",
+                DayPhase.Dusk => "🌇",
+                DayPhase.Night => "🌙",
                 _ => "🌍"
             };
         }
@@ -188,29 +237,29 @@ namespace Terrarium.Desktop
         /// <summary>
         /// Updates the day/night indicator orb.
         /// </summary>
-        private void UpdateDayNightOrb(string timeOfDay)
+        private void UpdateDayNightOrb(DayPhase phase)
         {
-            switch (timeOfDay.ToLower())
+            switch (phase)
             {
-                case "dawn":
+                case DayPhase.Dawn:
                     OrbCenterColor.Color = _orbDawnCenter;
                     OrbEdgeColor.Color = _orbDawnEdge;
                     OrbGlow.Color = _orbDawnEdge;
                     DayNightIcon.Text = "🌅";
                     break;
-                case "day":
+                case DayPhase.Day:
                     OrbCenterColor.Color = _orbDayCenter;
                     OrbEdgeColor.Color = _orbDayEdge;
                     OrbGlow.Color = _orbDayCenter;
                     DayNightIcon.Text = "☀️";
                     break;
-                case "dusk":
+                case DayPhase.Dusk:
                     OrbCenterColor.Color = _orbDuskCenter;
                     OrbEdgeColor.Color = _orbDuskEdge;
                     OrbGlow.Color = _orbDuskCenter;
                     DayNightIcon.Text = "🌇";
                     break;
-                case "night":
+                case DayPhase.Night:
                     OrbCenterColor.Color = _orbNightCenter;
                     OrbEdgeColor.Color = _orbNightEdge;
                     OrbGlow.Color = _orbNightGlow;

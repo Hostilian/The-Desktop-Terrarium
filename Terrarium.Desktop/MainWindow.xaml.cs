@@ -93,6 +93,18 @@ namespace Terrarium.Desktop
         private double _fpsAccumulator;
         private double _currentFps;
 
+        private int _lastFpsDisplayed = -1;
+        private int _lastPlantCountDisplayed = -1;
+        private int _lastHerbivoreCountDisplayed = -1;
+        private int _lastCarnivoreCountDisplayed = -1;
+        private int _lastHealthPercentDisplayed = int.MinValue;
+        private int _lastBirthsDisplayed = -1;
+        private int _lastDeathsDisplayed = -1;
+        private int _lastPeakPopulationDisplayed = -1;
+        private bool? _lastIsStormyDisplayed;
+        private DayPhase? _lastDayPhaseDisplayed;
+        private int _lastHealthBandDisplayed = -1;
+
         public MainWindow()
         {
             InitializeComponent();

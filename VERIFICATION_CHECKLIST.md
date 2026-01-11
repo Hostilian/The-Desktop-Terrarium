@@ -12,12 +12,13 @@
 
 - [x] Reduce perceived “god object” risk in `Terrarium.Desktop/MainWindow.xaml.cs` by splitting into `partial` files with focused responsibilities (Win32/hotkeys, init, render loop, input).
     - Evidence: `Terrarium.Desktop/MainWindow.xaml.cs`, `Terrarium.Desktop/MainWindow.Win32.cs`, `Terrarium.Desktop/MainWindow.Initialization.cs`, `Terrarium.Desktop/MainWindow.RenderLoop.cs`, `Terrarium.Desktop/MainWindow.Interaction.cs`
-- [ ] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
-    - In progress: plant + creature shape rendering constants in `Terrarium.Desktop/Rendering/Renderer.cs` (includes shake frequency + carnivore ear geometry extraction)
+- [x] Replace UI/rendering “magic numbers” with named constants (keep visuals identical).
+    - Evidence: `Terrarium.Desktop/Rendering/Renderer.cs` (named constants for creature/plant geometry and animation tuning)
 - [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
 - [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
-- [ ] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
+- [x] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
+    - Evidence: `VERIFICATION_CHECKLIST.md`, `PROJECT_SUMMARY.md`, `EXAM_COMPLIANCE.md` (tests=119; coverage path `Terrarium.Tests/coverage.cobertura.xml`)
 - [x] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
     - Evidence: `dotnet publish "Terrarium.Desktop\Terrarium.Desktop.csproj" -c Release -r win-x64 --self-contained false -o "publish-integrity\win-x64"`
 
@@ -133,12 +134,12 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
 ## 🧪 OOP Requirements Verification
 
 ### Inheritance Hierarchy ✅
-- [ ] WorldEntity (base class with X, Y, ID)
-- [ ] LivingEntity (adds Health, Age, IsAlive)
-- [ ] Plant (adds Size, Growth, WaterLevel)
-- [ ] Creature (adds Speed, Hunger, Movement)
-- [ ] Herbivore (extends Creature, eats plants)
-- [ ] Carnivore (extends Creature, hunts herbivores)
+- [x] WorldEntity (base class with X, Y, ID)
+- [x] LivingEntity (adds Health, Age, IsAlive)
+- [x] Plant (adds Size, Growth, WaterLevel)
+- [x] Creature (adds Speed, Hunger, Movement)
+- [x] Herbivore (extends Creature, eats plants)
+- [x] Carnivore (extends Creature, hunts herbivores)
 
 **Files to Check**:
 - `Terrarium.Logic/Entities/WorldEntity.cs`
@@ -149,10 +150,10 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
 - `Terrarium.Logic/Entities/Carnivore.cs`
 
 ### Interfaces ✅
-- [ ] IClickable interface (OnClick method)
-- [ ] IMovable interface (Move method)
-- [ ] Plant implements IClickable
-- [ ] Creature implements IMovable and IClickable
+- [x] IClickable interface (OnClick method)
+- [x] IMovable interface (Move method)
+- [x] Plant implements IClickable
+- [x] Creature implements IMovable and IClickable
 
 **Files to Check**:
 - `Terrarium.Logic/Interfaces/IClickable.cs`

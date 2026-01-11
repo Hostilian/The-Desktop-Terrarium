@@ -112,7 +112,6 @@ namespace Terrarium.Desktop.Rendering
                 }
             };
 
-            // Position in bottom-left corner
             Canvas.SetZIndex(_mapBorder, 800);
             _parentCanvas.Children.Add(_mapBorder);
 

@@ -166,7 +166,6 @@ namespace Terrarium.Desktop.Rendering
                 Effect = BannerShadowEffect
             };
 
-            // Position at top center
             double x = (_canvas.ActualWidth - BannerWidth) / 2;
             Canvas.SetLeft(_achievementBanner, x);
             Canvas.SetTop(_achievementBanner, -BannerHeight);
@@ -174,7 +173,6 @@ namespace Terrarium.Desktop.Rendering
 
             _canvas.Children.Add(_achievementBanner);
 
-            // Slide in animation
             var slideIn = new DoubleAnimation
             {
                 From = -BannerHeight,

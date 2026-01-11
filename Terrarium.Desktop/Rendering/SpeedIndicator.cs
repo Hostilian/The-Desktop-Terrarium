@@ -120,7 +120,6 @@ namespace Terrarium.Desktop.Rendering
 
             _container.Child = stack;
 
-            // Position at bottom center
             Canvas.SetZIndex(_container, 750);
             _canvas.Children.Add(_container);
 
@@ -159,7 +158,6 @@ namespace Terrarium.Desktop.Rendering
             if (!IsEnabled || _container == null)
                 return;
 
-            // Animate display speed
             _displaySpeed += (_currentSpeed - _displaySpeed) * AnimationSpeed * deltaTime;
             _displaySpeed = Math.Clamp(_displaySpeed, 0.1, 5.0);
 

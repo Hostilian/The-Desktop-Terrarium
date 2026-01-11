@@ -210,7 +210,6 @@ namespace Terrarium.Desktop.Rendering
             _currentEntity = entity;
             UpdateTooltipContent(entity);
 
-            // Position tooltip near mouse, but keep on screen
             double x = mouseX + TooltipOffset;
             double y = mouseY + TooltipOffset;
 

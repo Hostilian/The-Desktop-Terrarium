@@ -227,7 +227,6 @@ namespace Terrarium.Desktop.Rendering
                 _nextLightningTime = _random.NextDouble() * LightningIntervalRangeSeconds + LightningIntervalMinSeconds; // 2-10 seconds
             }
 
-            // Fade out flash
             if (_lightningFlash != null && _lightningFlash.Opacity > 0)
             {
                 _lightningFlash.Opacity -= deltaTime * LightningFlashFadeRate; // Fast fade

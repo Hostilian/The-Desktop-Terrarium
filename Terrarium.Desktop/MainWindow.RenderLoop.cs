@@ -152,7 +152,6 @@ namespace Terrarium.Desktop
             // New compact health bar is 60px wide
             HealthBar.Width = Math.Max(0, Math.Min(60, healthPercent * 60));
 
-            // Color health bar based on value
             int healthBand = healthPercent >= 0.7 ? 2 : (healthPercent >= 0.4 ? 1 : 0);
             if (healthBand != _lastHealthBandDisplayed)
             {

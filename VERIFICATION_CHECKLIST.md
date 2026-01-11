@@ -16,7 +16,8 @@
     - Evidence: `Terrarium.Desktop/Rendering/Renderer.cs` (named constants for creature/plant geometry and animation tuning)
 - [x] Remove any “error hiding” patterns (e.g., empty `catch { }`) or justify them with explicit logging + safe fallback.
     - Evidence: `Terrarium.Desktop/MainWindow.Initialization.cs` (logs + user notification on save-load failure)
-- [ ] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
+- [x] Ensure unit tests cover **production** code paths (avoid placeholder tests that only assert trivial truths).
+    - Evidence: Strengthened assertions in `HerbivoreTests`, `CarnivoreTests`, `CreatureTests`, `SimulationEngineTests` (verify exact instances, additional property checks, accumulator behavior)
 - [x] Make docs accurate vs reality: update test counts, coverage claims, and evidence links.
     - Evidence: `VERIFICATION_CHECKLIST.md`, `PROJECT_SUMMARY.md`, `EXAM_COMPLIANCE.md` (tests=119; coverage path `Terrarium.Tests/coverage.cobertura.xml`)
 - [x] Add a reproducible publish step (`dotnet publish`) and verify artifact integrity.
@@ -140,8 +141,9 @@ This section mirrors the Moodle bullets and provides a place to record **evidenc
     - Evidence: `Terrarium.Logic/Entities/WorldEntity.cs` → `LivingEntity.cs` → (`Plant.cs`, `Creature.cs`) → (`Herbivore.cs`, `Carnivore.cs`)
 
 ### Unit tests (meaningful coverage)
-- [ ] Unit tests meaningfully cover logic (and pass)
-    - Evidence: `Terrarium.Tests/*`, `dotnet test` output
+- [x] Unit tests meaningfully cover logic (and pass)
+    - Evidence: `Terrarium.Tests/*`, `dotnet test -c Release` Passed 120, Failed 0
+    - Tests verify exact instances (FindNearestPlant, FindNearestPrey, FindClickableAt), velocity magnitudes, fixed-timestep accumulator behavior, storm effects on water level
 
 ### Layering
 - [x] Presentation layer separated from application logic
@@ -443,7 +445,7 @@ git push origin main
 ## ✅ Current Status (Reproducible)
 
 **Build**: ✅ PASSING (0 warnings, 0 errors)  
-**Tests**: ✅ ALL PASSING (111/111)  
+**Tests**: ✅ ALL PASSING (120/120)  
 **Documentation Validation**: ✅ `python scripts/validate_docs.py` passes  
 
 ---
@@ -454,6 +456,6 @@ git push origin main
 
 ---
 
-*Last Verified: January 9, 2026*  
+*Last Verified: January 11, 2026*  
 *Verification Time: < 5 minutes*  
 *Status: PRODUCTION READY*

@@ -19,9 +19,11 @@ namespace Terrarium.Desktop.Rendering
                 // Initialize with first read
                 _cpuCounter.NextValue();
             }
-            catch
+            catch (Exception)
             {
-                // Performance counter may not be available on all systems
+                // Performance counters may not be available on all systems (e.g., restricted environments,
+                // missing performance counter categories, or insufficient permissions).
+                // Graceful degradation: continue without CPU monitoring - weather will remain calm.
                 _cpuCounter = null;
             }
         }
@@ -39,8 +41,10 @@ namespace Terrarium.Desktop.Rendering
                 float cpuPercent = _cpuCounter.NextValue();
                 return Math.Clamp(cpuPercent / 100.0, 0.0, 1.0);
             }
-            catch
+            catch (Exception)
             {
+                // Performance counter read can fail intermittently due to system state changes.
+                // Return 0.0 as safe default - simulation continues with calm weather.
                 return 0.0;
             }
         }

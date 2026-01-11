@@ -106,7 +106,6 @@ namespace Terrarium.Desktop.Rendering
                 Child = content
             };
 
-            // Position in top-right corner
             Canvas.SetZIndex(_graphContainer, 800);
             _parentCanvas.Children.Add(_graphContainer);
             _parentCanvas.SizeChanged += (s, e) => UpdatePosition();

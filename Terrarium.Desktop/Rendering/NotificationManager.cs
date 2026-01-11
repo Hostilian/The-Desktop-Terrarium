@@ -236,7 +236,6 @@ namespace Terrarium.Desktop.Rendering
             border.Child = textBlock;
             notification.Visual = border;
 
-            // Position (slide in from right)
             double canvasWidth = _canvas.ActualWidth > 0 ? _canvas.ActualWidth : 1920;
             double targetX = canvasWidth - NotificationWidth - NotificationMargin;
             double targetY = NotificationMargin + (_activeNotifications.Count * (NotificationHeight + NotificationMargin));
@@ -248,7 +247,6 @@ namespace Terrarium.Desktop.Rendering
             _canvas.Children.Add(border);
             _activeNotifications.Add(notification);
 
-            // Animate slide in
             var animation = new DoubleAnimation
             {
                 From = canvasWidth,

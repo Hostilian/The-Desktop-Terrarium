@@ -326,7 +326,6 @@ namespace Terrarium.Desktop.Rendering
             Canvas.SetLeft(Visual, X);
             Canvas.SetTop(Visual, Y);
 
-            // Fade out based on lifetime
             double lifeRatio = Math.Max(0, Lifetime / MaxLifetime);
             Visual.Opacity = lifeRatio;
 

@@ -158,7 +158,6 @@ namespace Terrarium.Desktop.Rendering
             // Calculate health score based on ecosystem balance
             _currentHealth = EcosystemHealthScorer.CalculateHealthPercent(plantCount, herbivoreCount, carnivoreCount);
 
-            // Animate display health
             _displayHealth += (_currentHealth - _displayHealth) * AnimationSpeed * deltaTime;
             _displayHealth = Math.Clamp(_displayHealth, 0, 100);
 
@@ -174,7 +173,6 @@ namespace Terrarium.Desktop.Rendering
                 _scoreForegroundBrush == null || _statusForegroundBrush == null)
                 return;
 
-            // Update bar width
             _healthBar.Width = (_displayHealth / 100) * BarMaxWidth;
 
             var color = GetHealthColor(_displayHealth);
@@ -185,11 +183,9 @@ namespace Terrarium.Desktop.Rendering
             _healthGradientLightStop.Color = lighterColor;
             _healthGradientDarkStop.Color = color;
 
-            // Update score text
             _scoreText.Text = $"{_displayHealth:F0}%";
             _scoreForegroundBrush.Color = color;
 
-            // Update status text
             var (status, statusColor) = GetStatus(_displayHealth);
             _statusText.Text = status;
             _statusForegroundBrush.Color = statusColor;

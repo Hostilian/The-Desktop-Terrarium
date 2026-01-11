@@ -170,7 +170,6 @@ namespace Terrarium.Desktop.Rendering
                     _lastDisplayedSpeedTenths = speedTenths;
                 }
 
-                // Color based on speed
                 Brush desiredForeground = _displaySpeed switch
                 {
                     < 0.5 => _speedTextSlowBrush,

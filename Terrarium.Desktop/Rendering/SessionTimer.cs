@@ -123,7 +123,6 @@ namespace Terrarium.Desktop.Rendering
 
             _container.Child = stack;
 
-            // Position at top center
             Canvas.SetZIndex(_container, 700);
             _canvas.Children.Add(_container);
 
@@ -177,7 +176,6 @@ namespace Terrarium.Desktop.Rendering
                     _timeText.Text = $"{minutes:D2}:{seconds:D2}";
                 }
 
-                // Color based on session length
                 Brush desiredBrush = Brushes.White;
                 if (_sessionTime > 3600) // Over 1 hour
                 {

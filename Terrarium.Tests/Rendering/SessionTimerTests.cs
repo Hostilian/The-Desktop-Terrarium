@@ -51,7 +51,7 @@ namespace Terrarium.Tests.Rendering
             double sessionTime = 3700; // Just over 1 hour
             int minutes = (int)(sessionTime / 60);
 
-            Assert.IsTrue(minutes > 60);
+            Assert.IsGreaterThan(minutes, 60);
 
             int dayCount = (int)(sessionTime / DayDuration) + 1;
             Assert.AreEqual(31, dayCount);

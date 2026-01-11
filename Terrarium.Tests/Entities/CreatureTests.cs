@@ -64,7 +64,7 @@ namespace Terrarium.Tests.Entities
             sheep.SetDirection(1, 0); // Move right
 
             // Assert
-            Assert.IsTrue(sheep.VelocityX > 0);
+            Assert.IsGreaterThan(0, sheep.VelocityX);
             Assert.AreEqual(0, sheep.VelocityY, 0.01);
             Assert.AreEqual(sheep.Speed, sheep.VelocityX, 0.01);
         }
@@ -96,7 +96,7 @@ namespace Terrarium.Tests.Entities
             sheep.OnClick();
 
             // Assert
-            Assert.IsTrue(hungerBefore > sheep.Hunger);
+            Assert.IsGreaterThan(hungerBefore, sheep.Hunger);
         }
 
         [TestMethod]

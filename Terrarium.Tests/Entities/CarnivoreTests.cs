@@ -22,7 +22,7 @@ namespace Terrarium.Tests.Entities
             wolf.TryEat(sheep);
 
             // Assert
-            Assert.IsTrue(sheepHealthBefore > sheep.Health);
+            Assert.IsGreaterThan(sheepHealthBefore, sheep.Health);
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Terrarium.Tests.Entities
 
             // Assert
             Assert.IsFalse(sheep.IsAlive);
-            Assert.IsTrue(wolfHungerBefore > wolf.Hunger);
+            Assert.IsGreaterThan(wolfHungerBefore, wolf.Hunger);
         }
 
         [TestMethod]

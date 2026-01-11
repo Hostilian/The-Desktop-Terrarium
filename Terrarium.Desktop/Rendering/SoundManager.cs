@@ -5,8 +5,42 @@ namespace Terrarium.Desktop.Rendering
 {
     /// <summary>
     /// Manages sound effects and ambient audio for the terrarium.
-    /// Skeleton implementation ready for audio integration.
+    /// 
+    /// <para>
+    /// <b>Implementation Status: PLACEHOLDER</b>
+    /// </para>
+    /// <para>
+    /// This class provides a complete API for sound management but does not play actual audio.
+    /// It serves as a skeleton implementation ready for audio integration using libraries like:
+    /// <list type="bullet">
+    ///   <item>NAudio - Full-featured audio library for .NET</item>
+    ///   <item>System.Media.SoundPlayer - Basic WAV playback (Windows only)</item>
+    ///   <item>CSCore - Alternative audio library</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// <b>Why No Audio Yet?</b>
+    /// <list type="number">
+    ///   <item>Exam requirements focus on architecture and OOP, not multimedia</item>
+    ///   <item>Audio files would significantly increase repository size</item>
+    ///   <item>Cross-platform audio is complex and outside project scope</item>
+    ///   <item>The API is designed for easy future integration</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// <b>To Enable Audio:</b>
+    /// <code>
+    /// // 1. Install NAudio: dotnet add package NAudio
+    /// // 2. Add sound files to Assets/Sounds/
+    /// // 3. Implement PlayEffect() method with actual audio playback
+    /// </code>
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// All public methods are fully functional for state management (mute, volume, etc.)
+    /// but audio playback is stubbed out. The class follows the same patterns as other
+    /// rendering components for consistency.
+    /// </remarks>
     public class SoundManager : IDisposable
     {
         private readonly Dictionary<string, object> _soundEffects;
@@ -22,6 +56,7 @@ namespace Terrarium.Desktop.Rendering
         private const double DefaultEffectsVolume = 0.8;
 
         // Sound file paths (for future implementation)
+        // To add actual sounds, place WAV files in these locations relative to the executable
         private const string AmbientDaySound = "Assets/Sounds/ambient_day.wav";
         private const string AmbientNightSound = "Assets/Sounds/ambient_night.wav";
         private const string RainSound = "Assets/Sounds/rain.wav";

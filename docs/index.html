@@ -23,6 +23,8 @@
         <div class="container">
             <a href="#" class="logo">🌿 Desktop Terrarium</a>
             <ul class="nav-links">
+                <li><a href="#what-is">About</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#architecture">Architecture</a></li>
                 <li><a href="#download">Download</a></li>
@@ -49,8 +51,124 @@
         </div>
     </section>
 
+    <!-- What Is Desktop Terrarium Section -->
+    <section class="what-is" id="what-is">
+        <div class="container">
+            <div class="section-title">
+                <h2>🌱 What is Desktop Terrarium?</h2>
+                <p>A tiny living world that lives at the bottom of your screen</p>
+            </div>
+            <div class="what-is-content">
+                <div class="what-is-text">
+                    <p>
+                        <strong>Desktop Terrarium</strong> is a calming desktop companion that brings a miniature 
+                        ecosystem to your computer. Imagine a tiny nature reserve right at the bottom of your 
+                        screen — plants grow, cute creatures wander, and life unfolds peacefully while you work.
+                    </p>
+                    <p>
+                        It's like a <em>digital zen garden</em> meets <em>virtual pet</em> meets <em>screensaver</em>. 
+                        The terrarium runs passively in the background, creating moments of calm in your busy day.
+                    </p>
+                    <div class="what-is-highlights">
+                        <div class="highlight-item">
+                            <span class="highlight-emoji">🧘</span>
+                            <span><strong>Relaxing:</strong> Watch life unfold at its own pace</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="highlight-emoji">🔍</span>
+                            <span><strong>Curious:</strong> Discover emergent ecosystem behaviors</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="highlight-emoji">🏠</span>
+                            <span><strong>Personal:</strong> Your terrarium saves and grows over time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>🚀 How It Works</h2>
+                <p>Get started in under a minute</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">⬇️</div>
+                    <h3>Download</h3>
+                    <p>Grab the latest release from GitHub. It's a single file — no installer needed.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">📁</div>
+                    <h3>Extract</h3>
+                    <p>Unzip anywhere you like. We recommend your Documents folder.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">▶️</div>
+                    <h3>Run</h3>
+                    <p>Double-click Terrarium.Desktop.exe. Your terrarium appears at the bottom of your screen!</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">🌿</div>
+                    <h3>Enjoy</h3>
+                    <p>Watch your ecosystem thrive. It auto-saves when you close it!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Desktop Mockup Preview Section -->
     <section class="preview">
         <div class="container">
+            <div class="section-title">
+                <h2>🖥️ Lives On Your Desktop</h2>
+                <p>A transparent overlay that blends seamlessly with your workflow</p>
+            </div>
+            <div class="desktop-mockup">
+                <div class="mockup-frame">
+                    <div class="mockup-titlebar">
+                        <span class="mockup-dot red"></span>
+                        <span class="mockup-dot yellow"></span>
+                        <span class="mockup-dot green"></span>
+                        <span class="mockup-title">Your Desktop</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-icons">
+                            <div class="mock-icon">📁</div>
+                            <div class="mock-icon">🌐</div>
+                            <div class="mock-icon">📝</div>
+                            <div class="mock-icon">💻</div>
+                        </div>
+                        <div class="mockup-window">
+                            <div class="mockup-app-bar">VS Code - project.cs</div>
+                            <div class="mockup-app-content">
+                                <span class="code-line">// Your code here...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="terrarium-strip">
+                        <div class="ground"></div>
+                        <span class="entity plant p1">🌿</span>
+                        <span class="entity herbivore h1">🐰</span>
+                        <span class="entity plant p2">🌱</span>
+                        <span class="entity carnivore c1">🐺</span>
+                        <span class="entity plant p3">🌿</span>
+                        <span class="entity herbivore h2">🐑</span>
+                        <span class="entity plant p4">🌱</span>
+                    </div>
+                </div>
+                <p class="mockup-caption">The terrarium sits transparently at the bottom of your screen</p>
+            </div>
             <div class="preview-window">
                 <div class="window-header">
                     <span class="window-dot red"></span>
@@ -177,7 +295,7 @@
 │   ├── MainWindow.xaml      <span class="code-comment">// Modern UI with gradients</span>
 │   └── Rendering/           <span class="code-comment">// Renderer, Particles, Notifications, Settings</span>
 │
-└── <span class="code-keyword">Terrarium.Tests/</span>        <span class="code-comment">// 75+ Unit Tests</span>
+└── <span class="code-keyword">Terrarium.Tests/</span>        <span class="code-comment">// 119+ Unit Tests (81% coverage)</span>
     ├── Entities/
     └── Simulation/
 </pre>
@@ -190,11 +308,11 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <h3>75+</h3>
+                    <h3>119+</h3>
                     <p>Unit Tests</p>
                 </div>
                 <div class="stat-item">
-                    <h3>5.5K</h3>
+                    <h3>8K+</h3>
                     <p>Lines of Code</p>
                 </div>
                 <div class="stat-item">
@@ -215,28 +333,67 @@
 
     <section class="download" id="download">
         <div class="container">
-            <h2>Get Started</h2>
+            <h2>⬇️ Get Started</h2>
             <p>Download the latest release and bring your desktop to life</p>
-            <a href="https://github.com/Hostilian/The-Desktop-Terrarium/releases" class="btn btn-primary">
-                ⬇️ Download Latest Release
+            
+            <div class="download-buttons">
+                <a href="https://github.com/Hostilian/The-Desktop-Terrarium/releases/latest/download/Terrarium.Desktop-win-x64.zip" class="btn btn-primary btn-large">
+                    <span class="btn-icon">🖥️</span>
+                    <span class="btn-text">
+                        <strong>Windows x64</strong>
+                        <small>Most PCs (Intel/AMD)</small>
+                    </span>
+                </a>
+                <a href="https://github.com/Hostilian/The-Desktop-Terrarium/releases/latest/download/Terrarium.Desktop-win-arm64.zip" class="btn btn-secondary btn-large">
+                    <span class="btn-icon">💻</span>
+                    <span class="btn-text">
+                        <strong>Windows ARM64</strong>
+                        <small>Surface Pro X, etc.</small>
+                    </span>
+                </a>
+            </div>
+            
+            <a href="https://github.com/Hostilian/The-Desktop-Terrarium/releases" class="all-releases-link">
+                📦 View all releases on GitHub
             </a>
+            
             <div class="requirements">
                 <h4>System Requirements</h4>
                 <ul>
                     <li>Windows 10/11 (64-bit)</li>
-                    <li>.NET 8.0 Runtime</li>
+                    <li>.NET 8.0 Runtime (auto-downloads if needed)</li>
                     <li>4GB RAM recommended</li>
                     <li>Works best with multi-monitor setups</li>
+                    <li>No installation required — just extract and run!</li>
                 </ul>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>
-            Made with 💚 by <a href="https://github.com/Hostilian">Hostilian</a> |
-            <a href="https://github.com/Hostilian/The-Desktop-Terrarium">View on GitHub</a>
-        </p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <p>
+                        Made with 💚 by <a href="https://github.com/Hostilian">Hostilian</a> |
+                        <a href="https://github.com/Hostilian/The-Desktop-Terrarium">View on GitHub</a>
+                    </p>
+                </div>
+                <div class="footer-academic">
+                    <p class="academic-notice">
+                        🎓 <strong>Academic Project Notice:</strong> This application was developed as a university 
+                        examination project demonstrating object-oriented programming, layered architecture, 
+                        unit testing, and CI/CD practices. It is open-source and available for educational use.
+                    </p>
+                </div>
+                <div class="footer-stats">
+                    <span>📊 119+ Tests</span>
+                    <span>📈 81% Coverage</span>
+                    <span>⚡ 60 FPS</span>
+                    <span>🚫 0 Warnings</span>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script src="app.js"></script>

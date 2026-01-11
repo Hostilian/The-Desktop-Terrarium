@@ -124,5 +124,253 @@ namespace Terrarium.Tests.Persistence
                 }
             }
         }
+
+        [TestMethod]
+        public void SaveManager_FullEcosystemRoundTrip_AllEntityTypesPreserved()
+        {
+            // Integration test: comprehensive ecosystem save/load round-trip
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_integration_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                // Arrange - Create a diverse ecosystem
+                var world = new World(width: 1920, height: 300);
+
+                // Add multiple plants with various states
+                var plant1 = new Plant(100, 50, initialSize: 5);
+                plant1.Grow(10.0); // Grow for 10 seconds
+                world.AddPlant(plant1);
+
+                var plant2 = new Plant(200, 50, initialSize: 15);
+                plant2.TakeDamage(30); // Damaged plant
+                world.AddPlant(plant2);
+
+                var plant3 = new Plant(300, 50, initialSize: 25);
+                plant3.Water(50); // Well-watered plant
+                world.AddPlant(plant3);
+
+                // Add herbivores with different states
+                var herbivore1 = new Herbivore(150, 100, type: "Sheep");
+                herbivore1.SetDirection(1, 0);
+                herbivore1.Update(5.0); // Age it
+                herbivore1.Feed(20); // Feed it
+                world.AddHerbivore(herbivore1);
+
+                var herbivore2 = new Herbivore(250, 100, type: "Rabbit");
+                herbivore2.SetDirection(-1, 0.5);
+                herbivore2.Update(10.0); // Older, hungrier
+                world.AddHerbivore(herbivore2);
+
+                // Add carnivores with different states
+                var carnivore1 = new Carnivore(400, 100, type: "Wolf");
+                carnivore1.SetDirection(0.5, -0.5);
+                carnivore1.Update(3.0);
+                carnivore1.Feed(30);
+                world.AddCarnivore(carnivore1);
+
+                var carnivore2 = new Carnivore(500, 100, type: "Fox");
+                carnivore2.SetDirection(-0.5, 0);
+                carnivore2.Update(8.0);
+                world.AddCarnivore(carnivore2);
+
+                var saveManager = new SaveManager();
+
+                // Act - Save and reload
+                saveManager.SaveWorld(world, fileName: filePath);
+                var loaded = saveManager.LoadWorld(fileName: filePath);
+
+                // Assert - Verify counts
+                Assert.AreEqual(3, loaded.Plants.Count, "Should have 3 plants");
+                Assert.AreEqual(2, loaded.Herbivores.Count, "Should have 2 herbivores");
+                Assert.AreEqual(2, loaded.Carnivores.Count, "Should have 2 carnivores");
+
+                // Verify world dimensions
+                Assert.AreEqual(1920, loaded.Width, "World width should be preserved");
+                Assert.AreEqual(300, loaded.Height, "World height should be preserved");
+
+                // Verify plant states are restored
+                var loadedPlant1 = loaded.Plants.FirstOrDefault(p => Math.Abs(p.X - 100) < 1);
+                Assert.IsNotNull(loadedPlant1, "Plant 1 should be found at X=100");
+                Assert.IsTrue(loadedPlant1.Size > 5, "Plant 1 should have grown");
+
+                var loadedPlant2 = loaded.Plants.FirstOrDefault(p => Math.Abs(p.X - 200) < 1);
+                Assert.IsNotNull(loadedPlant2, "Plant 2 should be found at X=200");
+                Assert.IsTrue(loadedPlant2.Health < 100, "Plant 2 should be damaged");
+
+                // Verify herbivore states
+                var loadedHerb1 = loaded.Herbivores.FirstOrDefault(h => h.Type == "Sheep");
+                Assert.IsNotNull(loadedHerb1, "Sheep herbivore should exist");
+                Assert.IsTrue(loadedHerb1.Age >= 5.0, "Sheep age should be preserved");
+
+                var loadedHerb2 = loaded.Herbivores.FirstOrDefault(h => h.Type == "Rabbit");
+                Assert.IsNotNull(loadedHerb2, "Rabbit herbivore should exist");
+                Assert.IsTrue(loadedHerb2.Hunger > loadedHerb1.Hunger, "Older rabbit should be hungrier");
+
+                // Verify carnivore states
+                var loadedCarn1 = loaded.Carnivores.FirstOrDefault(c => c.Type == "Wolf");
+                Assert.IsNotNull(loadedCarn1, "Wolf carnivore should exist");
+
+                var loadedCarn2 = loaded.Carnivores.FirstOrDefault(c => c.Type == "Fox");
+                Assert.IsNotNull(loadedCarn2, "Fox carnivore should exist");
+                Assert.IsTrue(loadedCarn2.Age > loadedCarn1.Age, "Fox should be older than wolf");
+            }
+            finally
+            {
+                // Cleanup
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                string backupPath = filePath + ".bak";
+                if (File.Exists(backupPath))
+                {
+                    File.Delete(backupPath);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_TryLoadWorld_ReturnsErrorDetails_OnFailure()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_error_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                // Write invalid JSON
+                File.WriteAllText(filePath, "{ invalid json here }");
+                var saveManager = new SaveManager();
+
+                // Act
+                bool success = saveManager.TryLoadWorld(filePath, out var world, out var errorDetails);
+
+                // Assert
+                Assert.IsFalse(success, "TryLoadWorld should return false for invalid JSON");
+                Assert.IsNull(world, "World should be null on failure");
+                Assert.IsNotNull(errorDetails, "Error details should be provided");
+                Assert.IsTrue(errorDetails.Contains("Exception"), "Error should contain exception info");
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_TryLoadWorld_ReturnsTrue_OnSuccess()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_success_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                // Create and save a valid world
+                var world = new World(800, 200);
+                world.AddPlant(new Plant(100, 50));
+                var saveManager = new SaveManager();
+                saveManager.SaveWorld(world, fileName: filePath);
+
+                // Act
+                bool success = saveManager.TryLoadWorld(filePath, out var loaded, out var errorDetails);
+
+                // Assert
+                Assert.IsTrue(success, "TryLoadWorld should return true for valid save");
+                Assert.IsNotNull(loaded, "World should be loaded");
+                Assert.IsNull(errorDetails, "No error details on success");
+                Assert.AreEqual(1, loaded.Plants.Count, "Plant should be restored");
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_LoadWorld_FileNotFound_ThrowsFileNotFoundException()
+        {
+            var saveManager = new SaveManager();
+            string nonExistentFile = Path.Combine(Path.GetTempPath(), $"nonexistent_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                saveManager.LoadWorld(nonExistentFile);
+                Assert.Fail("Expected FileNotFoundException");
+            }
+            catch (FileNotFoundException)
+            {
+                // Expected
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_SaveWorld_CreatesBackupFile()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_backup_{Guid.NewGuid():N}.json");
+            string backupPath = filePath + ".bak";
+
+            try
+            {
+                var world = new World(800, 200);
+                world.AddPlant(new Plant(100, 50, initialSize: 10));
+                var saveManager = new SaveManager();
+
+                // First save
+                saveManager.SaveWorld(world, fileName: filePath);
+                Assert.IsTrue(File.Exists(filePath), "Save file should exist");
+                Assert.IsFalse(File.Exists(backupPath), "No backup on first save");
+
+                // Modify world and save again
+                world.AddPlant(new Plant(200, 50, initialSize: 20));
+                saveManager.SaveWorld(world, fileName: filePath);
+
+                // Verify backup was created
+                Assert.IsTrue(File.Exists(backupPath), "Backup should be created on subsequent saves");
+            }
+            finally
+            {
+                if (File.Exists(filePath)) File.Delete(filePath);
+                if (File.Exists(backupPath)) File.Delete(backupPath);
+            }
+        }
+
+        [TestMethod]
+        public void SaveManager_SaveWorld_InvalidWorldDimensions_LoadThrowsInvalidDataException()
+        {
+            string filePath = Path.Combine(Path.GetTempPath(), $"terrarium_invalid_dims_{Guid.NewGuid():N}.json");
+
+            try
+            {
+                // Manually write a save with invalid dimensions
+                string invalidJson = "{" +
+                    "\"SchemaVersion\":1," +
+                    "\"Width\":0," +  // Invalid: zero width
+                    "\"Height\":200," +
+                    "\"Plants\":[]," +
+                    "\"Herbivores\":[]," +
+                    "\"Carnivores\":[]," +
+                    "\"SaveDate\":\"2026-01-11T00:00:00Z\"}";
+
+                File.WriteAllText(filePath, invalidJson);
+                var saveManager = new SaveManager();
+
+                try
+                {
+                    saveManager.LoadWorld(filePath);
+                    Assert.Fail("Expected InvalidDataException for zero width");
+                }
+                catch (InvalidDataException ex)
+                {
+                    Assert.IsTrue(ex.Message.Contains("invalid"), "Should mention invalid dimensions");
+                }
+            }
+            finally
+            {
+                if (File.Exists(filePath)) File.Delete(filePath);
+            }
+        }
     }
 }

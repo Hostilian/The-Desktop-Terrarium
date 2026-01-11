@@ -237,4 +237,139 @@ Before submitting:
 
 ---
 
+## 🚀 CI/CD Pipeline
+
+Desktop Terrarium uses GitHub Actions for continuous integration and deployment. The pipeline is defined in `.github/workflows/ci-cd.yml`.
+
+### Pipeline Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           GITHUB ACTIONS CI/CD PIPELINE                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│   ┌──────────────────────┐     ┌──────────────────────┐                         │
+│   │   build-and-test     │     │   logic-tests-linux  │                         │
+│   │   (windows-latest)   │     │   (ubuntu-latest)    │                         │
+│   │                      │     │                      │                         │
+│   │ • Restore NuGet      │     │ • Cross-platform     │                         │
+│   │ • Build Release      │     │   logic verification │                         │
+│   │ • Run all tests      │     │ • Coverage report    │                         │
+│   │ • Coverage (81%+)    │     │                      │                         │
+│   │ • Coverage gate 70%  │     │                      │                         │
+│   │ • HTML report        │     │                      │                         │
+│   └──────────┬───────────┘     └──────────────────────┘                         │
+│              │                                                                   │
+│              ▼                                                                   │
+│   ┌──────────────────────┐     ┌──────────────────────┐                         │
+│   │    code-quality      │     │   docs-validation    │                         │
+│   │   (windows-latest)   │     │   (ubuntu-latest)    │                         │
+│   │                      │     │                      │                         │
+│   │ • Format check       │     │ • Validate links     │                         │
+│   │ • Vulnerability scan │     │ • Check assets       │                         │
+│   │ • Deprecated pkgs    │     │                      │                         │
+│   │ • Outdated packages  │     │                      │                         │
+│   └──────────┬───────────┘     └──────────┬───────────┘                         │
+│              │                            │                                      │
+│              ▼                            ▼                                      │
+│   ┌──────────────────────┐     ┌──────────────────────┐                         │
+│   │  publish-integrity   │     │    deploy-docs       │                         │
+│   │   (windows-latest)   │     │   (ubuntu-latest)    │                         │
+│   │                      │     │                      │                         │
+│   │ • Publish win-x64    │     │ • Upload docs/       │                         │
+│   │ • Publish win-arm64  │     │ • Deploy Pages       │                         │
+│   │ • Verify manifests   │     │                      │                         │
+│   │ • Upload artifacts   │     │ (main branch only)   │                         │
+│   └──────────┬───────────┘     └──────────────────────┘                         │
+│              │                                                                   │
+│              ▼ (only on version tags: v*)                                       │
+│   ┌──────────────────────┐                                                      │
+│   │      publish         │                                                      │
+│   │   (windows-latest)   │                                                      │
+│   │                      │                                                      │
+│   │ • Self-contained exe │                                                      │
+│   │ • Single file        │                                                      │
+│   │ • Create ZIP         │                                                      │
+│   │ • GitHub Release     │                                                      │
+│   └──────────────────────┘                                                      │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Pipeline Jobs
+
+| Job | Runs On | Trigger | Purpose |
+|-----|---------|---------|---------|
+| `build-and-test` | windows-latest | All pushes/PRs | Core build, tests, coverage |
+| `code-quality` | windows-latest | After build | Format, vulnerability, deprecation checks |
+| `logic-tests-linux` | ubuntu-latest | All pushes/PRs | Verify cross-platform logic layer |
+| `docs-validation` | ubuntu-latest | All pushes/PRs | Validate documentation links |
+| `publish-integrity` | windows-latest | All pushes/PRs | Verify publish manifests unchanged |
+| `publish` | windows-latest | Version tags (v*) | Create GitHub release |
+| `deploy-docs` | ubuntu-latest | Main branch | Deploy website to GitHub Pages |
+
+### Key Features
+
+#### Coverage Gate
+The pipeline enforces a **minimum 70% line coverage** threshold:
+```bash
+python scripts/summarize_coverage.py TestResults --min-line 70
+```
+
+#### Warnings as Errors
+All builds use `-p:TreatWarningsAsErrors=true` to ensure clean code.
+
+#### Format Check
+Code formatting is verified with:
+```bash
+dotnet format --verify-no-changes
+```
+
+#### Vulnerability Scanning
+NuGet packages are scanned for security issues:
+```bash
+dotnet list package --vulnerable --include-transitive
+```
+
+### Running Locally
+
+You can simulate the CI pipeline locally:
+
+```bash
+# Build and test
+dotnet build DesktopTerrarium.sln -c Release -p:TreatWarningsAsErrors=true
+dotnet test DesktopTerrarium.sln -c Release /p:CollectCoverage=true
+
+# Format check
+dotnet format DesktopTerrarium.sln --verify-no-changes
+
+# Vulnerability scan
+dotnet list DesktopTerrarium.sln package --vulnerable
+
+# Publish
+dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+```
+
+### Creating a Release
+
+1. Ensure all tests pass on `main` branch
+2. Create a version tag:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+3. The `publish` job automatically:
+   - Builds a self-contained single-file executable
+   - Creates a ZIP archive
+   - Creates a GitHub Release with the ZIP attached
+   - Generates release notes from commit history
+
+### Monitoring Pipeline
+
+- **Build status badge**: Shows in README.md
+- **Check GitHub Actions tab**: See all workflow runs
+- **Artifacts**: Download test results, coverage reports, and builds
+
+---
+
 Happy Coding! 🚀

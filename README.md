@@ -2,9 +2,12 @@
 
 A desktop ecosystem simulator that runs transparently at the bottom of your screen, featuring interactive plants and creatures that respond to your mouse and system activity.
 
+![Build Status](https://github.com/Hostilian/The-Desktop-Terrarium/actions/workflows/ci-cd.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
 ![WPF](https://img.shields.io/badge/WPF-Windows-blue.svg)
+![Tests](https://img.shields.io/badge/tests-119%2B%20passing-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-81%25-green.svg)
 
 ## 📋 Project Overview
 
@@ -329,12 +332,48 @@ Feel free to use this project as a reference or learning resource!
 Potential features for future development:
 - [ ] Multiple biome types (desert, forest, ocean)
 - [ ] Weather particle effects (rain, snow)
-- [ ] Creature reproduction system
-- [ ] Food chain statistics graph
 - [ ] Custom sprite editor
 - [ ] Network multiplayer ecosystems
-- [ ] Achievement system
-- [ ] Day/night cycle
+- [x] ~~Creature reproduction system~~ ✅ Implemented
+- [x] ~~Food chain statistics graph~~ ✅ Implemented (PopulationGraph)
+- [x] ~~Achievement system~~ ✅ Implemented
+- [x] ~~Day/night cycle~~ ✅ Implemented
+
+## 🌐 Cross-Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **Windows x64** | ✅ Full Support | Primary platform, all features available |
+| **Windows ARM64** | ✅ Full Support | Native ARM64 builds available |
+| **Linux** | ⚠️ Logic Only | `Terrarium.Logic` layer works via .NET; WPF UI requires Windows |
+| **macOS** | ⚠️ Logic Only | `Terrarium.Logic` layer works via .NET; WPF UI requires Windows |
+
+### Why Windows Only for UI?
+
+Desktop Terrarium uses **WPF (Windows Presentation Foundation)** for its presentation layer because:
+
+1. **Transparent Windows**: WPF provides native support for transparent, layered windows that can overlay the desktop
+2. **Hit-Test Passthrough**: Win32 interop allows mouse clicks on empty areas to pass through to the desktop
+3. **System Integration**: Direct access to Windows performance counters for CPU-based weather effects
+4. **Global Hotkeys**: Win32 RegisterHotKey API for system-wide keyboard shortcuts
+
+### Cross-Platform Alternative
+
+For cross-platform support, consider:
+- **Avalonia UI**: The `Terrarium.Logic` layer is fully portable and could be combined with Avalonia for cross-platform GUI
+- **MAUI**: Another option for cross-platform .NET applications
+- **Console/Terminal**: A text-based visualization could work on any platform
+
+### Running Logic Tests on Linux/macOS
+
+The business logic is fully cross-platform:
+
+```bash
+# Clone and test on any OS with .NET 8.0
+git clone https://github.com/Hostilian/The-Desktop-Terrarium.git
+cd The-Desktop-Terrarium
+dotnet test Terrarium.Tests/Terrarium.Tests.csproj
+```
 
 ## 📞 Contact
 

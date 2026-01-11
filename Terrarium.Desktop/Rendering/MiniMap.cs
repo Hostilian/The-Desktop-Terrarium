@@ -143,7 +143,6 @@ namespace Terrarium.Desktop.Rendering
             EnsureTerrainGrid(scaleX, scaleY);
             UpdateEntityDots(world, scaleX, scaleY);
 
-            // Draw viewport indicator
             UpdateViewportIndicator(viewportWidth, viewportHeight, scaleX, scaleY);
         }
 

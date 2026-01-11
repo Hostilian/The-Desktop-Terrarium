@@ -188,11 +188,17 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void UpdateLogic(double deltaTime)
         {
-            // Update day/night cycle
-            var oldPhase = _dayNightCycle.CurrentPhase;
+            UpdateCyclesAndEvents(deltaTime);
+            UpdateManagers(deltaTime);
+            UpdateStatistics(deltaTime);
+            UpdateAllEntities(deltaTime);
+            UpdateBehaviorsAndWorldEffects(deltaTime);
+        }
+
+        private void UpdateCyclesAndEvents(double deltaTime)
+        {
             _dayNightCycle.Update(deltaTime);
 
-            // Update season cycle
             var oldSeason = _seasonCycle.CurrentSeason;
             _seasonCycle.Update(deltaTime);
             if (oldSeason != _seasonCycle.CurrentSeason)
@@ -213,8 +219,10 @@ namespace Terrarium.Logic.Simulation
             {
                 _previousWeatherIntensity = WeatherIntensity;
             }
+        }
 
-            // Update managers
+        private void UpdateManagers(double deltaTime)
+        {
             _foodManager.PlantSpawnChanceMultiplier = _seasonCycle.PlantSpawnChanceMultiplier;
             _foodManager.Update(deltaTime);
 
@@ -233,31 +241,31 @@ namespace Terrarium.Logic.Simulation
 
             // Disease pressure (low-impact)
             _diseaseManager.Update(_world, deltaTime);
+        }
 
-            // Update statistics
+        private void UpdateStatistics(double deltaTime)
+        {
             _statisticsTracker.UpdateTime(deltaTime);
             _statisticsTracker.UpdateSnapshot(
                 _world.Plants.Count,
                 _world.Herbivores.Count,
                 _world.Carnivores.Count);
+        }
 
-            // Update all entities
+        private void UpdateAllEntities(double deltaTime)
+        {
             foreach (var entity in _world.GetAllEntities())
             {
                 entity.Update(deltaTime);
             }
+        }
 
-            // Update creature behaviors
+        private void UpdateBehaviorsAndWorldEffects(double deltaTime)
+        {
             UpdateHerbivores(deltaTime);
             UpdateCarnivores(deltaTime);
-
-            // Resolve creature collisions
             ResolveCreatureCollisions();
-
-            // Apply weather effects
             ApplyWeatherEffects(deltaTime);
-
-            // Clean up dead entities
             _world.RemoveDeadEntities();
         }
 

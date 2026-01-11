@@ -39,7 +39,7 @@ dotnet build -c Release
 dotnet test -c Release
 ```
 **Expected**: "Failed: 0" (test count may change as suite evolves)  
-**Status**: ✅ Verified (`dotnet test -c Release`: Passed 119, Failed 0)
+**Status**: ✅ Verified (`dotnet test -c Release`: Passed 120, Failed 0)
 
 ### 3. Application Runs
 ```powershell
@@ -396,7 +396,7 @@ grep -r "/// <summary>" Terrarium.Logic/**/*.cs | wc -l
 
 ### Pre-Submission Checklist ✅
 - [ ] All code compiles with zero warnings
-- [ ] All 111 tests pass
+- [ ] All 120 tests pass
 - [ ] Application runs and displays correctly
 - [ ] README.md is complete and accurate
 - [ ] Code is formatted (Ctrl+K, Ctrl+D in Visual Studio)
@@ -432,7 +432,7 @@ git push origin main
 | **Inheritance** | 6-level hierarchy | Check Entities folder ✅ |
 | **Interfaces** | IClickable, IMovable | Check Interfaces folder ✅ |
 | **Encapsulation** | Private fields, public properties | Review any entity class ✅ |
-| **Unit Testing** | 111 tests, 100% pass rate | Run `dotnet test` ✅ |
+| **Unit Testing** | 120 tests, 100% pass rate | Run `dotnet test` ✅ |
 | **No Magic Constants** | Mostly named; remaining rendering constants in progress | Track TODOs + spot-check rendering ✅ |
 | **Single Responsibility** | Specialized classes | Review class purposes ✅ |
 | **No God Objects** | Logic split across managers | Check Simulation folder ✅ |

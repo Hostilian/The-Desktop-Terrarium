@@ -36,6 +36,10 @@ namespace Terrarium.Logic.Simulation
 
         private readonly Dictionary<int, double> _reproductionCooldowns;
 
+        private readonly List<int> _expiredCooldownIdsBuffer = new();
+        private readonly List<Herbivore> _herbivoreIterationBuffer = new();
+        private readonly List<Carnivore> _carnivoreIterationBuffer = new();
+
         /// <summary>
         /// Multiplier applied to the base herbivore reproduction chance.
         /// Allows the simulation engine to apply gentle population pressure.
@@ -87,18 +91,18 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void UpdateCooldowns(double deltaTime)
         {
-            var expiredCooldowns = new List<int>();
+            _expiredCooldownIdsBuffer.Clear();
 
             foreach (var kvp in _reproductionCooldowns)
             {
                 _reproductionCooldowns[kvp.Key] = kvp.Value - deltaTime;
                 if (_reproductionCooldowns[kvp.Key] <= 0)
                 {
-                    expiredCooldowns.Add(kvp.Key);
+                    _expiredCooldownIdsBuffer.Add(kvp.Key);
                 }
             }
 
-            foreach (var id in expiredCooldowns)
+            foreach (var id in _expiredCooldownIdsBuffer)
             {
                 _reproductionCooldowns.Remove(id);
             }
@@ -114,7 +118,13 @@ namespace Terrarium.Logic.Simulation
 
             double chance = Math.Clamp(BaseReproductionChance * HerbivoreReproductionChanceMultiplier, 0.0, 1.0);
 
-            foreach (var herbivore in _world.Herbivores.ToList())
+            _herbivoreIterationBuffer.Clear();
+            foreach (var herbivore in _world.Herbivores)
+            {
+                _herbivoreIterationBuffer.Add(herbivore);
+            }
+
+            foreach (var herbivore in _herbivoreIterationBuffer)
             {
                 if (!CanReproduce(herbivore))
                     continue;
@@ -148,7 +158,13 @@ namespace Terrarium.Logic.Simulation
 
             double chance = Math.Clamp(BaseReproductionChance * CarnivoreReproductionChanceMultiplier, 0.0, 1.0);
 
-            foreach (var carnivore in _world.Carnivores.ToList())
+            _carnivoreIterationBuffer.Clear();
+            foreach (var carnivore in _world.Carnivores)
+            {
+                _carnivoreIterationBuffer.Add(carnivore);
+            }
+
+            foreach (var carnivore in _carnivoreIterationBuffer)
             {
                 if (!CanReproduce(carnivore))
                     continue;

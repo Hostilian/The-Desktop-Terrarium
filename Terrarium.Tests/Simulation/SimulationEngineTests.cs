@@ -42,6 +42,28 @@ namespace Terrarium.Tests.Simulation
         }
 
         [TestMethod]
+        public void SimulationEngine_Update_UsesFixedLogicTickAccumulator()
+        {
+            // Arrange
+            var engine = new SimulationEngine(800, 600);
+            engine.Initialize();
+            var firstPlant = engine.World.Plants.First();
+            double initialAge = firstPlant.Age;
+
+            // Act - below the 0.2s logic tick threshold
+            engine.Update(deltaTime: 0.19);
+
+            // Assert - no logic tick should have occurred yet
+            Assert.AreEqual(initialAge, firstPlant.Age, 1e-9, "Entities should not update until the logic tick threshold is reached");
+
+            // Act - cross the threshold (0.19 + 0.01 = 0.20)
+            engine.Update(deltaTime: 0.01);
+
+            // Assert - exactly one logic tick should have occurred
+            Assert.IsGreaterThan(initialAge, firstPlant.Age, "Entities should update once the logic tick threshold is reached");
+        }
+
+        [TestMethod]
         public void SimulationEngine_FindClickableAt_FindsEntity()
         {
             // Arrange

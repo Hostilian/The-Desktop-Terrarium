@@ -12,6 +12,11 @@ namespace Terrarium.Logic.Simulation
 
         private readonly Dictionary<int, InfectionState> _infections = new();
 
+        private readonly List<Creature> _creaturesBuffer = new();
+        private readonly HashSet<int> _aliveCreatureIdsBuffer = new();
+        private readonly List<int> _infectionIdsToRemoveBuffer = new();
+        private readonly List<int> _infectionIdsToRecoverBuffer = new();
+
         // Tuning (settable for balancing and tests)
         public double SeedInfectionChancePerSecond { get; set; } = 0.003; // ~0.3% per second when no infections
         public double SpreadChancePerSecond { get; set; } = 0.08;
@@ -42,33 +47,33 @@ namespace Terrarium.Logic.Simulation
                 return;
 
             // Gather alive creatures once.
-            var creatures = new List<Creature>(world.Herbivores.Count + world.Carnivores.Count);
+            _creaturesBuffer.Clear();
             foreach (var h in world.Herbivores)
             {
                 if (h.IsAlive)
-                    creatures.Add(h);
+                    _creaturesBuffer.Add(h);
             }
             foreach (var c in world.Carnivores)
             {
                 if (c.IsAlive)
-                    creatures.Add(c);
+                    _creaturesBuffer.Add(c);
             }
 
-            if (creatures.Count == 0)
+            if (_creaturesBuffer.Count == 0)
             {
                 _infections.Clear();
                 return;
             }
 
-            CleanupDeadOrMissing(creatures);
+            CleanupDeadOrMissing(_creaturesBuffer);
 
             if (_infections.Count == 0)
             {
-                TrySeedInfection(creatures, deltaTime);
+                TrySeedInfection(_creaturesBuffer, deltaTime);
             }
 
-            ApplyEffectsAndProgress(creatures, deltaTime);
-            TrySpread(creatures, deltaTime);
+            ApplyEffectsAndProgress(_creaturesBuffer, deltaTime);
+            TrySpread(_creaturesBuffer, deltaTime);
         }
 
         private void CleanupDeadOrMissing(List<Creature> aliveCreatures)
@@ -76,18 +81,18 @@ namespace Terrarium.Logic.Simulation
             if (_infections.Count == 0)
                 return;
 
-            var aliveIds = new HashSet<int>();
+            _aliveCreatureIdsBuffer.Clear();
             foreach (var c in aliveCreatures)
-                aliveIds.Add(c.Id);
+                _aliveCreatureIdsBuffer.Add(c.Id);
 
-            var toRemove = new List<int>();
+            _infectionIdsToRemoveBuffer.Clear();
             foreach (var id in _infections.Keys)
             {
-                if (!aliveIds.Contains(id))
-                    toRemove.Add(id);
+                if (!_aliveCreatureIdsBuffer.Contains(id))
+                    _infectionIdsToRemoveBuffer.Add(id);
             }
 
-            foreach (var id in toRemove)
+            foreach (var id in _infectionIdsToRemoveBuffer)
                 _infections.Remove(id);
         }
 
@@ -109,7 +114,7 @@ namespace Terrarium.Logic.Simulation
             if (_infections.Count == 0)
                 return;
 
-            var toRecover = new List<int>();
+            _infectionIdsToRecoverBuffer.Clear();
 
             foreach (var creature in creatures)
             {
@@ -124,7 +129,7 @@ namespace Terrarium.Logic.Simulation
 
                 if (state.ElapsedSeconds >= InfectionDurationSeconds)
                 {
-                    toRecover.Add(creature.Id);
+                    _infectionIdsToRecoverBuffer.Add(creature.Id);
                 }
                 else
                 {
@@ -132,7 +137,7 @@ namespace Terrarium.Logic.Simulation
                 }
             }
 
-            foreach (var id in toRecover)
+            foreach (var id in _infectionIdsToRecoverBuffer)
                 _infections.Remove(id);
         }
 

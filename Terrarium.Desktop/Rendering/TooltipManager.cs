@@ -213,13 +213,11 @@ namespace Terrarium.Desktop.Rendering
             double x = mouseX + TooltipOffset;
             double y = mouseY + TooltipOffset;
 
-            // Adjust if would go off right edge
             if (x + TooltipWidth > _canvas.ActualWidth)
             {
                 x = mouseX - TooltipWidth - TooltipOffset;
             }
 
-            // Adjust if would go off bottom
             double tooltipHeight = _tooltipBorder.ActualHeight > 0 ? _tooltipBorder.ActualHeight : 120;
             if (y + tooltipHeight > _canvas.ActualHeight)
             {

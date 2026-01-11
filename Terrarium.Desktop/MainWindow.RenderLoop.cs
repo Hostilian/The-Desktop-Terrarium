@@ -141,7 +141,6 @@ namespace Terrarium.Desktop
                 _lastCarnivoreCountDisplayed = carnivoreCount;
             }
 
-            // Health bar with visual
             double healthPercent = _simulationEngine.GetEcosystemHealth();
             int healthPercentDisplayed = (int)Math.Round(healthPercent * 100);
             if (healthPercentDisplayed != _lastHealthPercentDisplayed)
@@ -165,7 +164,6 @@ namespace Terrarium.Desktop
                 _lastHealthBandDisplayed = healthBand;
             }
 
-            // Weather display with icons
             bool isStormy = _simulationEngine.WeatherIntensity > StormyWeatherThreshold;
             if (_lastIsStormyDisplayed != isStormy)
             {
@@ -174,7 +172,6 @@ namespace Terrarium.Desktop
                 _lastIsStormyDisplayed = isStormy;
             }
 
-            // Time of day display
             DayPhase currentPhase = _simulationEngine.DayNightCycle.CurrentPhase;
             if (_lastDayPhaseDisplayed != currentPhase)
             {
@@ -184,7 +181,6 @@ namespace Terrarium.Desktop
                 _lastDayPhaseDisplayed = currentPhase;
             }
 
-            // Statistics panel
             var stats = _simulationEngine.Statistics;
             if (stats.TotalBirths != _lastBirthsDisplayed ||
                 stats.TotalDeaths != _lastDeathsDisplayed ||
@@ -196,7 +192,6 @@ namespace Terrarium.Desktop
                 _lastPeakPopulationDisplayed = stats.PeakPopulation;
             }
 
-            // Update speed display
             if (FindName("SpeedText") is System.Windows.Controls.TextBlock speedText)
             {
                 speedText.Text = $"{_simulationEngine.SimulationSpeed:0.0}x";

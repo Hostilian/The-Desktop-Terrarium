@@ -7,9 +7,12 @@ namespace Terrarium.Tests.Entities
     /// Unit tests for Creature movement and hunger mechanics.
     /// </summary>
     [TestClass]
+    [TestCategory("Entities")]
+    [TestCategory("Creature")]
     public class CreatureTests
     {
         [TestMethod]
+        [TestCategory("Hunger")]
         public void Creature_Hunger_IncreasesOverTime()
         {
             // Arrange
@@ -24,6 +27,8 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Hunger")]
+        [TestCategory("Feeding")]
         public void Creature_Feed_ReducesHunger()
         {
             // Arrange
@@ -39,6 +44,7 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Movement")]
         public void Creature_Movement_ChangesPosition()
         {
             // Arrange
@@ -55,6 +61,7 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Movement")]
         public void Creature_SetDirection_SetsVelocity()
         {
             // Arrange
@@ -70,6 +77,7 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Movement")]
         public void Creature_Stop_ZeroesVelocity()
         {
             // Arrange
@@ -85,6 +93,8 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Interaction")]
+        [TestCategory("Feeding")]
         public void Creature_OnClick_FeedsCreature()
         {
             // Arrange
@@ -100,6 +110,8 @@ namespace Terrarium.Tests.Entities
         }
 
         [TestMethod]
+        [TestCategory("Health")]
+        [TestCategory("Starvation")]
         public void Creature_Starvation_CausesHealthLoss()
         {
             // Arrange

@@ -309,9 +309,51 @@ Contributions are welcome! Please follow these guidelines:
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
 3. Follow existing code style and naming conventions
 4. Add unit tests for new features
-5. Commit changes (`git commit -m 'Add AmazingFeature'`)
+5. Commit changes using [Conventional Commits](#-commit-message-guidelines)
 6. Push to branch (`git push origin feature/AmazingFeature`)
 7. Open a Pull Request
+
+### 📝 Commit Message Guidelines
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for consistent commit messages:
+
+**Format**: `<type>(<scope>): <description>`
+
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks (dependencies, build, etc.)
+- `perf`: Performance improvements
+
+**Examples**:
+```
+feat(simulation): add day/night cycle system
+fix(plant): correct water level calculation
+docs(readme): update setup instructions
+refactor(entities): simplify creature movement logic
+test(herbivore): add tests for feeding behavior
+chore(deps): update .NET SDK to 8.0.1
+```
+
+**Scope** (optional but recommended):
+- `simulation`: Simulation engine changes
+- `entities`: Entity-related changes
+- `ui`: User interface changes
+- `persistence`: Save/load system
+- `rendering`: Rendering components
+- `tests`: Test-related changes
+
+### 🔍 Pull Request Guidelines
+
+1. **Reference Issues**: Link related issues in PR description
+2. **Describe Changes**: Clearly explain what changed and why
+3. **Update Documentation**: Update README/docs if needed
+4. **Ensure Tests Pass**: All CI/CD checks must pass
+5. **Request Reviews**: Tag relevant team members
 
 ## 📄 License
 

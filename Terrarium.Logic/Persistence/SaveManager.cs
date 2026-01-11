@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Terrarium.Logic.Entities;
 
 namespace Terrarium.Logic.Persistence
@@ -233,8 +235,29 @@ namespace Terrarium.Logic.Persistence
         }
 
         /// <summary>
+        /// Attempts to load world state from a JSON file asynchronously without throwing.
+        /// </summary>
+        /// <param name="fileName">The file path to load from. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+        /// <returns>A tuple containing success status, the loaded world (or null), and error details (or null).</returns>
+        public async Task<(bool Success, Simulation.World? World, string? ErrorDetails)> TryLoadWorldAsync(string fileName = DefaultSaveFileName, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var world = await LoadWorldAsync(fileName, cancellationToken).ConfigureAwait(false);
+                return (true, world, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.ToString());
+            }
+        }
+
+        /// <summary>
         /// Checks if a save file exists.
         /// </summary>
+        /// <param name="fileName">The file path to check. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <returns>True if the file exists, false otherwise.</returns>
         public bool SaveFileExists(string fileName = DefaultSaveFileName)
         {
             return File.Exists(fileName);

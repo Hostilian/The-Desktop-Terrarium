@@ -18,50 +18,31 @@ namespace Terrarium.Logic.Simulation
 
         private double _wanderTimer;
 
-        public MovementCalculator(World world)
-            : this(world, random: null)
-        {
-        }
+        public MovementCalculator(World world) : this(world, random: null) { }
 
         public MovementCalculator(World world, Random? random)
         {
             _world = world;
             _random = random ?? new Random();
-            _wanderTimer = 0;
         }
 
-        /// <summary>
-        /// Updates creature movement for wandering behavior.
-        /// </summary>
         public void UpdateWandering(Creature creature, double deltaTime)
         {
             _wanderTimer += deltaTime;
-
-            // Change direction periodically
             if (_wanderTimer >= WanderChangeInterval)
             {
                 _wanderTimer = 0;
                 RandomizeDirection(creature);
             }
-
-            // Keep creature within world bounds
             EnforceBoundaries(creature);
         }
 
-        /// <summary>
-        /// Sets a random movement direction for a creature.
-        /// </summary>
         public void RandomizeDirection(Creature creature)
         {
             double angle = _random.NextDouble() * Math.PI * 2;
-            double dirX = Math.Cos(angle);
-            double dirY = Math.Sin(angle);
-            creature.SetDirection(dirX, dirY);
+            creature.SetDirection(Math.Cos(angle), Math.Sin(angle));
         }
 
-        /// <summary>
-        /// Keeps entities within world boundaries.
-        /// </summary>
         public void EnforceBoundaries(WorldEntity entity)
         {
             bool bounced = false;
@@ -88,7 +69,6 @@ namespace Terrarium.Logic.Simulation
                 bounced = true;
             }
 
-            // Reverse direction if creature hit boundary
             if (bounced && entity is Creature creature)
             {
                 creature.VelocityX = -creature.VelocityX;
@@ -96,9 +76,6 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Calculates movement toward a target with arrival behavior.
-        /// </summary>
         public void MoveToward(Creature creature, double targetX, double targetY, double slowingRadius = DefaultSlowingRadius)
         {
             double dx = targetX - creature.X;
@@ -107,13 +84,7 @@ namespace Terrarium.Logic.Simulation
 
             if (distance > 0)
             {
-                // Slow down when approaching target
-                double speedMultiplier = 1.0;
-                if (distance < slowingRadius)
-                {
-                    speedMultiplier = distance / slowingRadius;
-                }
-
+                double speedMultiplier = distance < slowingRadius ? distance / slowingRadius : 1.0;
                 creature.SetDirection(dx, dy);
                 creature.VelocityX *= speedMultiplier;
                 creature.VelocityY *= speedMultiplier;

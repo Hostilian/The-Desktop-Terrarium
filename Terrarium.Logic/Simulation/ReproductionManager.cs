@@ -52,15 +52,9 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public double CarnivoreReproductionChanceMultiplier { get; set; } = 1.0;
 
-        public ReproductionManager(World world)
-            : this(world, EventSystem.Instance, random: null)
-        {
-        }
+        public ReproductionManager(World world) : this(world, EventSystem.Instance, random: null) { }
 
-        public ReproductionManager(World world, EventSystem eventSystem)
-            : this(world, eventSystem, random: null)
-        {
-        }
+        public ReproductionManager(World world, EventSystem eventSystem) : this(world, eventSystem, random: null) { }
 
         public ReproductionManager(World world, EventSystem eventSystem, Random? random)
         {
@@ -83,48 +77,30 @@ namespace Terrarium.Logic.Simulation
             TryReproduceCarnivores();
         }
 
-        /// <summary>
-        /// Updates reproduction cooldowns.
-        /// </summary>
         private void UpdateCooldowns(double deltaTime)
         {
             _expiredCooldownIdsBuffer.Clear();
-
             foreach (var kvp in _reproductionCooldowns)
             {
                 _reproductionCooldowns[kvp.Key] = kvp.Value - deltaTime;
                 if (_reproductionCooldowns[kvp.Key] <= 0)
-                {
                     _expiredCooldownIdsBuffer.Add(kvp.Key);
-                }
             }
-
             foreach (var id in _expiredCooldownIdsBuffer)
-            {
                 _reproductionCooldowns.Remove(id);
-            }
         }
 
-        /// <summary>
-        /// Attempts reproduction for all eligible herbivores.
-        /// </summary>
         private void TryReproduceHerbivores()
         {
-            if (_world.Herbivores.Count >= MaxHerbivores)
-                return;
+            if (_world.Herbivores.Count >= MaxHerbivores) return;
 
             double chance = Math.Clamp(BaseReproductionChance * HerbivoreReproductionChanceMultiplier, 0.0, 1.0);
-
             _herbivoreIterationBuffer.Clear();
-            foreach (var herbivore in _world.Herbivores)
-            {
-                _herbivoreIterationBuffer.Add(herbivore);
-            }
+            _herbivoreIterationBuffer.AddRange(_world.Herbivores);
 
             foreach (var herbivore in _herbivoreIterationBuffer)
             {
-                if (!CanReproduce(herbivore))
-                    continue;
+                if (!CanReproduce(herbivore)) continue;
 
                 var mate = FindMate(herbivore, _world.Herbivores);
                 if (mate != null && _random.NextDouble() < chance)
@@ -137,7 +113,6 @@ namespace Terrarium.Logic.Simulation
                         ApplyReproductionCost(mate);
                         SetCooldown(herbivore);
                         SetCooldown(mate);
-
                         _eventSystem.OnEntityBorn(offspring);
                         _eventSystem.OnEntityReproduced(herbivore, mate, offspring);
                     }
@@ -145,26 +120,17 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Attempts reproduction for all eligible carnivores.
-        /// </summary>
         private void TryReproduceCarnivores()
         {
-            if (_world.Carnivores.Count >= MaxCarnivores)
-                return;
+            if (_world.Carnivores.Count >= MaxCarnivores) return;
 
             double chance = Math.Clamp(BaseReproductionChance * CarnivoreReproductionChanceMultiplier, 0.0, 1.0);
-
             _carnivoreIterationBuffer.Clear();
-            foreach (var carnivore in _world.Carnivores)
-            {
-                _carnivoreIterationBuffer.Add(carnivore);
-            }
+            _carnivoreIterationBuffer.AddRange(_world.Carnivores);
 
             foreach (var carnivore in _carnivoreIterationBuffer)
             {
-                if (!CanReproduce(carnivore))
-                    continue;
+                if (!CanReproduce(carnivore)) continue;
 
                 var mate = FindMate(carnivore, _world.Carnivores);
                 if (mate != null && _random.NextDouble() < chance)
@@ -177,7 +143,6 @@ namespace Terrarium.Logic.Simulation
                         ApplyReproductionCost(mate);
                         SetCooldown(carnivore);
                         SetCooldown(mate);
-
                         _eventSystem.OnEntityBorn(offspring);
                         _eventSystem.OnEntityReproduced(carnivore, mate, offspring);
                     }

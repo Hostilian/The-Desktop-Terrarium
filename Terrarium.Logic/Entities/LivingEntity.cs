@@ -58,16 +58,11 @@ namespace Terrarium.Logic.Entities
 
         public override void Update(double deltaTime)
         {
-            if (!IsAlive)
-                return;
-
+            if (!IsAlive) return;
             Age += deltaTime;
             UpdateHealth(deltaTime);
         }
 
-        /// <summary>
-        /// Restores core life-state for persistence.
-        /// </summary>
         internal void RestoreVitalStats(double health, double age)
         {
             _isAlive = true;
@@ -75,29 +70,10 @@ namespace Terrarium.Logic.Entities
             Age = age;
         }
 
-        /// <summary>
-        /// Updates health-related logic for the entity.
-        /// </summary>
-        protected virtual void UpdateHealth(double deltaTime)
-        {
-            // Base implementation: health naturally decays over time
-            Health -= HealthDecayRate * deltaTime;
-        }
+        protected virtual void UpdateHealth(double deltaTime) => Health -= HealthDecayRate * deltaTime;
 
-        /// <summary>
-        /// Damages the entity by the specified amount.
-        /// </summary>
-        public void TakeDamage(double damage)
-        {
-            Health -= damage;
-        }
+        public void TakeDamage(double damage) => Health -= damage;
 
-        /// <summary>
-        /// Heals the entity by the specified amount.
-        /// </summary>
-        public void Heal(double amount)
-        {
-            Health += amount;
-        }
+        public void Heal(double amount) => Health += amount;
     }
 }

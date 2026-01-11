@@ -58,33 +58,12 @@ namespace Terrarium.Logic.Simulation
             _random = random ?? new Random();
         }
 
-        /// <summary>
-        /// Adds a plant to the world.
-        /// </summary>
-        public void AddPlant(Plant plant)
-        {
-            _plants.Add(plant);
-        }
+        public void AddPlant(Plant plant) => _plants.Add(plant);
 
-        /// <summary>
-        /// Adds a herbivore to the world.
-        /// </summary>
-        public void AddHerbivore(Herbivore herbivore)
-        {
-            _herbivores.Add(herbivore);
-        }
+        public void AddHerbivore(Herbivore herbivore) => _herbivores.Add(herbivore);
 
-        /// <summary>
-        /// Adds a carnivore to the world.
-        /// </summary>
-        public void AddCarnivore(Carnivore carnivore)
-        {
-            _carnivores.Add(carnivore);
-        }
+        public void AddCarnivore(Carnivore carnivore) => _carnivores.Add(carnivore);
 
-        /// <summary>
-        /// Removes all dead entities from the world.
-        /// </summary>
         public void RemoveDeadEntities()
         {
             _plants.RemoveAll(p => !p.IsAlive);
@@ -128,17 +107,11 @@ namespace Terrarium.Logic.Simulation
             return carnivore;
         }
 
-        /// <summary>
-        /// Gets all living entities in the world.
-        /// </summary>
         public IEnumerable<LivingEntity> GetAllEntities()
         {
-            foreach (var plant in _plants)
-                yield return plant;
-            foreach (var herbivore in _herbivores)
-                yield return herbivore;
-            foreach (var carnivore in _carnivores)
-                yield return carnivore;
+            foreach (var plant in _plants) yield return plant;
+            foreach (var herbivore in _herbivores) yield return herbivore;
+            foreach (var carnivore in _carnivores) yield return carnivore;
         }
     }
 }

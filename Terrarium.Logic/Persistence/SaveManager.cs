@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,32 @@ namespace Terrarium.Logic.Persistence
         /// <param name="fileName">The file path to save to. Defaults to <see cref="DefaultSaveFileName"/>.</param>
         public void SaveWorld(Simulation.World world, string fileName = DefaultSaveFileName)
         {
-            SaveWorldAsync(world, fileName).GetAwaiter().GetResult();
+            ArgumentNullException.ThrowIfNull(world);
+
+            var saveData = new WorldSaveData
+            {
+                SchemaVersion = WorldSaveData.CurrentSchemaVersion,
+                Width = world.Width,
+                Height = world.Height,
+                Plants = world.Plants.Select(EntityToData).ToList(),
+                Herbivores = world.Herbivores.Select(EntityToData).ToList(),
+                Carnivores = world.Carnivores.Select(EntityToData).ToList(),
+                SaveDate = DateTime.Now
+            };
+
+            string json = JsonSerializer.Serialize(saveData, new JsonSerializerOptions { WriteIndented = true });
+
+            string? directory = Path.GetDirectoryName(fileName);
+            if (!string.IsNullOrWhiteSpace(directory))
+                Directory.CreateDirectory(directory);
+
+            string tempFileName = fileName + ".tmp";
+            File.WriteAllText(tempFileName, json);
+
+            if (File.Exists(fileName))
+                File.Copy(fileName, fileName + ".bak", overwrite: true);
+
+            File.Move(tempFileName, fileName, overwrite: true);
         }
 
         /// <summary>
@@ -78,7 +104,50 @@ namespace Terrarium.Logic.Persistence
         /// <exception cref="InvalidOperationException">Thrown when deserialization fails.</exception>
         public Simulation.World LoadWorld(string fileName = DefaultSaveFileName)
         {
-            return LoadWorldAsync(fileName).GetAwaiter().GetResult();
+            if (!File.Exists(fileName))
+                throw new FileNotFoundException($"Save file not found: {fileName}");
+
+            string json = File.ReadAllText(fileName);
+            WorldSaveData? saveData;
+            try
+            {
+                saveData = JsonSerializer.Deserialize<WorldSaveData>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidDataException("Save file is corrupted or not valid JSON.", ex);
+            }
+
+            if (saveData == null)
+                throw new InvalidOperationException("Failed to deserialize save data");
+
+            if (saveData.Width <= 0 || saveData.Height <= 0)
+                throw new InvalidDataException("Save file contains invalid world dimensions.");
+
+            var world = new Simulation.World(saveData.Width, saveData.Height);
+
+            foreach (var plantData in saveData.Plants ?? Enumerable.Empty<EntitySaveData>())
+            {
+                var plant = new Plant(plantData.X, plantData.Y, plantData.Size ?? DefaultPlantSizeFallback);
+                RestoreEntityData(plant, plantData);
+                world.AddPlant(plant);
+            }
+
+            foreach (var herbData in saveData.Herbivores ?? Enumerable.Empty<EntitySaveData>())
+            {
+                var herbivore = new Herbivore(herbData.X, herbData.Y, herbData.Type ?? "Sheep");
+                RestoreEntityData(herbivore, herbData);
+                world.AddHerbivore(herbivore);
+            }
+
+            foreach (var carnData in saveData.Carnivores ?? Enumerable.Empty<EntitySaveData>())
+            {
+                var carnivore = new Carnivore(carnData.X, carnData.Y, carnData.Type ?? "Wolf");
+                RestoreEntityData(carnivore, carnData);
+                world.AddCarnivore(carnivore);
+            }
+
+            return world;
         }
 
         /// <summary>

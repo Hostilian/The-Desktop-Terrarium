@@ -83,20 +83,8 @@ namespace Terrarium.Logic.Simulation
         private const double MaxSimulationSpeed = 4.0;
 
         public SimulationEngine(double worldWidth, double worldHeight)
+            : this(new World(worldWidth, worldHeight))
         {
-            _world = new World(worldWidth, worldHeight);
-            _movementCalculator = new MovementCalculator(_world);
-            _collisionDetector = new CollisionDetector();
-            _foodManager = new FoodManager(_world);
-            _dayNightCycle = new DayNightCycle();
-            _seasonCycle = new SeasonCycle();
-            _diseaseManager = new DiseaseManager();
-            _statisticsTracker = new StatisticsTracker();
-            _eventSystem = new EventSystem();
-            _reproductionManager = new ReproductionManager(_world, _eventSystem);
-            _logicAccumulator = 0;
-            WeatherIntensity = 0.0;
-            _previousWeatherIntensity = 0.0;
         }
 
         public SimulationEngine(World world)
@@ -111,9 +99,6 @@ namespace Terrarium.Logic.Simulation
             _statisticsTracker = new StatisticsTracker();
             _eventSystem = new EventSystem();
             _reproductionManager = new ReproductionManager(_world, _eventSystem);
-            _logicAccumulator = 0;
-            WeatherIntensity = 0.0;
-            _previousWeatherIntensity = 0.0;
         }
 
         /// <summary>
@@ -151,37 +136,13 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Sets simulation speed with safety clamping.
-        /// </summary>
-        public void SetSimulationSpeed(double speed)
-        {
-            SimulationSpeed = Math.Clamp(speed, MinSimulationSpeed, MaxSimulationSpeed);
-        }
+        public void SetSimulationSpeed(double speed) => SimulationSpeed = Math.Clamp(speed, MinSimulationSpeed, MaxSimulationSpeed);
 
-        /// <summary>
-        /// Pauses the simulation.
-        /// </summary>
-        public void Pause()
-        {
-            IsPaused = true;
-        }
+        public void Pause() => IsPaused = true;
 
-        /// <summary>
-        /// Resumes the simulation.
-        /// </summary>
-        public void Resume()
-        {
-            IsPaused = false;
-        }
+        public void Resume() => IsPaused = false;
 
-        /// <summary>
-        /// Toggles pause state.
-        /// </summary>
-        public void TogglePause()
-        {
-            IsPaused = !IsPaused;
-        }
+        public void TogglePause() => IsPaused = !IsPaused;
 
         /// <summary>
         /// Updates simulation logic at fixed intervals.
@@ -198,15 +159,8 @@ namespace Terrarium.Logic.Simulation
         private void UpdateCyclesAndEvents(double deltaTime)
         {
             _dayNightCycle.Update(deltaTime);
-
-            var oldSeason = _seasonCycle.CurrentSeason;
             _seasonCycle.Update(deltaTime);
-            if (oldSeason != _seasonCycle.CurrentSeason)
-            {
-                // No UI dependency required; season is exposed via SeasonCycle.
-            }
 
-            // Check for day phase change
             string currentPhase = GetTimeOfDayString();
             if (currentPhase != _previousDayPhase)
             {
@@ -214,11 +168,8 @@ namespace Terrarium.Logic.Simulation
                 _previousDayPhase = currentPhase;
             }
 
-            // Check for weather changes
             if (Math.Abs(WeatherIntensity - _previousWeatherIntensity) > 0.1)
-            {
                 _previousWeatherIntensity = WeatherIntensity;
-            }
         }
 
         private void UpdateManagers(double deltaTime)
@@ -226,20 +177,13 @@ namespace Terrarium.Logic.Simulation
             _foodManager.PlantSpawnChanceMultiplier = _seasonCycle.PlantSpawnChanceMultiplier;
             _foodManager.Update(deltaTime);
 
-            // Gentle population pressure: encourage reproduction when resources/prey are abundant.
             int plantCount = _world.Plants.Count;
             int herbivoreCount = _world.Herbivores.Count;
             int carnivoreCount = _world.Carnivores.Count;
 
-            double plantsPerHerb = plantCount / Math.Max(1.0, herbivoreCount);
-            double herbPerCarn = herbivoreCount / Math.Max(1.0, carnivoreCount);
-
-            _reproductionManager.HerbivoreReproductionChanceMultiplier = Math.Clamp(plantsPerHerb, 0.2, 1.5);
-            _reproductionManager.CarnivoreReproductionChanceMultiplier = Math.Clamp(herbPerCarn, 0.2, 1.5);
-
+            _reproductionManager.HerbivoreReproductionChanceMultiplier = Math.Clamp(plantCount / Math.Max(1.0, herbivoreCount), 0.2, 1.5);
+            _reproductionManager.CarnivoreReproductionChanceMultiplier = Math.Clamp(herbivoreCount / Math.Max(1.0, carnivoreCount), 0.2, 1.5);
             _reproductionManager.Update(deltaTime);
-
-            // Disease pressure (low-impact)
             _diseaseManager.Update(_world, deltaTime);
         }
 
@@ -291,27 +235,20 @@ namespace Terrarium.Logic.Simulation
             _collisionDetector.ResolveCreatureCollisions(_creatureCollisionBuffer);
         }
 
-        /// <summary>
-        /// Updates herbivore AI behavior.
-        /// </summary>
         private void UpdateHerbivores(double deltaTime)
         {
             foreach (var herbivore in _world.Herbivores)
             {
-                if (!herbivore.IsAlive)
-                    continue;
+                if (!herbivore.IsAlive) continue;
 
-                // Check for nearby predators and flee if necessary
                 var nearestPredator = FindNearestPredator(herbivore);
                 if (nearestPredator != null)
                 {
-                    // Flee from predator!
                     FleeFrom(herbivore, nearestPredator);
                     _movementCalculator.EnforceBoundaries(herbivore);
                     continue;
                 }
 
-                // Look for nearby plants if hungry (only during daytime)
                 if (herbivore.Hunger > HerbivoreHungryThreshold && _dayNightCycle.IsDay)
                 {
                     var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
@@ -331,7 +268,6 @@ namespace Terrarium.Logic.Simulation
                 }
                 else if (_dayNightCycle.IsNight)
                 {
-                    // Rest at night (slower, random movement)
                     herbivore.Stop();
                 }
                 else
@@ -343,9 +279,6 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Finds the nearest predator to a herbivore within detection range.
-        /// </summary>
         private Carnivore? FindNearestPredator(Herbivore herbivore)
         {
             Carnivore? nearest = null;
@@ -353,8 +286,7 @@ namespace Terrarium.Logic.Simulation
 
             foreach (var carnivore in _world.Carnivores)
             {
-                if (!carnivore.IsAlive)
-                    continue;
+                if (!carnivore.IsAlive) continue;
 
                 double distance = herbivore.DistanceTo(carnivore);
                 if (distance < minDistance)
@@ -367,43 +299,24 @@ namespace Terrarium.Logic.Simulation
             return nearest;
         }
 
-        /// <summary>
-        /// Makes a herbivore flee from a predator.
-        /// </summary>
         private void FleeFrom(Herbivore herbivore, Carnivore predator)
         {
-            // Move in the opposite direction from the predator
             double dx = herbivore.X - predator.X;
             double dy = herbivore.Y - predator.Y;
-
-            // Normalize and apply flee speed boost
             double length = Math.Sqrt(dx * dx + dy * dy);
-            if (length > 0)
-            {
-                dx /= length;
-                dy /= length;
-            }
 
-            // Set direction with enhanced speed
-            herbivore.SetDirection(dx * FleeSpeedMultiplier, dy * FleeSpeedMultiplier);
+            if (length > 0)
+                herbivore.SetDirection(dx / length * FleeSpeedMultiplier, dy / length * FleeSpeedMultiplier);
         }
 
-        /// <summary>
-        /// Updates carnivore AI behavior.
-        /// </summary>
         private void UpdateCarnivores(double deltaTime)
         {
             foreach (var carnivore in _world.Carnivores)
             {
-                if (!carnivore.IsAlive)
-                    continue;
+                if (!carnivore.IsAlive) continue;
 
-                // Apply day/night behavior - carnivores are more active at dawn/dusk
-                bool isHuntingTime = _dayNightCycle.CurrentPhase == DayPhase.Dawn ||
-                                    _dayNightCycle.CurrentPhase == DayPhase.Dusk ||
-                                    _dayNightCycle.CurrentPhase == DayPhase.Day;
+                bool isHuntingTime = _dayNightCycle.CurrentPhase is DayPhase.Dawn or DayPhase.Dusk or DayPhase.Day;
 
-                // Hunt herbivores if hungry and it's hunting time
                 if (carnivore.Hunger > CarnivoreHungryThreshold && isHuntingTime)
                 {
                     var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
@@ -429,7 +342,6 @@ namespace Terrarium.Logic.Simulation
                 }
                 else if (_dayNightCycle.IsNight)
                 {
-                    // Rest at night
                     carnivore.Stop();
                 }
                 else
@@ -441,35 +353,25 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        /// <summary>
-        /// Applies weather effects to entities.
-        /// </summary>
         private void ApplyWeatherEffects(double deltaTime)
         {
-            if (WeatherIntensity > StormWeatherThreshold)
+            if (WeatherIntensity <= StormWeatherThreshold) return;
+
+            foreach (var plant in _world.Plants)
             {
-                foreach (var plant in _world.Plants)
-                {
-                    // Storm damages plants but also waters them (rain!)
-                    plant.TakeDamage(WeatherIntensity * StormPlantDamageRate * deltaTime);
-                    plant.Water(WeatherIntensity * StormPlantWaterBonus * deltaTime);
-                }
+                plant.TakeDamage(WeatherIntensity * StormPlantDamageRate * deltaTime);
+                plant.Water(WeatherIntensity * StormPlantWaterBonus * deltaTime);
             }
         }
 
-        /// <summary>
-        /// Finds a clickable entity at the specified position.
-        /// </summary>
         public Interfaces.IClickable? FindClickableAt(double x, double y)
         {
-            // Check creatures first (they're on top)
             foreach (var creature in _world.GetAllEntities().OfType<Creature>())
             {
                 if (creature.IsAlive && creature.ContainsPoint(x, y))
                     return creature;
             }
 
-            // Then check plants
             foreach (var plant in _world.Plants)
             {
                 if (plant.IsAlive && plant.ContainsPoint(x, y))
@@ -489,20 +391,8 @@ namespace Terrarium.Logic.Simulation
             return _foodManager.GetEcosystemHealth();
         }
 
-        /// <summary>
-        /// Gets the current time of day as a string.
-        /// </summary>
-        public string GetTimeOfDayString()
-        {
-            return _dayNightCycle.CurrentPhase.ToString();
-        }
+        public string GetTimeOfDayString() => _dayNightCycle.CurrentPhase.ToString();
 
-        /// <summary>
-        /// Gets the light level (0.0-1.0) for rendering purposes.
-        /// </summary>
-        public double GetLightLevel()
-        {
-            return _dayNightCycle.LightLevel;
-        }
+        public double GetLightLevel() => _dayNightCycle.LightLevel;
     }
 }

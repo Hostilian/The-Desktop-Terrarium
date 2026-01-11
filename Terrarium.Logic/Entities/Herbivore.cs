@@ -21,33 +21,17 @@ namespace Terrarium.Logic.Entities
             Type = type;
         }
 
-        /// <summary>
-        /// Attempts to eat a plant if within range.
-        /// </summary>
         public bool TryEat(Plant plant)
         {
-            if (plant == null || !plant.IsAlive)
+            if (plant == null || !plant.IsAlive || DistanceTo(plant) > EatingRange)
                 return false;
 
-            double distance = DistanceTo(plant);
-            if (distance <= EatingRange)
-            {
-                // Eat the plant
-                double nutritionGained = Math.Min(plant.Size, PlantNutritionValue);
-                Feed(nutritionGained);
-
-                // Damage the plant
-                plant.TakeDamage(nutritionGained);
-
-                return true;
-            }
-
-            return false;
+            double nutritionGained = Math.Min(plant.Size, PlantNutritionValue);
+            Feed(nutritionGained);
+            plant.TakeDamage(nutritionGained);
+            return true;
         }
 
-        /// <summary>
-        /// Finds the nearest plant within detection range.
-        /// </summary>
         public Plant? FindNearestPlant(IEnumerable<Plant> plants, double detectionRange = DefaultPlantDetectionRange)
         {
             Plant? nearest = null;
@@ -55,9 +39,7 @@ namespace Terrarium.Logic.Entities
 
             foreach (var plant in plants)
             {
-                if (!plant.IsAlive)
-                    continue;
-
+                if (!plant.IsAlive) continue;
                 double distance = DistanceTo(plant);
                 if (distance < minDistance)
                 {
@@ -69,14 +51,6 @@ namespace Terrarium.Logic.Entities
             return nearest;
         }
 
-        /// <summary>
-        /// Moves toward a target location.
-        /// </summary>
-        public void MoveToward(double targetX, double targetY)
-        {
-            double dx = targetX - X;
-            double dy = targetY - Y;
-            SetDirection(dx, dy);
-        }
+        public void MoveToward(double targetX, double targetY) => SetDirection(targetX - X, targetY - Y);
     }
 }

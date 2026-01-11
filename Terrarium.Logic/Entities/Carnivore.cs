@@ -22,34 +22,20 @@ namespace Terrarium.Logic.Entities
             Type = type;
         }
 
-        /// <summary>
-        /// Attempts to attack and eat a herbivore.
-        /// </summary>
         public bool TryEat(Herbivore prey)
         {
-            if (prey == null || !prey.IsAlive)
+            if (prey == null || !prey.IsAlive || DistanceTo(prey) > AttackRange)
                 return false;
 
-            double distance = DistanceTo(prey);
-            if (distance <= AttackRange)
+            prey.TakeDamage(AttackDamage);
+            if (!prey.IsAlive)
             {
-                // Attack the prey
-                prey.TakeDamage(AttackDamage);
-
-                // If prey is dead, consume it
-                if (!prey.IsAlive)
-                {
-                    Feed(PreyNutritionValue);
-                    return true;
-                }
+                Feed(PreyNutritionValue);
+                return true;
             }
-
             return false;
         }
 
-        /// <summary>
-        /// Finds the nearest herbivore within detection range.
-        /// </summary>
         public Herbivore? FindNearestPrey(IEnumerable<Herbivore> herbivores, double detectionRange = DefaultPreyDetectionRange)
         {
             Herbivore? nearest = null;
@@ -57,9 +43,7 @@ namespace Terrarium.Logic.Entities
 
             foreach (var herbivore in herbivores)
             {
-                if (!herbivore.IsAlive)
-                    continue;
-
+                if (!herbivore.IsAlive) continue;
                 double distance = DistanceTo(herbivore);
                 if (distance < minDistance)
                 {
@@ -71,17 +55,10 @@ namespace Terrarium.Logic.Entities
             return nearest;
         }
 
-        /// <summary>
-        /// Moves toward a target creature.
-        /// </summary>
         public void Hunt(Creature target)
         {
             if (target != null && target.IsAlive)
-            {
-                double dx = target.X - X;
-                double dy = target.Y - Y;
-                SetDirection(dx, dy);
-            }
+                SetDirection(target.X - X, target.Y - Y);
         }
     }
 }

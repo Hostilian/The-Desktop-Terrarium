@@ -41,18 +41,12 @@ namespace Terrarium.Desktop
             Top = screenHeight - Height;
         }
 
-        /// <summary>
-        /// Initializes the simulation engine.
-        /// </summary>
         private void InitializeSimulation()
         {
             _simulationEngine = new SimulationEngine(Width, Height);
             _simulationEngine.Initialize();
         }
 
-        /// <summary>
-        /// Initializes the rendering system.
-        /// </summary>
         private void InitializeRendering()
         {
             _renderer = new Renderer(RenderCanvas);
@@ -98,33 +92,13 @@ namespace Terrarium.Desktop
                     _particleSystem.IsEnabled = enabled;
             };
 
-            _settingsPanel.NotificationsToggled += enabled =>
-            {
-                if (_notificationManager != null)
-                    _notificationManager.IsEnabled = enabled;
-            };
+            _settingsPanel.NotificationsToggled += enabled => _notificationManager.IsEnabled = enabled;
+            _settingsPanel.WeatherEffectsToggled += enabled => _weatherEffects.IsEnabled = enabled;
+            _settingsPanel.SoundToggled += enabled => _soundManager.IsEnabled = enabled;
 
-            _settingsPanel.WeatherEffectsToggled += enabled =>
-            {
-                if (_weatherEffects != null)
-                    _weatherEffects.IsEnabled = enabled;
-            };
-
-            _settingsPanel.SoundToggled += enabled =>
-            {
-                if (_soundManager != null)
-                    _soundManager.IsEnabled = enabled;
-            };
-
-            // Subscribe to simulation events for particles and notifications.
-            // IMPORTANT: this must be re-wired if we ever replace _simulationEngine (e.g., after loading a save).
             WireSimulationEvents();
 
-            // Setup render timer (60 FPS)
-            _renderTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(RenderInterval)
-            };
+            _renderTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(RenderInterval) };
             _renderTimer.Tick += RenderTimer_Tick;
         }
 
@@ -140,16 +114,11 @@ namespace Terrarium.Desktop
 
             if (_wiredEventSystem != null)
             {
-                if (_onCreatureBornHandler != null)
-                    _wiredEventSystem.OnCreatureBorn -= _onCreatureBornHandler;
-                if (_onCreatureDiedHandler != null)
-                    _wiredEventSystem.OnCreatureDied -= _onCreatureDiedHandler;
-                if (_onPlantEatenHandler != null)
-                    _wiredEventSystem.OnPlantEaten -= _onPlantEatenHandler;
-                if (_onDayPhaseChangedHandler != null)
-                    _wiredEventSystem.OnDayPhaseChanged -= _onDayPhaseChangedHandler;
-                if (_onMilestoneReachedHandler != null)
-                    _wiredEventSystem.OnMilestoneReached -= _onMilestoneReachedHandler;
+                _wiredEventSystem.OnCreatureBorn -= _onCreatureBornHandler;
+                _wiredEventSystem.OnCreatureDied -= _onCreatureDiedHandler;
+                _wiredEventSystem.OnPlantEaten -= _onPlantEatenHandler;
+                _wiredEventSystem.OnDayPhaseChanged -= _onDayPhaseChangedHandler;
+                _wiredEventSystem.OnMilestoneReached -= _onMilestoneReachedHandler;
             }
 
             _onCreatureBornHandler ??= (creature, parent1, parent2) =>
@@ -192,51 +161,34 @@ namespace Terrarium.Desktop
             _wiredEventSystem = eventSystem;
         }
 
-        /// <summary>
-        /// Initializes system monitoring for weather effects.
-        /// </summary>
         private void InitializeSystemMonitoring()
         {
             _systemMonitor = new SystemMonitor();
-
-            _systemMonitorTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval)
-            };
+            _systemMonitorTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval) };
             _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
         }
 
-        /// <summary>
-        /// Initializes save/load system.
-        /// </summary>
         private void InitializeSaveSystem()
         {
             _saveManager = new SaveManager();
+            if (!_saveManager.SaveFileExists()) return;
 
-            // Try to load existing save file
-            if (_saveManager.SaveFileExists())
+            try
             {
-                try
+                var loadedWorld = _saveManager.LoadWorld();
+                if (_simulationEngine != null)
                 {
-                    var loadedWorld = _saveManager.LoadWorld();
-                    if (_simulationEngine != null)
-                    {
-                        _simulationEngine = new SimulationEngine(loadedWorld);
-                        WireSimulationEvents();
-                    }
+                    _simulationEngine = new SimulationEngine(loadedWorld);
+                    WireSimulationEvents();
                 }
-                catch (Exception ex)
-                {
-                    // Avoid error hiding: log and continue with a new world.
-                    Debug.WriteLine($"Save file exists but failed to load: {ex}");
-                    _notificationManager?.Notify("⚠️ Save file failed to load. Starting new world.", NotificationType.Warning);
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Save file exists but failed to load: {ex}");
+                _notificationManager?.Notify("⚠️ Save file failed to load. Starting new world.", NotificationType.Warning);
             }
         }
 
-        /// <summary>
-        /// Starts the simulation and rendering.
-        /// </summary>
         private void StartSimulation()
         {
             _frameStopwatch.Start();

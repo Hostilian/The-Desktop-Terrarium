@@ -71,20 +71,12 @@ namespace Terrarium.Logic.Entities
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);
+            if (!IsAlive) return;
 
-            if (!IsAlive)
-                return;
-
-            // Hunger increases over time
             Hunger += HungerIncreaseRate * deltaTime;
-
-            // Starving creatures lose health
             if (Hunger > MaxHunger - StarvationThreshold)
-            {
                 TakeDamage(StarvationDamageRate * deltaTime);
-            }
 
-            // Update position based on velocity
             X += VelocityX * deltaTime;
             Y += VelocityY * deltaTime;
         }
@@ -102,12 +94,8 @@ namespace Terrarium.Logic.Entities
             }
         }
 
-        /// <summary>
-        /// Sets the creature's movement direction.
-        /// </summary>
         public void SetDirection(double directionX, double directionY)
         {
-            // Normalize the direction vector
             double magnitude = Math.Sqrt(directionX * directionX + directionY * directionY);
             if (magnitude > 0)
             {
@@ -116,31 +104,19 @@ namespace Terrarium.Logic.Entities
             }
         }
 
-        /// <summary>
-        /// Stops the creature's movement.
-        /// </summary>
         public void Stop()
         {
             VelocityX = 0;
             VelocityY = 0;
         }
 
-        /// <summary>
-        /// Moves the creature based on its current velocity.
-        /// </summary>
         public void Move(double deltaTime)
         {
             X += VelocityX * deltaTime;
             Y += VelocityY * deltaTime;
         }
 
-        /// <summary>
-        /// Called when the creature is clicked (feeds it).
-        /// </summary>
-        public virtual void OnClick()
-        {
-            Feed(ClickFeedNutritionValue); // Clicking feeds the creature
-        }
+        public virtual void OnClick() => Feed(ClickFeedNutritionValue);
 
         /// <summary>
         /// Restores creature-specific state for persistence.

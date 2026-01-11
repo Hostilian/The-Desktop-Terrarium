@@ -62,70 +62,35 @@ namespace Terrarium.Logic.Entities
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);
+            if (!IsAlive) return;
 
-            if (!IsAlive)
-                return;
-
-            // Plants need water to survive
             WaterLevel -= WaterDecayRate * deltaTime;
-
             if (WaterLevel > WaterSufficientThreshold)
-            {
                 Grow(deltaTime);
-            }
             else
-            {
-                // Plant starts dying without water
                 TakeDamage(DehydrationDamage * deltaTime);
-            }
         }
 
-        /// <summary>
-        /// Makes the plant grow larger.
-        /// </summary>
         public void Grow(double deltaTime)
         {
             if (Size < MaxSize && IsAlive)
             {
                 Size += GrowthRate * deltaTime;
-                // Growing consumes health
                 Heal(GrowthHealRate * deltaTime);
             }
         }
 
-        /// <summary>
-        /// Waters the plant, restoring its water level.
-        /// </summary>
-        public void Water(double amount)
-        {
-            WaterLevel += amount;
-        }
+        public void Water(double amount) => WaterLevel += amount;
 
-        /// <summary>
-        /// Makes the plant shake (visual effect trigger).
-        /// </summary>
-        public void Shake()
-        {
-            // This method is called by UI when mouse hovers
-            // The visual effect is handled in the presentation layer
-        }
+        public void Shake() { }
 
-        /// <summary>
-        /// Called when the plant is clicked (waters it).
-        /// </summary>
-        public void OnClick()
-        {
-            Water(ClickWaterAmount); // Clicking waters the plant
-        }
+        public void OnClick() => Water(ClickWaterAmount);
 
-        /// <summary>
-        /// Checks if a point is within the plant's clickable area.
-        /// </summary>
         public bool ContainsPoint(double x, double y)
         {
             double clickRadius = Size + ClickRadiusPadding;
             double dx = x - X;
-            double dy = Y - y; // Plants grow upward
+            double dy = Y - y;
             return (dx * dx + dy * dy) <= (clickRadius * clickRadius);
         }
     }

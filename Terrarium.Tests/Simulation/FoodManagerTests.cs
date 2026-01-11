@@ -61,7 +61,7 @@ namespace Terrarium.Tests.Simulation
             bool isBalanced = foodManager.IsEcosystemBalanced();
 
             // Assert
-            Assert.IsTrue(isBalanced, "Ecosystem should be balanced when plants > herbivores > carnivores");
+            Assert.IsTrue(isBalanced);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace Terrarium.Tests.Simulation
             bool isBalanced = foodManager.IsEcosystemBalanced();
 
             // Assert
-            Assert.IsFalse(isBalanced, "Ecosystem should be unbalanced when carnivores outnumber herbivores");
+            Assert.IsFalse(isBalanced);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace Terrarium.Tests.Simulation
             double health = foodManager.GetEcosystemHealth();
 
             // Assert
-            Assert.IsTrue(health >= 0.0 && health <= 1.0, "Ecosystem health should be between 0 and 1");
+            Assert.IsTrue(health >= 0.0 && health <= 1.0);
         }
 
         [TestMethod]
@@ -128,7 +128,7 @@ namespace Terrarium.Tests.Simulation
             var foodManager = new FoodManager(world);
 
             // Assert
-            Assert.AreEqual(1.0, foodManager.PlantSpawnChanceMultiplier, 0.001, "Default multiplier should be 1.0");
+            Assert.AreEqual(1.0, foodManager.PlantSpawnChanceMultiplier, 0.001);
         }
 
         [TestMethod]

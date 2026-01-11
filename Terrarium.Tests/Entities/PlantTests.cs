@@ -21,7 +21,7 @@ namespace Terrarium.Tests.Entities
             plant.Grow(deltaTime: 1.0);
 
             // Assert
-            Assert.IsTrue(initialSize < plant.Size);
+            Assert.IsLessThan(initialSize, plant.Size);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Terrarium.Tests.Entities
             plant.Update(deltaTime: 5.0);
 
             // Assert
-            Assert.IsTrue(initialWaterLevel > plant.WaterLevel);
+            Assert.IsGreaterThan(initialWaterLevel, plant.WaterLevel);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Terrarium.Tests.Entities
             plant.Water(30);
 
             // Assert
-            Assert.IsTrue(waterBefore < plant.WaterLevel);
+            Assert.IsLessThan(waterBefore, plant.WaterLevel);
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace Terrarium.Tests.Entities
             plant.OnClick();
 
             // Assert
-            Assert.IsTrue(waterBefore < plant.WaterLevel);
+            Assert.IsLessThan(waterBefore, plant.WaterLevel);
         }
 
         [TestMethod]

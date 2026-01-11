@@ -13,28 +13,28 @@ namespace Terrarium.Tests.Rendering
         public void CanBreed_HealthyMatureCreature_ReturnsTrue()
         {
             bool canBreed = CanBreed(health: 80, hunger: 20, age: 10);
-            Assert.IsTrue(canBreed, "Healthy mature creature should be able to breed");
+            Assert.IsTrue(canBreed);
         }
 
         [TestMethod]
         public void CanBreed_LowHealth_ReturnsFalse()
         {
             bool canBreed = CanBreed(health: 50, hunger: 20, age: 10);
-            Assert.IsFalse(canBreed, "Low health creature should not breed");
+            Assert.IsFalse(canBreed);
         }
 
         [TestMethod]
         public void CanBreed_TooHungry_ReturnsFalse()
         {
             bool canBreed = CanBreed(health: 80, hunger: 60, age: 10);
-            Assert.IsFalse(canBreed, "Hungry creature should not breed");
+            Assert.IsFalse(canBreed);
         }
 
         [TestMethod]
         public void CanBreed_TooYoung_ReturnsFalse()
         {
             bool canBreed = CanBreed(health: 80, hunger: 20, age: 2);
-            Assert.IsFalse(canBreed, "Young creature should not breed");
+            Assert.IsFalse(canBreed);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Terrarium.Tests.Rendering
                 health: MinHealthForBreeding,
                 hunger: MaxHungerForBreeding,
                 age: MinAgeForBreeding);
-            Assert.IsTrue(canBreed, "Creature at exact thresholds should breed");
+            Assert.IsTrue(canBreed);
         }
 
         /// <summary>

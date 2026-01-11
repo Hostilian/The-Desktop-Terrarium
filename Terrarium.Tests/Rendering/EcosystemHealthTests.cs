@@ -10,7 +10,7 @@ namespace Terrarium.Tests.Rendering
         public void HealthScore_TotalExtinction_ReturnsZero()
         {
             double score = EcosystemHealthScorer.CalculateHealthPercent(0, 0, 0);
-            Assert.AreEqual(0, score, "Total extinction should return 0 health");
+            Assert.AreEqual(0, score);
         }
 
         [TestMethod]

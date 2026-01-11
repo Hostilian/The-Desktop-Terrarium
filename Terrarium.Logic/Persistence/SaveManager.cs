@@ -14,7 +14,21 @@ namespace Terrarium.Logic.Persistence
         /// <summary>
         /// Saves the current world state to a JSON file.
         /// </summary>
+        /// <param name="world">The world to save.</param>
+        /// <param name="fileName">The file path to save to. Defaults to <see cref="DefaultSaveFileName"/>.</param>
         public void SaveWorld(Simulation.World world, string fileName = DefaultSaveFileName)
+        {
+            SaveWorldAsync(world, fileName).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Saves the current world state to a JSON file asynchronously.
+        /// </summary>
+        /// <param name="world">The world to save.</param>
+        /// <param name="fileName">The file path to save to. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+        /// <returns>A task representing the asynchronous save operation.</returns>
+        public async Task SaveWorldAsync(Simulation.World world, string fileName = DefaultSaveFileName, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(world);
 
@@ -41,7 +55,7 @@ namespace Terrarium.Logic.Persistence
             }
 
             string tempFileName = fileName + ".tmp";
-            File.WriteAllText(tempFileName, json);
+            await File.WriteAllTextAsync(tempFileName, json, cancellationToken).ConfigureAwait(false);
 
             if (File.Exists(fileName))
             {
@@ -55,14 +69,33 @@ namespace Terrarium.Logic.Persistence
         /// <summary>
         /// Loads world state from a JSON file.
         /// </summary>
+        /// <param name="fileName">The file path to load from. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <returns>The loaded world.</returns>
+        /// <exception cref="FileNotFoundException">Thrown when the save file does not exist.</exception>
+        /// <exception cref="InvalidDataException">Thrown when the save file is corrupted or invalid.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when deserialization fails.</exception>
         public Simulation.World LoadWorld(string fileName = DefaultSaveFileName)
+        {
+            return LoadWorldAsync(fileName).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Loads world state from a JSON file asynchronously.
+        /// </summary>
+        /// <param name="fileName">The file path to load from. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+        /// <returns>A task representing the asynchronous load operation, containing the loaded world.</returns>
+        /// <exception cref="FileNotFoundException">Thrown when the save file does not exist.</exception>
+        /// <exception cref="InvalidDataException">Thrown when the save file is corrupted or invalid.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when deserialization fails.</exception>
+        public async Task<Simulation.World> LoadWorldAsync(string fileName = DefaultSaveFileName, CancellationToken cancellationToken = default)
         {
             if (!File.Exists(fileName))
             {
                 throw new FileNotFoundException($"Save file not found: {fileName}");
             }
 
-            string json = File.ReadAllText(fileName);
+            string json = await File.ReadAllTextAsync(fileName, cancellationToken).ConfigureAwait(false);
             WorldSaveData? saveData;
             try
             {
@@ -119,6 +152,10 @@ namespace Terrarium.Logic.Persistence
         /// Attempts to load world state from a JSON file without throwing.
         /// The thrown exception details (including stack trace) are returned in <paramref name="errorDetails"/>.
         /// </summary>
+        /// <param name="fileName">The file path to load from. Defaults to <see cref="DefaultSaveFileName"/>.</param>
+        /// <param name="world">The loaded world, or null if loading failed.</param>
+        /// <param name="errorDetails">Error details if loading failed, or null if successful.</param>
+        /// <returns>True if loading succeeded, false otherwise.</returns>
         public bool TryLoadWorld(string fileName, out Simulation.World? world, out string? errorDetails)
         {
             try

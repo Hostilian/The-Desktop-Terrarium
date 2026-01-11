@@ -158,10 +158,11 @@ namespace Terrarium.Desktop
             int healthPercentDisplayed = (int)Math.Round(healthPercent * 100);
             if (healthPercentDisplayed != _lastHealthPercentDisplayed)
             {
-                EcosystemHealthText.Text = $"{healthPercent:P0}";
+                EcosystemHealthText.Text = $"{healthPercentDisplayed}%";
                 _lastHealthPercentDisplayed = healthPercentDisplayed;
             }
-            HealthBar.Width = Math.Max(0, Math.Min(100, healthPercent * 100));
+            // New compact health bar is 60px wide
+            HealthBar.Width = Math.Max(0, Math.Min(60, healthPercent * 60));
 
             // Color health bar based on value
             int healthBand = healthPercent >= 0.7 ? 2 : (healthPercent >= 0.4 ? 1 : 0);
@@ -202,10 +203,16 @@ namespace Terrarium.Desktop
                 stats.TotalDeaths != _lastDeathsDisplayed ||
                 stats.PeakPopulation != _lastPeakPopulationDisplayed)
             {
-                StatsText.Text = $"Births: {stats.TotalBirths} | Deaths: {stats.TotalDeaths} | Peak Pop: {stats.PeakPopulation}";
+                StatsText.Text = $"Births: {stats.TotalBirths} | Deaths: {stats.TotalDeaths} | Peak: {stats.PeakPopulation}";
                 _lastBirthsDisplayed = stats.TotalBirths;
                 _lastDeathsDisplayed = stats.TotalDeaths;
                 _lastPeakPopulationDisplayed = stats.PeakPopulation;
+            }
+
+            // Update speed display
+            if (FindName("SpeedText") is System.Windows.Controls.TextBlock speedText)
+            {
+                speedText.Text = $"{_simulationEngine.SimulationSpeed:0.0}x";
             }
 
             // Background opacity based on time and weather
@@ -235,7 +242,7 @@ namespace Terrarium.Desktop
         }
 
         /// <summary>
-        /// Updates the day/night indicator orb.
+        /// Updates the day/night indicator orb (simplified version).
         /// </summary>
         private void UpdateDayNightOrb(DayPhase phase)
         {
@@ -244,25 +251,21 @@ namespace Terrarium.Desktop
                 case DayPhase.Dawn:
                     OrbCenterColor.Color = _orbDawnCenter;
                     OrbEdgeColor.Color = _orbDawnEdge;
-                    OrbGlow.Color = _orbDawnEdge;
                     DayNightIcon.Text = "🌅";
                     break;
                 case DayPhase.Day:
                     OrbCenterColor.Color = _orbDayCenter;
                     OrbEdgeColor.Color = _orbDayEdge;
-                    OrbGlow.Color = _orbDayCenter;
                     DayNightIcon.Text = "☀️";
                     break;
                 case DayPhase.Dusk:
                     OrbCenterColor.Color = _orbDuskCenter;
                     OrbEdgeColor.Color = _orbDuskEdge;
-                    OrbGlow.Color = _orbDuskCenter;
                     DayNightIcon.Text = "🌇";
                     break;
                 case DayPhase.Night:
                     OrbCenterColor.Color = _orbNightCenter;
                     OrbEdgeColor.Color = _orbNightEdge;
-                    OrbGlow.Color = _orbNightGlow;
                     DayNightIcon.Text = "🌙";
                     break;
             }

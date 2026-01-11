@@ -17,7 +17,8 @@ namespace Terrarium.Desktop.Rendering
         Death,
         Warning,
         Milestone,
-        Achievement
+        Achievement,
+        Success
     }
 
     /// <summary>

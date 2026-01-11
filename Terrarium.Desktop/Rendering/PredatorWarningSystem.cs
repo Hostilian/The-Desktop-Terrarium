@@ -116,7 +116,6 @@ namespace Terrarium.Desktop.Rendering
                 }
                 else
                 {
-                    // Update position
                     Canvas.SetLeft(kvp.Value.Visual, kvp.Key.X - 10);
                     Canvas.SetTop(kvp.Value.Visual, kvp.Key.Y - 30);
                 }

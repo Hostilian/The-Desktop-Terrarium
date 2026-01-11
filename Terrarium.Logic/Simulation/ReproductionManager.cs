@@ -76,13 +76,10 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void Update(double deltaTime)
         {
-            // Update cooldowns
             UpdateCooldowns(deltaTime);
 
-            // Try reproduction for herbivores
             TryReproduceHerbivores();
 
-            // Try reproduction for carnivores
             TryReproduceCarnivores();
         }
 

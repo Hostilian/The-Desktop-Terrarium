@@ -155,7 +155,6 @@ namespace Terrarium.Desktop.Rendering
             _container.Visibility = Visibility.Visible;
             _sessionTime += deltaTime;
 
-            // Calculate days
             int newDayCount = (int)(_sessionTime / DayDuration) + 1;
             if (newDayCount != _dayCount)
             {

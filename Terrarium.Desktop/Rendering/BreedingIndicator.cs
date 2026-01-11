@@ -115,7 +115,6 @@ namespace Terrarium.Desktop.Rendering
                 }
                 else
                 {
-                    // Update position
                     Canvas.SetLeft(heart.Visual, creature.X - 6);
                     heart.BaseY = creature.Y - 28;
                 }

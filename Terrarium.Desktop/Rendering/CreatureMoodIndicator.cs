@@ -94,7 +94,6 @@ namespace Terrarium.Desktop.Rendering
                 }
                 else
                 {
-                    // Update position
                     Canvas.SetLeft(kvp.Value.Visual, kvp.Key.X + IndicatorOffsetX);
                     Canvas.SetTop(kvp.Value.Visual, kvp.Key.Y + IndicatorOffsetY);
                 }
@@ -139,7 +138,6 @@ namespace Terrarium.Desktop.Rendering
         {
             if (_moodVisuals.TryGetValue(creature, out var existing))
             {
-                // Update existing
                 if (existing.CurrentMood != mood)
                 {
                     existing.Visual.Text = mood;

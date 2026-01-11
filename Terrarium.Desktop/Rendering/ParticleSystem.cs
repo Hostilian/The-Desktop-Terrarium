@@ -317,15 +317,12 @@ namespace Terrarium.Desktop.Rendering
 
         public void Update(double deltaTime)
         {
-            // Update physics
             VelocityY += Gravity * deltaTime;
             X += VelocityX * deltaTime;
             Y += VelocityY * deltaTime;
 
-            // Update lifetime
             Lifetime -= deltaTime;
 
-            // Update visual position
             Canvas.SetLeft(Visual, X);
             Canvas.SetTop(Visual, Y);
 

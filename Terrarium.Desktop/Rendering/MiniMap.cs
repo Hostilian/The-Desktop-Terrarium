@@ -138,7 +138,6 @@ namespace Terrarium.Desktop.Rendering
             _worldWidth = world.Width;
             _worldHeight = world.Height;
 
-            // Calculate scale
             double scaleX = MapWidth / _worldWidth;
             double scaleY = MapHeight / _worldHeight;
 

@@ -15,32 +15,23 @@ namespace Terrarium.Desktop
             if (_simulationEngine == null || _renderer == null)
                 return;
 
-            // Calculate delta time
             double deltaTime = _frameStopwatch.Elapsed.TotalSeconds;
             _frameStopwatch.Restart();
 
-            // Update simulation
             _simulationEngine.Update(deltaTime);
 
-            // Update weather effects
             _weatherEffects?.Update(deltaTime, _simulationEngine.WeatherIntensity);
 
-            // Update particle system
             _particleSystem?.Update(deltaTime);
 
-            // Update notifications
             _notificationManager?.Update(deltaTime);
 
-            // Update tooltips (live data refresh)
             _tooltipManager?.Update();
 
-            // Update sound manager
             _soundManager?.Update(deltaTime, _simulationEngine.DayNightCycle.IsDay, _simulationEngine.WeatherIntensity);
 
-            // Update mini-map
             _miniMap?.Update(_simulationEngine.World, RenderCanvas.ActualWidth, RenderCanvas.ActualHeight);
 
-            // Update new visual systems
             var herbivores = _simulationEngine.World.Herbivores;
             var carnivores = _simulationEngine.World.Carnivores;
             var plants = _simulationEngine.World.Plants;
@@ -55,7 +46,6 @@ namespace Terrarium.Desktop
             _ecosystemHealthBar?.Update(deltaTime, plants.Count, herbivores.Count, carnivores.Count);
             _sessionTimer?.Update(deltaTime);
 
-            // Check achievements
             var stats = _simulationEngine.Statistics;
             _achievementSystem?.CheckAchievements(
                 stats.TotalBirths,
@@ -66,11 +56,9 @@ namespace Terrarium.Desktop
                 stats.CurrentCarnivores,
                 stats.SessionTime);
 
-            // Render
             _renderer.Clear();
             _renderer.RenderWorld(_simulationEngine.World, _simulationEngine.WeatherIntensity);
 
-            // Update FPS counter
             UpdateFpsCounter(deltaTime);
             UpdateStatusDisplay();
         }

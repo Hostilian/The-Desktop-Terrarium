@@ -163,7 +163,6 @@ namespace Terrarium.Desktop.Rendering
             _displaySpeed += (_currentSpeed - _displaySpeed) * AnimationSpeed * deltaTime;
             _displaySpeed = Math.Clamp(_displaySpeed, 0.1, 5.0);
 
-            // Update text
             if (_speedText != null)
             {
                 int speedTenths = (int)Math.Round(_displaySpeed * 10.0);
@@ -188,7 +187,6 @@ namespace Terrarium.Desktop.Rendering
                 }
             }
 
-            // Update speed bars
             int activeBars = _displaySpeed switch
             {
                 < 0.5 => 1,

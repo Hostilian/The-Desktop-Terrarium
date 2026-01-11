@@ -350,7 +350,6 @@ namespace Terrarium.Desktop.Rendering
             _panelBorder.Visibility = Visibility.Visible;
             _isVisible = true;
 
-            // Animate in
             var transform = _panelBorder.RenderTransform as TranslateTransform;
             if (transform != null)
             {

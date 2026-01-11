@@ -146,7 +146,6 @@ namespace Terrarium.Desktop.Rendering
             }
             else
             {
-                // Create new
                 var textBlock = new TextBlock
                 {
                     Text = mood,

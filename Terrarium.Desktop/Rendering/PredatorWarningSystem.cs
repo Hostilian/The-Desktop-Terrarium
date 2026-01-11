@@ -141,7 +141,6 @@ namespace Terrarium.Desktop.Rendering
                 return;
             }
 
-            // Create new warning
             var brush = new SolidColorBrush(Color.FromRgb(255, 100, 0));
             var scaleTransform = new ScaleTransform(1.0, 1.0, 10, 10);
             var textBlock = new TextBlock

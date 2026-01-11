@@ -202,7 +202,6 @@ namespace Terrarium.Desktop.Rendering
 
         private void ShowNotification(NotificationItem notification)
         {
-            // Create visual
             var border = new Border
             {
                 Width = NotificationWidth,

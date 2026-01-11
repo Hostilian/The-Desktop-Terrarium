@@ -6,8 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering
-{
+namespace Terrarium.Desktop.Rendering;
     /// <summary>
     /// Shows visual indicators when a predator is near prey.
     /// </summary>
@@ -21,10 +20,10 @@ namespace Terrarium.Desktop.Rendering
         private readonly HashSet<Herbivore> _existingHerbivoresBuffer = new();
         private readonly List<Herbivore> _toRemoveBuffer = new();
 
-        private const double UpdateInterval = 0.2;
-        private const double WarningRadius = 100.0;
-        private const double WarningRadiusSquared = WarningRadius * WarningRadius;
-        private const double PulseSpeed = 3.0;
+        private const double _updateInterval = 0.2;
+        private const double _warningRadius = 100.0;
+        private const double _warningRadiusSquared = _warningRadius * _warningRadius;
+        private const double _pulseSpeed = 3.0;
 
         public bool IsEnabled { get; set; } = true;
 
@@ -58,8 +57,10 @@ namespace Terrarium.Desktop.Rendering
                 warning.Visual.Opacity = 0.5 + 0.3 * Math.Sin(warning.PulsePhase);
             }
 
-            if (_updateTimer < UpdateInterval)
+            if (_updateTimer < _updateInterval)
+            {
                 return;
+            }
             _updateTimer = 0;
 
             _carnivoreBuffer.Clear();
@@ -73,7 +74,9 @@ namespace Terrarium.Desktop.Rendering
             foreach (var herbivore in herbivores)
             {
                 if (!herbivore.IsAlive)
+                {
                     continue;
+                }
 
                 _existingHerbivoresBuffer.Add(herbivore);
 
@@ -82,7 +85,9 @@ namespace Terrarium.Desktop.Rendering
                 foreach (var carnivore in _carnivoreBuffer)
                 {
                     if (!carnivore.IsAlive)
+                    {
                         continue;
+                    }
 
                     var dx = carnivore.X - herbivore.X;
                     var dy = carnivore.Y - herbivore.Y;
@@ -195,4 +200,3 @@ namespace Terrarium.Desktop.Rendering
         public SolidColorBrush ForegroundBrush { get; set; } = null!;
         public ScaleTransform ScaleTransform { get; set; } = null!;
     }
-}

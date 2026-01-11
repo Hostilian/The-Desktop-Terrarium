@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-
 namespace Terrarium.Desktop.Rendering
 {
     /// <summary>
@@ -17,9 +14,10 @@ namespace Terrarium.Desktop.Rendering
         Death,
         Warning,
         Milestone,
-        Achievement,
-        Success
+        Achievement
     }
+
+    // ...existing code...
 
     /// <summary>
     /// Manages toast-style notifications for ecosystem events.
@@ -32,22 +30,16 @@ namespace Terrarium.Desktop.Rendering
 
         private static readonly Brush NotificationBorderBrush = CreateFrozenBrush(Color.FromArgb(50, 255, 255, 255));
 
-        private static readonly Brush BirthBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 46, 204, 113));
-        private static readonly Brush DeathBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 128, 128, 128));
         private static readonly Brush WarningBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 230, 126, 34));
         private static readonly Brush MilestoneBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 155, 89, 182));
         private static readonly Brush AchievementBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 241, 196, 15));
         private static readonly Brush InfoBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 152, 219));
         private static readonly Brush DefaultBackgroundBrush = CreateFrozenBrush(Color.FromArgb(220, 52, 73, 94));
-
-        private const int MaxActiveNotifications = 3;
         private const double NotificationDuration = 3.0;
         private const double NotificationWidth = 250;
         private const double NotificationHeight = 50;
         private const double NotificationMargin = 10;
         private const double SlideInDuration = 0.3;
-        private const double FadeOutDuration = 0.5;
-
         /// <summary>
         /// Gets or sets whether notifications are enabled.
         /// </summary>
@@ -58,17 +50,16 @@ namespace Terrarium.Desktop.Rendering
             _canvas = canvas;
             _pendingNotifications = new Queue<NotificationItem>();
             _activeNotifications = new List<NotificationItem>();
-        }
 
-        /// <summary>
-        /// Updates notification timers and positions.
         /// </summary>
         public void Update(double deltaTime)
         {
             if (!IsEnabled)
                 return;
-
-            // Update active notifications
+            if (!IsEnabled)
+            {
+                return;
+            }
             for (int i = _activeNotifications.Count - 1; i >= 0; i--)
             {
                 var notification = _activeNotifications[i];
@@ -76,7 +67,6 @@ namespace Terrarium.Desktop.Rendering
 
                 if (notification.TimeRemaining <= 0)
                 {
-                    RemoveNotification(notification);
                     _activeNotifications.RemoveAt(i);
                 }
                 else if (notification.TimeRemaining <= FadeOutDuration)
@@ -85,7 +75,6 @@ namespace Terrarium.Desktop.Rendering
                     if (notification.Visual != null)
                         notification.Visual.Opacity = notification.TimeRemaining / FadeOutDuration;
                 }
-            }
 
             // Show pending notifications
             while (_activeNotifications.Count < MaxActiveNotifications && _pendingNotifications.Count > 0)
@@ -93,7 +82,6 @@ namespace Terrarium.Desktop.Rendering
                 var notification = _pendingNotifications.Dequeue();
                 ShowNotification(notification);
             }
-        }
 
         /// <summary>
         /// Clears all notifications.
@@ -107,7 +95,6 @@ namespace Terrarium.Desktop.Rendering
             }
             _activeNotifications.Clear();
             _pendingNotifications.Clear();
-        }
 
         /// <summary>
         /// Shows a generic notification.
@@ -117,7 +104,7 @@ namespace Terrarium.Desktop.Rendering
             if (!IsEnabled)
                 return;
             QueueNotification(message, type);
-        }
+    }
 
         /// <summary>
         /// Queues a birth notification.
@@ -127,7 +114,7 @@ namespace Terrarium.Desktop.Rendering
             if (!IsEnabled)
                 return;
             QueueNotification($"🎉 New {creatureType} born!", NotificationType.Birth);
-        }
+    }
 
         /// <summary>
         /// Queues a death notification.
@@ -294,20 +281,15 @@ namespace Terrarium.Desktop.Rendering
                 _ => DefaultBackgroundBrush
             };
         }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            var brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
     }
-
-    internal class NotificationItem
-    {
-        public string Message { get; set; } = string.Empty;
-        public NotificationType Type { get; set; }
-        public double TimeRemaining { get; set; }
-        public Border? Visual { get; set; }
-    }
+public class NotificationItem
+{
+    public string Message { get; set; } = string.Empty;
+    public NotificationType Type { get; set; }
+    public double TimeRemaining { get; set; }
+    public Border? Visual { get; set; }
 }
+
+
+
+

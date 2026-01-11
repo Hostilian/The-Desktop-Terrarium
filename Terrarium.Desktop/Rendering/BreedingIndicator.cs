@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering
+namespace Terrarium.Desktop.Rendering;
 {
     /// <summary>
     /// Shows visual indicators for breeding-ready creatures.
@@ -21,10 +21,10 @@ namespace Terrarium.Desktop.Rendering
         private readonly HashSet<Creature> _existingCreaturesBuffer = new();
         private readonly List<Creature> _toRemoveBuffer = new();
 
-        private const double UpdateInterval = 0.3;
-        private const double MinHealthForBreeding = 60;
-        private const double MaxHungerForBreeding = 40;
-        private const double MinAgeForBreeding = 5.0;
+        private const double _updateInterval = 0.3;
+        private const double _minHealthForBreeding = 60;
+        private const double _maxHungerForBreeding = 40;
+        private const double _minAgeForBreeding = 5.0;
 
         public bool IsEnabled { get; set; } = true;
 
@@ -62,8 +62,10 @@ namespace Terrarium.Desktop.Rendering
                 heart.ScaleTransform.ScaleY = scale;
             }
 
-            if (_updateTimer < UpdateInterval)
+            if (_updateTimer < _updateInterval)
+            {
                 return;
+            }
             _updateTimer = 0;
 
             _existingCreaturesBuffer.Clear();
@@ -72,7 +74,9 @@ namespace Terrarium.Desktop.Rendering
             foreach (var herbivore in herbivores)
             {
                 if (!herbivore.IsAlive)
+                {
                     continue;
+                }
                 _existingCreaturesBuffer.Add(herbivore);
 
                 if (CanBreed(herbivore))
@@ -89,7 +93,9 @@ namespace Terrarium.Desktop.Rendering
             foreach (var carnivore in carnivores)
             {
                 if (!carnivore.IsAlive)
+                {
                     continue;
+                }
                 _existingCreaturesBuffer.Add(carnivore);
 
                 if (CanBreed(carnivore))
@@ -137,7 +143,9 @@ namespace Terrarium.Desktop.Rendering
         private void ShowHeart(Creature creature)
         {
             if (_hearts.ContainsKey(creature))
+            {
                 return;
+            }
 
             var scaleTransform = new ScaleTransform(1.0, 1.0, 6, 6);
             var heart = new TextBlock

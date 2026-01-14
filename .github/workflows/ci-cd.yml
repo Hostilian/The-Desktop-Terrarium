@@ -123,20 +123,20 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: 📦 Restore Dependencies
-      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
 
     - name: 🔍 Check Code Formatting
-      run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
+      run: dotnet format Terrarium.Desktop/Terrarium.Desktop.csproj --verify-no-changes --verbosity diagnostic
 
     - name: 🛡️ Scan NuGet vulnerabilities
-      run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable --include-transitive
+      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --vulnerable --include-transitive
 
     - name: 🧯 Scan deprecated packages
-      run: dotnet list ${{ env.SOLUTION_FILE }} package --deprecated
+      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --deprecated
       continue-on-error: true
 
     - name: 🧹 List outdated NuGet packages
-      run: dotnet list ${{ env.SOLUTION_FILE }} package --outdated --include-transitive
+      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --outdated --include-transitive
       continue-on-error: true
 
 

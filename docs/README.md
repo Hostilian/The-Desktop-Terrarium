@@ -1,0 +1,543 @@
+# World Box - God Simulator 🌍
+
+A World Box-inspired god simulator with Caves of Qud-style procedural lore. Become a god in a living world where factions multiply, conquer territory, and wage eternal war. Shape destiny with divine powers and watch emergent complexity unfold.
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Status](https://img.shields.io/badge/status-Complete-success.svg)
+
+## 🎯 Development with GSD
+
+This project uses the **Get Shit Done (GSD)** system for structured development planning and execution. GSD enables efficient solo development by breaking complex projects into manageable phases and tasks.
+
+> **For Players**: Just want to play? Check out the [CUSTOMER_GUIDE.md](CUSTOMER_GUIDE.md) for a quick start!
+
+### GSD Quick Commands
+```bash
+# Initialize project planning
+./gsd.bat new-project
+
+# Create development roadmap
+./gsd.bat create-roadmap
+
+# Plan specific development phase
+./gsd.bat plan-phase 1
+
+# Check progress and next steps
+./gsd.bat progress
+```
+
+### Current Development Phases
+- ✅ **Phase 1-5**: Core God Simulator (Complete)
+- 🔄 **Phase 6**: Emergent Complexity
+- 🔄 **Phase 7**: Polish and UI improvements
+- 🔄 **Phase 8**: Technical optimization
+- 🔄 **Phase 9**: Content expansion
+- 🔄 **Phase 10**: QA and finalization
+
+See [GSD_README.md](GSD_README.md) for detailed documentation.
+
+## 📋 Project Overview
+
+**World Box - God Simulator** is a complete god simulator featuring:
+- **Grid-based world** with 9 terrain types and procedural generation
+- **5 opposing factions** with unique colors, abilities, and procedural lore
+- **Territorial conquest** mechanics with assimilation and multiplication
+- **5 god powers** for divine intervention (Spawn, Smite, Mutate, Heal, Freeze)
+- **Particle effects** and visual feedback for all actions
+- **Theme selection** at startup (Forest, Desert, Aquatic)
+- **Emergent complexity** where simple rules create complex faction warfare
+
+### Key Features
+
+- ⚔️ **Faction Warfare**: Watch entities multiply and conquer territory
+- 📜 **Procedural Lore**: Caves of Qud-style faction names and histories
+- ⚡ **God Powers**: 5 divine abilities to shape the world
+- 🎨 **Visual Effects**: Particle systems and smooth animations
+- 🏞️ **Theme System**: Choose Forest, Desert, Aquatic, or Powder Toy Sandbox worlds
+- 🌱 **Emergent Gameplay**: Complex behavior from simple rules
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package installer)
+
+### Installation & Running
+
+```bash
+# Clone the repository
+git clone https://github.com/Hostilian/The-Desktop-Terrarium.git
+cd The-Desktop-Terrarium
+
+# Install dependencies
+pip install pygame
+
+# Run the simulator
+python god_simulator.py
+```
+
+### Controls
+- **↑↓** - Select theme at startup
+- **ENTER** - Start simulation
+- **ESC** - Cancel/Quit
+- **1-5** - Use god powers (Spawn/Smite/Mutate/Heal/Freeze)
+- **Left Click** - Use selected power
+- **Right Click** - Cancel power selection
+
+## 🏗️ Architecture
+
+This project demonstrates **Object-Oriented Design** with clean separation:
+
+### Core Classes
+
+- **`GodSimulator`** - Main game controller and event loop
+- **`World`** - Grid-based terrain and faction management
+- **`Entity`** - AI units with behaviors and faction allegiance
+- **`Faction`** - Opposing teams with territories and lore
+- **`LoreGenerator`** - Procedural content creation
+- **`GodPower`** - Player abilities with cooldowns
+- **`ParticleSystem`** - Visual effects engine
+- **`Renderer`** - Graphics and UI rendering
+
+### Design Patterns
+
+- **Factory Pattern**: Entity and faction creation
+- **Observer Pattern**: World updates and notifications
+- **Strategy Pattern**: Different god power behaviors
+- **Civilization Builder**: A lightweight 4X strategy game.
+- **2048**: Use your brain to join the numbers and get the 2048 tile!
+- **Tetris**: The classic game where you stack blocks.
+- **Snake Arcade**: The original Nokia classic.
+- **Web Widget**: Browse the web or play online games borderless.
+- **Desktop Pet**: A transparent companion for your desktop.
+- **Desktop Pet**: A transparent companion for your desktop.
+- **T-Rex Runner**: Run as far as you can with the T-rex!
+- **Pacman**: The arcade classic with ghosts and waka-waka.
+
+## 🎮 Gameplay
+
+### Themes
+Choose from four distinct world types:
+
+1. **🌲 Forest** - Dense woodlands, forest alliances, mountain clans
+2. **🏜️ Desert** - Arid sands, desert empires, rugged survivors
+3. **🌊 Aquatic** - Vast oceans, aquatic dominions, coastal alliances
+4. **⚛️ Powder Toy Sandbox** - Vibrant particles, falling sand physics, granular simulation
+
+### God Powers
+1. **Spawn (1)** - Create new entities of any faction
+2. **Smite (2)** - Destroy entities with divine wrath
+3. **Mutate (3)** - Change entity faction allegiance
+4. **Heal (4)** - Restore entity health
+5. **Freeze (5)** - Temporarily stun entities
+
+### Factions
+- **Forest Alliance** - Green, nature-focused
+- **Desert Empire** - Orange, expansionist
+- **Aquatic Dominion** - Blue, water-based
+- **Mountain Clans** - Grey, defensive
+- **Neutral** - White, unaligned
+
+## 🧪 Development
+
+### Project Structure
+```
+god_simulator.py      # Main simulator
+requirements.txt      # Python dependencies
+GOD_SIMULATOR_README.md # Detailed documentation
+docs/                 # GitHub Pages website
+  ├── index.html
+  ├── styles.css
+  └── screenshots/
+```
+
+### Running Tests
+```bash
+# No automated tests yet - manual testing recommended
+python god_simulator.py
+```
+
+### Building Releases
+```bash
+# Create executable (requires PyInstaller)
+pip install pyinstaller
+pyinstaller --onefile --windowed god_simulator.py
+```
+- MSTest unit tests for the Logic layer
+- Tests growth, eating, movement, collisions
+- Proves logic-UI separation works
+
+## 🎯 OOP Principles Demonstrated
+
+### ✅ Inheritance (IS-A Relationship)
+```
+WorldEntity (base)
+    ├─ LivingEntity (has Health, Age)
+          ├─ Plant (grows, needs water)
+          └─ Creature (moves, has Hunger)
+                ├─ Herbivore (eats plants)
+                └─ Carnivore (hunts herbivores)
+```
+
+### ✅ Interfaces (CAN-DO Relationship)
+- `IClickable` - For entities that respond to clicks
+- `IMovable` - For entities that can move
+
+### ✅ Encapsulation
+- All fields are `private` (e.g., `_health`, `_hunger`)
+- Public properties with controlled access
+- Most values are named constants; remaining rendering constants are tracked in `VERIFICATION_CHECKLIST.md`
+
+### ✅ Single Responsibility Principle
+- `Creature` doesn't draw itself - `Renderer` does
+- `SimulationEngine` doesn't calculate movement - `MovementCalculator` does
+- Specialized managers prevent "God Object" anti-pattern
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Visual Studio 2022 or later
+- .NET 8.0 SDK
+- Windows OS (for WPF support)
+
+### Building the Project
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Hostilian/The-Desktop-Terrarium.git
+   cd The-Desktop-Terrarium
+   ```
+
+2. **Open in Visual Studio**
+   ```
+   Open DesktopTerrarium.sln
+   ```
+
+3. **Restore NuGet packages**
+   ```
+   Right-click solution → Restore NuGet Packages
+   ```
+
+4. **Build solution**
+   ```
+   Build → Build Solution (Ctrl+Shift+B)
+   ```
+
+5. **Run tests**
+   ```
+   Test → Run All Tests
+   ```
+
+6. **Run application**
+   ```
+   Set Terrarium.Desktop as startup project
+   Press F5 to run
+   ```
+
+## 🎮 Controls
+
+| Key | Action |
+|-----|--------|
+| **Left Click** | Select entity / Feed creature / Water plant |
+| **Mouse Hover** | Make plants shake / Show tooltip |
+| **P** | Spawn random plant |
+| **H** | Spawn random herbivore |
+| **C** | Spawn random carnivore |
+| **W** | Water all plants |
+| **M** | Toggle mini-map |
+| **G** | Toggle population graph |
+| **F** | Follow selected entity |
+| **Space** | Pause / Resume simulation |
+| **+ / -** | Increase / Decrease simulation speed |
+| **F1** | Toggle status display |
+| **F2** | Open settings panel |
+| **ESC** | Deselect entity / Close settings / Exit |
+| **Ctrl+S** | Save game |
+| **Ctrl+L** | Load game |
+| **Ctrl+Alt+S** | Save game (global hotkey) |
+| **Ctrl+Alt+L** | Load game (global hotkey) |
+| **Ctrl+Alt+F1** | Toggle UI panels (global hotkey) |
+
+### Visual Systems
+- 🏆 **Achievement System**: Unlock achievements as you play
+- 😊 **Mood Indicators**: Emoji show creature emotions
+- ⚠️ **Predator Warnings**: Alerts when herbivores are in danger
+- 💕 **Breeding Indicators**: Hearts show when creatures can breed
+- 📊 **Population Graph**: Real-time population history
+- 🌍 **Ecosystem Health Bar**: Shows overall ecosystem balance
+- 🗺️ **Mini-Map**: Bird's eye view of the terrarium
+
+## 🧪 Running Unit Tests
+
+The project includes comprehensive unit tests for the Logic layer:
+
+```bash
+# In Visual Studio Test Explorer
+Test → Run All Tests
+
+# Or via command line
+dotnet test Terrarium.Tests/Terrarium.Tests.csproj
+```
+
+**Test Coverage:**
+- ✅ Plant growth mechanics
+- ✅ Creature movement and hunger
+- ✅ Herbivore eating behavior
+- ✅ Carnivore hunting behavior
+- ✅ Collision detection
+- ✅ Boundary enforcement
+- ✅ Simulation engine integration
+
+## 📁 Project Structure
+
+```
+The-Desktop-Terrarium/
+├── Terrarium.Logic/              # Application Logic Layer
+│   ├── Entities/
+│   │   ├── WorldEntity.cs        # Base entity class
+│   │   ├── LivingEntity.cs       # Living entity with health/age
+│   │   ├── Plant.cs              # Plant entity
+│   │   ├── Creature.cs           # Base creature class
+│   │   ├── Herbivore.cs          # Herbivore (sheep, rabbit)
+│   │   └── Carnivore.cs          # Carnivore (wolf, fox)
+│   ├── Interfaces/
+│   │   ├── IClickable.cs         # Clickable behavior
+│   │   └── IMovable.cs           # Movable behavior
+│   ├── Simulation/
+│   │   ├── World.cs              # World container
+│   │   ├── SimulationEngine.cs   # Main simulation logic
+│   │   ├── MovementCalculator.cs # Movement logic
+│   │   ├── CollisionDetector.cs  # Collision handling
+│   │   └── FoodManager.cs        # Ecosystem balance
+│   └── Persistence/
+│       └── SaveManager.cs        # Save/load functionality
+│
+├── Terrarium.Desktop/            # Presentation Layer
+│   ├── MainWindow.xaml           # Main window UI
+│   ├── MainWindow.xaml.cs        # Window code-behind
+│   ├── App.xaml                  # Application definition
+│   ├── App.xaml.cs               # Application startup
+│   └── Rendering/
+│       ├── Renderer.cs           # Entity rendering
+│       ├── SystemMonitor.cs      # CPU monitoring
+│       ├── AnimationController.cs # Animation system
+│       ├── WeatherEffects.cs     # Weather visuals
+│       ├── ParticleSystem.cs     # Particle effects
+│       ├── NotificationManager.cs # Toast notifications
+│       ├── TooltipManager.cs     # Entity tooltips
+│       ├── SettingsPanel.cs      # Settings UI
+│       ├── MiniMap.cs            # Mini-map display
+│       ├── AchievementSystem.cs  # Achievement tracking
+│       ├── CreatureMoodIndicator.cs # Mood emojis
+│       ├── PopulationGraph.cs    # Population history
+│       ├── PredatorWarningSystem.cs # Danger alerts
+│       ├── EntitySelector.cs     # Entity selection
+│       ├── SpeedIndicator.cs     # Speed display
+│       ├── BreedingIndicator.cs  # Breeding status
+│       └── EcosystemHealthBar.cs # Health display
+
+├── Terrarium.Tests/              # Unit Tests
+│   ├── Entities/
+│   │   ├── PlantTests.cs
+│   │   ├── CreatureTests.cs
+│   │   ├── HerbivoreTests.cs
+│   │   └── CarnivoreTests.cs
+│   ├── Simulation/
+│   │   ├── MovementCalculatorTests.cs
+│   │   ├── CollisionDetectorTests.cs
+│   │   └── SimulationEngineTests.cs
+│   └── Rendering/
+│       ├── AchievementSystemTests.cs
+│       ├── EcosystemHealthTests.cs
+│       ├── CreatureMoodTests.cs
+│       ├── BreedingIndicatorTests.cs
+│       └── PredatorWarningTests.cs
+│
+└── DesktopTerrarium.sln          # Visual Studio solution
+```
+
+## 🎨 Customization
+
+### Adding Custom Sprites
+
+1. Create a folder: `Terrarium.Desktop/Assets/`
+2. Add PNG images:
+   - `plant.png` - Plant sprite
+   - `herbivore.png` - Herbivore sprite
+   - `carnivore.png` - Carnivore sprite
+3. Set Build Action to `Resource`
+4. In `Renderer.cs`, set `_useSpriteMode = true`
+
+### Adjusting Game Balance
+
+Edit constants in entity classes:
+```csharp
+// In Creature.cs
+protected const double HungerIncreaseRate = 0.3;  // How fast creatures get hungry
+protected const double StarvationThreshold = 20.0; // When creatures start losing health
+
+// In Plant.cs
+private const double DefaultGrowthRate = 0.5;     // How fast plants grow
+private const double WaterDecayRate = 0.2;        // How fast plants use water
+```
+
+## 🐛 Troubleshooting
+
+### Issue: Window not transparent
+**Solution**: Ensure Windows Aero/transparency effects are enabled in Windows settings.
+
+### Issue: High CPU usage
+**Solution**: Reduce `RenderFps` constant in `MainWindow.xaml.cs` (default: 60).
+
+### Issue: Tests failing
+**Solution**: Rebuild solution and ensure .NET 8.0 SDK is installed.
+
+### Issue: Performance counter errors
+**Solution**: SystemMonitor gracefully handles missing performance counters. Run as administrator if needed.
+
+## 📚 Learning Objectives
+
+This project demonstrates:
+
+1. **Layered Architecture** - Separation of logic and presentation
+2. **OOP Principles** - Inheritance, interfaces, encapsulation
+3. **SOLID Principles** - Single responsibility, dependency injection
+4. **Unit Testing** - Testing logic independently from UI
+5. **WPF Development** - Transparent windows, animations, data binding
+6. **Game Loop** - Fixed timestep simulation with variable rendering
+7. **State Management** - Save/load system with JSON serialization
+
+## 📝 Coding Standards
+
+- ✅ **PascalCase** for classes, methods, properties: `CalculateGrowth()`
+- ✅ **camelCase** for local variables, parameters: `currentSpeed`
+- ✅ **Named constants** instead of magic numbers: `MaxHunger = 100`
+- ✅ **XML documentation** on all public members
+- ✅ **Private fields** with underscore prefix: `_health`
+- ✅ **Single Responsibility** - Each class has one clear purpose
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Follow existing code style and naming conventions
+4. Add unit tests for new features
+5. Commit changes using [Conventional Commits](#-commit-message-guidelines)
+6. Push to branch (`git push origin feature/AmazingFeature`)
+7. Open a Pull Request
+
+### 📝 Commit Message Guidelines
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for consistent commit messages:
+
+**Format**: `<type>(<scope>): <description>`
+
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks (dependencies, build, etc.)
+- `perf`: Performance improvements
+
+**Examples**:
+```
+feat(simulation): add day/night cycle system
+fix(plant): correct water level calculation
+docs(readme): update setup instructions
+refactor(entities): simplify creature movement logic
+test(herbivore): add tests for feeding behavior
+chore(deps): update .NET SDK to 8.0.1
+```
+
+**Scope** (optional but recommended):
+- `simulation`: Simulation engine changes
+- `entities`: Entity-related changes
+- `ui`: User interface changes
+- `persistence`: Save/load system
+- `rendering`: Rendering components
+- `tests`: Test-related changes
+
+### 🔍 Pull Request Guidelines
+
+1. **Reference Issues**: Link related issues in PR description
+2. **Describe Changes**: Clearly explain what changed and why
+3. **Update Documentation**: Update README/docs if needed
+4. **Ensure Tests Pass**: All CI/CD checks must pass
+5. **Request Reviews**: Tag relevant team members
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🎓 Academic Use
+
+This project was created as an educational demonstration of:
+- Layered software architecture
+- Object-oriented programming principles
+- Unit testing practices
+- WPF desktop application development
+
+Feel free to use this project as a reference or learning resource!
+
+## ✨ Future Enhancements
+
+Potential features for future development:
+- [ ] Multiple biome types (desert, forest, ocean)
+- [ ] Weather particle effects (rain, snow)
+- [ ] Custom sprite editor
+- [ ] Network multiplayer ecosystems
+- [x] ~~Creature reproduction system~~ ✅ Implemented
+- [x] ~~Food chain statistics graph~~ ✅ Implemented (PopulationGraph)
+- [x] ~~Achievement system~~ ✅ Implemented
+- [x] ~~Day/night cycle~~ ✅ Implemented
+
+## 🌐 Cross-Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **Windows x64** | ✅ Full Support | Primary platform, all features available |
+| **Windows ARM64** | ✅ Full Support | Native ARM64 builds available |
+| **Linux** | ⚠️ Logic Only | `Terrarium.Logic` layer works via .NET; WPF UI requires Windows |
+| **macOS** | ⚠️ Logic Only | `Terrarium.Logic` layer works via .NET; WPF UI requires Windows |
+
+### Why Windows Only for UI?
+
+Desktop Terrarium uses **WPF (Windows Presentation Foundation)** for its presentation layer because:
+
+1. **Transparent Windows**: WPF provides native support for transparent, layered windows that can overlay the desktop
+2. **Hit-Test Passthrough**: Win32 interop allows mouse clicks on empty areas to pass through to the desktop
+3. **System Integration**: Direct access to Windows performance counters for CPU-based weather effects
+4. **Global Hotkeys**: Win32 RegisterHotKey API for system-wide keyboard shortcuts
+
+### Cross-Platform Alternative
+
+For cross-platform support, consider:
+- **Avalonia UI**: The `Terrarium.Logic` layer is fully portable and could be combined with Avalonia for cross-platform GUI
+- **MAUI**: Another option for cross-platform .NET applications
+- **Console/Terminal**: A text-based visualization could work on any platform
+
+### Running Logic Tests on Linux/macOS
+
+The business logic is fully cross-platform:
+
+```bash
+# Clone and test on any OS with .NET 8.0
+git clone https://github.com/Hostilian/The-Desktop-Terrarium.git
+cd The-Desktop-Terrarium
+dotnet test Terrarium.Tests/Terrarium.Tests.csproj
+```
+
+## 📞 Contact
+
+Project Link: [https://github.com/Hostilian/The-Desktop-Terrarium](https://github.com/Hostilian/The-Desktop-Terrarium)
+
+---
+
+Made with ❤️ and C# | January 2026

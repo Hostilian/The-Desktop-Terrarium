@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terrarium.Logic", "Terrarium.Logic\Terrarium.Logic.csproj", "{8B5C7E1A-2F3D-4A9E-9B2C-1D5E6F7A8B9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terrarium.Desktop", "Terrarium.Desktop\Terrarium.Desktop.csproj", "{9C6D8F2B-3E4E-5B0F-0C3D-2E6F7G8C9D0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terrarium.Tests", "Terrarium.Tests\Terrarium.Tests.csproj", "{0D7E9G3C-4F5F-6C1G-1D4E-3F7G8H9D1F1G}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B5C7E1A-2F3D-4A9E-9B2C-1D5E6F7A8B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5C7E1A-2F3D-4A9E-9B2C-1D5E6F7A8B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5C7E1A-2F3D-4A9E-9B2C-1D5E6F7A8B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5C7E1A-2F3D-4A9E-9B2C-1D5E6F7A8B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C6D8F2B-3E4E-5B0F-0C3D-2E6F7G8C9D0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C6D8F2B-3E4E-5B0F-0C3D-2E6F7G8C9D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C6D8F2B-3E4E-5B0F-0C3D-2E6F7G8C9D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C6D8F2B-3E4E-5B0F-0C3D-2E6F7G8C9D0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D7E9G3C-4F5F-6C1G-1D4E-3F7G8H9D1F1G}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7E9G3C-4F5F-6C1G-1D4E-3F7G8H9D1F1G}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7E9G3C-4F5F-6C1G-1D4E-3F7G8H9D1F1G}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7E9G3C-4F5F-6C1G-1D4E-3F7G8H9D1F1G}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

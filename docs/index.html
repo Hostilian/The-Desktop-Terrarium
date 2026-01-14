@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop Terrarium - Play Games Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="launcher.css">
+</head>
+
+<body>
+    <div class="game-container" id="gameContainer">
+        <!-- Game Launcher Screen -->
+        <div class="launcher-screen active" id="launcherScreen">
+            <header class="launcher-header">
+                <h1 class="title">🎮 Desktop Terrarium</h1>
+                <p class="subtitle">Choose your game and dive in!</p>
+            </header>
+
+            <div class="game-carousel" id="gameCarousel">
+                <button class="carousel-nav prev" id="prevBtn">‹</button>
+
+                <div class="game-cards">
+                    <div class="game-card" data-game="snake">
+                        <div class="card-inner">
+                            <div class="card-icon">🐍</div>
+                            <h3>Snake</h3>
+                            <p>Classic arcade action</p>
+                            <button class="play-btn">Play Now</button>
+                        </div>
+                    </div>
+
+                    <div class="game-card" data-game="2048">
+                        <div class="card-inner">
+                            <div class="card-icon">🎯</div>
+                            <h3>2048</h3>
+                            <p>Addictive puzzle game</p>
+                            <button class="play-btn">Play Now</button>
+                        </div>
+                    </div>
+
+                    <div class="game-card" data-game="trex">
+                        <div class="card-inner">
+                            <div class="card-icon">🦖</div>
+                            <h3>T-Rex Runner</h3>
+                            <p>Endless running fun</p>
+                            <button class="play-btn">Play Now</button>
+                        </div>
+                    </div>
+
+                    <div class="game-card" data-game="tetris">
+                        <div class="card-inner">
+                            <div class="card-icon">🧱</div>
+                            <h3>Tetris</h3>
+                            <p>Stack blocks perfectly</p>
+                            <button class="play-btn">Coming Soon</button>
+                        </div>
+                    </div>
+
+                    <div class="game-card" data-game="pacman">
+                        <div class="card-inner">
+                            <div class="card-icon">👻</div>
+                            <h3>Pacman</h3>
+                            <p>Navigate the maze</p>
+                            <button class="play-btn">Coming Soon</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-nav next" id="nextBtn">›</button>
+            </div>
+
+            <div class="launcher-footer">
+                <a href="https://github.com/Hostilian/The-Desktop-Terrarium" target="_blank" class="github-link">
+                    View on GitHub →
+                </a>
+            </div>
+        </div>
+
+        <!-- Game Screens -->
+        <div class="game-screen" id="snakeScreen">
+            <div class="game-header">
+                <button class="back-btn" onclick="backToLauncher()">← Back</button>
+                <h2>Snake</h2>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+            </div>
+            <canvas id="snakeCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="snakeScore">0</span></p>
+                <p>Use Arrow Keys to move</p>
+            </div>
+        </div>
+
+        <div class="game-screen" id="2048Screen">
+            <div class="game-header">
+                <button class="back-btn" onclick="backToLauncher()">← Back</button>
+                <h2>2048</h2>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+            </div>
+            <div id="game2048Container"></div>
+            <div class="game-info">
+                <p>Score: <span id="2048Score">0</span></p>
+                <p>Use Arrow Keys to merge tiles</p>
+            </div>
+        </div>
+
+        <div class="game-screen" id="trexScreen">
+            <div class="game-header">
+                <button class="back-btn" onclick="backToLauncher()">← Back</button>
+                <h2>T-Rex Runner</h2>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+            </div>
+            <canvas id="trexCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="trexScore">0</span></p>
+                <p>Press Space to jump</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared/game-engine.js"></script>
+    <script src="shared/fullscreen.js"></script>
+    <script src="games/snake/game.js"></script>
+    <script src="games/2048/game.js"></script>
+    <script src="games/trex/game.js"></script>
+    <script src="launcher.js"></script>
+</body>
+
+</html>

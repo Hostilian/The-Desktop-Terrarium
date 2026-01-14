@@ -1,0 +1,128 @@
+<Window x:Class="Terrarium.Desktop.SettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings"
+        Height="600"
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Advanced Settings" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <GroupBox Header="Simulation Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="World Width:"/>
+                        <Slider x:Name="WorldWidthSlider" Minimum="400" Maximum="1200" Value="800" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="WorldWidthText" Text="800"/>
+
+                        <TextBlock Text="World Height:"/>
+                        <Slider x:Name="WorldHeightSlider" Minimum="300" Maximum="900" Value="600" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="WorldHeightText" Text="600"/>
+
+                        <TextBlock Text="Initial Plant Count:"/>
+                        <Slider x:Name="InitialPlantsSlider" Minimum="10" Maximum="100" Value="50" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="InitialPlantsText" Text="50"/>
+
+                        <TextBlock Text="Initial Herbivore Count:"/>
+                        <Slider x:Name="InitialHerbivoresSlider" Minimum="5" Maximum="50" Value="20" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="InitialHerbivoresText" Text="20"/>
+
+                        <TextBlock Text="Initial Carnivore Count:"/>
+                        <Slider x:Name="InitialCarnivoresSlider" Minimum="2" Maximum="20" Value="5" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="InitialCarnivoresText" Text="5"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="World Laws (God Simulator Mode)" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="EnableHungerCheckBox" Content="Enable Hunger &amp; Starvation" IsChecked="True"/>
+                        <CheckBox x:Name="EnableAgingCheckBox" Content="Enable Old Age &amp; Death" IsChecked="True"/>
+                        <CheckBox x:Name="EnableDisastersCheckBox" Content="Enable Natural Disasters" IsChecked="True"/>
+                        <CheckBox x:Name="EnableDiplomacyCheckBox" Content="Allow Kingdom Diplomacy &amp; War" IsChecked="True"/>
+                        <CheckBox x:Name="EnableRebellionCheckBox" Content="Allow Civilizations to Rebel" IsChecked="True"/>
+                        <CheckBox x:Name="EnableExpansionCheckBox" Content="Allow Territory Expansion" IsChecked="True"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Automation Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="AutoExploreCheckBox" Content="Auto-Explore (Find paths automatically)" IsChecked="False"/>
+                        <CheckBox x:Name="AutoPickupCheckBox" Content="Auto-Pickup Resources" IsChecked="False"/>
+                        <CheckBox x:Name="AutoAttackCheckBox" Content="Auto-Attack Weak Enemies" IsChecked="False"/>
+                        <CheckBox x:Name="AutoSaveCheckBox" Content="Auto-Save Every 5 Minutes" IsChecked="True"/>
+                        <CheckBox x:Name="PauseOnDeathCheckBox" Content="Pause Simulation on Extinction" IsChecked="True"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Display Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="ShowDetailedStatsCheckBox" Content="Show Detailed Statistics" IsChecked="True"/>
+                        <CheckBox x:Name="EnableAnimationsCheckBox" Content="Enable Animations" IsChecked="True"/>
+                        <CheckBox x:Name="TransparentBackgroundCheckBox" Content="Transparent Background" IsChecked="False"/>
+                        <CheckBox x:Name="ShowSceneryCheckBox" Content="Show Background Scenery" IsChecked="True"/>
+                        <CheckBox x:Name="ShowEntityShadowsCheckBox" Content="Show Entity Shadows" IsChecked="True"/>
+                        <CheckBox x:Name="ShowMinimapCheckBox" Content="Show Minimap" IsChecked="False"/>
+                        <CheckBox x:Name="ShowHealthBarsCheckBox" Content="Show Health Bars" IsChecked="True"/>
+                        <CheckBox x:Name="ShowPopulationGraphCheckBox" Content="Show Population Graph" IsChecked="True"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Audio Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="EnableSoundCheckBox" Content="Enable Sound Effects" IsChecked="True"/>
+                        <CheckBox x:Name="EnableAmbientMusicCheckBox" Content="Enable Ambient Music" IsChecked="True"/>
+                        <TextBlock Text="Master Volume:"/>
+                        <Slider x:Name="MasterVolumeSlider" Minimum="0" Maximum="1" Value="0.7" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="MasterVolumeText" Text="70%"/>
+                        <TextBlock Text="Sound Effects Volume:"/>
+                        <Slider x:Name="EffectsVolumeSlider" Minimum="0" Maximum="1" Value="0.8" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="EffectsVolumeText" Text="80%"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Performance Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="EnableVSyncCheckBox" Content="Enable V-Sync" IsChecked="True"/>
+                        <CheckBox x:Name="LimitFrameRateCheckBox" Content="Limit Frame Rate (60 FPS)" IsChecked="True"/>
+                        <TextBlock Text="Render Quality:"/>
+                        <ComboBox x:Name="RenderQualityComboBox" SelectedIndex="1">
+                            <ComboBoxItem Content="Low"/>
+                            <ComboBoxItem Content="Medium"/>
+                            <ComboBoxItem Content="High"/>
+                        </ComboBox>
+                        <TextBlock Text="Simulation Speed:"/>
+                        <ComboBox x:Name="SimulationSpeedComboBox" SelectedIndex="2">
+                            <ComboBoxItem Content="0.25x"/>
+                            <ComboBoxItem Content="0.5x"/>
+                            <ComboBoxItem Content="1x"/>
+                            <ComboBoxItem Content="2x"/>
+                            <ComboBoxItem Content="4x"/>
+                        </ComboBox>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Debug &amp; Cheat Settings" Margin="0,0,0,10">
+                    <StackPanel>
+                        <CheckBox x:Name="DisablePermadeathCheckBox" Content="Disable Permadeath (Classic Mode)" IsChecked="False"/>
+                        <CheckBox x:Name="EnableGodModeCheckBox" Content="God Mode (Invincibility)" IsChecked="False"/>
+                        <CheckBox x:Name="ShowDebugInfoCheckBox" Content="Show Debug Information" IsChecked="False"/>
+                        <Button x:Name="SpawnExtraEntitiesButton" Content="Spawn Extra Entities" Margin="0,5,0,0" Click="SpawnExtraEntitiesButton_Click"/>
+                        <Button x:Name="ResetToDefaultsButton" Content="Reset to Defaults" Margin="0,5,0,0" Click="ResetToDefaultsButton_Click"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="75" Margin="0,0,5,0" Click="OKButton_Click"/>
+            <Button Content="Cancel" Width="75" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

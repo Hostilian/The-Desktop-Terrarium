@@ -1,0 +1,448 @@
+name: Desktop Terrarium CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PYTHON_VERSION: '3.11'
+  SOLUTION_FILE: 'DesktopTerrarium.sln'
+
+jobs:
+  # Build and Test Job
+  build-and-test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+    - name: 🏗️ Build Solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
+
+    - name: 🧪 Run Tests
+      run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory "${{ github.workspace }}/TestResults" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ github.workspace }}/TestResults/coverage/coverage"
+
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults
+
+    - name: ✅ Coverage Gate
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults --min-line 70
+
+    - name: 📊 Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: ./TestResults/*.trx
+
+    - name: 🧾 Upload Code Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage
+        path: ./TestResults/**/coverage*.cobertura.xml
+
+    - name: 🗂️ Generate HTML Coverage Report
+      if: always()
+      shell: pwsh
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+        reportgenerator -reports:"${{ github.workspace }}\TestResults\**\coverage*.cobertura.xml" -targetdir:"${{ github.workspace }}\TestResults\coveragereport" -reporttypes:HtmlInline_AzurePipelines
+
+    - name: 📦 Upload HTML Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-html
+        path: ./TestResults/coveragereport/
+
+    - name: 📈 Test Report Summary
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: ./TestResults/*.trx
+        reporter: dotnet-trx
+
+  # Code Quality Job
+  code-quality:
+    runs-on: windows-latest
+    needs: build-and-test
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+    - name: 🔍 Check Code Formatting
+      run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
+
+    - name: 🛡️ Scan NuGet vulnerabilities
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable --include-transitive
+
+    - name: 🧯 Scan deprecated packages
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --deprecated
+      continue-on-error: true
+
+    - name: 🧹 List outdated NuGet packages
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --outdated --include-transitive
+      continue-on-error: true
+
+  # Logic/Test Integrity on Linux (cross-platform)
+  logic-tests-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 🧪 Build & Test (Logic layer)
+      run: |
+        dotnet restore Terrarium.Tests/Terrarium.Tests.csproj
+        dotnet test Terrarium.Tests/Terrarium.Tests.csproj --configuration Release --verbosity normal --results-directory "${{ github.workspace }}/TestResults" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ github.workspace }}/TestResults/coverage/coverage"
+
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults
+
+    - name: 🧾 Upload Code Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage-linux
+        path: ./TestResults/**/coverage*.cobertura.xml
+
+    - name: 🗂️ Generate HTML Coverage Report
+      if: always()
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        reportgenerator -reports:"${{ github.workspace }}/TestResults/**/coverage*.cobertura.xml" -targetdir:"${{ github.workspace }}/TestResults/coveragereport" -reporttypes:HtmlInline_AzurePipelines
+
+    - name: 📦 Upload HTML Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-html-linux
+        path: ./TestResults/coveragereport/
+
+  # Docs Website Validation
+  docs-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: 🐍 Validate docs/ links
+      run: python scripts/validate_docs.py
+
+  # Publish Job (only on tags)
+  publish:
+    runs-on: windows-latest
+    needs: [build-and-test, code-quality]
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+    - name: 🏗️ Build Release
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
+
+  # Publish Integrity (every push/PR)
+  publish-integrity:
+    runs-on: windows-latest
+    needs: [build-and-test, code-quality]
+    if: github.event_name != 'workflow_dispatch'
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
+
+    - name: 📦 Publish (framework-dependent)
+      run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-x64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-x64
+
+    - name: 📦 Publish (framework-dependent, ARM64)
+      run: dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-arm64 --self-contained false -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true -o ./publish-integrity/win-arm64
+
+    - name: 🔎 Verify publish-integrity manifests unchanged
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+
+        $x64Deps = 'publish-integrity/win-x64/Terrarium.Desktop.deps.json'
+        $x64Runtime = 'publish-integrity/win-x64/Terrarium.Desktop.runtimeconfig.json'
+        $arm64Deps = 'publish-integrity/win-arm64/Terrarium.Desktop.deps.json'
+        $arm64Runtime = 'publish-integrity/win-arm64/Terrarium.Desktop.runtimeconfig.json'
+
+        foreach ($p in @($x64Deps, $x64Runtime, $arm64Deps, $arm64Runtime)) {
+          if (-not (Test-Path $p)) {
+            throw "Missing expected integrity manifest: $p"
+          }
+        }
+
+        git diff --exit-code -- $x64Deps $x64Runtime
+        git diff --exit-code -- $arm64Deps $arm64Runtime
+
+        $status = git status --porcelain
+        if ($status) {
+          Write-Host $status
+          throw 'Working tree is dirty after publish-integrity; manifests likely changed.'
+        }
+
+    - name: 📊 Upload Publish Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: publish-integrity-win-x64
+        path: ./publish-integrity/win-x64/
+
+    - name: 📊 Upload Publish Artifact (ARM64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: publish-integrity-win-arm64
+        path: ./publish-integrity/win-arm64/
+
+    - name: 📤 Publish Application
+      run: |
+        dotnet publish Terrarium.Desktop/Terrarium.Desktop.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/win-x64
+
+    - name: 📁 Create Release Package
+      run: |
+        Compress-Archive -Path ./publish/win-x64/* -DestinationPath ./DesktopTerrarium-${{ github.ref_name }}-win-x64.zip
+      shell: pwsh
+
+    - name: 📊 Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: DesktopTerrarium-${{ github.ref_name }}-win-x64
+        path: ./publish/win-x64/
+
+    - name: 🚀 Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./DesktopTerrarium-${{ github.ref_name }}-win-x64.zip
+        generate_release_notes: true
+        draft: false
+        prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Deploy Documentation to GitHub Pages
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, docs-validation]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: 📤 Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './docs'
+
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  # Automated Screenshot Capture (for documentation)
+  capture-screenshots:
+    runs-on: windows-latest
+    needs: [build-and-test]
+    if: github.ref == 'refs/heads/main'
+    continue-on-error: true  # Don't fail the whole pipeline if screenshots fail
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 📦 Build Application
+      run: dotnet build Terrarium.Desktop/Terrarium.Desktop.csproj -c Release
+
+    - name: 📸 Capture Application Screenshot
+      shell: pwsh
+      run: |
+        # Note: WPF applications require a display to capture screenshots.
+        # This step documents the intent but may not work in headless CI.
+        # For actual screenshots, consider:
+        # 1. Using a self-hosted runner with display
+        # 2. Manual screenshot capture for documentation
+        # 3. Using a headless rendering approach
+        
+        Write-Host "Screenshot capture job completed."
+        Write-Host "For actual screenshots, run the application locally and capture manually."
+        Write-Host "Recommended: Use Windows Snipping Tool or Win+Shift+S"
+        
+        # Create a placeholder file to indicate the job ran
+        $screenshotDir = "docs/screenshots"
+        if (-not (Test-Path $screenshotDir)) {
+            New-Item -ItemType Directory -Path $screenshotDir -Force
+        }
+        
+        $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+        $readme = @"
+        # Screenshots
+        
+        This folder is intended for application screenshots.
+        
+        ## How to Add Screenshots
+        
+        1. Run the application locally: \`dotnet run --project Terrarium.Desktop\`
+        2. Use Windows Snipping Tool (Win+Shift+S) to capture
+        3. Save screenshots here with descriptive names:
+           - \`terrarium-main.png\` - Main application view
+           - \`terrarium-settings.png\` - Settings panel (F2)
+           - \`terrarium-minimap.png\` - Mini-map view (M)
+           - \`terrarium-daynight.png\` - Day/night cycle comparison
+        
+        ## Automated Capture
+        
+        Last CI run: $timestamp
+        
+        Note: Automated screenshot capture requires a display and is not available
+        in headless CI environments. Screenshots should be captured manually.
+        "@
+        
+        Set-Content -Path "$screenshotDir/README.md" -Value $readme
+        
+    - name: 📤 Upload Screenshot Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshot-documentation
+        path: docs/screenshots/

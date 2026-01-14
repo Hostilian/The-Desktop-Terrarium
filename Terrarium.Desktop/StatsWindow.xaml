@@ -1,0 +1,105 @@
+<Window x:Class="Terrarium.Desktop.StatsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Terrarium Statistics"
+        Height="400"
+        Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Detailed Statistics" FontSize="18" FontWeight="Bold" Margin="10"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10">
+                <GroupBox Header="Population Statistics" Margin="0,0,0,10">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Plants:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="PlantsCountText" Grid.Row="0" Grid.Column="1" Text="0"/>
+                        <TextBlock x:Name="PlantsPeakText" Grid.Row="0" Grid.Column="2" Text="(Peak: 0)"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Herbivores:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="HerbivoresCountText" Grid.Row="1" Grid.Column="1" Text="0"/>
+                        <TextBlock x:Name="HerbivoresPeakText" Grid.Row="1" Grid.Column="2" Text="(Peak: 0)"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Carnivores:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="CarnivoresCountText" Grid.Row="2" Grid.Column="1" Text="0"/>
+                        <TextBlock x:Name="CarnivoresPeakText" Grid.Row="2" Grid.Column="2" Text="(Peak: 0)"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Total Population:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TotalPopulationText" Grid.Row="3" Grid.Column="1" Text="0"/>
+                        <TextBlock x:Name="TotalPeakText" Grid.Row="3" Grid.Column="2" Text="(Peak: 0)"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Header="Activity Statistics" Margin="0,0,0,10">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Plants Grown:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="PlantsGrownText" Grid.Row="0" Grid.Column="1" Text="0"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Plants Eaten:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="PlantsEatenText" Grid.Row="1" Grid.Column="1" Text="0"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Births:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="BirthsText" Grid.Row="2" Grid.Column="1" Text="0"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Deaths:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="DeathsText" Grid.Row="3" Grid.Column="1" Text="0"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Header="Simulation Info" Margin="0,0,0,10">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Simulation Time:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="SimulationTimeText" Grid.Row="0" Grid.Column="1" Text="00:00:00"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Ecosystem Health:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="EcosystemHealthText" Grid.Row="1" Grid.Column="1" Text="100%"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Current Speed:" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="CurrentSpeedText" Grid.Row="2" Grid.Column="1" Text="1.0x"/>
+                    </Grid>
+                </GroupBox>
+
+                <Button Content="Close" HorizontalAlignment="Center" Padding="10,5" Click="CloseButton_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

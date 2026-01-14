@@ -80,7 +80,7 @@ jobs:
       if: always()
       shell: pwsh
       run: |
-    #         dotnet tool install --global dotnet-reportgenerator-globaltool
+        # dotnet tool install --global dotnet-reportgenerator-globaltool
         $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
         reportgenerator -reports:"${{ github.workspace }}\TestResults\**\coverage*.cobertura.xml" -targetdir:"${{ github.workspace }}\TestResults\coveragereport" -reporttypes:HtmlInline_AzurePipelines
 
@@ -91,13 +91,13 @@ jobs:
         name: coverage-report-html
         path: ./TestResults/coveragereport/
 
-    - name: 📈 Test Report Summary
-    #       uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Test Results
-        path: ./TestResults/*.trx
-        reporter: dotnet-trx
+    # - name: 📈 Test Report Summary
+    #   uses: dorny/test-reporter@v1
+    #   if: always()
+    #   with:
+    #     name: Test Results
+    #     path: ./TestResults/*.trx
+    #     reporter: dotnet-trx
 
   # Code Quality Job
   code-quality:

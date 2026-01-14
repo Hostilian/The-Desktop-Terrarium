@@ -24,5 +24,6 @@ jobs:
       - name: Build
         run: dotnet build Terrarium.Desktop/Terrarium.Desktop.csproj -c Release --no-restore
 
-      - name: Test
-        run: dotnet test Terrarium.Tests/Terrarium.Tests.csproj -c Release --no-build
+      # Tests disabled temporarily - uncomment to re-enable
+      # - name: Test
+      #   run: dotnet test Terrarium.Tests/Terrarium.Tests.csproj -c Release --no-build

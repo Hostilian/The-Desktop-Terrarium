@@ -1,117 +1,67 @@
 # ============================================
-# .NET / C# Build Outputs
+# Build Outputs
 # ============================================
 [Bb]in/
 [Oo]bj/
 [Dd]ebug/
 [Rr]elease/
-x64/
-x86/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]uild/
 publish/
 publish-integrity/
 release_build/
-release_final/
+*.exe
+*.dll
+*.pdb
 
+# ============================================
 # Test Results
+# ============================================
 [Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
 *.trx
 *.coverage
-*.coveragexml
 
 # ============================================
-# User-Specific Files
+# User Settings
 # ============================================
-*.suo
 *.user
-*.userosscache
-*.sln.docstates
-*.userprefs
+*.suo
 terrarium_settings.json
 
 # ============================================
 # Python
 # ============================================
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
+*.pyc
 .pytest_cache/
 
 # ============================================
-# IDEs and Editors
+# IDEs
 # ============================================
 .vscode/
+.vs/
 .idea/
 *.swp
-*.swo
-*~
-.DS_Store
-
-# Visual Studio
-.vs/
-*.rsuser
-*.suo
-*.sln.DotSettings.user
 
 # ============================================
-# Operating System
+# OS
 # ============================================
 Thumbs.db
 Desktop.ini
 .DS_Store
-.AppleDouble
-.LSOverride
 
 # ============================================
-# Logs and Databases
+# Logs
 # ============================================
 *.log
-*.sqlite
-*.db
 
+# ===========================================
+# Cleanup Scripts (temporary)
 # ============================================
-# Temporary / Cache Files
-# ============================================
-*.tmp
-*.temp
-*.cache
-*.bak
-*.swp
-
-# ============================================
-# Packages
-# ============================================
-*.nupkg
-*.snupkg
-*.zip
-*.7z
-*.tar.gz
-
-# ============================================
-# Legacy/Redundant Folders
-# ============================================
-Unci/
-Unciv/
-The-Powder-Toy/
-60%
-
-# ============================================
-# IDE/Editor Specific
-# ============================================
-.claude/
-
-# ============================================
-# Node (if you ever add frontend tools)
-# ============================================
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+BFG_CLEANUP.*
+CLEANUP.md
+MANUAL_FIX_COMMANDS.md
+NUCLEAR_FIX.bat
+remove_large_files.bat
+restructure*.bat
+restructure*.ps1
+force_restructure.bat
+create_release.bat

@@ -5,7 +5,8 @@
 [![GitHub Pages](https://img.shields.io/badge/Play-Online-brightgreen)](https://hostilian.github.io/The-Desktop-Terrarium/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## 🎮 Play Online
+## 🎮 Play Online,
+but so far website is not finished. For the experience pls Clone/build/run locally
 
 **[→ Play in your browser](https://hostilian.github.io/The-Desktop-Terrarium/)**
 

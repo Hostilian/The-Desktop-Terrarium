@@ -1,219 +1,399 @@
+/* ============================================
+   Premium Desktop Terrarium Styles
+   ============================================ */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
-    color: #333;
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --accent: #f093fb;
+    --dark: #0f0f23;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --glass: rgba(255, 255, 255, 0.1);
 }
 
-.container {
-    max-width: 1200px;
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ============================================
+   Particle Background
+   ============================================ */
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.hero-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-shadow: 0 0 80px rgba(240, 147, 251, 0.5);
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    margin-bottom: 40px;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.cta-button {
+    padding: 18px 48px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 40px rgba(245, 87, 108, 0.4);
+}
+
+.cta-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 20px 60px rgba(245, 87, 108, 0.6);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: bounce 2s infinite;
+}
+
+.scroll-line {
+    width: 2px;
+    height: 40px;
+    background: linear-gradient(to bottom, white, transparent);
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ============================================
+   Games Section
+   ============================================ */
+
+.games-section {
+    position: relative;
+    min-height: 100vh;
+    padding: 100px 20px;
+    z-index: 1;
+}
+
+.section-title {
+    text-align: center;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 80px;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Hero Section */
-.hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 120px 20px;
-    text-align: center;
+/* ============================================
+   Game Cards with Glassmorphism
+   ============================================ */
+
+.game-card {
+    position: relative;
+    height: 480px;
+    border-radius: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.hero-content h1 {
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+.game-card:hover {
+    transform: translateY(-15px);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
-.tagline {
-    font-size: 1.5rem;
-    margin-bottom: 40px;
-    opacity: 0.95;
+.card-background {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(102, 126, 234, 0.2),
+            rgba(118, 75, 162, 0.2));
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-.cta-buttons {
+.game-card:hover .card-background {
+    opacity: 1;
+}
+
+.card-glow {
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+}
+
+.game-card:hover .card-glow {
+    opacity: 0.6;
+}
+
+.card-content {
+    position: relative;
+    height: 100%;
+    padding: 40px;
     display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.btn {
-    display: inline-flex;
+.card-icon {
+    font-size: 5rem;
+    text-align: center;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s;
+}
+
+.game-card:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.card-description {
+    font-size: 1rem;
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat {
+    display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px 35px;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.stat-icon {
+    font-size: 1.1rem;
+}
+
+.play-button {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border: none;
+    border-radius: 12px;
+    color: white;
     font-size: 1.1rem;
     font-weight: 600;
-    text-decoration: none;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
 }
 
-.btn-primary {
-    background: white;
-    color: #667eea;
+.play-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(245, 87, 108, 0.6);
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+.arrow-icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: white;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s;
 }
 
-.btn-secondary {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 2px solid white;
+.play-button:hover .arrow-icon {
+    transform: translateX(4px);
 }
 
-.btn-secondary:hover {
-    background: white;
-    color: #667eea;
-    transform: translateY(-2px);
+/* ============================================
+   Game Container
+   ============================================ */
+
+.game-container {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Features Section */
-.features {
-    padding: 80px 20px;
-    background: #f8f9fa;
+.game-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.9);
 }
 
-.features h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 60px;
-    color: #2d3748;
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
-.widget-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+.game-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
 }
 
-.widget-card {
-    background: white;
+.back-btn,
+.fullscreen-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-    transition: all 0.3s ease;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.widget-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+.back-btn:hover,
+.fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
 }
 
-.widget-icon {
-    width: 80px;
-    height: 80px;
+.back-btn svg,
+.fullscreen-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: white;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.game-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 40px;
+}
+
+.game-screen.active {
+    display: flex;
+}
+
+canvas {
+    background: #2d3748;
     border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-.widget-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #2d3748;
-}
-
-.widget-card p {
-    color: #718096;
-    font-size: 0.95rem;
-}
-
-/* Download Section */
-.download {
-    padding: 80px 20px;
-    background: white;
-}
-
-.download h2 {
+.game-info {
+    margin-top: 32px;
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 60px;
-    color: #2d3748;
+    font-size: 1.2rem;
 }
 
-.install-steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 40px;
-    margin-top: 40px;
+.game-info p {
+    margin: 12px 0;
 }
 
-.step {
-    text-align: center;
-}
+/* ============================================
+   Responsive
+   ============================================ */
 
-.step-number {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 auto 20px;
-}
-
-.step h3 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    color: #2d3748;
-}
-
-.step code {
-    display: block;
-    background: #2d3748;
-    color: #a0aec0;
-    padding: 15px 20px;
-    border-radius: 8px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    overflow-x: auto;
-}
-
-/* Footer */
-footer {
-    background: #2d3748;
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-}
-
-footer p {
-    margin: 5px 0;
-    opacity: 0.8;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
-    .tagline {
-        font-size: 1.2rem;
-    }
-
-    .widget-grid {
+    .games-grid {
         grid-template-columns: 1fr;
+    }
+
+    .game-card {
+        height: 420px;
     }
 }

@@ -225,7 +225,7 @@ public class SpeedIndicator
         UpdatePosition();
     }
 
-    private Color GetSpeedColor(double speed)
+    private static Color GetSpeedColor(double speed)
     {
         if (speed < 0.8)
         {

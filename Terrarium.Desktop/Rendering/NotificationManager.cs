@@ -272,7 +272,7 @@ public class NotificationManager
         border.BeginAnimation(Canvas.LeftProperty, animation);
     }
 
-    private Brush GetNotificationBackground(NotificationType type)
+    private static Brush GetNotificationBackground(NotificationType type)
     {
         return type switch
         {

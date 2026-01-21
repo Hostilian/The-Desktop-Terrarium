@@ -107,4 +107,10 @@ public static class GodPowerConstants
     /// Creates new aquatic zones without flooding everything.
     /// </summary>
     public const int FLOOD_AREA_COUNT = 10;
+
+    /// <summary>
+    /// Health multiplier applied to creatures during weakness curse.
+    /// Reduces health to simulate weakness.
+    /// </summary>
+    public const double WEAKNESS_HEALTH_MULTIPLIER = 0.5;
 }

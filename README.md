@@ -5,12 +5,16 @@
 [![GitHub Pages](https://img.shields.io/badge/Play-Online-brightgreen)](https://hostilian.github.io/The-Desktop-Terrarium/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## 🎮 Play Online,
-but so far website is not finished. For the experience pls Clone/build/run locally
+## 🎮 Play Online
 
 **[→ Play in your browser](https://hostilian.github.io/The-Desktop-Terrarium/)**
 
-Experience Snake, 2048, and T-Rex Runner with stunning animations and fullscreen support!
+Experience 5 classic games with stunning animations and fullscreen support:
+- 🐍 **Snake** - Classic arcade action
+- 🎯 **2048** - Addictive puzzle game  
+- 🦖 **T-Rex Runner** - Endless running fun
+- 🎮 **Tetris** - Block stacking perfection
+- 👻 **Pacman** - Navigate the maze!
 
 ## 🖥️ Desktop Application
 
@@ -29,7 +33,7 @@ git clone https://github.com/Hostilian/The-Desktop-Terrarium.git
 
 - **Live Sandbox** - Particle physics simulation
 - **Civilization Builder** - 4X strategy game
-- **Classic Games** - 2048, Tetris, Snake, T-Rex Runner, Pacman
+- **Classic Games** - Snake, 2048, T-Rex Runner, Tetris, Pacman
 - **Beautiful UI** - Modern WPF interface with animations
 
 ## 📁 Project Structure

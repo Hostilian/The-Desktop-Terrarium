@@ -12,7 +12,7 @@ on:
 env:
   DOTNET_VERSION: '8.0.x'
   PYTHON_VERSION: '3.11'
-  SOLUTION_FILE: 'DesktopTerrarium.sln'
+  SOLUTION_FILE: 'src/DesktopTerrarium.sln'
 
 jobs:
   # Build and Test Job

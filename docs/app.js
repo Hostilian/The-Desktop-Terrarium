@@ -8,20 +8,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     });
 });
 
-// Add more floating particles dynamically
-const particlesContainer = document.querySelector('.floating-particles');
-if (particlesContainer) {
-    for (let i = 0; i < 10; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        particle.style.animationDelay = `${Math.random() * 5}s`;
-        particle.style.animationDuration = `${10 + Math.random() * 10}s`;
-        particlesContainer.appendChild(particle);
-    }
-}
-
 // IntersectionObserver for scroll-triggered animations
 const observerOptions = {
     root: null,

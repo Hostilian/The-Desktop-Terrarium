@@ -68,21 +68,21 @@ public class GodPowerConstantsTests
     [TestMethod]
     public void FertilityBlessingDuration_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS > 0,
+        Assert.IsGreaterThan(GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS, 0.0,
             "Fertility duration must be positive");
     }
 
     [TestMethod]
     public void AbundancePlantCount_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.ABUNDANCE_PLANT_COUNT > 0,
+        Assert.IsGreaterThan(GodPowerConstants.ABUNDANCE_PLANT_COUNT, 0,
             "Abundance plant count must be positive");
     }
 
     [TestMethod]
     public void CorruptionTargetCount_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.CORRUPTION_TARGET_COUNT > 0,
+        Assert.IsGreaterThan(GodPowerConstants.CORRUPTION_TARGET_COUNT, 0,
             "Corruption target count must be positive");
     }
 }

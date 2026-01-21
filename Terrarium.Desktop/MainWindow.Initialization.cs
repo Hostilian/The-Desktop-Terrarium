@@ -33,7 +33,6 @@ public partial class MainWindow
             Environment.Exit(1);
             return;
         }
-        InitializeSaveSystem();
         InitializeSystemMonitoring();
         InitializeSoundSystem();
         StartSimulation();

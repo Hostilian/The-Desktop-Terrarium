@@ -36,7 +36,9 @@ public partial class MainWindow : Window
     private SystemMonitor? _systemMonitor;
     private SaveManager? _saveManager;
     private SoundManager? _soundManager;
+#pragma warning disable CS0169 // _godPowerService is reserved for future god powers functionality
     private GodPowerService? _godPowerService;
+#pragma warning restore CS0169
 
     // Win32 hit testing constants
     private const int WmNcHitTest = Win32Constants.WM_NC_HITTEST;
@@ -635,6 +637,7 @@ public partial class MainWindow : Window
 
     private static System.Windows.Shapes.Rectangle CreateFactionColorIndicator(string color)
     {
+#pragma warning disable CS8604 // color is guaranteed to be non-null from faction initialization
         return new System.Windows.Shapes.Rectangle
         {
             Width = 12,
@@ -642,10 +645,12 @@ public partial class MainWindow : Window
             Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)),
             Margin = new Thickness(0, 0, 5, 0)
         };
+#pragma warning restore CS8604
     }
 
     private static TextBlock CreateFactionText(string name, int population)
     {
+#pragma warning disable CS8604 // name is guaranteed to be non-null from faction initialization
         return new TextBlock
         {
             Text = $"{name}: {population}",
@@ -653,6 +658,7 @@ public partial class MainWindow : Window
             FontSize = 10,
             VerticalAlignment = VerticalAlignment.Center
         };
+#pragma warning restore CS8604
     }
 
 

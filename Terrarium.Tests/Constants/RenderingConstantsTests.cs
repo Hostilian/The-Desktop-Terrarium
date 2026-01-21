@@ -56,7 +56,7 @@ public class RenderingConstantsTests
     [TestMethod]
     public void SystemMonitorUpdateInterval_ShouldBeSlowerThanRenderInterval()
     {
-        Assert.IsTrue(RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS > RenderingConstants.RENDER_INTERVAL_MS,
+        Assert.IsGreaterThan(RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS, RenderingConstants.RENDER_INTERVAL_MS,
             "System monitor should update slower than rendering to save CPU");
     }
 }

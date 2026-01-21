@@ -237,6 +237,7 @@ public partial class MainWindow : Window
 
         var random = new Random();
         var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        int infectedCount = 0;
 
         if (allCreatures.Count == 0)
         {
@@ -476,51 +477,54 @@ public partial class MainWindow : Window
 
     private void ApplySettings(SettingsDialog settings)
     {
-        // Apply sound settings
-        if (_soundManager != null)
-        {
-            _soundManager.IsEnabled = settings.EnableSound;
-            _soundManager.MasterVolume = settings.MasterVolume;
-            if (!settings.EnableAmbientMusic)
-            {
-                _soundManager.SetMuted(true);
-            }
-            else
-            {
-                _soundManager.SetMuted(false);
-            }
-        }
+        ApplySoundSettings(settings);
+        ApplyDisplaySettings(settings);
+        ApplyRendererSettings(settings);
+        ApplySimulationSpeedSettings(settings);
+        CheckAndNotifyRestartRequirements(settings);
+    }
 
-        // Apply display settings - Transparency changes require restart
-        if (settings.TransparentBackground != (AllowsTransparency && Background == Brushes.Transparent))
-        {
-            MessageBox.Show("Transparency changes will take effect after restarting the application.", "Settings Applied - Restart Required");
-            // Don't try to change AllowsTransparency at runtime - this causes crashes
-            // The setting will be applied on next startup
-        }
+    private void ApplySoundSettings(SettingsDialog settings)
+    {
+        if (_soundManager == null) return;
 
-        // Apply renderer settings
+        _soundManager.IsEnabled = settings.EnableSound;
+        _soundManager.MasterVolume = settings.MasterVolume;
+        _soundManager.SetMuted(!settings.EnableAmbientMusic);
+    }
+
+    private void ApplyDisplaySettings(SettingsDialog settings)
+    {
+        bool transparencyChanged = settings.TransparentBackground != (AllowsTransparency && Background == Brushes.Transparent);
+        
+        if (transparencyChanged)
+        {
+            MessageBox.Show(
+                "Transparency changes will take effect after restarting the application.", 
+                "Settings Applied - Restart Required");
+        }
+    }
+
+    private void ApplyRendererSettings(SettingsDialog settings)
+    {
         _renderer?.SetRenderQuality(settings.RenderQuality);
         _renderer?.SetShowScenery(settings.ShowScenery);
         _renderer?.SetShowShadows(settings.ShowEntityShadows);
+    }
 
-        // Apply simulation speed
-        if (double.TryParse(settings.SimulationSpeed.Replace("x", ""), out double speed))
+    private void ApplySimulationSpeedSettings(SettingsDialog settings)
+    {
+        if (!double.TryParse(settings.SimulationSpeed.Replace("x", ""), out double speed))
         {
-            _simulationEngine?.SetSimulationSpeed(speed);
-            _simulationSpeed = speed;
-            // Speed UI elements removed in god simulator UI
-            // if (SpeedText != null)
-            // {
-            //     SpeedText.Text = $"Speed: {_simulationSpeed:F1}x";
-            // }
-            // if (SpeedSlider != null)
-            // {
-            //     SpeedSlider.Value = _simulationSpeed;
-            // }
+            return;
         }
 
-        // Note: Some changes require restart
+        _simulationEngine?.SetSimulationSpeed(speed);
+        _simulationSpeed = speed;
+    }
+
+    private void CheckAndNotifyRestartRequirements(SettingsDialog settings)
+    {
         bool requiresRestart = false;
         string restartReasons = "";
 
@@ -538,7 +542,9 @@ public partial class MainWindow : Window
 
         if (requiresRestart)
         {
-            MessageBox.Show($"The following changes will take effect after restart:\n\n{restartReasons}", "Settings Applied");
+            MessageBox.Show(
+                $"The following changes will take effect after restart:\n\n{restartReasons}", 
+                "Settings Applied");
         }
     }
 

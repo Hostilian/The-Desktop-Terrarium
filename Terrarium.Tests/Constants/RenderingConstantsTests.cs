@@ -19,7 +19,7 @@ public class RenderingConstantsTests
     [TestMethod]
     public void DefaultRenderFps_ShouldBePositive()
     {
-        Assert.IsTrue(RenderingConstants.DEFAULT_RENDER_FPS > 0,
+        Assert.IsGreaterThan(0, RenderingConstants.DEFAULT_RENDER_FPS,
             "FPS must be positive");
     }
 
@@ -49,14 +49,14 @@ public class RenderingConstantsTests
     [TestMethod]
     public void SystemMonitorUpdateInterval_ShouldBePositive()
     {
-        Assert.IsTrue(RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS > 0,
+        Assert.IsGreaterThan(0.0, RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS,
             "System monitor interval must be positive");
     }
 
     [TestMethod]
     public void SystemMonitorUpdateInterval_ShouldBeSlowerThanRenderInterval()
     {
-        Assert.IsGreaterThan(RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS, RenderingConstants.RENDER_INTERVAL_MS,
+        Assert.IsGreaterThan(RenderingConstants.RENDER_INTERVAL_MS, RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS,
             "System monitor should update slower than rendering to save CPU");
     }
 }

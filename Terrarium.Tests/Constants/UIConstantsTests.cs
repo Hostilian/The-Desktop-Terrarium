@@ -12,28 +12,28 @@ public class UIConstantsTests
     [TestMethod]
     public void EntityClickTolerance_ShouldBePositive()
     {
-        Assert.IsTrue(UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS > 0,
+        Assert.IsGreaterThan(0, UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS,
             "Click tolerance must be positive");
     }
 
     [TestMethod]
     public void CreatureClickTolerance_ShouldBePositive()
     {
-        Assert.IsTrue(UIConstants.CREATURE_CLICK_TOLERANCE_PIXELS > 0,
+        Assert.IsGreaterThan(0, UIConstants.CREATURE_CLICK_TOLERANCE_PIXELS,
             "Creature click tolerance must be positive");
     }
 
     [TestMethod]
     public void CreatureClickTolerance_ShouldBeSmallerThanEntityTolerance()
     {
-        Assert.IsTrue(UIConstants.CREATURE_CLICK_TOLERANCE_PIXELS < UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS,
+        Assert.IsLessThan(UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS, UIConstants.CREATURE_CLICK_TOLERANCE_PIXELS,
             "Creature tolerance should be smaller than general entity tolerance for precision");
     }
 
     [TestMethod]
     public void SimulationSpeedPresets_ShouldNotBeEmpty()
     {
-        Assert.IsTrue(UIConstants.SIMULATION_SPEED_PRESETS.Length > 0,
+        Assert.IsNotEmpty(UIConstants.SIMULATION_SPEED_PRESETS,
             "Must have at least one speed preset");
     }
 
@@ -59,7 +59,7 @@ public class UIConstantsTests
     {
         foreach (var speed in UIConstants.SIMULATION_SPEED_PRESETS)
         {
-            Assert.IsGreaterThan(speed, 0.0, $"Speed preset {speed} must be positive");
+            Assert.IsGreaterThan(0.0, speed, $"Speed preset {speed} must be positive");
         }
     }
 }

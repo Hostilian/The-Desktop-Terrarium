@@ -12,77 +12,77 @@ public class GodPowerConstantsTests
     [TestMethod]
     public void LightningStrikeDamage_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.LIGHTNING_STRIKE_DAMAGE > 0, 
+        Assert.IsGreaterThan(0.0, GodPowerConstants.LIGHTNING_STRIKE_DAMAGE, 
             "Lightning damage must be positive");
     }
 
     [TestMethod]
     public void LightningStrikeTargetCount_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.LIGHTNING_STRIKE_TARGET_COUNT > 0,
+        Assert.IsGreaterThan(0, GodPowerConstants.LIGHTNING_STRIKE_TARGET_COUNT,
             "Lightning target count must be positive");
     }
 
     [TestMethod]
     public void MeteorBaseDamage_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.METEOR_BASE_DAMAGE > 0,
+        Assert.IsGreaterThan(0.0, GodPowerConstants.METEOR_BASE_DAMAGE,
             "Meteor damage must be positive");
     }
 
     [TestMethod]
     public void MeteorShowerCount_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.METEOR_SHOWER_COUNT > 0,
+        Assert.IsGreaterThan(0, GodPowerConstants.METEOR_SHOWER_COUNT,
             "Meteor count must be positive");
     }
 
     [TestMethod]
     public void MeteorImpactRadius_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.METEOR_IMPACT_RADIUS_PIXELS > 0,
+        Assert.IsGreaterThan(0.0, GodPowerConstants.METEOR_IMPACT_RADIUS_PIXELS,
             "Meteor radius must be positive");
     }
 
     [TestMethod]
     public void PlagueInitialDamage_ShouldBePositive()
     {
-        Assert.IsGreaterThan(GodPowerConstants.PLAGUE_INITIAL_DAMAGE, 0.0,
+        Assert.IsGreaterThan(0.0, GodPowerConstants.PLAGUE_INITIAL_DAMAGE,
             "Plague damage must be positive");
     }
 
     [TestMethod]
     public void PlaguInfectionCount_ShouldBePositive()
     {
-        Assert.IsGreaterThan(GodPowerConstants.PLAGUE_INFECTION_COUNT, 0,
+        Assert.IsGreaterThan(0, GodPowerConstants.PLAGUE_INFECTION_COUNT,
             "Plague infection count must be positive");
     }
 
     [TestMethod]
     public void FertilityBlessingMultiplier_ShouldBeGreaterThanOne()
     {
-        Assert.IsGreaterThan(GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER, 1.0,
+        Assert.IsGreaterThan(1.0, GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER,
             "Fertility multiplier must be greater than 1 to increase reproduction");
     }
 
     [TestMethod]
     public void FertilityBlessingDuration_ShouldBePositive()
     {
-        Assert.IsGreaterThan(GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS, 0.0,
+        Assert.IsGreaterThan(0.0, GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS,
             "Fertility duration must be positive");
     }
 
     [TestMethod]
     public void AbundancePlantCount_ShouldBePositive()
     {
-        Assert.IsGreaterThan(GodPowerConstants.ABUNDANCE_PLANT_COUNT, 0,
+        Assert.IsGreaterThan(0, GodPowerConstants.ABUNDANCE_PLANT_COUNT,
             "Abundance plant count must be positive");
     }
 
     [TestMethod]
     public void CorruptionTargetCount_ShouldBePositive()
     {
-        Assert.IsGreaterThan(GodPowerConstants.CORRUPTION_TARGET_COUNT, 0,
+        Assert.IsGreaterThan(0, GodPowerConstants.CORRUPTION_TARGET_COUNT,
             "Corruption target count must be positive");
     }
 }

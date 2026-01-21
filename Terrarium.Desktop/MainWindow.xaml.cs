@@ -8,6 +8,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Terrarium.Desktop.Constants;
+using Terrarium.Desktop.Services;
 using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Persistence;
@@ -35,6 +36,7 @@ public partial class MainWindow : Window
     private SystemMonitor? _systemMonitor;
     private SaveManager? _saveManager;
     private SoundManager? _soundManager;
+    private GodPowerService? _godPowerService;
 
     // Win32 hit testing constants
     private const int WmNcHitTest = Win32Constants.WM_NC_HITTEST;

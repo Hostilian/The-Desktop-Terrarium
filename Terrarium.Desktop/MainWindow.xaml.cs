@@ -629,15 +629,16 @@ public partial class MainWindow : Window
             Margin = new Thickness(0, 2, 0, 2)
         };
 
+#pragma warning disable CS8604 // faction.Color and faction.Name are guaranteed to be non-null from faction initialization
         panel.Children.Add(CreateFactionColorIndicator(faction.Color));
         panel.Children.Add(CreateFactionText(faction.Name, faction.Population));
+#pragma warning restore CS8604
 
         return panel;
     }
 
     private static System.Windows.Shapes.Rectangle CreateFactionColorIndicator(string color)
     {
-#pragma warning disable CS8604 // color is guaranteed to be non-null from faction initialization
         return new System.Windows.Shapes.Rectangle
         {
             Width = 12,
@@ -645,12 +646,10 @@ public partial class MainWindow : Window
             Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)),
             Margin = new Thickness(0, 0, 5, 0)
         };
-#pragma warning restore CS8604
     }
 
     private static TextBlock CreateFactionText(string name, int population)
     {
-#pragma warning disable CS8604 // name is guaranteed to be non-null from faction initialization
         return new TextBlock
         {
             Text = $"{name}: {population}",
@@ -658,7 +657,6 @@ public partial class MainWindow : Window
             FontSize = 10,
             VerticalAlignment = VerticalAlignment.Center
         };
-#pragma warning restore CS8604
     }
 
 

@@ -14,13 +14,14 @@ namespace Terrarium.Desktop;
 public partial class MainWindow
 {
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         PositionWindowAtBottom();
         InitializeSimulation();
         // Set theme based on terrarium type
         SetTheme();
         UpdateGodPowersVisibility(); // Control which god powers are visible based on mode
+        await InitializeSaveSystem();
         try
         {
             InitializeRendering();
@@ -154,7 +155,7 @@ public partial class MainWindow
         _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
     }
 
-    private void InitializeSaveSystem()
+    private async Task InitializeSaveSystem()
     {
         _saveManager = new SaveManager();
         if (!_saveManager.SaveFileExists())
@@ -164,7 +165,7 @@ public partial class MainWindow
 
         try
         {
-            var loadedWorld = _saveManager.LoadWorld();
+            var loadedWorld = await _saveManager.LoadWorldAsync();
             if (_simulationEngine != null)
             {
                 _simulationEngine = new SimulationEngine(loadedWorld);

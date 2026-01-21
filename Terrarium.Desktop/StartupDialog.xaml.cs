@@ -12,7 +12,7 @@ namespace Terrarium.Desktop;
 /// </summary>
 public partial class StartupDialog : Window
 {
-    public string SelectedTerrariumType { get; private set; } = "LiveSandbox"; // Default to a widget
+    public string? SelectedTerrariumType { get; private set; } = "LiveSandbox"; // Default to a widget
 
     public ObservableCollection<TerrariumTypeOption> Options { get; set; } = new ObservableCollection<TerrariumTypeOption>();
 
@@ -152,7 +152,9 @@ public partial class StartupDialog : Window
     private void StartButton_Click(object sender, RoutedEventArgs e)
     {
         // Try getting selection from ComboBox named 'TerrariumComboBox'
+#pragma warning disable CS8600 // Suppress null literal warning for object initialization
         object selectedItem = null;
+#pragma warning restore CS8600
         
         // Find ComboBox in visual tree if needed, or binding
         // Assuming we bind SelectedItem in XAML to a property, or verify accessing it directly.

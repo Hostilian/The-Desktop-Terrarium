@@ -51,6 +51,14 @@ public class SystemMonitor : IDisposable
         }
     }
 
+    /// <summary>
+    /// Gets current memory usage in MB.
+    /// </summary>
+    public double GetMemoryUsageMB()
+    {
+        return GC.GetTotalMemory(false) / (1024.0 * 1024.0);
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -61,4 +69,3 @@ public class SystemMonitor : IDisposable
         _cpuCounter?.Dispose();
         _disposed = true;
     }
-}

@@ -76,8 +76,8 @@
 
                 <!-- Time Controls -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="PlayPauseButton" Content="⏸️" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PlayPauseButton_Click"/>
-                    <Button x:Name="SpeedButton" Content="1x" Style="{StaticResource CleanButton}" Width="50" Height="40" Click="SpeedButton_Click"/>
+                    <Button x:Name="PlayPauseButton" Content="⏸️" ToolTip="Play/Pause Simulation" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PlayPauseButton_Click" AutomationProperties.Name="Play Pause Simulation" AutomationProperties.HelpText="Toggle simulation playback" IsTabStop="True"/>
+                    <Button x:Name="SpeedButton" Content="1x" ToolTip="Simulation Speed" Style="{StaticResource CleanButton}" Width="50" Height="40" Click="SpeedButton_Click" AutomationProperties.Name="Simulation Speed" AutomationProperties.HelpText="Change simulation speed multiplier" IsTabStop="True"/>
                 </StackPanel>
 
                 <!-- Population Bars -->
@@ -91,12 +91,21 @@
                     <Canvas x:Name="MinimapCanvas" Background="Transparent"/>
                 </Border>
 
+                <!-- Performance Monitor -->
+                <Border Grid.Column="3" Background="#22000000" BorderBrush="{StaticResource PanelBorder}" BorderThickness="1" CornerRadius="4" Margin="10,0" Padding="5">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Performance" Foreground="{StaticResource TextColor}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="FpsTextBlock" Text="FPS: --" Foreground="{StaticResource TextColor}" FontSize="9" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="MemoryTextBlock" Text="MEM: -- MB" Foreground="{StaticResource TextColor}" FontSize="9" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
                 <!-- Window Controls -->
-                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Top">
-                    <Button Content="⚙️" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="SettingsButton_Click"/>
-                    <Button Content="📊" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="StatsButton_Click"/>
-                    <Button Content="📜" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="ChronicleButton_Click"/>
-                    <Button Content="❌" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="CloseButton_Click"/>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Button Content="⚙️" ToolTip="Settings" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="SettingsButton_Click" AutomationProperties.Name="Settings" AutomationProperties.HelpText="Open settings dialog" IsTabStop="True"/>
+                    <Button Content="📊" ToolTip="Statistics" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="StatsButton_Click" AutomationProperties.Name="Statistics" AutomationProperties.HelpText="View simulation statistics" IsTabStop="True"/>
+                    <Button Content="📜" ToolTip="Chronicle" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="ChronicleButton_Click" AutomationProperties.Name="Chronicle" AutomationProperties.HelpText="View event chronicle" IsTabStop="True"/>
+                    <Button Content="❌" ToolTip="Close" Style="{StaticResource CleanButton}" Width="30" Height="30" Click="CloseButton_Click" AutomationProperties.Name="Close Application" AutomationProperties.HelpText="Close the application" IsTabStop="True"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -117,9 +126,9 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,20,0">
                         <TextBlock Text="Creation" Foreground="{StaticResource AccentColor}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🌱" ToolTip="Spawn Plant" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnPlantButton_Click"/>
-                            <Button Content="🐰" ToolTip="Spawn Herbivore" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnHerbivoreButton_Click"/>
-                            <Button Content="🐺" ToolTip="Spawn Carnivore" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnCarnivoreButton_Click"/>
+                            <Button Content="🌱" ToolTip="Spawn Plant" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnPlantButton_Click" AutomationProperties.Name="Spawn Plant" AutomationProperties.HelpText="Create a new plant at random location" IsTabStop="True"/>
+                            <Button Content="🐰" ToolTip="Spawn Herbivore" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnHerbivoreButton_Click" AutomationProperties.Name="Spawn Herbivore" AutomationProperties.HelpText="Create a new herbivore creature" IsTabStop="True"/>
+                            <Button Content="🐺" ToolTip="Spawn Carnivore" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="SpawnCarnivoreButton_Click" AutomationProperties.Name="Spawn Carnivore" AutomationProperties.HelpText="Create a new carnivore creature" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -127,9 +136,9 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,20,0">
                         <TextBlock Text="Destruction" Foreground="#FF4444" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="⚡" ToolTip="Lightning Strike" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="LightningStrikeButton_Click"/>
-                            <Button Content="☄️" ToolTip="Meteor Shower" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="MeteorShowerButton_Click"/>
-                            <Button Content="💀" ToolTip="Plague" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PlagueButton_Click"/>
+                            <Button Content="⚡" ToolTip="Lightning Strike" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="LightningStrikeButton_Click" AutomationProperties.Name="Lightning Strike" AutomationProperties.HelpText="Strike random creatures with lightning" IsTabStop="True"/>
+                            <Button Content="☄️" ToolTip="Meteor Shower" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="MeteorShowerButton_Click" AutomationProperties.Name="Meteor Shower" AutomationProperties.HelpText="Rain meteors on the world" IsTabStop="True"/>
+                            <Button Content="💀" ToolTip="Plague" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PlagueButton_Click" AutomationProperties.Name="Plague" AutomationProperties.HelpText="Spread disease among creatures" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -137,9 +146,9 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,20,0">
                         <TextBlock Text="Blessing" Foreground="#44FF44" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🌸" ToolTip="Fertility Blessing" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FertilityBlessingButton_Click"/>
-                            <Button Content="🍎" ToolTip="Abundance" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="AbundanceButton_Click"/>
-                            <Button Content="🛡️" ToolTip="Divine Protection" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="DivineProtectionButton_Click"/>
+                            <Button Content="🌸" ToolTip="Fertility Blessing" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FertilityBlessingButton_Click" AutomationProperties.Name="Fertility Blessing" AutomationProperties.HelpText="Increase reproduction rates" IsTabStop="True"/>
+                            <Button Content="🍎" ToolTip="Abundance" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="AbundanceButton_Click" AutomationProperties.Name="Abundance" AutomationProperties.HelpText="Increase food availability" IsTabStop="True"/>
+                            <Button Content="🛡️" ToolTip="Divine Protection" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="DivineProtectionButton_Click" AutomationProperties.Name="Divine Protection" AutomationProperties.HelpText="Heal all creatures to full health" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -147,11 +156,11 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,20,0">
                         <TextBlock Text="Curse" Foreground="#FF4444" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🏜️" ToolTip="Famine" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FamineButton_Click"/>
-                            <Button Content="😵" ToolTip="Madness" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="MadnessButton_Click"/>
-                            <Button Content="🕳️" ToolTip="Stagnation" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="StagnationButton_Click"/>
-                            <Button Content="💪" ToolTip="Weakness" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="WeaknessButton_Click"/>
-                            <Button Content="😈" ToolTip="Corruption" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="CorruptionButton_Click"/>
+                            <Button Content="🏜️" ToolTip="Famine" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FamineButton_Click" AutomationProperties.Name="Famine" AutomationProperties.HelpText="Reduce food availability temporarily" IsTabStop="True"/>
+                            <Button Content="😵" ToolTip="Madness" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="MadnessButton_Click" AutomationProperties.Name="Madness" AutomationProperties.HelpText="Cause creatures to move erratically" IsTabStop="True"/>
+                            <Button Content="🕳️" ToolTip="Stagnation" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="StagnationButton_Click" AutomationProperties.Name="Stagnation" AutomationProperties.HelpText="Freeze all creatures in place" IsTabStop="True"/>
+                            <Button Content="💪" ToolTip="Weakness" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="WeaknessButton_Click" AutomationProperties.Name="Weakness" AutomationProperties.HelpText="Reduce creatures' health" IsTabStop="True"/>
+                            <Button Content="😈" ToolTip="Corruption" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="CorruptionButton_Click" AutomationProperties.Name="Corruption" AutomationProperties.HelpText="Corrupt creatures' behavior" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -159,9 +168,9 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,20,0">
                         <TextBlock Text="Environment" Foreground="#4444FF" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🏔️" ToolTip="Change Biome" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="ChangeBiomeButton_Click"/>
-                            <Button Content="🌤️" ToolTip="Change Season" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="ChangeSeasonButton_Click"/>
-                            <Button Content="🌊" ToolTip="Flood" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FloodButton_Click"/>
+                            <Button Content="🏔️" ToolTip="Change Biome" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="ChangeBiomeButton_Click" AutomationProperties.Name="Change Biome" AutomationProperties.HelpText="Cycle through different biomes" IsTabStop="True"/>
+                            <Button Content="🌤️" ToolTip="Change Season" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="ChangeSeasonButton_Click" AutomationProperties.Name="Change Season" AutomationProperties.HelpText="Cycle through seasons" IsTabStop="True"/>
+                            <Button Content="🌊" ToolTip="Flood" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="FloodButton_Click" AutomationProperties.Name="Flood" AutomationProperties.HelpText="Flood the world with water" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -169,10 +178,10 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Painting" Foreground="#FFFFFF" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🌱" ToolTip="Paint Life (Growth)" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintLifeButton_Click"/>
-                            <Button Content="💀" ToolTip="Paint Death (Void)" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintDeathButton_Click"/>
-                            <Button Content="🪨" ToolTip="Paint Stone" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintStoneButton_Click"/>
-                            <Button Content="🌊" ToolTip="Paint Water" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintWaterButton_Click"/>
+                            <Button Content="🌱" ToolTip="Paint Life (Growth)" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintLifeButton_Click" AutomationProperties.Name="Paint Life" AutomationProperties.HelpText="Paint to create life" IsTabStop="True"/>
+                            <Button Content="💀" ToolTip="Paint Death (Void)" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintDeathButton_Click" AutomationProperties.Name="Paint Death" AutomationProperties.HelpText="Paint to destroy life" IsTabStop="True"/>
+                            <Button Content="🪨" ToolTip="Paint Stone" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintStoneButton_Click" AutomationProperties.Name="Paint Stone" AutomationProperties.HelpText="Paint stone terrain" IsTabStop="True"/>
+                            <Button Content="🌊" ToolTip="Paint Water" Style="{StaticResource CleanButton}" Width="40" Height="40" Click="PaintWaterButton_Click" AutomationProperties.Name="Paint Water" AutomationProperties.HelpText="Paint water terrain" IsTabStop="True"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

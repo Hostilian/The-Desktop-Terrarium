@@ -54,6 +54,16 @@ public partial class MainWindow
             _currentFps = _frameCount / _fpsAccumulator;
             _frameCount = 0;
             _fpsAccumulator = 0;
+
+            // Update UI
+            Dispatcher.Invoke(() =>
+            {
+                FpsTextBlock.Text = $"FPS: {_currentFps:F1}";
+                if (_systemMonitor != null)
+                {
+                    MemoryTextBlock.Text = $"MEM: {_systemMonitor.GetMemoryUsageMB():F1} MB";
+                }
+            });
         }
     }
 

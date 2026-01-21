@@ -49,6 +49,11 @@ public partial class MainWindow : Window
     private double _fpsAccumulator;
     private double _currentFps;
 
+    /// <summary>
+    /// Gets the current FPS for display.
+    /// </summary>
+    public double CurrentFps => _currentFps;
+
     // God painting mode
     private GodPaintMode _godPaintMode = GodPaintMode.None;
 

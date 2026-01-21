@@ -100,6 +100,48 @@
                 </div>
                 <div class="card-glow"></div>
             </div>
+
+            <!-- Tetris Card -->
+            <div class="game-card" data-game="tetris" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">🎮</div>
+                    <h3 class="card-title">Tetris</h3>
+                    <p class="card-description">Classic block stacking puzzle perfection</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Medium</span>
+                        <span class="stat"><span class="stat-icon">🧠</span> Logic</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('tetris')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-glow"></div>
+            </div>
+
+            <!-- Pacman Card -->
+            <div class="game-card" data-game="pacman" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">👻</div>
+                    <h3 class="card-title">Pacman</h3>
+                    <p class="card-description">Navigate the maze and eat all the dots</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Classic</span>
+                        <span class="stat"><span class="stat-icon">🕹️</span> Arcade</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('pacman')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-glow"></div>
+            </div>
         </div>
     </section>
 
@@ -147,6 +189,24 @@
                 <p>Press Space to jump</p>
             </div>
         </div>
+
+        <!-- Tetris Game -->
+        <div class="game-screen" id="tetrisScreen">
+            <canvas id="tetrisCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="tetrisScore">0</span></p>
+                <p>Use Arrow Keys: ↑ Rotate, ← → Move, ↓ Drop, Space Hard Drop</p>
+            </div>
+        </div>
+
+        <!-- Pacman Game -->
+        <div class="game-screen" id="pacmanScreen">
+            <canvas id="pacmanCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="pacmanScore">0</span></p>
+                <p>Use Arrow Keys to move</p>
+            </div>
+        </div>
     </div>
 
     <script src="shared/game-engine.js"></script>
@@ -154,6 +214,8 @@
     <script src="games/snake/game.js"></script>
     <script src="games/2048/game.js"></script>
     <script src="games/trex/game.js"></script>
+    <script src="games/tetris/game.js"></script>
+    <script src="games/pacman/game.js"></script>
     <script src="animations.js"></script>
 </body>
 

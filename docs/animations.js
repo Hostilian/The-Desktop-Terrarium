@@ -138,7 +138,9 @@ function launchGame(gameName) {
     const titles = {
         'snake': '🐍 Snake',
         '2048': '🎯 2048',
-        'trex': '🦖 T-Rex Runner'
+        'trex': '🦖 T-Rex Runner',
+        'tetris': '🎮 Tetris',
+        'pacman': '👻 Pacman'
     };
     gameTitle.textContent = titles[gameName] || gameName;
 

@@ -296,104 +296,118 @@ namespace Terrarium.Logic.Simulation
             {
                 if (!herbivore.IsAlive) continue;
 
-                // Check for predators first (survival instinct)
-                var nearestPredator = FindNearestPredator(herbivore);
-                if (nearestPredator != null)
-                {
-                    FleeFrom(herbivore, nearestPredator);
-                    _movementCalculator.EnforceBoundaries(herbivore);
-                    continue;
-                }
+                HandlePredatorAvoidance(herbivore);
+                HandleSocialBehavior(herbivore);
+                HandleHungerBehavior(herbivore, deltaTime);
+                HandleLeisureBehavior(herbivore, deltaTime);
 
-                // Social behavior - group with similar herbivores
-                if (herbivore.SocialTendency > 0.5)
-                {
-                    var nearestFriend = FindNearestHerbivore(herbivore);
-                    if (nearestFriend != null && herbivore.DistanceTo(nearestFriend) > 50)
-                    {
-                        herbivore.MoveToward(nearestFriend.X, nearestFriend.Y);
-                        _movementCalculator.EnforceBoundaries(herbivore);
-                        continue;
-                    }
-                }
+                _movementCalculator.EnforceBoundaries(herbivore);
+            }
+        }
 
-                // Hunger-driven behavior
-                if (herbivore.Hunger > HerbivoreHungryThreshold && _dayNightCycle.IsDay)
-                {
-                    var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
-                    if (nearestPlant != null)
-                    {
-                        // Intelligent creatures plan their path better
-                        if (herbivore.Intelligence > 0.7)
-                        {
-                            herbivore.MoveToward(nearestPlant.X, nearestPlant.Y);
-                        }
-                        else
-                        {
-                            // Less intelligent creatures wander toward food
-                            var directionX = nearestPlant.X - herbivore.X;
-                            var directionY = nearestPlant.Y - herbivore.Y;
-                            herbivore.SetDirection(directionX, directionY);
-                        }
+        private void HandlePredatorAvoidance(Herbivore herbivore)
+        {
+            var nearestPredator = FindNearestPredator(herbivore);
+            if (nearestPredator != null)
+            {
+                FleeFrom(herbivore, nearestPredator);
+            }
+        }
 
-                        if (herbivore.TryEat(nearestPlant))
-                        {
-                            _eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
-                            _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
-                        }
-                    }
-                    else
-                    {
-                        // Curious creatures explore more when hungry
-                        if (herbivore.Curiosity > 0.6)
-                        {
-                            _movementCalculator.UpdateExploration(herbivore, deltaTime);
-                        }
-                        else
-                        {
-                            _movementCalculator.UpdateWandering(herbivore, deltaTime);
-                        }
-                    }
-                }
-                else if (_dayNightCycle.IsNight)
+        private void HandleSocialBehavior(Herbivore herbivore)
+        {
+            if (herbivore.SocialTendency > 0.5)
+            {
+                var nearestFriend = FindNearestHerbivore(herbivore);
+                if (nearestFriend != null && herbivore.DistanceTo(nearestFriend) > 50)
                 {
-                    // Some creatures are nocturnal
-                    if (herbivore.Curiosity > 0.8)
+                    herbivore.MoveToward(nearestFriend.X, nearestFriend.Y);
+                }
+            }
+        }
+
+        private void HandleHungerBehavior(Herbivore herbivore, double deltaTime)
+        {
+            if (herbivore.Hunger > HerbivoreHungryThreshold && _dayNightCycle.IsDay)
+            {
+                var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
+                if (nearestPlant != null)
+                {
+                    MoveTowardFood(herbivore, nearestPlant);
+                    if (herbivore.TryEat(nearestPlant))
                     {
-                        _movementCalculator.UpdateWandering(herbivore, deltaTime * 0.5); // Slower at night
-                    }
-                    else
-                    {
-                        herbivore.Stop();
+                        _eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
+                        _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
                     }
                 }
                 else
                 {
-                    // Leisure behavior based on personality
-                    if (herbivore.Curiosity > 0.7)
+                    HandleExplorationWhenHungry(herbivore, deltaTime);
+                }
+            }
+        }
+
+        private void MoveTowardFood(Herbivore herbivore, Plant nearestPlant)
+        {
+            if (herbivore.Intelligence > 0.7)
+            {
+                herbivore.MoveToward(nearestPlant.X, nearestPlant.Y);
+            }
+            else
+            {
+                var directionX = nearestPlant.X - herbivore.X;
+                var directionY = nearestPlant.Y - herbivore.Y;
+                herbivore.SetDirection(directionX, directionY);
+            }
+        }
+
+        private void HandleExplorationWhenHungry(Herbivore herbivore, double deltaTime)
+        {
+            if (herbivore.Curiosity > 0.6)
+            {
+                _movementCalculator.UpdateExploration(herbivore, deltaTime);
+            }
+            else
+            {
+                _movementCalculator.UpdateWandering(herbivore, deltaTime);
+            }
+        }
+
+        private void HandleLeisureBehavior(Herbivore herbivore, double deltaTime)
+        {
+            if (_dayNightCycle.IsNight)
+            {
+                if (herbivore.Curiosity > 0.8)
+                {
+                    _movementCalculator.UpdateWandering(herbivore, deltaTime * 0.5);
+                }
+                else
+                {
+                    herbivore.Stop();
+                }
+            }
+            else
+            {
+                if (herbivore.Curiosity > 0.7)
+                {
+                    _movementCalculator.UpdateExploration(herbivore, deltaTime);
+                }
+                else if (herbivore.SocialTendency > 0.6)
+                {
+                    var nearestFriend = FindNearestHerbivore(herbivore);
+                    if (nearestFriend != null && herbivore.DistanceTo(nearestFriend) > 30)
                     {
-                        _movementCalculator.UpdateExploration(herbivore, deltaTime);
-                    }
-                    else if (herbivore.SocialTendency > 0.6)
-                    {
-                        // Social creatures seek company
-                        var nearestFriend = FindNearestHerbivore(herbivore);
-                        if (nearestFriend != null && herbivore.DistanceTo(nearestFriend) > 30)
-                        {
-                            herbivore.MoveToward(nearestFriend.X, nearestFriend.Y);
-                        }
-                        else
-                        {
-                            _movementCalculator.UpdateWandering(herbivore, deltaTime);
-                        }
+                        herbivore.MoveToward(nearestFriend.X, nearestFriend.Y);
                     }
                     else
                     {
                         _movementCalculator.UpdateWandering(herbivore, deltaTime);
                     }
                 }
-
-                _movementCalculator.EnforceBoundaries(herbivore);
+                else
+                {
+                    _movementCalculator.UpdateWandering(herbivore, deltaTime);
+                }
             }
         }
 
@@ -473,109 +487,123 @@ namespace Terrarium.Logic.Simulation
             {
                 if (!carnivore.IsAlive) continue;
 
-                bool isHuntingTime = _dayNightCycle.CurrentPhase is DayPhase.Dawn or DayPhase.Dusk or DayPhase.Day;
+                HandlePackBehavior(carnivore);
+                HandleHuntingBehavior(carnivore, deltaTime);
+                HandleCarnivoreLeisureBehavior(carnivore, deltaTime);
 
-                // Pack behavior for social carnivores
-                if (carnivore.SocialTendency > 0.6)
+                _movementCalculator.EnforceBoundaries(carnivore);
+            }
+        }
+
+        private void HandlePackBehavior(Carnivore carnivore)
+        {
+            if (carnivore.SocialTendency > 0.6)
+            {
+                var nearestPackMate = FindNearestCarnivore(carnivore);
+                if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 40)
                 {
-                    var nearestPackMate = FindNearestCarnivore(carnivore);
-                    if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 40)
-                    {
-                        _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
-                        _movementCalculator.EnforceBoundaries(carnivore);
-                        continue;
-                    }
+                    _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
                 }
+            }
+        }
 
-                // Hunting behavior
-                if (carnivore.Hunger > CarnivoreHungryThreshold && isHuntingTime)
+        private void HandleHuntingBehavior(Carnivore carnivore, double deltaTime)
+        {
+            bool isHuntingTime = _dayNightCycle.CurrentPhase is DayPhase.Dawn or DayPhase.Dusk or DayPhase.Day;
+
+            if (carnivore.Hunger > CarnivoreHungryThreshold && isHuntingTime)
+            {
+                var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
+                if (nearestPrey != null)
                 {
-                    var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
-                    if (nearestPrey != null)
-                    {
-                        // Aggressive carnivores attack immediately
-                        if (carnivore.Aggressiveness > 0.7)
-                        {
-                            carnivore.Hunt(nearestPrey);
-                        }
-                        else
-                        {
-                            // Cautious carnivores stalk from distance
-                            double stalkDistance = 80 + (carnivore.Intelligence * 40); // Smarter = better stalking
-                            if (carnivore.DistanceTo(nearestPrey) > stalkDistance)
-                            {
-                                _movementCalculator.MoveToward(carnivore, nearestPrey.X, nearestPrey.Y);
-                            }
-                            else
-                            {
-                                carnivore.Hunt(nearestPrey);
-                            }
-                        }
-
-                        if (carnivore.TryEat(nearestPrey))
-                        {
-                            _eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
-                            _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
-
-                            if (!nearestPrey.IsAlive)
-                            {
-                                _eventSystem.OnEntityDied(nearestPrey, DeathCause.Predation);
-                                _statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Curious carnivores explore for prey
-                        if (carnivore.Curiosity > 0.6)
-                        {
-                            _movementCalculator.UpdateExploration(carnivore, deltaTime);
-                        }
-                        else
-                        {
-                            _movementCalculator.UpdateWandering(carnivore, deltaTime);
-                        }
-                    }
-                }
-                else if (_dayNightCycle.IsNight)
-                {
-                    // Nocturnal predators
-                    if (carnivore.Curiosity > 0.8 || carnivore.Hunger > CarnivoreHungryThreshold * 0.8)
-                    {
-                        _movementCalculator.UpdateWandering(carnivore, deltaTime * 0.7); // Slightly active at night
-                    }
-                    else
-                    {
-                        carnivore.Stop();
-                    }
+                    PerformHunt(carnivore, nearestPrey);
                 }
                 else
                 {
-                    // Leisure behavior
-                    if (carnivore.Curiosity > 0.7)
+                    HandleExplorationWhenHunting(carnivore, deltaTime);
+                }
+            }
+        }
+
+        private void PerformHunt(Carnivore carnivore, Herbivore nearestPrey)
+        {
+            if (carnivore.Aggressiveness > 0.7)
+            {
+                carnivore.Hunt(nearestPrey);
+            }
+            else
+            {
+                double stalkDistance = 80 + (carnivore.Intelligence * 40);
+                if (carnivore.DistanceTo(nearestPrey) > stalkDistance)
+                {
+                    _movementCalculator.MoveToward(carnivore, nearestPrey.X, nearestPrey.Y);
+                }
+                else
+                {
+                    carnivore.Hunt(nearestPrey);
+                }
+            }
+
+            if (carnivore.TryEat(nearestPrey))
+            {
+                _eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
+                _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
+
+                if (!nearestPrey.IsAlive)
+                {
+                    _eventSystem.OnEntityDied(nearestPrey, DeathCause.Predation);
+                    _statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
+                }
+            }
+        }
+
+        private void HandleExplorationWhenHunting(Carnivore carnivore, double deltaTime)
+        {
+            if (carnivore.Curiosity > 0.6)
+            {
+                _movementCalculator.UpdateExploration(carnivore, deltaTime);
+            }
+            else
+            {
+                _movementCalculator.UpdateWandering(carnivore, deltaTime);
+            }
+        }
+
+        private void HandleCarnivoreLeisureBehavior(Carnivore carnivore, double deltaTime)
+        {
+            if (_dayNightCycle.IsNight)
+            {
+                if (carnivore.Curiosity > 0.8 || carnivore.Hunger > CarnivoreHungryThreshold * 0.8)
+                {
+                    _movementCalculator.UpdateWandering(carnivore, deltaTime * 0.7);
+                }
+                else
+                {
+                    carnivore.Stop();
+                }
+            }
+            else
+            {
+                if (carnivore.Curiosity > 0.7)
+                {
+                    _movementCalculator.UpdateExploration(carnivore, deltaTime);
+                }
+                else if (carnivore.SocialTendency > 0.5)
+                {
+                    var nearestPackMate = FindNearestCarnivore(carnivore);
+                    if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 60)
                     {
-                        _movementCalculator.UpdateExploration(carnivore, deltaTime);
-                    }
-                    else if (carnivore.SocialTendency > 0.5)
-                    {
-                        // Social carnivores maintain pack cohesion
-                        var nearestPackMate = FindNearestCarnivore(carnivore);
-                        if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 60)
-                        {
-                            _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
-                        }
-                        else
-                        {
-                            _movementCalculator.UpdateWandering(carnivore, deltaTime);
-                        }
+                        _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
                     }
                     else
                     {
                         _movementCalculator.UpdateWandering(carnivore, deltaTime);
                     }
                 }
-
-                _movementCalculator.EnforceBoundaries(carnivore);
+                else
+                {
+                    _movementCalculator.UpdateWandering(carnivore, deltaTime);
+                }
             }
         }
 

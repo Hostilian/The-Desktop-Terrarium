@@ -16,9 +16,15 @@ using Terrarium.Logic.Simulation;
 namespace Terrarium.Desktop;
 
 /// <summary>
-/// Interaction logic for MainWindow.xaml
-/// Simplified presentation layer for multiple terrarium types.
+/// Interaction logic for MainWindow.xaml.
+/// Main presentation layer window for the Desktop Terrarium application.
+/// Handles user input, rendering, and communication with the simulation engine.
 /// </summary>
+/// <remarks>
+/// This window supports multiple terrarium types including forest ecosystems,
+/// god simulator mode with divine powers, and particle sandbox simulation.
+/// Follows MVVM principles with logic delegated to services (future refactoring).
+/// </remarks>
 public partial class MainWindow : Window
 {
     private SimulationEngine? _simulationEngine;
@@ -58,6 +64,10 @@ public partial class MainWindow : Window
     private Point _mousePosition = new Point(0, 0);
     private bool _mouseInCanvas = false;
 
+    /// <summary>
+    /// Initializes a new instance of the MainWindow class.
+    /// Sets up the frame stopwatch for FPS tracking.
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();
@@ -87,6 +97,10 @@ public partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// Handles the speed button click event.
+    /// Cycles through predefined simulation speed multipliers (1x, 2x, 5x, 10x).
+    /// </summary>
     private void SpeedButton_Click(object sender, RoutedEventArgs e)
     {
         // Cycle through speed options
@@ -98,6 +112,9 @@ public partial class MainWindow : Window
         SpeedButton.Content = $"{_simulationSpeed}x";
     }
 
+    /// <summary>
+    /// Closes the main window and terminates the application.
+    /// </summary>
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         Close();

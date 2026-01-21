@@ -71,4 +71,40 @@ public static class GodPowerConstants
     /// Limited to create interesting faction dynamics without chaos.
     /// </summary>
     public const int CORRUPTION_TARGET_COUNT = 3;
+
+    /// <summary>
+    /// Duration in seconds that divine protection remains active.
+    /// Provides temporary safety for creatures.
+    /// </summary>
+    public const double DIVINE_PROTECTION_DURATION_SECONDS = 30.0;
+
+    /// <summary>
+    /// Damage dealt to each plant during famine.
+    /// Significant but not instant kill to allow recovery.
+    /// </summary>
+    public const double FAMINE_DAMAGE = 40.0;
+
+    /// <summary>
+    /// Maximum number of creatures driven mad by madness curse.
+    /// Limited to create behavioral chaos without total breakdown.
+    /// </summary>
+    public const int MADNESS_TARGET_COUNT = 5;
+
+    /// <summary>
+    /// Damage dealt to creatures affected by madness.
+    /// Moderate damage to represent psychological toll.
+    /// </summary>
+    public const double MADNESS_DAMAGE = 20.0;
+
+    /// <summary>
+    /// Duration in seconds that stagnation curse remains active.
+    /// Long enough to halt growth temporarily.
+    /// </summary>
+    public const double STAGNATION_DURATION_SECONDS = 60.0;
+
+    /// <summary>
+    /// Number of terrain areas converted to water during flood.
+    /// Creates new aquatic zones without flooding everything.
+    /// </summary>
+    public const int FLOOD_AREA_COUNT = 10;
 }

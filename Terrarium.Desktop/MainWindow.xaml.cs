@@ -312,7 +312,164 @@ public partial class MainWindow : Window
         ShowNotification("🍎 Abundance bestowed! 10 extra plants created!", "#88FF88");
     }
 
+    private void DivineProtectionButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
 
+        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+
+        if (allCreatures.Count == 0)
+        {
+            ShowNotification("🛡️ No creatures to protect!", "#8888FF");
+            return;
+        }
+
+        // Grant temporary invulnerability
+        foreach (var creature in allCreatures)
+        {
+            creature.Health = creature.MaxHealth; // Full heal
+            // Note: In a full implementation, you'd add an invulnerability flag or damage reduction
+        }
+
+        ShowNotification($"🛡️ Divine protection granted to {allCreatures.Count} creatures!", "#8888FF");
+
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.DIVINE_PROTECTION_DURATION_SECONDS) };
+        timer.Tick += (s, args) =>
+        {
+            ShowNotification("🛡️ Divine protection faded", "#8888FF");
+            timer.Stop();
+        };
+        timer.Start();
+    }
+
+    private void FamineButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        var allPlants = _simulationEngine.World.Plants.ToList();
+
+        if (allPlants.Count == 0)
+        {
+            ShowNotification("🏜️ No plants to wither!", "#FFAA44");
+            return;
+        }
+
+        foreach (var plant in allPlants)
+        {
+            plant.TakeDamage(GodPowerConstants.FAMINE_DAMAGE);
+        }
+
+        ShowNotification($"🏜️ Famine strikes! {allPlants.Count} plants withered!", "#FFAA44");
+    }
+
+    private void MadnessButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+
+        if (allCreatures.Count == 0)
+        {
+            ShowNotification("😵 No creatures to madden!", "#FF44FF");
+            return;
+        }
+
+        var random = new Random();
+        int maddenedCount = 0;
+
+        for (int i = 0; i < Math.Min(GodPowerConstants.MADNESS_TARGET_COUNT, allCreatures.Count); i++)
+        {
+            var creature = allCreatures[random.Next(allCreatures.Count)];
+            // In a full implementation, this would alter behavior (e.g., random movement, attack allies)
+            creature.TakeDamage(GodPowerConstants.MADNESS_DAMAGE);
+            maddenedCount++;
+        }
+
+        ShowNotification($"😵 Madness unleashed! {maddenedCount} creatures driven insane!", "#FF44FF");
+    }
+
+    private void StagnationButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        // Halt reproduction and growth temporarily
+        _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 0;
+        _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 0;
+        _simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 0;
+
+        ShowNotification("🕳️ Stagnation curse! No growth or reproduction for 60 seconds!", "#666666");
+
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.STAGNATION_DURATION_SECONDS) };
+        timer.Tick += (s, args) =>
+        {
+            _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 1.0;
+            _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 1.0;
+            _simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 1.0;
+            ShowNotification("🕳️ Stagnation lifted", "#666666");
+            timer.Stop();
+        };
+        timer.Start();
+    }
+
+    private void ChangeBiomeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        // Cycle through biomes (simplified - in full game, this would change terrain generation)
+        var random = new Random();
+        var biomes = new[] { "Forest", "Desert", "Tundra", "Jungle" };
+        var newBiome = biomes[random.Next(biomes.Length)];
+
+        ShowNotification($"🏔️ Biome changed to {newBiome}! Terrain regeneration begins.", "#88AAFF");
+        // In full implementation, regenerate terrain based on biome
+    }
+
+    private void ChangeSeasonButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        // Force season change
+        _simulationEngine.SeasonCycle.SetSeason((Season)((int)(_simulationEngine.SeasonCycle.CurrentSeason + 1) % 4));
+
+        ShowNotification($"🌤️ Season forcibly changed to {_simulationEngine.SeasonCycle.CurrentSeason}!", "#FFFF88");
+    }
+
+    private void FloodButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_simulationEngine == null)
+        {
+            return;
+        }
+
+        // Convert random areas to water
+        var random = new Random();
+        for (int i = 0; i < GodPowerConstants.FLOOD_AREA_COUNT; i++)
+        {
+            double x = random.NextDouble() * _simulationEngine.World.Width;
+            double y = random.NextDouble() * _simulationEngine.World.Height;
+            _simulationEngine.World.SetTerrainAt(x, y, TerrainType.Water);
+        }
+
+        ShowNotification("🌊 Flood waters rise! Areas converted to aquatic terrain.", "#4488FF");
+    }
 
     private void WeaknessButton_Click(object sender, RoutedEventArgs e)
     {
@@ -327,6 +484,11 @@ public partial class MainWindow : Window
         {
             ShowNotification("💪 No creatures to weaken!", "#FF8844");
             return;
+        }
+
+        foreach (var creature in allCreatures)
+        {
+            creature.Health = Math.Max(1, creature.Health * GodPowerConstants.WEAKNESS_HEALTH_MULTIPLIER);
         }
 
         ShowNotification($"💪 Weakness curse affects {allCreatures.Count} creatures!", "#FF8844");

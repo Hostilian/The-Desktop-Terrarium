@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Terrarium.Desktop.Constants;
 using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Persistence;
@@ -30,13 +31,13 @@ public partial class MainWindow : Window
     private SoundManager? _soundManager;
 
     // Win32 hit testing constants
-    private const int WmNcHitTest = 0x0084;
-    private const int HtTransparent = -1;
+    private const int WmNcHitTest = Win32Constants.WM_NC_HITTEST;
+    private const int HtTransparent = Win32Constants.HT_TRANSPARENT;
 
     // Timing constants
-    private const int RenderFps = 60;
-    private const double RenderInterval = 1000.0 / RenderFps;
-    private const double SystemMonitorInterval = 2000.0;
+    private const int RenderFps = RenderingConstants.DEFAULT_RENDER_FPS;
+    private const double RenderInterval = RenderingConstants.RENDER_INTERVAL_MS;
+    private const double SystemMonitorInterval = RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS;
 
     private int _frameCount;
     private double _fpsAccumulator;
@@ -88,11 +89,10 @@ public partial class MainWindow : Window
 
     private void SpeedButton_Click(object sender, RoutedEventArgs e)
     {
-        // Cycle through speed options: 1x -> 2x -> 5x -> 10x -> 1x
-        double[] speeds = { 1.0, 2.0, 5.0, 10.0 };
-        int currentIndex = Array.IndexOf(speeds, _simulationSpeed);
-        int nextIndex = (currentIndex + 1) % speeds.Length;
-        _simulationSpeed = speeds[nextIndex];
+        // Cycle through speed options
+        int currentIndex = Array.IndexOf(UIConstants.SIMULATION_SPEED_PRESETS, _simulationSpeed);
+        int nextIndex = (currentIndex + 1) % UIConstants.SIMULATION_SPEED_PRESETS.Length;
+        _simulationSpeed = UIConstants.SIMULATION_SPEED_PRESETS[nextIndex];
 
         _simulationEngine?.SetSimulationSpeed(_simulationSpeed);
         SpeedButton.Content = $"{_simulationSpeed}x";
@@ -165,11 +165,10 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Strike 3 random entities
-        for (int i = 0; i < Math.Min(3, allEntities.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.LIGHTNING_STRIKE_TARGET_COUNT, allEntities.Count); i++)
         {
             var entity = allEntities[random.Next(allEntities.Count)];
-            entity.TakeDamage(30); // Damage
+            entity.TakeDamage(GodPowerConstants.LIGHTNING_STRIKE_DAMAGE);
 
             if (entity is Creature creature)
             {
@@ -198,13 +197,12 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Create 5 meteor impact points
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < GodPowerConstants.METEOR_SHOWER_COUNT; i++)
         {
             // Random impact point
             double impactX = random.NextDouble() * _simulationEngine.World.Width;
             double impactY = random.NextDouble() * _simulationEngine.World.Height;
-            double impactRadius = 50; // Damage radius
+            double impactRadius = GodPowerConstants.METEOR_IMPACT_RADIUS_PIXELS;
 
             // Damage entities within radius
             foreach (var entity in allEntities)
@@ -212,7 +210,7 @@ public partial class MainWindow : Window
                 double distance = Math.Sqrt(Math.Pow(entity.X - impactX, 2) + Math.Pow(entity.Y - impactY, 2));
                 if (distance <= impactRadius)
                 {
-                    double damage = 50 * (1 - distance / impactRadius); // More damage closer to center
+                    double damage = GodPowerConstants.METEOR_BASE_DAMAGE * (1 - distance / impactRadius);
                     entity.TakeDamage(damage);
 
                     if (entity is Creature creature)
@@ -246,12 +244,10 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Infect up to 5 random creatures with plague
-        int infectedCount = 0;
-        for (int i = 0; i < Math.Min(5, allCreatures.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.PLAGUE_INFECTION_COUNT, allCreatures.Count); i++)
         {
             var creature = allCreatures[random.Next(allCreatures.Count)];
-            creature.TakeDamage(25); // Initial plague damage
+            creature.TakeDamage(GodPowerConstants.PLAGUE_INITIAL_DAMAGE);
 
             ShowNotification($"💀 {creature.GetType().Name} infected with plague at ({creature.X:F0}, {creature.Y:F0})", "#AA44AA");
             infectedCount++;
@@ -267,18 +263,16 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Temporarily boost reproduction rates
-        _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier *= 2.0;
-        _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier *= 2.0;
+        _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
+        _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
 
         ShowNotification("🌸 Fertility blessing granted! Reproduction rates doubled for 30 seconds!", "#FF88FF");
 
-        // Reset after 30 seconds
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS) };
         timer.Tick += (s, args) =>
         {
-            _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier /= 2.0;
-            _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier /= 2.0;
+            _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
+            _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
             ShowNotification("🌸 Fertility blessing faded", "#FF88FF");
             timer.Stop();
         };
@@ -292,8 +286,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Spawn extra plants
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < GodPowerConstants.ABUNDANCE_PLANT_COUNT; i++)
         {
             _simulationEngine.World.SpawnRandomPlant();
         }
@@ -340,8 +333,7 @@ public partial class MainWindow : Window
         var factionTypes = Enum.GetValues<FactionType>().ToArray();
         int corruptedCount = 0;
 
-        // Corrupt up to 3 random creatures by changing their faction
-        for (int i = 0; i < Math.Min(3, allCreatures.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.CORRUPTION_TARGET_COUNT, allCreatures.Count); i++)
         {
             var creature = allCreatures[random.Next(allCreatures.Count)];
             var currentFaction = creature.Faction;
@@ -600,7 +592,7 @@ public partial class MainWindow : Window
         foreach (var plant in _simulationEngine.World.Plants)
         {
             double distance = Math.Sqrt(Math.Pow(plant.X - point.X, 2) + Math.Pow(plant.Y - point.Y, 2));
-            if (distance <= 30) // Click tolerance
+            if (distance <= UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS)
             {
                 ShowEntityInfoDialog($"🌿 Plant #{plant.Id}",
                     $"Health: {plant.Health:F1}%\n" +

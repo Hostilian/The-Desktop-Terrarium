@@ -12,6 +12,7 @@ on:
 env:
   DOTNET_VERSION: '8.0.x'
   PYTHON_VERSION: '3.11'
+  SOLUTION_FILE: 'DesktopTerrarium.sln'
 
 jobs:
   # Build and Test Job
@@ -44,19 +45,17 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: 📦 Restore Dependencies
-      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: 🏗️ Build Solution
-      run: dotnet build Terrarium.Desktop/Terrarium.Desktop.csproj --configuration Release --no-restore
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
 
-    # Tests disabled temporarily
-    # - name: 🧪 Run Tests
-    #   run: dotnet test Terrarium.Tests/Terrarium.Tests.csproj --configuration Release --no-build
+    - name: 🧪 Run Tests
+      run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory "${{ github.workspace }}/TestResults" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ github.workspace }}/TestResults/coverage/coverage"
 
-    # Coverage disabled temporarily (tests disabled)
-    # - name: 🧮 Coverage Summary
-    #   if: always()
-    #   run: python scripts/summarize_coverage.py TestResults
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults
 
     - name: ✅ Coverage Gate
       if: always()
@@ -80,7 +79,7 @@ jobs:
       if: always()
       shell: pwsh
       run: |
-        # dotnet tool install --global dotnet-reportgenerator-globaltool
+        dotnet tool install --global dotnet-reportgenerator-globaltool
         $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
         reportgenerator -reports:"${{ github.workspace }}\TestResults\**\coverage*.cobertura.xml" -targetdir:"${{ github.workspace }}\TestResults\coveragereport" -reporttypes:HtmlInline_AzurePipelines
 
@@ -91,13 +90,13 @@ jobs:
         name: coverage-report-html
         path: ./TestResults/coveragereport/
 
-    # - name: 📈 Test Report Summary
-    #   uses: dorny/test-reporter@v1
-    #   if: always()
-    #   with:
-    #     name: Test Results
-    #     path: ./TestResults/*.trx
-    #     reporter: dotnet-trx
+    - name: 📈 Test Report Summary
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: ./TestResults/*.trx
+        reporter: dotnet-trx
 
   # Code Quality Job
   code-quality:
@@ -123,22 +122,78 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: 📦 Restore Dependencies
-      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: 🔍 Check Code Formatting
-      run: dotnet format Terrarium.Desktop/Terrarium.Desktop.csproj --verify-no-changes --verbosity diagnostic
+      run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
 
     - name: 🛡️ Scan NuGet vulnerabilities
-      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --vulnerable --include-transitive
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable --include-transitive
 
     - name: 🧯 Scan deprecated packages
-      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --deprecated
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --deprecated
       continue-on-error: true
 
     - name: 🧹 List outdated NuGet packages
-      run: dotnet list Terrarium.Desktop/Terrarium.Desktop.csproj package --outdated --include-transitive
+      run: dotnet list ${{ env.SOLUTION_FILE }} package --outdated --include-transitive
       continue-on-error: true
 
+  # Logic/Test Integrity on Linux (cross-platform)
+  logic-tests-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: ♻️ Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets', '**/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 🧪 Build & Test (Logic layer)
+      run: |
+        dotnet restore Terrarium.Tests/Terrarium.Tests.csproj
+        dotnet test Terrarium.Tests/Terrarium.Tests.csproj --configuration Release --verbosity normal --results-directory "${{ github.workspace }}/TestResults" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ github.workspace }}/TestResults/coverage/coverage"
+
+    - name: 🧮 Coverage Summary
+      if: always()
+      run: python scripts/summarize_coverage.py TestResults
+
+    - name: 🧾 Upload Code Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage-linux
+        path: ./TestResults/**/coverage*.cobertura.xml
+
+    - name: 🗂️ Generate HTML Coverage Report
+      if: always()
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        reportgenerator -reports:"${{ github.workspace }}/TestResults/**/coverage*.cobertura.xml" -targetdir:"${{ github.workspace }}/TestResults/coveragereport" -reporttypes:HtmlInline_AzurePipelines
+
+    - name: 📦 Upload HTML Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-html-linux
+        path: ./TestResults/coveragereport/
 
   # Docs Website Validation
   docs-validation:
@@ -181,10 +236,10 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: 📦 Restore Dependencies
-      run: dotnet restore Terrarium.Desktop/Terrarium.Desktop.csproj
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: 🏗️ Build Release
-      run: dotnet build Terrarium.Desktop/Terrarium.Desktop.csproj --configuration Release --no-restore
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
 
   # Publish Integrity (every push/PR)
   publish-integrity:
@@ -391,4 +446,3 @@ jobs:
       with:
         name: screenshot-documentation
         path: docs/screenshots/
-

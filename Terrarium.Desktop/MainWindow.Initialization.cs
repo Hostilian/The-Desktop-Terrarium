@@ -58,8 +58,8 @@ public partial class MainWindow
         {
             if (Application.Current == null)
             {
-                 MessageBox.Show("Application.Current is null", "Critical Error");
-                 return;
+                MessageBox.Show("Application.Current is null", "Critical Error");
+                return;
             }
 
             var app = (App)Application.Current;
@@ -244,7 +244,7 @@ public partial class MainWindow
                 case TerrariumType.Aquatic:
                     solidBrush.Color = Color.FromRgb(70, 130, 180);
                     break;
-               case TerrariumType.GodSimulator:
+                case TerrariumType.GodSimulator:
                     solidBrush.Color = Color.FromRgb(20, 20, 30); // Darker Indigo
                     break;
                 case TerrariumType.PowderToy:

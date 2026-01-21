@@ -11,10 +11,10 @@ namespace Terrarium.Logic.Simulation
         Game2048,
         GameTetris,
         GameDino,
-    GameArcade,
-    WidgetWeb,
-    WidgetPet,
-    GamePacman,
-    PowderToy
+        GameArcade,
+        WidgetWeb,
+        WidgetPet,
+        GamePacman,
+        PowderToy
     }
 }

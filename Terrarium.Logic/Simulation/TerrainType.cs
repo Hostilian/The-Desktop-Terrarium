@@ -31,44 +31,84 @@ namespace Terrarium.Logic.Simulation
     {
         private static readonly Dictionary<TerrainType, TerrainData> _properties = new()
         {
-            [TerrainType.Void] = new TerrainData {
-                Name = "Void", Color = "#000000", Walkable = false, Fertility = 0,
+            [TerrainType.Void] = new TerrainData
+            {
+                Name = "Void",
+                Color = "#000000",
+                Walkable = false,
+                Fertility = 0,
                 Description = "Empty nothingness, the absence of creation itself."
             },
-            [TerrainType.Soil] = new TerrainData {
-                Name = "Soil", Color = "#8B4513", Walkable = true, Fertility = 100,
+            [TerrainType.Soil] = new TerrainData
+            {
+                Name = "Soil",
+                Color = "#8B4513",
+                Walkable = true,
+                Fertility = 100,
                 Description = "Rich, fertile earth teeming with potential."
             },
-            [TerrainType.Stone] = new TerrainData {
-                Name = "Stone", Color = "#696969", Walkable = true, Fertility = 10,
+            [TerrainType.Stone] = new TerrainData
+            {
+                Name = "Stone",
+                Color = "#696969",
+                Walkable = true,
+                Fertility = 10,
                 Description = "Ancient rock, unyielding and eternal."
             },
-            [TerrainType.Water] = new TerrainData {
-                Name = "Water", Color = "#4169E1", Walkable = false, Fertility = 30,
+            [TerrainType.Water] = new TerrainData
+            {
+                Name = "Water",
+                Color = "#4169E1",
+                Walkable = false,
+                Fertility = 30,
                 Description = "Life-giving fluid, both nurturing and destructive."
             },
-            [TerrainType.VerdantGrowth] = new TerrainData {
-                Name = "Verdant Growth", Color = "#228B22", Walkable = true, Fertility = 150,
+            [TerrainType.VerdantGrowth] = new TerrainData
+            {
+                Name = "Verdant Growth",
+                Color = "#228B22",
+                Walkable = true,
+                Fertility = 150,
                 Description = "Living vegetation that spreads relentlessly, claiming territory for the Verdant Collective."
             },
-            [TerrainType.AshenWasteland] = new TerrainData {
-                Name = "Ashen Wasteland", Color = "#2F2F2F", Walkable = true, Fertility = 5,
+            [TerrainType.AshenWasteland] = new TerrainData
+            {
+                Name = "Ashen Wasteland",
+                Color = "#2F2F2F",
+                Walkable = true,
+                Fertility = 5,
                 Description = "Burned earth poisoned by the Ashen Legion's eternal flames."
             },
-            [TerrainType.AquaticDomain] = new TerrainData {
-                Name = "Aquatic Domain", Color = "#00CED1", Walkable = false, Fertility = 80,
+            [TerrainType.AquaticDomain] = new TerrainData
+            {
+                Name = "Aquatic Domain",
+                Color = "#00CED1",
+                Walkable = false,
+                Fertility = 80,
                 Description = "Flooded territories claimed by the Aquatic Domain's endless waters."
             },
-            [TerrainType.StoneWardens] = new TerrainData {
-                Name = "Stone Wardens", Color = "#696969", Walkable = true, Fertility = 15,
+            [TerrainType.StoneWardens] = new TerrainData
+            {
+                Name = "Stone Wardens",
+                Color = "#696969",
+                Walkable = true,
+                Fertility = 15,
                 Description = "Fortified stone formations raised by the Stone Wardens."
             },
-            [TerrainType.CelestialOrder] = new TerrainData {
-                Name = "Celestial Order", Color = "#FFD700", Walkable = true, Fertility = 60,
+            [TerrainType.CelestialOrder] = new TerrainData
+            {
+                Name = "Celestial Order",
+                Color = "#FFD700",
+                Walkable = true,
+                Fertility = 60,
                 Description = "Purified ground blessed by the Celestial Order's divine light."
             },
-            [TerrainType.NetherCult] = new TerrainData {
-                Name = "Nether Cult", Color = "#8B008B", Walkable = true, Fertility = 25,
+            [TerrainType.NetherCult] = new TerrainData
+            {
+                Name = "Nether Cult",
+                Color = "#8B008B",
+                Walkable = true,
+                Fertility = 25,
                 Description = "Twisted, corrupted terrain warped by the Nether Cult's dark rituals."
             }
         };

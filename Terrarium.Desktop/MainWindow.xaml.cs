@@ -406,15 +406,23 @@ public partial class MainWindow : Window
 
     private void UpdateFactionDisplay()
     {
-        if (_simulationEngine == null || FactionPopulationPanel == null)
-        {
-            return;
-        }
+        if (_simulationEngine == null || FactionPopulationPanel == null) return;
 
         FactionPopulationPanel.Children.Clear();
+        FactionPopulationPanel.Children.Add(CreateFactionHeader());
 
-        // Add header
-        var header = new System.Windows.Controls.TextBlock
+        foreach (var faction in _simulationEngine.FactionManager.GetFactionsByPopulation())
+        {
+            if (faction.Population > 0)
+            {
+                FactionPopulationPanel.Children.Add(CreateFactionBar(faction));
+            }
+        }
+    }
+
+    private static TextBlock CreateFactionHeader()
+    {
+        return new TextBlock
         {
             Text = "Faction Populations",
             Foreground = new SolidColorBrush(Colors.White),
@@ -423,43 +431,42 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Center,
             Margin = new Thickness(0, 0, 0, 5)
         };
-        FactionPopulationPanel.Children.Add(header);
+    }
 
-        // Add faction bars
-        foreach (var faction in _simulationEngine.FactionManager.GetFactionsByPopulation())
+    private static StackPanel CreateFactionBar(Faction faction)
+    {
+        var panel = new StackPanel
         {
-            if (faction.Population > 0)
-            {
-                var factionPanel = new System.Windows.Controls.StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    Margin = new Thickness(0, 2, 0, 2)
-                };
+            Orientation = Orientation.Horizontal,
+            Margin = new Thickness(0, 2, 0, 2)
+        };
 
-                // Faction color indicator
-                var colorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(faction.Color));
-                var colorRect = new System.Windows.Shapes.Rectangle
-                {
-                    Width = 12,
-                    Height = 12,
-                    Fill = colorBrush,
-                    Margin = new Thickness(0, 0, 5, 0)
-                };
+        panel.Children.Add(CreateFactionColorIndicator(faction.Color));
+        panel.Children.Add(CreateFactionText(faction.Name, faction.Population));
 
-                // Faction name and count
-                var factionText = new System.Windows.Controls.TextBlock
-                {
-                    Text = $"{faction.Name}: {faction.Population}",
-                    Foreground = new SolidColorBrush(Colors.White),
-                    FontSize = 10,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
+        return panel;
+    }
 
-                factionPanel.Children.Add(colorRect);
-                factionPanel.Children.Add(factionText);
-                FactionPopulationPanel.Children.Add(factionPanel);
-            }
-        }
+    private static System.Windows.Shapes.Rectangle CreateFactionColorIndicator(string color)
+    {
+        return new System.Windows.Shapes.Rectangle
+        {
+            Width = 12,
+            Height = 12,
+            Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)),
+            Margin = new Thickness(0, 0, 5, 0)
+        };
+    }
+
+    private static TextBlock CreateFactionText(string name, int population)
+    {
+        return new TextBlock
+        {
+            Text = $"{name}: {population}",
+            Foreground = new SolidColorBrush(Colors.White),
+            FontSize = 10,
+            VerticalAlignment = VerticalAlignment.Center
+        };
     }
 
 
@@ -496,11 +503,11 @@ public partial class MainWindow : Window
     private void ApplyDisplaySettings(SettingsDialog settings)
     {
         bool transparencyChanged = settings.TransparentBackground != (AllowsTransparency && Background == Brushes.Transparent);
-        
+
         if (transparencyChanged)
         {
             MessageBox.Show(
-                "Transparency changes will take effect after restarting the application.", 
+                "Transparency changes will take effect after restarting the application.",
                 "Settings Applied - Restart Required");
         }
     }
@@ -543,7 +550,7 @@ public partial class MainWindow : Window
         if (requiresRestart)
         {
             MessageBox.Show(
-                $"The following changes will take effect after restart:\n\n{restartReasons}", 
+                $"The following changes will take effect after restart:\n\n{restartReasons}",
                 "Settings Applied");
         }
     }

@@ -11,7 +11,6 @@ namespace Terrarium.Logic.Simulation
         private readonly World _world;
         private readonly EventSystem _eventSystem;
         private readonly Random _random;
-        private readonly CollisionDetector _collisionDetector;
 
         // Reproduction requirements
         private const double MinHealthForReproduction = 70.0;
@@ -61,7 +60,6 @@ namespace Terrarium.Logic.Simulation
             _world = world;
             _eventSystem = eventSystem;
             _random = random ?? new Random();
-            _collisionDetector = new CollisionDetector();
             _reproductionCooldowns = new Dictionary<int, double>();
         }
 

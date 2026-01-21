@@ -272,30 +272,6 @@ public class NotificationManager
         border.BeginAnimation(Canvas.LeftProperty, animation);
     }
 
-    private void RemoveNotification(NotificationItem notification)
-    {
-        if (notification.Visual != null)
-        {
-            _canvas.Children.Remove(notification.Visual);
-        }
-
-        // Reposition remaining notifications
-        for (int i = 0; i < _activeNotifications.Count; i++)
-        {
-            if (_activeNotifications[i] != notification && _activeNotifications[i].Visual != null)
-            {
-                double targetY = NotificationMargin + (i * (NotificationHeight + NotificationMargin));
-                var animation = new DoubleAnimation
-                {
-                    To = targetY,
-                    Duration = TimeSpan.FromSeconds(0.2),
-                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-                };
-                _activeNotifications[i].Visual?.BeginAnimation(Canvas.TopProperty, animation);
-            }
-        }
-    }
-
     private Brush GetNotificationBackground(NotificationType type)
     {
         return type switch

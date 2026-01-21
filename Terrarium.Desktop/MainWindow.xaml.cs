@@ -301,29 +301,7 @@ public partial class MainWindow : Window
         ShowNotification("🍎 Abundance bestowed! 10 extra plants created!", "#88FF88");
     }
 
-    private void DivineProtectionButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement divine protection - damage reduction
-        ShowNotification("🛡️ Divine protection activated!", "#8888FF");
-    }
 
-    private void FamineButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement famine - reduce food
-        ShowNotification("🏜️ Famine descends!", "#FFAA44");
-    }
-
-    private void MadnessButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement madness - entities attack allies
-        ShowNotification("😵 Madness spreads!", "#FF4444");
-    }
-
-    private void StagnationButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement stagnation - block reproduction
-        ShowNotification("🕳️ Stagnation begins!", "#666666");
-    }
 
     private void WeaknessButton_Click(object sender, RoutedEventArgs e)
     {
@@ -340,13 +318,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Weaken all creatures - TODO: implement speed reduction (Speed setter is protected)
-        // foreach (var creature in allCreatures)
-        // {
-        //     creature.Speed *= 0.5; // Reduce speed by 50%
-        // }
-
-        ShowNotification($"💪 Weakness afflicts {allCreatures.Count} creatures! Speed reduced by 50%!", "#FF8844");
+        ShowNotification($"💪 Weakness curse affects {allCreatures.Count} creatures!", "#FF8844");
     }
 
     private void CorruptionButton_Click(object sender, RoutedEventArgs e)
@@ -388,23 +360,7 @@ public partial class MainWindow : Window
         ShowNotification($"😈 Corruption spreads! {corruptedCount} creatures changed allegiance!", "#880088");
     }
 
-    private void ChangeBiomeButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement biome change
-        ShowNotification("🏔️ Biome changing...", "#44AAFF");
-    }
 
-    private void ChangeSeasonButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement season change
-        ShowNotification("🌤️ Season shifting...", "#FFFF88");
-    }
-
-    private void FloodButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Implement flood - expand water
-        ShowNotification("🌊 Flood waters rise!", "#4488FF");
-    }
 
     // God Painting Tools - Terrain Manipulation
     private void PaintLifeButton_Click(object sender, RoutedEventArgs e)
@@ -513,43 +469,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ResetButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Reset simulation - not implemented yet
-        MessageBox.Show("Reset functionality not implemented yet.");
-    }
 
-    private void SpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        // Speed slider removed in god simulator UI - functionality moved to SpeedButton
-        // _simulationSpeed = e.NewValue;
-        // if (SpeedText != null)
-        // {
-        //     SpeedText.Text = $"Speed: {_simulationSpeed:F1}x";
-        // }
-        // // Apply speed to simulation engine
-        // _simulationEngine?.SetSimulationSpeed(_simulationSpeed);
-    }
-
-    private void ShowTrailsCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        // Implement trail visibility
-    }
-
-    private void ShowTrailsCheckBox_Unchecked(object sender, RoutedEventArgs e)
-    {
-        // Implement trail visibility
-    }
-
-    private void MuteSoundCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        // Implement sound muting
-    }
-
-    private void MuteSoundCheckBox_Unchecked(object sender, RoutedEventArgs e)
-    {
-        // Implement sound muting
-    }
 
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {

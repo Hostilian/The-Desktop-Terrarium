@@ -12,8 +12,6 @@ public partial class MainWindow
 {
     // Input tuning constants
     private const double SpeedStep = 0.25;
-    private const int WaterPlantsMaxPerKeypress = 10;
-    private const double WaterAmountPerPlant = 20;
 
     /// <summary>
     /// Direct left-click handler for reliable entity interaction.

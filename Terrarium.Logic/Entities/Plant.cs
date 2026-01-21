@@ -82,8 +82,6 @@ namespace Terrarium.Logic.Entities
 
         public void Water(double amount) => WaterLevel += amount;
 
-        public void Shake() { }
-
         public void OnClick() => Water(ClickWaterAmount);
 
         public bool ContainsPoint(double x, double y)

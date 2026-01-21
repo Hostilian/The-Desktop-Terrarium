@@ -162,4 +162,39 @@ public partial class MainWindow
             );
         }
     }
+
+    private void DivineProtectionButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement divine protection
+    }
+
+    private void FamineButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement famine
+    }
+
+    private void MadnessButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement madness
+    }
+
+    private void StagnationButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement stagnation
+    }
+
+    private void ChangeBiomeButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement change biome
+    }
+
+    private void ChangeSeasonButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement change season
+    }
+
+    private void FloodButton_Click(object sender, RoutedEventArgs e)
+    {
+        // TODO: Implement flood
+    }
 }

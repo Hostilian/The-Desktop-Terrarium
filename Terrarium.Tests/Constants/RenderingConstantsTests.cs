@@ -9,6 +9,9 @@ namespace Terrarium.Tests.Constants;
 [TestClass]
 public class RenderingConstantsTests
 {
+#pragma warning disable MSTEST0032 // Meaningful assertions for constant validation
+#pragma warning disable MSTEST0017 // Analyzer doesn't understand constant expressions
+#pragma warning disable MSTEST0025 // Analyzer doesn't understand tolerance in assertions
     [TestMethod]
     public void DefaultRenderFps_ShouldBe60()
     {
@@ -60,3 +63,6 @@ public class RenderingConstantsTests
             "System monitor should update slower than rendering to save CPU");
     }
 }
+#pragma warning restore MSTEST0032
+#pragma warning restore MSTEST0017
+#pragma warning restore MSTEST0025

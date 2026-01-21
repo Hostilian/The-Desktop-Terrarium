@@ -47,11 +47,13 @@ public class UIConstantsTests
     [TestMethod]
     public void SimulationSpeedPresets_ShouldBeInAscendingOrder()
     {
+#pragma warning disable MSTEST0037 // Assert.IsTrue is appropriate for complex loop conditions
         for (int i = 1; i < UIConstants.SIMULATION_SPEED_PRESETS.Length; i++)
         {
             Assert.IsTrue(UIConstants.SIMULATION_SPEED_PRESETS[i] > UIConstants.SIMULATION_SPEED_PRESETS[i - 1],
                 $"Speed presets must be in ascending order. Found {UIConstants.SIMULATION_SPEED_PRESETS[i]} after {UIConstants.SIMULATION_SPEED_PRESETS[i - 1]}");
         }
+#pragma warning restore MSTEST0037
     }
 
     [TestMethod]

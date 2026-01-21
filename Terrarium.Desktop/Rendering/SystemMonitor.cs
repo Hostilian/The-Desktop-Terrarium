@@ -69,3 +69,4 @@ public class SystemMonitor : IDisposable
         _cpuCounter?.Dispose();
         _disposed = true;
     }
+}

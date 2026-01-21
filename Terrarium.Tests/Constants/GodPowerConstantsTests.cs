@@ -47,21 +47,21 @@ public class GodPowerConstantsTests
     [TestMethod]
     public void PlagueInitialDamage_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.PLAGUE_INITIAL_DAMAGE > 0,
+        Assert.IsGreaterThan(GodPowerConstants.PLAGUE_INITIAL_DAMAGE, 0.0,
             "Plague damage must be positive");
     }
 
     [TestMethod]
     public void PlaguInfectionCount_ShouldBePositive()
     {
-        Assert.IsTrue(GodPowerConstants.PLAGUE_INFECTION_COUNT > 0,
+        Assert.IsGreaterThan(GodPowerConstants.PLAGUE_INFECTION_COUNT, 0,
             "Plague infection count must be positive");
     }
 
     [TestMethod]
     public void FertilityBlessingMultiplier_ShouldBeGreaterThanOne()
     {
-        Assert.IsTrue(GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER > 1.0,
+        Assert.IsGreaterThan(GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER, 1.0,
             "Fertility multiplier must be greater than 1 to increase reproduction");
     }
 

@@ -330,7 +330,7 @@ public partial class MainWindow : Window
         // Grant temporary invulnerability
         foreach (var creature in allCreatures)
         {
-            creature.Health = creature.MaxHealth; // Full heal
+            creature.Heal(100.0 - creature.Health); // Full heal
             // Note: In a full implementation, you'd add an invulnerability flag or damage reduction
         }
 
@@ -488,7 +488,7 @@ public partial class MainWindow : Window
 
         foreach (var creature in allCreatures)
         {
-            creature.Health = Math.Max(1, creature.Health * GodPowerConstants.WEAKNESS_HEALTH_MULTIPLIER);
+            creature.TakeDamage(creature.Health * (1 - GodPowerConstants.WEAKNESS_HEALTH_MULTIPLIER));
         }
 
         ShowNotification($"💪 Weakness curse affects {allCreatures.Count} creatures!", "#FF8844");

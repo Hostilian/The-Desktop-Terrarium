@@ -113,6 +113,24 @@ namespace Terrarium.Logic.Simulation
         }
 
         /// <summary>
+        /// Spawns a plant at the specified position.
+        /// </summary>
+        public Plant SpawnPlantAt(double x, double y)
+        {
+            string type = TerrariumType switch
+            {
+                TerrariumType.Forest => "Tree",
+                TerrariumType.Desert => "Cactus",
+                TerrariumType.Aquatic => "Algae",
+                TerrariumType.GodSimulator => "Crystal",
+                _ => "Plant"
+            };
+            var plant = new Plant(x, y, type);
+            AddPlant(plant);
+            return plant;
+        }
+
+        /// <summary>
         /// Spawns a random herbivore in the world.
         /// </summary>
         public Herbivore SpawnRandomHerbivore(string? type = null, FactionType? factionOverride = null)

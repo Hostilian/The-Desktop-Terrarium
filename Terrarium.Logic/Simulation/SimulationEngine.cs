@@ -47,6 +47,11 @@ namespace Terrarium.Logic.Simulation
         public World World => _world;
 
         /// <summary>
+        /// The food manager.
+        /// </summary>
+        public FoodManager FoodManager => _foodManager;
+
+        /// <summary>
         /// The day/night cycle manager.
         /// </summary>
         public DayNightCycle DayNightCycle => _dayNightCycle;

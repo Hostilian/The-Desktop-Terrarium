@@ -59,7 +59,7 @@ public class UIConstantsTests
     {
         foreach (var speed in UIConstants.SIMULATION_SPEED_PRESETS)
         {
-            Assert.IsTrue(speed > 0, $"Speed preset {speed} must be positive");
+            Assert.IsGreaterThan(speed, 0.0, $"Speed preset {speed} must be positive");
         }
     }
 }

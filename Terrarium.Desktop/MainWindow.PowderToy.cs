@@ -152,7 +152,17 @@ public partial class MainWindow
                System.Windows.MessageBoxImage.Error
            );
         }
-        catch (Exception ex)
+        catch (System.ComponentModel.Win32Exception ex)
+        {
+            Console.WriteLine($"[MainWindow] Failed to launch {displayName}: {ex.Message}");
+            System.Windows.MessageBox.Show(
+                $"Failed to launch {displayName} simulation.\n\nError: {ex.Message}",
+                "Launch Error",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error
+            );
+        }
+        catch (InvalidOperationException ex)
         {
             Console.WriteLine($"[MainWindow] Failed to launch {displayName}: {ex.Message}");
             System.Windows.MessageBox.Show(

@@ -14,6 +14,7 @@ Terrarium.Desktop.MainWindow.Title -> string
 Terrarium.Desktop.MainWindow.Title.set -> void
 Terrarium.Desktop.MainWindow.WindowState -> System.Windows.WindowState
 Terrarium.Desktop.MainWindow.WindowState.set -> void
+Terrarium.Desktop.MainWindow.CurrentFps -> double
 Terrarium.Desktop.MainWindow.Dispose() -> void
 
 Terrarium.Desktop.ChronicleWindow
@@ -55,3 +56,11 @@ Terrarium.Desktop.Rendering.Renderer.SetShowShadows(bool show) -> void
 Terrarium.Desktop.Rendering.Renderer.Clear() -> void
 Terrarium.Desktop.Rendering.Renderer.RenderWorld(Terrarium.Logic.Simulation.World world, double weatherIntensity, System.Windows.Point mousePosition, bool mouseInCanvas) -> void
 Terrarium.Desktop.Rendering.Renderer.TriggerPlantShake(Terrarium.Logic.Entities.Plant plant) -> void
+
+Terrarium.Desktop.Rendering.SystemMonitor
+Terrarium.Desktop.Rendering.SystemMonitor.SystemMonitor() -> void
+Terrarium.Desktop.Rendering.SystemMonitor.Dispose() -> void
+
+Terrarium.Desktop.Rendering.SoundManager
+Terrarium.Desktop.Rendering.SoundManager.SoundManager() -> void
+Terrarium.Desktop.Rendering.SoundManager.Dispose() -> void

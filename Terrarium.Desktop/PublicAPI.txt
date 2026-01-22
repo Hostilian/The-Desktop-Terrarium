@@ -178,3 +178,23 @@ Terrarium.Desktop.GodPaintMode.Life -> Terrarium.Desktop.GodPaintMode
 Terrarium.Desktop.GodPaintMode.Death -> Terrarium.Desktop.GodPaintMode
 Terrarium.Desktop.GodPaintMode.Stone -> Terrarium.Desktop.GodPaintMode
 Terrarium.Desktop.GodPaintMode.Water -> Terrarium.Desktop.GodPaintMode
+
+Terrarium.Desktop.ViewModels.MainWindowViewModel
+Terrarium.Desktop.ViewModels.MainWindowViewModel.MainWindowViewModel(Terrarium.Logic.Simulation.SimulationEngine) -> void
+Terrarium.Desktop.ViewModels.MainWindowViewModel.IsPaused -> bool
+Terrarium.Desktop.ViewModels.MainWindowViewModel.IsPaused.set -> void
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SimulationSpeed -> double
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SimulationSpeed.set -> void
+Terrarium.Desktop.ViewModels.MainWindowViewModel.StatusMessage -> string
+Terrarium.Desktop.ViewModels.MainWindowViewModel.StatusMessage.set -> void
+Terrarium.Desktop.ViewModels.MainWindowViewModel.PlayPauseCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SpeedUpCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SpawnPlantCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SpawnHerbivoreCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.SpawnCarnivoreCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.LightningStrikeCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.MeteorShowerCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.PlagueCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.FertilityBlessingCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.AbundanceCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.CorruptionCommand -> System.Windows.Input.ICommand

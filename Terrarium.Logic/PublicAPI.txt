@@ -36,6 +36,35 @@ Terrarium.Logic.Simulation.SimulationEngine.GetEcosystemHealth() -> int
 Terrarium.Logic.Simulation.SimulationEngine.GetTimeOfDayString() -> string
 Terrarium.Logic.Simulation.SimulationEngine.LightLevel -> double
 
+Terrarium.Logic.Simulation.StatisticsTracker
+Terrarium.Logic.Simulation.StatisticsTracker.StatisticsTracker() -> void
+Terrarium.Logic.Simulation.StatisticsTracker.TotalBirths -> int
+Terrarium.Logic.Simulation.StatisticsTracker.TotalDeaths -> int
+Terrarium.Logic.Simulation.StatisticsTracker.TotalPlantsGrown -> int
+Terrarium.Logic.Simulation.StatisticsTracker.TotalPlantsEaten -> int
+Terrarium.Logic.Simulation.StatisticsTracker.TotalHerbivoresEaten -> int
+Terrarium.Logic.Simulation.StatisticsTracker.TotalFoodConsumed -> double
+Terrarium.Logic.Simulation.StatisticsTracker.SessionBirths -> int
+Terrarium.Logic.Simulation.StatisticsTracker.SessionDeaths -> int
+Terrarium.Logic.Simulation.StatisticsTracker.SessionTime -> double
+Terrarium.Logic.Simulation.StatisticsTracker.PeakPopulation -> int
+Terrarium.Logic.Simulation.StatisticsTracker.PeakPlants -> int
+Terrarium.Logic.Simulation.StatisticsTracker.PeakHerbivores -> int
+Terrarium.Logic.Simulation.StatisticsTracker.PeakCarnivores -> int
+Terrarium.Logic.Simulation.StatisticsTracker.CurrentPlants -> int
+Terrarium.Logic.Simulation.StatisticsTracker.CurrentHerbivores -> int
+Terrarium.Logic.Simulation.StatisticsTracker.CurrentCarnivores -> int
+Terrarium.Logic.Simulation.StatisticsTracker.CurrentPopulation -> int
+Terrarium.Logic.Simulation.StatisticsTracker.AverageLifespan -> double
+Terrarium.Logic.Simulation.StatisticsTracker.RecordBirth(Terrarium.Logic.Entities.WorldEntity) -> void
+Terrarium.Logic.Simulation.StatisticsTracker.RecordDeath(Terrarium.Logic.Entities.WorldEntity, Terrarium.Logic.Simulation.DeathCause) -> void
+Terrarium.Logic.Simulation.StatisticsTracker.RecordFeeding(Terrarium.Logic.Entities.Creature, Terrarium.Logic.Entities.WorldEntity, double) -> void
+Terrarium.Logic.Simulation.StatisticsTracker.UpdateSnapshot(int, int, int) -> void
+Terrarium.Logic.Simulation.StatisticsTracker.UpdateTime(double) -> void
+Terrarium.Logic.Simulation.StatisticsTracker.ResetSession() -> void
+Terrarium.Logic.Simulation.StatisticsTracker.Reset() -> void
+Terrarium.Logic.Simulation.StatisticsTracker.GetSummary() -> string
+
 Terrarium.Logic.Simulation.World
 Terrarium.Logic.Simulation.World.Width -> int
 Terrarium.Logic.Simulation.World.Height -> int
@@ -69,12 +98,15 @@ Terrarium.Logic.Entities.Plant.Grow() -> void
 Terrarium.Logic.Persistence.SaveManager
 Terrarium.Logic.Persistence.SaveManager.SaveWorld(Terrarium.Logic.Simulation.World, string) -> void
 Terrarium.Logic.Persistence.SaveManager.LoadWorld(string) -> Terrarium.Logic.Simulation.World
-Terrarium.Logic.Persistence.SaveManager.TryLoadWorldAsync(string) -> System.Threading.Tasks.Task<Terrarium.Logic.Simulation.World>
+Terrarium.Logic.Persistence.SaveManager.LoadWorldAsync(string, System.Threading.CancellationToken) -> System.Threading.Tasks.Task<Terrarium.Logic.Simulation.World>
+Terrarium.Logic.Persistence.SaveManager.TryLoadWorldAsync(string, System.Threading.CancellationToken) -> System.Threading.Tasks.Task<System.ValueTuple<bool, Terrarium.Logic.Simulation.World, string>>
 Terrarium.Logic.Persistence.SaveManager.SaveFileExists(string) -> bool
 
 Terrarium.Logic.Simulation.LoreManager
 Terrarium.Logic.Simulation.LoreManager.GenerateEventDescription(Terrarium.Logic.Simulation.FactionManager) -> string
 Terrarium.Logic.Simulation.LoreManager.TryCreateNamedCharacter(Terrarium.Logic.Entities.Creature) -> void
+Terrarium.Logic.Simulation.LoreManager.RecordCharacterDeath(int) -> void
+Terrarium.Logic.Simulation.LoreManager.GetEntityLore(Terrarium.Logic.Entities.Creature) -> string
 
 Terrarium.Logic.Simulation.FactionManager
 Terrarium.Logic.Simulation.FactionManager.Factions -> System.Collections.Generic.IReadOnlyList<Terrarium.Logic.Simulation.Faction>

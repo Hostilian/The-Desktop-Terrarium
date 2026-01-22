@@ -1,0 +1,47 @@
+#nullable enable
+
+Terrarium.Desktop.App
+Terrarium.Desktop.App.App() -> void
+Terrarium.Desktop.App.InitializeComponent() -> void
+Terrarium.Desktop.App.Main() -> void
+
+Terrarium.Desktop.MainWindow
+Terrarium.Desktop.MainWindow.MainWindow() -> void
+Terrarium.Desktop.MainWindow.InitializeComponent() -> void
+Terrarium.Desktop.MainWindow.Show() -> void
+Terrarium.Desktop.MainWindow.Close() -> void
+Terrarium.Desktop.MainWindow.Title -> string
+Terrarium.Desktop.MainWindow.Title.set -> void
+Terrarium.Desktop.MainWindow.WindowState -> System.Windows.WindowState
+Terrarium.Desktop.MainWindow.WindowState.set -> void
+
+Terrarium.Desktop.ChronicleWindow
+Terrarium.Desktop.ChronicleWindow.ChronicleWindow() -> void
+Terrarium.Desktop.ChronicleWindow.InitializeComponent() -> void
+Terrarium.Desktop.ChronicleWindow.Show() -> void
+Terrarium.Desktop.ChronicleWindow.Close() -> void
+
+Terrarium.Desktop.SettingsDialog
+Terrarium.Desktop.SettingsDialog.SettingsDialog() -> void
+Terrarium.Desktop.SettingsDialog.InitializeComponent() -> void
+Terrarium.Desktop.SettingsDialog.ShowDialog() -> System.Nullable<bool>
+
+Terrarium.Desktop.StartupDialog
+Terrarium.Desktop.StartupDialog.StartupDialog() -> void
+Terrarium.Desktop.StartupDialog.InitializeComponent() -> void
+Terrarium.Desktop.StartupDialog.ShowDialog() -> System.Nullable<bool>
+
+Terrarium.Desktop.StatsWindow
+Terrarium.Desktop.StatsWindow.StatsWindow() -> void
+Terrarium.Desktop.StatsWindow.InitializeComponent() -> void
+Terrarium.Desktop.StatsWindow.Show() -> void
+Terrarium.Desktop.StatsWindow.Close() -> void
+
+Terrarium.Desktop.TerrariumTypeOption
+Terrarium.Desktop.TerrariumTypeOption.TerrariumTypeOption() -> void
+Terrarium.Desktop.TerrariumTypeOption.TerrariumType -> Terrarium.Logic.TerrariumType
+Terrarium.Desktop.TerrariumTypeOption.TerrariumType.set -> void
+Terrarium.Desktop.TerrariumTypeOption.DisplayName -> string
+Terrarium.Desktop.TerrariumTypeOption.DisplayName.set -> void
+Terrarium.Desktop.TerrariumTypeOption.Description -> string
+Terrarium.Desktop.TerrariumTypeOption.Description.set -> void

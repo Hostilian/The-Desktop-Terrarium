@@ -237,10 +237,22 @@ namespace Terrarium.Logic.Persistence
                 errorDetails = null;
                 return true;
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
             {
                 world = null;
-                errorDetails = ex.ToString();
+                errorDetails = ex.Message;
+                return false;
+            }
+            catch (InvalidDataException ex)
+            {
+                world = null;
+                errorDetails = ex.Message;
+                return false;
+            }
+            catch (InvalidOperationException ex)
+            {
+                world = null;
+                errorDetails = ex.Message;
                 return false;
             }
         }
@@ -318,9 +330,21 @@ namespace Terrarium.Logic.Persistence
                 var world = await LoadWorldAsync(fileName, cancellationToken).ConfigureAwait(false);
                 return (true, world, null);
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
             {
-                return (false, null, ex.ToString());
+                return (false, null, ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return (false, null, ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return (false, null, ex.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                return (false, null, "Operation was cancelled");
             }
         }
 

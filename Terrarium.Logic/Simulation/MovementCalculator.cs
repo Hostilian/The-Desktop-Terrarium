@@ -71,6 +71,11 @@ namespace Terrarium.Logic.Simulation
 
         public void RandomizeDirection(Creature creature)
         {
+            if (creature is null)
+            {
+                throw new ArgumentNullException(nameof(creature));
+            }
+
             double angle = _random.NextDouble() * Math.PI * 2;
             creature.SetDirection(Math.Cos(angle), Math.Sin(angle));
         }

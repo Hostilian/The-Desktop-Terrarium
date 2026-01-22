@@ -118,6 +118,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public string GenerateEventDescription(FactionManager factionManager)
         {
+            if (factionManager is null)
+            {
+                throw new ArgumentNullException(nameof(factionManager));
+            }
+
             var factions = factionManager.GetFactionsByPopulation().ToList();
             if (factions.Count < 2) return "Peace reigns as a single faction dominates the land.";
 
@@ -144,6 +149,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void TryCreateNamedCharacter(Creature creature)
         {
+            if (creature is null)
+            {
+                throw new ArgumentNullException(nameof(creature));
+            }
+
             // 1 in 50 chance for a creature to become "named"
             if (_random.Next(50) != 0) return;
 

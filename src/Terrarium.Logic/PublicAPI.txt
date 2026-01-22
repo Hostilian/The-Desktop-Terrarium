@@ -1,0 +1,100 @@
+#nullable enable
+
+Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Aquarium -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Desert -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Forest -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Grassland -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Mountain -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Ocean -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Plains -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Tundra -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Urban -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Volcano -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.TerrariumType.Wetlands -> Terrarium.Logic.TerrariumType
+
+Terrarium.Logic.Simulation.SimulationEngine
+Terrarium.Logic.Simulation.SimulationEngine.SimulationEngine(Terrarium.Logic.TerrariumType) -> void
+Terrarium.Logic.Simulation.SimulationEngine.Start() -> void
+Terrarium.Logic.Simulation.SimulationEngine.Stop() -> void
+Terrarium.Logic.Simulation.SimulationEngine.Update() -> void
+Terrarium.Logic.Simulation.SimulationEngine.IsRunning -> bool
+Terrarium.Logic.Simulation.SimulationEngine.IsPaused -> bool
+Terrarium.Logic.Simulation.SimulationEngine.Pause() -> void
+Terrarium.Logic.Simulation.SimulationEngine.Resume() -> void
+Terrarium.Logic.Simulation.SimulationEngine.Reset() -> void
+Terrarium.Logic.Simulation.SimulationEngine.World -> Terrarium.Logic.Simulation.World
+Terrarium.Logic.Simulation.SimulationEngine.TimeOfDay -> int
+Terrarium.Logic.Simulation.SimulationEngine.DayCount -> int
+Terrarium.Logic.Simulation.SimulationEngine.Speed -> int
+Terrarium.Logic.Simulation.SimulationEngine.Speed.set -> void
+Terrarium.Logic.Simulation.SimulationEngine.TerrariumType -> Terrarium.Logic.TerrariumType
+Terrarium.Logic.Simulation.SimulationEngine.TogglePause() -> void
+Terrarium.Logic.Simulation.SimulationEngine.FindClickableAt(int, int) -> Terrarium.Logic.Entities.Interfaces.IEntity
+Terrarium.Logic.Simulation.SimulationEngine.IsEcosystemBalanced() -> bool
+Terrarium.Logic.Simulation.SimulationEngine.GetEcosystemHealth() -> int
+Terrarium.Logic.Simulation.SimulationEngine.GetTimeOfDayString() -> string
+Terrarium.Logic.Simulation.SimulationEngine.GetLightLevel() -> double
+
+Terrarium.Logic.Simulation.World
+Terrarium.Logic.Simulation.World.Width -> int
+Terrarium.Logic.Simulation.World.Height -> int
+Terrarium.Logic.Simulation.World.Entities -> System.Collections.Generic.IReadOnlyList<Terrarium.Logic.Entities.Interfaces.IEntity>
+Terrarium.Logic.Simulation.World.GetEntitiesAt(int, int) -> System.Collections.Generic.IReadOnlyList<Terrarium.Logic.Entities.Interfaces.IEntity>
+Terrarium.Logic.Simulation.World.AddEntity(Terrarium.Logic.Entities.Interfaces.IEntity) -> void
+Terrarium.Logic.Simulation.World.RemoveEntity(Terrarium.Logic.Entities.Interfaces.IEntity) -> void
+Terrarium.Logic.Simulation.World.Clear() -> void
+
+Terrarium.Logic.Entities.Interfaces.IEntity
+Terrarium.Logic.Entities.Interfaces.IEntity.X -> int
+Terrarium.Logic.Entities.Interfaces.IEntity.Y -> int
+Terrarium.Logic.Entities.Interfaces.IEntity.IsAlive -> bool
+Terrarium.Logic.Entities.Interfaces.IEntity.Update() -> void
+
+Terrarium.Logic.Entities.Creature
+Terrarium.Logic.Entities.Creature.Creature(int, int) -> void
+Terrarium.Logic.Entities.Creature.Age -> int
+Terrarium.Logic.Entities.Creature.Energy -> int
+Terrarium.Logic.Entities.Creature.MaxEnergy -> int
+Terrarium.Logic.Entities.Creature.Species -> string
+Terrarium.Logic.Entities.Creature.Move(int, int) -> void
+Terrarium.Logic.Entities.Creature.Eat(int) -> void
+Terrarium.Logic.Entities.Creature.Reproduce() -> Terrarium.Logic.Entities.Creature
+
+Terrarium.Logic.Entities.Plant
+Terrarium.Logic.Entities.Plant.Plant(int, int) -> void
+Terrarium.Logic.Entities.Plant.GrowthStage -> int
+Terrarium.Logic.Entities.Plant.Grow() -> void
+
+Terrarium.Logic.Persistence.SaveManager
+Terrarium.Logic.Persistence.SaveManager.SaveWorld(Terrarium.Logic.Simulation.World, string) -> void
+Terrarium.Logic.Persistence.SaveManager.LoadWorld(string) -> Terrarium.Logic.Simulation.World
+Terrarium.Logic.Persistence.SaveManager.TryLoadWorldAsync(string) -> System.Threading.Tasks.Task<Terrarium.Logic.Simulation.World>
+Terrarium.Logic.Persistence.SaveManager.SaveFileExists(string) -> bool
+
+Terrarium.Logic.Simulation.LoreManager
+Terrarium.Logic.Simulation.LoreManager.GenerateEventDescription(Terrarium.Logic.Simulation.FactionManager) -> string
+Terrarium.Logic.Simulation.LoreManager.TryCreateNamedCharacter(Terrarium.Logic.Entities.Creature) -> void
+
+Terrarium.Logic.Simulation.FactionManager
+Terrarium.Logic.Simulation.FactionManager.Factions -> System.Collections.Generic.IReadOnlyList<Terrarium.Logic.Simulation.Faction>
+Terrarium.Logic.Simulation.FactionManager.Update() -> void
+
+Terrarium.Logic.Simulation.EventSystem
+Terrarium.Logic.Simulation.EventSystem.OldPhase -> Terrarium.Logic.Simulation.Phase
+Terrarium.Logic.Simulation.EventSystem.NewPhase -> Terrarium.Logic.Simulation.Phase
+
+Terrarium.Logic.Simulation.DayPhaseEventArgs
+Terrarium.Logic.Simulation.DayPhaseEventArgs.DayPhaseEventArgs(Terrarium.Logic.Simulation.Phase, Terrarium.Logic.Simulation.Phase) -> void
+Terrarium.Logic.Simulation.DayPhaseEventArgs.OldPhase -> Terrarium.Logic.Simulation.Phase
+Terrarium.Logic.Simulation.DayPhaseEventArgs.NewPhase -> Terrarium.Logic.Simulation.Phase
+
+Terrarium.Logic.Simulation.ReproductionManager
+Terrarium.Logic.Simulation.ReproductionManager.ReproductionManager(Terrarium.Logic.Simulation.SimulationEngine) -> void
+Terrarium.Logic.Simulation.ReproductionManager.HerbivoreReproductionChanceMultiplier -> double
+Terrarium.Logic.Simulation.ReproductionManager.HerbivoreReproductionChanceMultiplier.set -> void
+Terrarium.Logic.Simulation.ReproductionManager.CarnivoreReproductionChanceMultiplier -> double
+Terrarium.Logic.Simulation.ReproductionManager.CarnivoreReproductionChanceMultiplier.set -> void
+Terrarium.Logic.Simulation.ReproductionManager.Update() -> void
+Terrarium.Logic.Simulation.ReproductionManager.CanReproduce(Terrarium.Logic.Entities.Creature) -> bool
+Terrarium.Logic.Simulation.ReproductionManager.ClearCooldown(Terrarium.Logic.Entities.Creature) -> void

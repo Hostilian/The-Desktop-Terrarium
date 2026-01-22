@@ -148,12 +148,19 @@ namespace Terrarium.Logic.Simulation
             }
         }
 
-        public bool CanReproduce(Creature creature) =>
-            creature.IsAlive &&
-            creature.Health >= MinHealthForReproduction &&
-            creature.Hunger <= MaxHungerForReproduction &&
-            creature.Age >= MinAgeForReproduction &&
-            !_reproductionCooldowns.ContainsKey(creature.Id);
+        public bool CanReproduce(Creature creature)
+        {
+            if (creature is null)
+            {
+                throw new ArgumentNullException(nameof(creature));
+            }
+
+            return creature.IsAlive &&
+                   creature.Health >= MinHealthForReproduction &&
+                   creature.Hunger <= MaxHungerForReproduction &&
+                   creature.Age >= MinAgeForReproduction &&
+                   !_reproductionCooldowns.ContainsKey(creature.Id);
+        }
 
         private T? FindMate<T>(T creature, IEnumerable<T> potentialMates) where T : Creature
         {

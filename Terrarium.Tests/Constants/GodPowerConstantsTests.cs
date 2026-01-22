@@ -12,7 +12,7 @@ public class GodPowerConstantsTests
     [TestMethod]
     public void LightningStrikeDamage_ShouldBePositive()
     {
-        Assert.IsGreaterThan(0.0, GodPowerConstants.LIGHTNING_STRIKE_DAMAGE, 
+        Assert.IsGreaterThan(0.0, GodPowerConstants.LIGHTNING_STRIKE_DAMAGE,
             "Lightning damage must be positive");
     }
 

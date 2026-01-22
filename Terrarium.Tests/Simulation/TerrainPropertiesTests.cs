@@ -1,4 +1,3 @@
-
 using Terrarium.Logic.Simulation;
 namespace Terrarium.Tests.Simulation
 {
@@ -161,8 +160,6 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
 
 
 

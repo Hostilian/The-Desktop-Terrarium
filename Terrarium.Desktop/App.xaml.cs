@@ -44,7 +44,35 @@ public partial class App : Application
 
     private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show($"Unhandled Exception: {e.Exception}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        try
+        {
+            string appDataPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DesktopTerrarium");
+            
+            System.IO.Directory.CreateDirectory(appDataPath);
+            string logPath = System.IO.Path.Combine(appDataPath, "crash.log");
+            
+            string logContent = $"[{DateTime.Now}] CRASH REPORT\n" +
+                                $"Exception: {e.Exception.Message}\n" +
+                                $"Stack Trace:\n{e.Exception.StackTrace}\n" +
+                                $"Source: {e.Exception.Source}\n" +
+                                "--------------------------------------------------\n\n";
+
+            System.IO.File.AppendAllText(logPath, logContent);
+            
+            MessageBox.Show($"An unexpected error occurred. Logs saved to:\n{logPath}\n\nError: {e.Exception.Message}", 
+                          "Desktop Terrarium Crash", 
+                          MessageBoxButton.OK, 
+                          MessageBoxImage.Error);
+        }
+        catch
+        {
+            // Fallback if logging fails
+            MessageBox.Show($"Fatal Error: {e.Exception.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        
         e.Handled = true;
+        Shutdown();
     }
 }

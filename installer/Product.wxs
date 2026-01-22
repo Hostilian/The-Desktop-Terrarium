@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Desktop Terrarium" Language="1033" Version="1.0.0.0" Manufacturer="Hostilian" UpgradeCode="PUT-GUID-HERE-1234-5678-90AB-CDEF12345678">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Desktop Terrarium" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Desktop Terrarium" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Desktop Terrarium"/>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="PUT-GUID-HERE-1234-5678-90AB-CDEF12345679">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Desktop Terrarium"
+                  Description="Interactive Ecosystem Simulation"
+                  Target="[INSTALLFOLDER]Terrarium.Desktop.exe"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Hostilian\DesktopTerrarium" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent" Guid="PUT-GUID-HERE-1234-5678-90AB-CDEF12345680">
+        <File Source="$(var.Terrarium.Desktop.TargetDir)Terrarium.Desktop.exe" />
+        <File Source="$(var.Terrarium.Desktop.TargetDir)Terrarium.Desktop.dll" />
+        <File Source="$(var.Terrarium.Desktop.TargetDir)Terrarium.Desktop.runtimeconfig.json" />
+        <File Source="$(var.Terrarium.Desktop.TargetDir)Terrarium.Logic.dll" />
+        <!-- Add other dependencies here manually or use heat.exe to harvest -->
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

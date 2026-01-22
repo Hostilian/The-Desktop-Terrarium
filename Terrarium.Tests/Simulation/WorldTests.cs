@@ -1,4 +1,3 @@
-
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
 using System.Linq;
@@ -384,8 +383,4 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
 

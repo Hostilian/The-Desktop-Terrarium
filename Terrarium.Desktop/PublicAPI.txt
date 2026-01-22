@@ -156,6 +156,12 @@ Terrarium.Desktop.Rendering.EcosystemHealthBar
 Terrarium.Desktop.Rendering.EcosystemHealthBar.EcosystemHealthBar(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.EcosystemHealthBar.Update(double, int, int, int) -> void
 
+Terrarium.Desktop.Rendering.AnimationController
+Terrarium.Desktop.Rendering.AnimationController.AnimationController(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.AnimationController.PlayEatAnimation(System.Windows.UIElement, int) -> void
+Terrarium.Desktop.Rendering.AnimationController.StopAnimation(int) -> void
+Terrarium.Desktop.Rendering.AnimationController.StopAllAnimations() -> void
+
 Terrarium.Desktop.Rendering.AchievementSystem
 Terrarium.Desktop.Rendering.AchievementSystem.AchievementSystem(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.AchievementSystem.Update(double) -> void

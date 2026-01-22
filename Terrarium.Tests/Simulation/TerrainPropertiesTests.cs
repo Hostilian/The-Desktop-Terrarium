@@ -10,7 +10,11 @@ namespace Terrarium.Tests.Simulation
     public class TerrainPropertiesTests
     {
         [TestMethod]
-
+        [DataRow(TerrainType.Soil, "Soil", "#8B4513", true, 100)]
+        [DataRow(TerrainType.Stone, "Stone", "#696969", true, 10)]
+        [DataRow(TerrainType.Water, "Water", "#4169E1", false, 30)]
+        [DataRow(TerrainType.VerdantGrowth, "Verdant Growth", "#228B22", true, 150)]
+        [DataRow(TerrainType.AshenWasteland, "Ashen Wasteland", "#2F2F2F", true, 5)]
         public void GetProperties_ReturnsCorrectData(TerrainType type, string expectedName, string expectedColor, bool expectedWalkable, int expectedFertility)
         {
             // Act
@@ -25,7 +29,12 @@ namespace Terrarium.Tests.Simulation
         }
 
         [TestMethod]
-
+        [DataRow(TerrainType.VerdantGrowth, FactionType.VerdantCollective)]
+        [DataRow(TerrainType.AshenWasteland, FactionType.AshenLegion)]
+        [DataRow(TerrainType.AquaticDomain, FactionType.TideWalkers)]
+        [DataRow(TerrainType.StoneWardens, FactionType.CrystalChoir)]
+        [DataRow(TerrainType.CelestialOrder, FactionType.NomadicCovenant)]
+        [DataRow(TerrainType.NetherCult, FactionType.ScrapbornSwarm)]
         public void GetControllingFaction_FactionTerrain_ReturnsFaction(TerrainType terrain, FactionType expectedFaction)
         {
             // Act
@@ -37,7 +46,10 @@ namespace Terrarium.Tests.Simulation
         }
 
         [TestMethod]
-
+        [DataRow(TerrainType.Soil)]
+        [DataRow(TerrainType.Stone)]
+        [DataRow(TerrainType.Water)]
+        [DataRow(TerrainType.Void)]
         public void GetControllingFaction_NeutralTerrain_ReturnsNull(TerrainType terrain)
         {
             // Act
@@ -48,7 +60,12 @@ namespace Terrarium.Tests.Simulation
         }
 
         [TestMethod]
-
+        [DataRow(FactionType.VerdantCollective, TerrainType.VerdantGrowth)]
+        [DataRow(FactionType.AshenLegion, TerrainType.AshenWasteland)]
+        [DataRow(FactionType.TideWalkers, TerrainType.AquaticDomain)]
+        [DataRow(FactionType.CrystalChoir, TerrainType.StoneWardens)]
+        [DataRow(FactionType.NomadicCovenant, TerrainType.CelestialOrder)]
+        [DataRow(FactionType.ScrapbornSwarm, TerrainType.NetherCult)]
         public void GetFactionTerrain_ReturnsCorrectTerrain(FactionType faction, TerrainType expectedTerrain)
         {
             // Act

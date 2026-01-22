@@ -167,7 +167,7 @@ public class Renderer
         this.canvas = canvas;
         entityVisuals = new Dictionary<int, UIElement>();
         plantShakeTimers = new Dictionary<int, double>();
-        random = new Random();
+        random = new Random(42); // Fixed seed for consistent rendering
 
         // Set colors based on terrarium type
         SetThemeColors(terrariumType);
@@ -275,8 +275,6 @@ public class Renderer
 
     private void CreateForestScenery()
     {
-        var random = new Random(42); // Fixed seed for consistent scenery
-
         // Add distant trees
         for (int i = 0; i < 15; i++)
         {
@@ -329,8 +327,6 @@ public class Renderer
 
     private void CreateDesertScenery()
     {
-        var random = new Random(42);
-
         // Add cacti
         for (int i = 0; i < 12; i++)
         {

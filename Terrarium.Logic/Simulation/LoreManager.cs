@@ -125,10 +125,11 @@ namespace Terrarium.Logic.Simulation
             }
 
             var factions = factionManager.GetFactionsByPopulation().ToList();
-            if (factions.Count < 2) return "Peace reigns as a single faction dominates the land.";
+            var activeFactions = factions.Where(f => f.Population > 0).ToList();
+            if (activeFactions.Count < 2) return "Peace reigns as a single faction dominates the land.";
 
-            var faction1 = factions[random.Next(factions.Count)];
-            var faction2 = factions.Where(f => f.Type != faction1.Type).ToList()[random.Next(Math.Min(2, factions.Count - 1))];
+            var faction1 = activeFactions[random.Next(activeFactions.Count)];
+            var faction2 = activeFactions.Where(f => f.Type != faction1.Type).ToList()[random.Next(Math.Min(2, activeFactions.Count - 1))];
 
             string template = eventTemplates[random.Next(eventTemplates.Count)];
             string battleName = battleNames[random.Next(battleNames.Count)];

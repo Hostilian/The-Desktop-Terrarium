@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Entities
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Terrarium.Logic.Entities;
 
     [TestClass]

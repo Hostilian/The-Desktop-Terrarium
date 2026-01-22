@@ -2,7 +2,6 @@ namespace Terrarium.Tests.Rendering
 {
     using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Terrarium.Logic.Simulation.Achievements;
 
     [TestClass]

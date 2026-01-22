@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Constants;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.Constants;
 
 /// <summary>

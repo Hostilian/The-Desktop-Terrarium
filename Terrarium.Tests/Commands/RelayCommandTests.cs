@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Commands;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.Commands;
 
 /// <summary>

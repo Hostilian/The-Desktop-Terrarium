@@ -2,7 +2,6 @@ namespace Terrarium.Tests.Helpers;
 
 using System.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Logic.Entities;
 
 /// <summary>

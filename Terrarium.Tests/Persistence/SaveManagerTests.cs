@@ -2,7 +2,6 @@ namespace Terrarium.Tests.Persistence
 {
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Terrarium.Logic.Entities;
     using Terrarium.Logic.Persistence;
     using Terrarium.Logic.Simulation;

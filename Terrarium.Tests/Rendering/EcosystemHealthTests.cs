@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Rendering
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Terrarium.Logic.Simulation;
 
     [TestClass]

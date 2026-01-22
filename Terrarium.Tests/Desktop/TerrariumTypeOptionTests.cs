@@ -1,5 +1,6 @@
 using Xunit;
 using Terrarium.Desktop;
+using Assert = Xunit.Assert;
 
 namespace Terrarium.Tests.Desktop
 {

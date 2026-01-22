@@ -1,5 +1,6 @@
 using Xunit;
 using Terrarium.Logic.Simulation;
+using Assert = Xunit.Assert;
 
 namespace Terrarium.Tests.Simulation
 {

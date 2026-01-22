@@ -1,5 +1,6 @@
 using Xunit;
 using Terrarium.Desktop.Constants;
+using Assert = Xunit.Assert;
 
 namespace Terrarium.Tests.Constants
 {

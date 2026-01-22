@@ -1,6 +1,7 @@
 using Xunit;
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
+using Assert = Xunit.Assert;
 using System;
 using System.Linq;
 

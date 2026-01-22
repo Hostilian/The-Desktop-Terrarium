@@ -178,7 +178,7 @@ cd The-Desktop-Terrarium
 .\clean_build.bat
 
 # Run
-cd src\Terrarium.Desktop\bin\Release\net8.0-windows
+cd publish
 .\Terrarium.Desktop.exe
 
 # Test

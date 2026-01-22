@@ -77,8 +77,8 @@ public class RelayCommand<T> : ICommand
 
     public event EventHandler? CanExecuteChanged
     {
-        add => CommandManager.InvalidateRequerySuggested += value;
-        remove => CommandManager.InvalidateRequerySuggested -= value;
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
     }
 
     public bool CanExecute(object? parameter)

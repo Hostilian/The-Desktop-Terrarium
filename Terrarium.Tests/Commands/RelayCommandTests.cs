@@ -43,10 +43,17 @@ public class RelayCommandTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Constructor_WithNullAction_ThrowsException()
     {
-        new RelayCommand(null!);
+        try
+        {
+            new RelayCommand(null!);
+            Assert.Fail("Expected ArgumentNullException was not thrown");
+        }
+        catch (ArgumentNullException)
+        {
+            // Expected exception
+        }
     }
 
     [TestMethod]

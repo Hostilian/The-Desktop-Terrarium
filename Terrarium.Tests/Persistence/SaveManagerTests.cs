@@ -248,7 +248,7 @@ namespace Terrarium.Tests.Persistence
                 Assert.IsFalse(success, "TryLoadWorld should return false for invalid JSON");
                 Assert.IsNull(world, "World should be null on failure");
                 Assert.IsNotNull(errorDetails, "Error details should be provided");
-                StringAssert.Contains(errorDetails, "Exception", "Error should contain exception info");
+                StringAssert.Contains(errorDetails, "Save file is corrupted or not valid JSON", "Error should contain specific error message");
             }
             finally
             {

@@ -4,414 +4,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desktop Terrarium - A+ Grade Achievement 🏆</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <title>Desktop Terrarium - Gaming Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="launcher.css">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
-        }
-
-        .hero-content {
-            max-width: 900px;
-        }
-
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: fadeInDown 1s ease;
-        }
-
-        .grade-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #333;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 2rem 0;
-            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffd700;
-        }
-
-        .stat-label {
-            margin-top: 0.5rem;
-            opacity: 0.9;
-        }
-
-        .section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-alt {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .achievement-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .achievement-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            border-left: 5px solid #4ade80;
-        }
-
-        .achievement-card h3 {
-            margin-bottom: 1rem;
-            color: #4ade80;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin: 3rem 0;
-        }
-
-        .tech-badge {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-weight: 500;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: white;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(74, 222, 128, 0.5);
-        }
-
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            height: 30px;
-            margin: 1rem 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #4ade80, #22c55e);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            transition: width 2s ease;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline-item {
-            margin: 2rem 0;
-            padding-left: 3rem;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            background: #4ade80;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .emoji {
-            font-size: 1.5rem;
-        }
-    </style>
+    <!-- Particles.js for background -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 
 <body>
-    <div class="hero">
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="hero-content">
-            <h1>🏆 Desktop Terrarium</h1>
-            <div class="grade-badge">
-                100% Compliance • A+ Grade
-            </div>
-            <p style="font-size: 1.5rem; margin: 2rem 0;">
-                From D- to A+ in one session<br>
-                Professional .NET Development Showcase
-            </p>
+            <h1 class="hero-title">Desktop Terrarium</h1>
+            <p class="hero-subtitle">Experience gaming in a whole new dimension</p>
+            <button class="cta-button" onclick="scrollToGames()">Explore Games</button>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Exam Compliance</div>
+    <!-- Games Grid Section -->
+    <section class="games-section" id="gamesSection">
+        <h2 class="section-title">Choose Your Game</h2>
+
+        <div class="games-grid">
+            <!-- Snake Card -->
+            <div class="game-card" data-game="snake" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">🐍</div>
+                    <h3 class="card-title">Snake</h3>
+                    <p class="card-description">Classic arcade nostalgia with modern controls</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Easy</span>
+                        <span class="stat"><span class="stat-icon">⏱️</span> Quick</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('snake')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">125+</div>
-                    <div class="stat-label">Unit Tests</div>
+                <div class="card-glow"></div>
+            </div>
+
+            <!-- 2048 Card -->
+            <div class="game-card" data-game="2048" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">2048</h3>
+                    <p class="card-description">Addictive puzzle that tests your strategy</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Medium</span>
+                        <span class="stat"><span class="stat-icon">🧠</span> Logic</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('2048')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">16</div>
-                    <div class="stat-label">Files Created</div>
+                <div class="card-glow"></div>
+            </div>
+
+            <!-- T-Rex Card -->
+            <div class="game-card" data-game="trex" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">🦖</div>
+                    <h3 class="card-title">T-Rex Runner</h3>
+                    <p class="card-description">Endless running action with pixel art charm</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Easy</span>
+                        <span class="stat"><span class="stat-icon">⚡</span> Fast</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('trex')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Magic Numbers</div>
+                <div class="card-glow"></div>
+            </div>
+
+            <!-- Tetris Card -->
+            <div class="game-card" data-game="tetris" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">🎮</div>
+                    <h3 class="card-title">Tetris</h3>
+                    <p class="card-description">Classic block stacking puzzle perfection</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Medium</span>
+                        <span class="stat"><span class="stat-icon">🧠</span> Logic</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('tetris')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
+                <div class="card-glow"></div>
             </div>
 
-            <div style="margin-top: 3rem;">
-                <a href="#achievements" class="cta-button">View Achievements</a>
-                <a href="https://github.com" class="cta-button">View on GitHub</a>
+            <!-- Pacman Card -->
+            <div class="game-card" data-game="pacman" data-tilt>
+                <div class="card-background"></div>
+                <div class="card-content">
+                    <div class="card-icon">👻</div>
+                    <h3 class="card-title">Pacman</h3>
+                    <p class="card-description">Navigate the maze and eat all the dots</p>
+                    <div class="card-stats">
+                        <span class="stat"><span class="stat-icon">⭐</span> Classic</span>
+                        <span class="stat"><span class="stat-icon">🕹️</span> Arcade</span>
+                    </div>
+                    <button class="play-button" onclick="launchGame('pacman')">
+                        <span>Play Now</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-glow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Container (Hidden initially) -->
+    <div class="game-container hidden" id="gameContainer">
+        <div class="game-header">
+            <button class="back-btn" onclick="backToMenu()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Back
+            </button>
+            <h2 id="gameTitle">Game Title</h2>
+            <button class="fullscreen-btn" onclick="toggleFullscreen()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Snake Game -->
+        <div class="game-screen" id="snakeScreen">
+            <canvas id="snakeCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="snakeScore">0</span></p>
+                <p>Use Arrow Keys to move</p>
+            </div>
+        </div>
+
+        <!-- 2048 Game -->
+        <div class="game-screen" id="2048Screen">
+            <div id="game2048Container"></div>
+            <div class="game-info">
+                <p>Score: <span id="2048Score">0</span></p>
+                <p>Use Arrow Keys to merge tiles</p>
+            </div>
+        </div>
+
+        <!-- T-Rex Game -->
+        <div class="game-screen" id="trexScreen">
+            <canvas id="trexCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="trexScore">0</span></p>
+                <p>Press Space to jump</p>
+            </div>
+        </div>
+
+        <!-- Tetris Game -->
+        <div class="game-screen" id="tetrisScreen">
+            <canvas id="tetrisCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="tetrisScore">0</span></p>
+                <p>Use Arrow Keys: ↑ Rotate, ← → Move, ↓ Drop, Space Hard Drop</p>
+            </div>
+        </div>
+
+        <!-- Pacman Game -->
+        <div class="game-screen" id="pacmanScreen">
+            <canvas id="pacmanCanvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span id="pacmanScore">0</span></p>
+                <p>Use Arrow Keys to move</p>
             </div>
         </div>
     </div>
 
-    <div class="section">
-        <h2>🎯 Compliance Progress</h2>
-        <div style="max-width: 600px; margin: 0 auto;">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 100%;">100% Complete</div>
-            </div>
-            <p style="text-align: center; margin-top: 1rem;">
-                All 25 exam requirements met ✅
-            </p>
-        </div>
-    </div>
-
-    <div class="section section-alt" id="achievements">
-        <h2>🚀 Key Achievements</h2>
-        <div class="achievement-grid">
-            <div class="achievement-card">
-                <h3>✅ MVVM Architecture</h3>
-                <p>Full implementation of Model-View-ViewModel pattern with ViewModelBase, RelayCommand, and complete
-                    separation of concerns.</p>
-            </div>
-            <div class="achievement-card">
-                <h3>✅ Service Layer</h3>
-                <p>Extracted GodPowerService (200 lines) from UI, achieving proper layered architecture and testability.
-                </p>
-            </div>
-            <div class="achievement-card">
-                <h3>✅ Zero Technical Debt</h3>
-                <p>Removed 500+ lines of dead code, eliminated all magic constants, no methods over 20 lines.</p>
-            </div>
-            <div class="achievement-card">
-                <h3>✅ Comprehensive Testing</h3>
-                <p>125+ unit tests covering constants, services, ViewModels, commands, and integration scenarios.</p>
-            </div>
-            <div class="achievement-card">
-                <h3>✅ Professional Documentation</h3>
-                <p>XML documentation on all public members explaining WHY, not just WHAT.</p>
-            </div>
-            <div class="achievement-card">
-                <h3>✅ Build Quality</h3>
-                <p>Zero errors, zero warnings, 100% test pass rate, formatted and verified.</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>🛠️ Technology Stack</h2>
-        <div class="tech-stack">
-            <span class="tech-badge">C# 12</span>
-            <span class="tech-badge">.NET 8</span>
-            <span class="tech-badge">WPF</span>
-            <span class="tech-badge">MVVM Pattern</span>
-            <span class="tech-badge">MSTest</span>
-            <span class="tech-badge">Dependency Injection</span>
-            <span class="tech-badge">INotifyPropertyChanged</span>
-            <span class="tech-badge">RelayCommand</span>
-            <span class="tech-badge">Service Layer</span>
-        </div>
-    </div>
-
-    <div class="section section-alt">
-        <h2>📈 Development Timeline</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <h3>Phase 1-3: Foundation</h3>
-                <p>Dead code removal, magic constant extraction, method size reduction</p>
-            </div>
-            <div class="timeline-item">
-                <h3>Phase 4: Service Layer</h3>
-                <p>Created GodPowerService with 16 comprehensive tests</p>
-            </div>
-            <div class="timeline-item">
-                <h3>Phase 5-6: MVVM & DI</h3>
-                <p>Full MVVM architecture with ViewModelBase and command pattern</p>
-            </div>
-            <div class="timeline-item">
-                <h3>Phase 7-9: Polish & Testing</h3>
-                <p>Documentation, 125+ tests, final verification</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>📊 Final Statistics</h2>
-        <div
-            style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 15px; max-width: 600px; margin: 0 auto;">
-            <table style="width: 100%; text-align: left;">
-                <tr>
-                    <td><strong>Compliance:</strong></td>
-                    <td>30% → <span style="color: #4ade80;">100%</span></td>
-                    <td style="color: #4ade80;">+70%</td>
-                </tr>
-                <tr>
-                    <td><strong>Grade:</strong></td>
-                    <td>D- → <span style="color: #ffd700;">A+</span></td>
-                    <td style="color: #ffd700;">+4 grades</td>
-                </tr>
-                <tr>
-                    <td><strong>Tests:</strong></td>
-                    <td>50 → <span style="color: #4ade80;">125+</span></td>
-                    <td style="color: #4ade80;">+150%</td>
-                </tr>
-                <tr>
-                    <td><strong>Dead Code:</strong></td>
-                    <td>500+ → <span style="color: #4ade80;">0</span></td>
-                    <td style="color: #4ade80;">100%</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="section section-alt">
-        <div style="text-align: center;">
-            <h2>🎓 Ready for Submission</h2>
-            <p style="font-size: 1.25rem; margin: 2rem 0;">
-                All exam requirements met. Professional quality code.<br>
-                125+ tests passing. Zero errors. Zero warnings.
-            </p>
-            <div class="emoji" style="font-size: 4rem; margin: 2rem 0;">
-                ✅ 🏆 💯
-            </div>
-            <a href="games/index.html" class="cta-button">Play Interactive Games</a>
-        </div>
-    </div>
-
-    <script>
-        // Animate stats on scroll
-        const observerOptions = {
-            threshold: 0.5,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInDown 1s ease';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.achievement-card, .stat-card').forEach(card => {
-            observer.observe(card);
-        });
-    </script>
+    <script src="shared/game-engine.js"></script>
+    <script src="shared/fullscreen.js"></script>
+    <script src="games/snake/game.js"></script>
+    <script src="games/2048/game.js"></script>
+    <script src="games/trex/game.js"></script>
+    <script src="games/tetris/game.js"></script>
+    <script src="games/pacman/game.js"></script>
+    <script src="animations.js"></script>
+    <script src="launcher.js"></script>
 </body>
 
 </html>

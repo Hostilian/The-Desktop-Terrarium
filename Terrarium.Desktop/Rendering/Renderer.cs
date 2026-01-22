@@ -382,8 +382,6 @@ public class Renderer
 
     private void CreateAquaticScenery()
     {
-        var random = new Random(42);
-
         // Add coral
         for (int i = 0; i < 18; i++)
         {
@@ -447,8 +445,6 @@ public class Renderer
 
     private void CreateGodSimulatorScenery()
     {
-        var random = new Random(42);
-
         // Add floating crystals
         for (int i = 0; i < 12; i++)
         {

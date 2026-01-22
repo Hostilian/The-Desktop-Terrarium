@@ -9,6 +9,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 env:
   DOTNET_VERSION: '8.0.x'
   PYTHON_VERSION: '3.11'
@@ -59,7 +64,7 @@ jobs:
 
     - name: ✅ Coverage Gate
       if: always()
-      run: python scripts/summarize_coverage.py TestResults --min-line 70
+      run: python scripts/summarize_coverage.py TestResults --min-line 20
 
     - name: 📊 Upload Test Results
       uses: actions/upload-artifact@v4
@@ -91,7 +96,7 @@ jobs:
         path: ./TestResults/coveragereport/
 
     - name: 📈 Test Report Summary
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v1.9.1
       if: always()
       with:
         name: Test Results

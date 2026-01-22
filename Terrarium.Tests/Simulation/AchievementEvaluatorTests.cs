@@ -8,7 +8,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class AchievementEvaluatorTests
     {
-        [Fact]
+        [TestMethod]
         public void Evaluate_FirstBirth_ReturnsAchievement()
         {
             // Arrange & Act
@@ -26,7 +26,7 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(achievements.Any(a => a.Id == "first_birth"));
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Population10_ReturnsAchievement()
         {
             // Arrange & Act
@@ -44,7 +44,7 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(achievements.Any(a => a.Id == "population_10"));
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Population25_ReturnsAchievement()
         {
             // Arrange & Act
@@ -62,7 +62,7 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(achievements.Any(a => a.Id == "population_25"));
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Population50_ReturnsAchievement()
         {
             // Arrange & Act
@@ -80,7 +80,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "population_50");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Births10_ReturnsAchievement()
         {
             // Arrange & Act
@@ -98,7 +98,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "births_10");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Births50_ReturnsAchievement()
         {
             // Arrange & Act
@@ -116,7 +116,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "births_50");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Births100_ReturnsAchievement()
         {
             // Arrange & Act
@@ -134,7 +134,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "births_100");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Survivor_AllSpeciesAlive_ReturnsAchievement()
         {
             // Arrange & Act
@@ -152,7 +152,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "survivor");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Survivor_PlantsExtinct_DoesNotReturnAchievement()
         {
             // Arrange & Act
@@ -170,7 +170,7 @@ namespace Terrarium.Tests.Simulation
             Assert.DoesNotContain(achievements, a => a.Id == "survivor");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Time5Minutes_ReturnsAchievement()
         {
             // Arrange & Act
@@ -188,7 +188,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "time_5min");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Time30Minutes_ReturnsAchievement()
         {
             // Arrange & Act
@@ -206,7 +206,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "time_30min");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Time1Hour_ReturnsAchievement()
         {
             // Arrange & Act
@@ -224,7 +224,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "time_1hour");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Plants20_ReturnsAchievement()
         {
             // Arrange & Act
@@ -242,7 +242,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "plants_20");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_Plants40_ReturnsAchievement()
         {
             // Arrange & Act
@@ -260,7 +260,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "plants_40");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_PerfectBalance_ReturnsAchievement()
         {
             // Arrange - 70% herbiv ratio (between 60-80%)
@@ -278,7 +278,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "balance");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_PerfectBalance_TooFewCreatures_DoesNotReturnAchievement()
         {
             // Arrange - only 9 creatures, need 10+
@@ -296,7 +296,7 @@ namespace Terrarium.Tests.Simulation
             Assert.DoesNotContain(achievements, a => a.Id == "balance");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_PerfectBalance_RatioTooLow_DoesNotReturnAchievement()
         {
             // Arrange - only 50% herbivores (below 60%)
@@ -314,7 +314,7 @@ namespace Terrarium.Tests.Simulation
             Assert.DoesNotContain(achievements, a => a.Id == "balance");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_ApexPredator_ReturnsAchievement()
         {
             // Arrange
@@ -332,7 +332,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Contains(achievements, a => a.Id == "apex_predator");
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_NoAchievements_ReturnsEmptyList()
         {
             // Arrange
@@ -350,7 +350,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Empty(achievements);
         }
 
-        [Fact]
+        [TestMethod]
         public void Evaluate_AllAchievements_ReturnsMultiple()
         {
             // Arrange - values that trigger many achievements
@@ -369,3 +369,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

@@ -8,7 +8,7 @@ namespace Terrarium.Tests.Desktop
     /// </summary>
     public class TerrariumTypeOptionTests
     {
-        [Fact]
+        [TestMethod]
         public void Properties_CanBeSetAndRetrieved()
         {
             // Arrange
@@ -26,3 +26,5 @@ namespace Terrarium.Tests.Desktop
         }
     }
 }
+
+

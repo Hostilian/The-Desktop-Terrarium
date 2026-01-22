@@ -8,7 +8,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class TerrainPropertiesTests
     {
-        [Theory]
+        [DataTestMethod]
         [InlineData(TerrainType.Void, "Void", "#000000", false, 0)]
         [InlineData(TerrainType.Soil, "Soil", "#8B4513", true, 100)]
         [InlineData(TerrainType.Stone, "Stone", "#696969", true, 10)]
@@ -28,7 +28,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotNull(properties.Description);
         }
 
-        [Theory]
+        [DataTestMethod]
         [InlineData(TerrainType.VerdantGrowth, FactionType.VerdantCollective)]
         [InlineData(TerrainType.AshenWasteland, FactionType.AshenLegion)]
         [InlineData(TerrainType.AquaticDomain, FactionType.TideWalkers)]
@@ -45,7 +45,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(expectedFaction, faction.Value);
         }
 
-        [Theory]
+        [DataTestMethod]
         [InlineData(TerrainType.Void)]
         [InlineData(TerrainType.Soil)]
         [InlineData(TerrainType.Stone)]
@@ -59,7 +59,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Null(faction);
         }
 
-        [Theory]
+        [DataTestMethod]
         [InlineData(FactionType.VerdantCollective, TerrainType.VerdantGrowth)]
         [InlineData(FactionType.AshenLegion, TerrainType.AshenWasteland)]
         [InlineData(FactionType.TideWalkers, TerrainType.AquaticDomain)]
@@ -75,7 +75,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(expectedTerrain, terrain);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanConvert_SoilToVerdantGrowth_WithCorrectFaction_ReturnsTrue()
         {
             // Act
@@ -88,7 +88,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(canConvert);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanConvert_SoilToAshenWasteland_WithCorrectFaction_ReturnsTrue()
         {
             // Act
@@ -101,7 +101,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(canConvert);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanConvert_WaterToAquaticDomain_WithCorrectFaction_ReturnsTrue()
         {
             // Act
@@ -114,7 +114,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(canConvert);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanConvert_ToEnemyFactionTerrain_ReturnsFalse()
         {
             // Act
@@ -127,7 +127,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(canConvert);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanConvert_InvalidConversion_ReturnsFalse()
         {
             // Act
@@ -140,7 +140,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(canConvert);
         }
 
-        [Fact]
+        [TestMethod]
         public void TerrainData_AllPropertiesCanBeSet()
         {
             // Arrange
@@ -162,3 +162,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

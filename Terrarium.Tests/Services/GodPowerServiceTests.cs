@@ -149,3 +149,5 @@ public class GodPowerServiceTests
         Assert.IsTrue(carnivore.IsAlive);
     }
 }
+
+

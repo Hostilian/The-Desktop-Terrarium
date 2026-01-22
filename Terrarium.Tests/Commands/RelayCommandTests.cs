@@ -76,3 +76,5 @@ public class RelayCommandTests
         Assert.IsFalse(command.CanExecute(-1));
     }
 }
+
+

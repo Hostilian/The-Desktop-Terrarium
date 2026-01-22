@@ -11,7 +11,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class LoreManagerTests
     {
-        [Fact]
+        [TestMethod]
         public void Constructor_InitializesChronicle()
         {
             // Arrange & Act
@@ -22,7 +22,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotEmpty(loreManager.Chronicle); // Should have ancient events
         }
 
-        [Fact]
+        [TestMethod]
         public void Constructor_GeneratesAncientHistory()
         {
             // Arrange & Act
@@ -33,7 +33,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(ancientEvents.Count(), 3, 5); // Should generate 3-5 ancient events
         }
 
-        [Fact]
+        [TestMethod]
         public void RecordEvent_AddsEventToChronicle()
         {
             // Arrange
@@ -48,7 +48,7 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(loreManager.Chronicle.Any(e => e.Description == "Test event"));
         }
 
-        [Fact]
+        [TestMethod]
         public void RecordEvent_LimitsChronicleSize()
         {
             // Arrange
@@ -64,7 +64,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(loreManager.Chronicle.Count <= 100);
         }
 
-        [Fact]
+        [TestMethod]
         public void GenerateEventDescription_ReturnsDescription()
         {
             // Arrange
@@ -85,7 +85,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotEmpty(description);
         }
 
-        [Fact]
+        [TestMethod]
         public void GenerateEventDescription_WithNullFactionManager_ThrowsException()
         {
             // Arrange
@@ -96,7 +96,7 @@ namespace Terrarium.Tests.Simulation
                 loreManager.GenerateEventDescription(null!));
         }
 
-        [Fact]
+        [TestMethod]
         public void GenerateEventDescription_WithSingleFaction_ReturnsSpecialMessage()
         {
             // Arrange
@@ -115,7 +115,7 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(description.Contains("Peace reigns"));
         }
 
-        [Fact]
+        [TestMethod]
         public void TryCreateNamedCharacter_CreatesCharacterRandomly()
         {
             // Arrange
@@ -134,7 +134,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotEmpty(loreManager.NamedCharacters);
         }
 
-        [Fact]
+        [TestMethod]
         public void TryCreateNamedCharacter_WithNullCreature_ThrowsException()
         {
             // Arrange
@@ -145,7 +145,7 @@ namespace Terrarium.Tests.Simulation
                 loreManager.TryCreateNamedCharacter(null!));
         }
 
-        [Fact]
+        [TestMethod]
         public void RecordCharacterDeath_UpdatesCharacterStatus()
         {
             // Arrange
@@ -170,7 +170,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotNull(namedChar.DeathTime);
         }
 
-        [Fact]
+        [TestMethod]
         public void RecordCharacterDeath_WithNonexistentId_DoesNothing()
         {
             // Arrange
@@ -180,7 +180,7 @@ namespace Terrarium.Tests.Simulation
             loreManager.RecordCharacterDeath(999999);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetEntityLore_ForNamedCharacter_ReturnsCustomLore()
         {
             // Arrange
@@ -196,7 +196,7 @@ namespace Terrarium.Tests.Simulation
 
             var namedChar = loreManager.NamedCharacters.Values.FirstOrDefault();
             Assert.NotNull(namedChar);
-            var creature2 = new Herbivore(namedChar.Id, 100, 100, "Deer", faction: namedChar.Faction);
+            var creature2 = new Herbivore(namedChar.Id, 100, "Deer", faction: namedChar.Faction);
 
             // Act
             string lore = loreManager.GetEntityLore(creature2);
@@ -205,12 +205,12 @@ namespace Terrarium.Tests.Simulation
             Assert.IsTrue(lore.Contains(namedChar.Name));
         }
 
-        [Fact]
+        [TestMethod]
         public void GetEntityLore_ForUnnamedCreature_ReturnsProceduralLore()
         {
             // Arrange
             var loreManager = new LoreManager();
-            var creature = new Herbivore(12345, 100, 100, "Deer", faction: FactionType.VerdantCollective);
+            var creature = new Herbivore(12345, 100, "Deer", faction: FactionType.VerdantCollective);
 
             // Act
             string lore = loreManager.GetEntityLore(creature);
@@ -220,7 +220,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotEmpty(lore);
         }
 
-        [Fact]
+        [TestMethod]
         public void NamedCharacter_HasAllPropertiesInitialized()
         {
             // Arrange
@@ -242,7 +242,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(namedChar.IsAlive);
         }
 
-        [Fact]
+        [TestMethod]
         public void LoreEvent_HasAllProperties()
         {
             // Arrange
@@ -262,3 +262,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

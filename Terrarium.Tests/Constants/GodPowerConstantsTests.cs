@@ -86,3 +86,5 @@ public class GodPowerConstantsTests
             "Corruption target count must be positive");
     }
 }
+
+

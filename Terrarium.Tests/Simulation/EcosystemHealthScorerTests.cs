@@ -1,5 +1,7 @@
 using Xunit;
 using Terrarium.Logic.Simulation;
+using Terrarium.Logic.Entities;
+using Assert = Xunit.Assert;
 
 namespace Terrarium.Tests.Simulation
 {
@@ -8,7 +10,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class EcosystemHealthScorerTests
     {
-        [Fact]
+        [TestMethod]
         public void CalculateHealth01_ReturnsValueBetweenZeroAndOne()
         {
             // Arrange & Act
@@ -18,7 +20,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 0.0, 1.0);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_IdealBalance_ReturnsHighScore()
         {
             // Arrange - ideal ratios: 50% plants, 35% herbivores, 15% carnivores
@@ -33,7 +35,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 95, 100);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_PlantsExtinct_AppliesPenalty()
         {
             // Arrange
@@ -48,7 +50,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 0, 60);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_HerbivoresExtinct_AppliesPenalty()
         {
             // Arrange
@@ -63,7 +65,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 0, 70);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_CarnivoresExtinct_AppliesPenalty()
         {
             // Arrange
@@ -78,7 +80,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 0, 80);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_TotalExtinction_ReturnsZero()
         {
             // Arrange
@@ -93,7 +95,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(0, health);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_AllSpeciesPresent_GetsDiversityBonus()
         {
             // Arrange
@@ -108,7 +110,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(health > 50);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_PopulationInIdealRange_GetsBonus()
         {
             // Arrange - total between 20 and 100
@@ -123,7 +125,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 70, 100);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_VeryUnbalanced_LowScore()
         {
             // Arrange - almost all carnivores (very unbalanced)
@@ -138,7 +140,7 @@ namespace Terrarium.Tests.Simulation
             Assert.InRange(health, 0, 50);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealth01_MatchesPercentDividedBy100()
         {
             // Arrange
@@ -154,7 +156,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(healthPercent / 100.0, health01, precision: 5);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_NeverExceedsMaximum()
         {
             // Arrange - perfect conditions
@@ -169,7 +171,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(health <= 100);
         }
 
-        [Fact]
+        [TestMethod]
         public void CalculateHealthPercent_NeverGoesNegative()
         {
             // Arrange - worst conditions
@@ -185,3 +187,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

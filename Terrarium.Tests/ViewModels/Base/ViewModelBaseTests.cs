@@ -120,3 +120,5 @@ public class ViewModelBaseTests
         Assert.AreEqual(42, viewModel.Counter);
     }
 }
+
+

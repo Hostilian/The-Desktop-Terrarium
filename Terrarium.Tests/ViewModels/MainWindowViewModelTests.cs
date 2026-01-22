@@ -82,3 +82,5 @@ public class MainWindowViewModelTests
         Assert.IsTrue(eventRaised);
     }
 }
+
+

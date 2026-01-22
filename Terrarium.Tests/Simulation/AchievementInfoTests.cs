@@ -8,7 +8,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class AchievementInfoTests
     {
-        [Fact]
+        [TestMethod]
         public void Constructor_InitializesAllProperties()
         {
             // Arrange & Act
@@ -20,7 +20,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal("Test Description", achievement.Description);
         }
 
-        [Fact]
+        [TestMethod]
         public void Equality_SameValues_ReturnsTrue()
         {
             // Arrange
@@ -31,7 +31,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(achievement1, achievement2);
         }
 
-        [Fact]
+        [TestMethod]
         public void Equality_DifferentValues_ReturnsFalse()
         {
             // Arrange
@@ -43,3 +43,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

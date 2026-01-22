@@ -73,6 +73,20 @@ Terrarium.Logic.Simulation.World.GetEntitiesAt(int, int) -> System.Collections.G
 Terrarium.Logic.Simulation.World.AddEntity(Terrarium.Logic.Entities.Interfaces.IEntity) -> void
 Terrarium.Logic.Simulation.World.RemoveEntity(Terrarium.Logic.Entities.Interfaces.IEntity) -> void
 Terrarium.Logic.Simulation.World.Clear() -> void
+Terrarium.Logic.Simulation.World.AttemptTerrainConversion(double, double, Terrarium.Logic.Simulation.FactionType) -> bool
+Terrarium.Logic.Simulation.World.ProcessTerrainConquest() -> void
+Terrarium.Logic.Simulation.World.GetFactionTerritory(Terrarium.Logic.Simulation.FactionType) -> System.Collections.Generic.IEnumerable<System.ValueTuple<int, int, Terrarium.Logic.Simulation.TerrainType>>
+Terrarium.Logic.Simulation.World.GetTerritoryControl() -> System.Collections.Generic.Dictionary<Terrarium.Logic.Simulation.FactionType, double>
+
+Terrarium.Logic.Simulation.SeasonCycle
+Terrarium.Logic.Simulation.SeasonCycle.SeasonCycle() -> void
+Terrarium.Logic.Simulation.SeasonCycle.CurrentTime -> double
+Terrarium.Logic.Simulation.SeasonCycle.CurrentSeason -> Terrarium.Logic.Simulation.Season
+Terrarium.Logic.Simulation.SeasonCycle.SeasonProgress.get -> double
+Terrarium.Logic.Simulation.SeasonCycle.PlantSpawnChanceMultiplier.get -> double
+Terrarium.Logic.Simulation.SeasonCycle.Update(double) -> void
+Terrarium.Logic.Simulation.SeasonCycle.SetTime(double) -> void
+Terrarium.Logic.Simulation.SeasonCycle.SetSeason(Terrarium.Logic.Simulation.Season) -> void
 
 Terrarium.Logic.Entities.Interfaces.IEntity
 Terrarium.Logic.Entities.Interfaces.IEntity.X -> int

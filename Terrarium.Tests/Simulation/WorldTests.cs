@@ -1,6 +1,7 @@
 using Xunit;
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
+using Assert = Xunit.Assert;
 using System.Linq;
 
 namespace Terrarium.Tests.Simulation
@@ -148,7 +149,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Algae", plant.Type);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnRandomPlant_GodSimulatorType_CreatesCrystal()
         {
             // Arrange
@@ -161,7 +162,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Crystal", plant.Type);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnPlantAt_CreatesPlantAtSpecificLocation()
         {
             // Arrange
@@ -177,7 +178,7 @@ namespace Terrarium.Tests.Simulation
             CollectionAssert.Contains(world.Plants, plant);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnRandomHerbivore_CreatesCorrectType()
         {
             // Arrange
@@ -192,7 +193,7 @@ namespace Terrarium.Tests.Simulation
             CollectionAssert.Contains(world.Herbivores, herbivore);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnRandomHerbivore_WithFactionOverride_UsesFaction()
         {
             // Arrange
@@ -205,7 +206,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(FactionType.CrystalChoir, herbivore.Faction);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnRandomCarnivore_CreatesCorrectType()
         {
             // Arrange
@@ -220,7 +221,7 @@ namespace Terrarium.Tests.Simulation
             CollectionAssert.Contains(world.Carnivores, carnivore);
         }
 
-        [Fact]
+        [TestMethod]
         public void SpawnRandomCarnivore_WithTypeOverride_UsesType()
         {
             // Arrange
@@ -233,7 +234,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("CustomWolf", carnivore.Type);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetAllEntities_ReturnsAllEntityTypes()
         {
             // Arrange
@@ -249,7 +250,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(3, allEntities.Count);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetTerrainAt_WithinBounds_ReturnsTerrain()
         {
             // Arrange
@@ -262,7 +263,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotEqual(TerrainType.Void, terrain);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetTerrainAt_OutOfBounds_ReturnsVoid()
         {
             // Arrange
@@ -275,7 +276,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(TerrainType.Void, terrain);
         }
 
-        [Fact]
+        [TestMethod]
         public void SetTerrainAt_ChangesTerrainType()
         {
             // Arrange
@@ -289,7 +290,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(TerrainType.AshenWasteland, terrain);
         }
 
-        [Fact]
+        [TestMethod]
         public void SetTerrainAt_OutOfBounds_DoesNothing()
         {
             // Arrange
@@ -299,7 +300,7 @@ namespace Terrarium.Tests.Simulation
             world.SetTerrainAt(-100, -100, TerrainType.AshenWasteland);
         }
 
-        [Fact]
+        [TestMethod]
         public void AttemptTerrainConversion_CanConvert_ReturnsTrue()
         {
             // Arrange
@@ -314,7 +315,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(TerrainType.AshenWasteland, world.GetTerrainAt(100, 100));
         }
 
-        [Fact]
+        [TestMethod]
         public void AttemptTerrainConversion_AlreadyOwned_ReturnsFalse()
         {
             // Arrange
@@ -328,7 +329,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(converted);
         }
 
-        [Fact]
+        [TestMethod]
         public void ProcessTerrainConquest_ConvertsAdjacentTerrain()
         {
             // Arrange
@@ -349,7 +350,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(allTerrain.Any());
         }
 
-        [Fact]
+        [TestMethod]
         public void GetFactionTerritory_ReturnsFactionCells()
         {
             // Arrange
@@ -368,7 +369,7 @@ namespace Terrarium.Tests.Simulation
             }
         }
 
-        [Fact]
+        [TestMethod]
         public void GetTerritoryControl_ReturnsPercentages()
         {
             // Arrange
@@ -384,3 +385,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

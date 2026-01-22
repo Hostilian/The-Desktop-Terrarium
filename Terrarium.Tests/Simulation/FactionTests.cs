@@ -1,5 +1,6 @@
 using Xunit;
 using Terrarium.Logic.Simulation;
+using Assert = Xunit.Assert;
 
 namespace Terrarium.Tests.Simulation
 {
@@ -29,7 +30,7 @@ namespace Terrarium.Tests.Simulation
             Assert.NotNull(faction.Lore);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRelationshipStatus_Allied_ReturnsCorrectStatus()
         {
             // Arrange
@@ -43,7 +44,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Allied", status);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRelationshipStatus_Friendly_ReturnsCorrectStatus()
         {
             // Arrange
@@ -57,7 +58,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Friendly", status);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRelationshipStatus_Neutral_ReturnsCorrectStatus()
         {
             // Arrange
@@ -71,7 +72,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Neutral", status);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRelationshipStatus_Unfriendly_ReturnsCorrectStatus()
         {
             // Arrange
@@ -85,7 +86,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Unfriendly", status);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRelationshipStatus_Hostile_ReturnsCorrectStatus()
         {
             // Arrange
@@ -98,7 +99,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual("Hostile", status);
         }
 
-        [Fact]
+        [TestMethod]
         public void AddResource_CreatesNewResourceType()
         {
             // Arrange
@@ -112,7 +113,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(50, faction.Resources["Wood"]);
         }
 
-        [Fact]
+        [TestMethod]
         public void AddResource_AddsToExistingResource()
         {
             // Arrange
@@ -126,7 +127,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(50, faction.Resources["Iron"]);
         }
 
-        [Fact]
+        [TestMethod]
         public void ConsumeResource_WithSufficientAmount_ReturnsTrue()
         {
             // Arrange
@@ -141,7 +142,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(60, faction.Resources["Crystal"]);
         }
 
-        [Fact]
+        [TestMethod]
         public void ConsumeResource_WithInsufficientAmount_ReturnsFalse()
         {
             // Arrange
@@ -156,7 +157,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(30, faction.Resources["Water"]);
         }
 
-        [Fact]
+        [TestMethod]
         public void ConsumeResource_NonexistentResource_ReturnsFalse()
         {
             // Arrange
@@ -169,7 +170,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(consumed);
         }
 
-        [Fact]
+        [TestMethod]
         public void Population_CanBeSetAndRetrieved()
         {
             // Arrange
@@ -182,7 +183,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(25, faction.Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void TerritoryControl_CanBeSetAndRetrieved()
         {
             // Arrange
@@ -196,3 +197,5 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+

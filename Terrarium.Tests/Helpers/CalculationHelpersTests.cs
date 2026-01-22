@@ -53,3 +53,5 @@ public class CalculationHelpersTests
         return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
     }
 }
+
+

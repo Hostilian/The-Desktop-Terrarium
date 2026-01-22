@@ -680,9 +680,9 @@ public class Renderer
             plantGroup.Children.Add(leafHighlight);
             plantGroup.Children.Add(accent);
 
-            Canvas.SetLeft(leaves, -plant.Size * PlantLeavesLeftOffsetRatio + PlantLeavesLeftNudge);
+            Canvas.SetLeft(leaves, (-plant.Size * PlantLeavesLeftOffsetRatio) + PlantLeavesLeftNudge);
             Canvas.SetTop(leaves, -plant.Size * PlantLeavesTopOffsetRatio);
-            Canvas.SetLeft(leafHighlight, -plant.Size * PlantHighlightLeftOffsetRatio + PlantLeavesLeftNudge);
+            Canvas.SetLeft(leafHighlight, (-plant.Size * PlantHighlightLeftOffsetRatio) + PlantLeavesLeftNudge);
             Canvas.SetTop(leafHighlight, -plant.Size * PlantHighlightTopOffsetRatio);
             Canvas.SetLeft(accent, plant.Size * PlantAccentLeftOffsetRatio);
             Canvas.SetTop(accent, -plant.Size * PlantAccentTopOffsetRatio);
@@ -759,7 +759,7 @@ public class Renderer
             {
                 leaves.Width = plant.Size * PlantLeavesSizeRatio;
                 leaves.Height = plant.Size * PlantLeavesSizeRatio;
-                Canvas.SetLeft(leaves, -plant.Size * PlantLeavesLeftOffsetRatio + PlantLeavesLeftNudge);
+                Canvas.SetLeft(leaves, (-plant.Size * PlantLeavesLeftOffsetRatio) + PlantLeavesLeftNudge);
                 Canvas.SetTop(leaves, -plant.Size * PlantLeavesTopOffsetRatio);
             }
 
@@ -768,7 +768,7 @@ public class Renderer
             {
                 highlight.Width = plant.Size * PlantHighlightSizeRatio;
                 highlight.Height = plant.Size * PlantHighlightSizeRatio;
-                Canvas.SetLeft(highlight, -plant.Size * PlantHighlightLeftOffsetRatio + PlantLeavesLeftNudge);
+                Canvas.SetLeft(highlight, (-plant.Size * PlantHighlightLeftOffsetRatio) + PlantLeavesLeftNudge);
                 Canvas.SetTop(highlight, -plant.Size * PlantHighlightTopOffsetRatio);
             }
         }

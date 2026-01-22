@@ -532,7 +532,8 @@ public partial class MainWindow : Window, IDisposable
             do
             {
                 newFaction = factionTypes[random.Next(factionTypes.Length)];
-            } while (newFaction == currentFaction);
+            }
+            while (newFaction == currentFaction);
 
             creature.Faction = newFaction;
             corruptedCount++;
@@ -711,7 +712,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void ApplySimulationSpeedSettings(SettingsDialog settings)
     {
-        if (!double.TryParse(settings.SimulationSpeed.Replace("x", ""), out double speed))
+        if (!double.TryParse(settings.SimulationSpeed.Replace("x", string.Empty), out double speed))
         {
             return;
         }

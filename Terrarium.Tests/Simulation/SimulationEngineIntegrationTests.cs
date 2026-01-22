@@ -23,10 +23,10 @@ public class SimulationEngineIntegrationTests
     {
         _engine!.Initialize();
         int initialPlantCount = _engine.World.Plants.Count;
-        
+
         _engine.Pause();
         _engine.Update(1.0);
-        
+
         // Entities should not have aged
         Assert.HasCount(initialPlantCount, _engine.World.Plants);
     }
@@ -44,9 +44,9 @@ public class SimulationEngineIntegrationTests
     public void TogglePause_SwitchesPauseState()
     {
         bool initialState = _engine!.IsPaused;
-        
+
         _engine.TogglePause();
-        
+
         Assert.AreNotEqual(initialState, _engine.IsPaused);
     }
 
@@ -54,7 +54,7 @@ public class SimulationEngineIntegrationTests
     public void Initialize_CreatesEntities()
     {
         _engine!.Initialize();
-        
+
         Assert.IsNotEmpty(_engine.World.Plants);
         Assert.IsNotEmpty(_engine.World.Herbivores);
     }
@@ -65,10 +65,10 @@ public class SimulationEngineIntegrationTests
         _engine!.Initialize();
         var firstPlant = _engine.World.Plants.FirstOrDefault();
         double initialAge = firstPlant?.Age ?? 0;
-        
+
         _engine.Update(1.0);
         _engine.Update(1.0);
-        
+
         double finalAge = firstPlant?.Age ?? 0;
 #pragma warning disable MSTEST0037 // Use 'Assert.IsGreaterThan' instead of 'Assert.IsTrue' - plant reference may become stale, Assert.IsTrue is more appropriate here
         Assert.IsTrue(finalAge > initialAge);

@@ -33,9 +33,9 @@ public class MainWindowViewModelTests
     public void PlayPauseCommand_TogglesPausedState()
     {
         bool initialState = _viewModel!.IsPaused;
-        
+
         _viewModel.PlayPauseCommand.Execute(null);
-        
+
         Assert.AreNotEqual(initialState, _viewModel.IsPaused);
     }
 
@@ -43,10 +43,10 @@ public class MainWindowViewModelTests
     public void SpeedUpCommand_CyclesThroughSpeeds()
     {
         Assert.AreEqual(1.0, _viewModel!.SimulationSpeed);
-        
+
         _viewModel.SpeedUpCommand.Execute(null);
         Assert.AreEqual(2.0, _viewModel.SimulationSpeed);
-        
+
         _viewModel.SpeedUpCommand.Execute(null);
         Assert.AreEqual(5.0, _viewModel.SimulationSpeed);
     }
@@ -55,7 +55,7 @@ public class MainWindowViewModelTests
     public void SpawnPlantCommand_UpdatesStatusMessage()
     {
         _viewModel!.SpawnPlantCommand.Execute(null);
-        
+
         Assert.IsTrue(_viewModel.StatusMessage.Contains("Plant spawned"));
     }
 
@@ -63,7 +63,7 @@ public class MainWindowViewModelTests
     public void LightningStrikeCommand_UpdatesStatusMessage()
     {
         _viewModel!.LightningStrikeCommand.Execute(null);
-        
+
         Assert.IsTrue(_viewModel.StatusMessage.Contains("Lightning"));
     }
 

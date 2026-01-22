@@ -51,7 +51,7 @@ public class GodPowerServiceTests
     public void LightningStrike_WithEntities_DamagesCreatures()
     {
         int initialCount = _engine!.World.GetAllEntities().Count();
-        
+
         int struck = _service!.ExecuteLightningStrike();
 
         Assert.IsGreaterThan(0, struck, "Should strike at least one entity");

@@ -63,10 +63,10 @@ public class PredatorWarningTests
 
         var carnivores = new[]
         {
-                (x: 200.0, y: 0.0),   // 200 units away
-                (x: 50.0, y: 0.0),    // 50 units away (nearest)
-                (x: 150.0, y: 0.0),   // 150 units away
-            };
+            (x: 200.0, y: 0.0),   // 200 units away
+            (x: 50.0, y: 0.0),    // 50 units away (nearest)
+            (x: 150.0, y: 0.0),   // 150 units away
+        };
 
         double nearestDistance = double.MaxValue;
         foreach (var (x, y) in carnivores)

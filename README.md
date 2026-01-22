@@ -165,7 +165,7 @@ The-Desktop-Terrarium/
 ## 🛠️ Development
 
 ### Build from Source
-```bash
+```powershell
 # Prerequisites
 .NET 8.0 SDK
 Python 3.11+ (for widgets)
@@ -180,9 +180,6 @@ cd The-Desktop-Terrarium
 # Run
 cd publish
 .\Terrarium.Desktop.exe
-
-cd publish && .\Terrarium.Desktop.exe
-
 
 # Test
 dotnet test src/DesktopTerrarium.sln

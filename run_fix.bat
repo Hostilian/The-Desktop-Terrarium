@@ -1,0 +1,6 @@
+@echo off
+echo Running dotnet format...
+dotnet format src/DesktopTerrarium.sln > format_log.txt 2>&1
+echo Running git status...
+git status > git_status_log.txt 2>&1
+echo Done.

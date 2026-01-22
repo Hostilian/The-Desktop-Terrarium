@@ -20,7 +20,9 @@ namespace Terrarium.Tests.Rendering
             double fullScore = EcosystemHealthScorer.CalculateHealthPercent(10, 7, 3);
             double partialScore = EcosystemHealthScorer.CalculateHealthPercent(10, 0, 0);
 
-            Assert.IsGreaterThan(partialScore, fullScore,
+            Assert.IsGreaterThan(
+                partialScore,
+                fullScore,
                 "Full ecosystem should have higher score than plants only");
         }
 
@@ -39,7 +41,9 @@ namespace Terrarium.Tests.Rendering
             // All carnivores, no balance
             double score = EcosystemHealthScorer.CalculateHealthPercent(0, 0, 50);
 
-            Assert.IsLessThan(50, score,
+            Assert.IsLessThan(
+                50,
+                score,
                 $"Carnivores-only ecosystem should have low score, got {score}");
         }
 
@@ -59,9 +63,13 @@ namespace Terrarium.Tests.Rendering
             foreach (var (plants, herbs, carns) in scenarios)
             {
                 double score = EcosystemHealthScorer.CalculateHealthPercent(plants, herbs, carns);
-                Assert.IsGreaterThanOrEqualTo(0, score,
+                Assert.IsGreaterThanOrEqualTo(
+                    0,
+                    score,
                     $"Score {score} should be >= 0 for ({plants}, {herbs}, {carns})");
-                Assert.IsLessThanOrEqualTo(100, score,
+                Assert.IsLessThanOrEqualTo(
+                    100,
+                    score,
                     $"Score {score} should be <= 100 for ({plants}, {herbs}, {carns})");
             }
         }

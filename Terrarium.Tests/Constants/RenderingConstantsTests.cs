@@ -34,7 +34,9 @@ public class RenderingConstantsTests
     [TestMethod]
     public void MillisecondsPerSecond_ShouldBe1000()
     {
-        Assert.AreEqual(1000.0, RenderingConstants.MILLISECONDSPERSECOND,
+        Assert.AreEqual(
+            1000.0,
+            RenderingConstants.MILLISECONDSPERSECOND,
             "There are exactly 1000 milliseconds in a second");
     }
 
@@ -42,7 +44,10 @@ public class RenderingConstantsTests
     public void RenderIntervalMs_ShouldMatchFpsCalculation()
     {
         double expected = RenderingConstants.MILLISECONDSPERSECOND / RenderingConstants.DEFAULTRENDERFPS;
-        Assert.AreEqual(expected, RenderingConstants.RENDERINTERVALMS, 0.01,
+        Assert.AreEqual(
+            expected,
+            RenderingConstants.RENDERINTERVALMS,
+            0.01,
             "Render interval should equal 1000ms / FPS");
     }
 
@@ -50,21 +55,28 @@ public class RenderingConstantsTests
     public void RenderIntervalMs_ShouldBeApproximately16_67()
     {
         // 1000ms / 60fps = 16.67ms per frame
-        Assert.AreEqual(16.67, RenderingConstants.RENDERINTERVALMS, 0.1,
+        Assert.AreEqual(
+            16.67,
+            RenderingConstants.RENDERINTERVALMS,
+            0.1,
             "60 FPS should result in approximately 16.67ms per frame");
     }
 
     [TestMethod]
     public void SystemMonitorUpdateInterval_ShouldBePositive()
     {
-        Assert.IsGreaterThan(0.0, RenderingConstants.SYSTEMMONITORUPDATEINTERVALMS,
+        Assert.IsGreaterThan(
+            0.0,
+            RenderingConstants.SYSTEMMONITORUPDATEINTERVALMS,
             "System monitor interval must be positive");
     }
 
     [TestMethod]
     public void SystemMonitorUpdateInterval_ShouldBeSlowerThanRenderInterval()
     {
-        Assert.IsGreaterThan(RenderingConstants.RENDERINTERVALMS, RenderingConstants.SYSTEMMONITORUPDATEINTERVALMS,
+        Assert.IsGreaterThan(
+            RenderingConstants.RENDERINTERVALMS,
+            RenderingConstants.SYSTEMMONITORUPDATEINTERVALMS,
             "System monitor should update slower than rendering to save CPU");
     }
 }

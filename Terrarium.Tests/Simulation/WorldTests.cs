@@ -377,7 +377,7 @@ namespace Terrarium.Tests.Simulation
             var control = world.GetTerritoryControl();
 
             // Assert
-            Assert.NotNull(control);
+            Assert.IsNotNull(control);
             var totalPercent = control.Values.Sum();
             Assert.InRange(totalPercent, 95, 105); // Should be ~100% with rounding
         }

@@ -18,7 +18,7 @@ namespace Terrarium.Tests.Simulation
             var loreManager = new LoreManager();
 
             // Assert
-            Assert.NotNull(loreManager.Chronicle);
+            Assert.IsNotNull(loreManager.Chronicle);
             Assert.NotEmpty(loreManager.Chronicle); // Should have ancient events
         }
 
@@ -81,7 +81,7 @@ namespace Terrarium.Tests.Simulation
             string description = loreManager.GenerateEventDescription(factionManager);
 
             // Assert
-            Assert.NotNull(description);
+            Assert.IsNotNull(description);
             Assert.NotEmpty(description);
         }
 
@@ -160,14 +160,14 @@ namespace Terrarium.Tests.Simulation
             }
 
             var namedChar = loreManager.NamedCharacters.Values.FirstOrDefault();
-            Assert.NotNull(namedChar);
+            Assert.IsNotNull(namedChar);
 
             // Act
             loreManager.RecordCharacterDeath(namedChar.Id);
 
             // Assert
             Assert.IsFalse(namedChar.IsAlive);
-            Assert.NotNull(namedChar.DeathTime);
+            Assert.IsNotNull(namedChar.DeathTime);
         }
 
         [TestMethod]
@@ -195,7 +195,7 @@ namespace Terrarium.Tests.Simulation
             }
 
             var namedChar = loreManager.NamedCharacters.Values.FirstOrDefault();
-            Assert.NotNull(namedChar);
+            Assert.IsNotNull(namedChar);
             var creature2 = new Herbivore(namedChar.Id, 100, "Deer", faction: namedChar.Faction);
 
             // Act
@@ -216,7 +216,7 @@ namespace Terrarium.Tests.Simulation
             string lore = loreManager.GetEntityLore(creature);
 
             // Assert
-            Assert.NotNull(lore);
+            Assert.IsNotNull(lore);
             Assert.NotEmpty(lore);
         }
 
@@ -238,7 +238,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(1, namedChar.Id);
             Assert.AreEqual("Test Hero", namedChar.Name);
             Assert.AreEqual(FactionType.VerdantCollective, namedChar.Faction);
-            Assert.NotNull(namedChar.Titles);
+            Assert.IsNotNull(namedChar.Titles);
             Assert.IsTrue(namedChar.IsAlive);
         }
 

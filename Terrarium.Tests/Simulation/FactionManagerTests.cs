@@ -18,7 +18,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
 
             // Assert
-            Assert.NotNull(manager.Factions);
+            Assert.IsNotNull(manager.Factions);
             var factionCount = System.Enum.GetValues(typeof(FactionType)).Length;
             Assert.AreEqual(factionCount, manager.Factions.Count);
         }
@@ -33,7 +33,7 @@ namespace Terrarium.Tests.Simulation
             var faction = manager.GetFaction(FactionType.VerdantCollective);
 
             // Assert
-            Assert.NotNull(faction);
+            Assert.IsNotNull(faction);
             Assert.AreEqual(FactionType.VerdantCollective, faction.Type);
         }
 
@@ -105,7 +105,7 @@ namespace Terrarium.Tests.Simulation
             var dominant = manager.GetDominantFaction();
 
             // Assert
-            Assert.NotNull(dominant);
+            Assert.IsNotNull(dominant);
             Assert.AreEqual(FactionType.VerdantCollective, dominant.Type);
             Assert.AreEqual(3, dominant.Population);
         }
@@ -121,7 +121,7 @@ namespace Terrarium.Tests.Simulation
             var dominant = manager.GetDominantFaction();
 
             // Assert - should return first faction even with 0 population
-            Assert.NotNull(dominant);
+            Assert.IsNotNull(dominant);
             Assert.AreEqual(0, dominant.Population);
         }
 

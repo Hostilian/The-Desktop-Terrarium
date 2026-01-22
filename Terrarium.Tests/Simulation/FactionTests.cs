@@ -23,9 +23,9 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(type, faction.Type);
             Assert.AreEqual(name, faction.Name);
             Assert.AreEqual(color, faction.Color);
-            Assert.NotNull(faction.Abilities);
+            Assert.IsNotNull(faction.Abilities);
             Assert.NotEmpty(faction.Abilities);
-            Assert.NotNull(faction.Lore);
+            Assert.IsNotNull(faction.Lore);
         }
 
         [TestMethod]

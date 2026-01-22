@@ -23,7 +23,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(expectedColor, properties.Color);
             Assert.AreEqual(expectedWalkable, properties.Walkable);
             Assert.AreEqual(expectedFertility, properties.Fertility);
-            Assert.NotNull(properties.Description);
+            Assert.IsNotNull(properties.Description);
         }
 
         [DataTestMethod]
@@ -39,7 +39,7 @@ namespace Terrarium.Tests.Simulation
             var faction = TerrainProperties.GetControllingFaction(terrain);
 
             // Assert
-            Assert.NotNull(faction);
+            Assert.IsNotNull(faction);
             Assert.AreEqual(expectedFaction, faction.Value);
         }
 
@@ -54,7 +54,7 @@ namespace Terrarium.Tests.Simulation
             var faction = TerrainProperties.GetControllingFaction(terrain);
 
             // Assert
-            Assert.Null(faction);
+            Assert.IsNull(faction);
         }
 
         [DataTestMethod]

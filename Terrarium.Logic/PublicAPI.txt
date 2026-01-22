@@ -81,13 +81,17 @@ Terrarium.Logic.Simulation.FactionManager.Factions -> System.Collections.Generic
 Terrarium.Logic.Simulation.FactionManager.Update() -> void
 
 Terrarium.Logic.Simulation.EventSystem
-Terrarium.Logic.Simulation.EventSystem.OldPhase -> Terrarium.Logic.Simulation.Phase
-Terrarium.Logic.Simulation.EventSystem.NewPhase -> Terrarium.Logic.Simulation.Phase
+
+Terrarium.Logic.Simulation.DayPhase
+Terrarium.Logic.Simulation.DayPhase.Dawn -> Terrarium.Logic.Simulation.DayPhase
+Terrarium.Logic.Simulation.DayPhase.Day -> Terrarium.Logic.Simulation.DayPhase
+Terrarium.Logic.Simulation.DayPhase.Dusk -> Terrarium.Logic.Simulation.DayPhase
+Terrarium.Logic.Simulation.DayPhase.Night -> Terrarium.Logic.Simulation.DayPhase
 
 Terrarium.Logic.Simulation.DayPhaseEventArgs
-Terrarium.Logic.Simulation.DayPhaseEventArgs.DayPhaseEventArgs(Terrarium.Logic.Simulation.Phase, Terrarium.Logic.Simulation.Phase) -> void
-Terrarium.Logic.Simulation.DayPhaseEventArgs.OldPhase -> Terrarium.Logic.Simulation.Phase
-Terrarium.Logic.Simulation.DayPhaseEventArgs.NewPhase -> Terrarium.Logic.Simulation.Phase
+Terrarium.Logic.Simulation.DayPhaseEventArgs.DayPhaseEventArgs(Terrarium.Logic.Simulation.DayPhase, Terrarium.Logic.Simulation.DayPhase) -> void
+Terrarium.Logic.Simulation.DayPhaseEventArgs.OldPhase -> Terrarium.Logic.Simulation.DayPhase
+Terrarium.Logic.Simulation.DayPhaseEventArgs.NewPhase -> Terrarium.Logic.Simulation.DayPhase
 
 Terrarium.Logic.Simulation.ReproductionManager
 Terrarium.Logic.Simulation.ReproductionManager.ReproductionManager(Terrarium.Logic.Simulation.SimulationEngine) -> void
@@ -95,6 +99,64 @@ Terrarium.Logic.Simulation.ReproductionManager.HerbivoreReproductionChanceMultip
 Terrarium.Logic.Simulation.ReproductionManager.HerbivoreReproductionChanceMultiplier.set -> void
 Terrarium.Logic.Simulation.ReproductionManager.CarnivoreReproductionChanceMultiplier -> double
 Terrarium.Logic.Simulation.ReproductionManager.CarnivoreReproductionChanceMultiplier.set -> void
-Terrarium.Logic.Simulation.ReproductionManager.Update() -> void
+Terrarium.Logic.Simulation.ReproductionManager.Update(double) -> void
 Terrarium.Logic.Simulation.ReproductionManager.CanReproduce(Terrarium.Logic.Entities.Creature) -> bool
-Terrarium.Logic.Simulation.ReproductionManager.ClearCooldown(Terrarium.Logic.Entities.Creature) -> void
+Terrarium.Logic.Simulation.ReproductionManager.ClearCooldown(int) -> void
+
+Terrarium.Logic.Interfaces.IMovable
+Terrarium.Logic.Interfaces.IMovable.VelocityX -> double
+Terrarium.Logic.Interfaces.IMovable.VelocityX.set -> void
+Terrarium.Logic.Interfaces.IMovable.VelocityY -> double
+Terrarium.Logic.Interfaces.IMovable.VelocityY.set -> void
+Terrarium.Logic.Interfaces.IMovable.Speed -> double
+Terrarium.Logic.Interfaces.IMovable.Move(double) -> void
+Terrarium.Logic.Interfaces.IMovable.SetDirection(double, double) -> void
+
+Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.VerdantCollective -> Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.AshenLegion -> Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.CrystalChoir -> Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.TideWalkers -> Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.ScrapbornSwarm -> Terrarium.Logic.Simulation.FactionType
+Terrarium.Logic.Simulation.FactionType.NomadicCovenant -> Terrarium.Logic.Simulation.FactionType
+
+Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.Void -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.Soil -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.Stone -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.Water -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.VerdantGrowth -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.AshenWasteland -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.AquaticDomain -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.StoneWardens -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.CelestialOrder -> Terrarium.Logic.Simulation.TerrainType
+Terrarium.Logic.Simulation.TerrainType.NetherCult -> Terrarium.Logic.Simulation.TerrainType
+
+Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.Natural -> Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.Starvation -> Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.Predation -> Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.Dehydration -> Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.Weather -> Terrarium.Logic.Simulation.DeathCause
+Terrarium.Logic.Simulation.DeathCause.OldAge -> Terrarium.Logic.Simulation.DeathCause
+
+Terrarium.Logic.Simulation.Season
+Terrarium.Logic.Simulation.Season.Spring -> Terrarium.Logic.Simulation.Season
+Terrarium.Logic.Simulation.Season.Summer -> Terrarium.Logic.Simulation.Season
+Terrarium.Logic.Simulation.Season.Autumn -> Terrarium.Logic.Simulation.Season
+Terrarium.Logic.Simulation.Season.Winter -> Terrarium.Logic.Simulation.Season
+
+Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.AncientHistory -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.Battle -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.Diplomacy -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.Technology -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.Disaster -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.CharacterBirth -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.CharacterDeath -> Terrarium.Logic.Simulation.LoreEventType
+Terrarium.Logic.Simulation.LoreEventType.FactionEvent -> Terrarium.Logic.Simulation.LoreEventType
+
+Terrarium.Logic.Simulation.LoreImportance
+Terrarium.Logic.Simulation.LoreImportance.Minor -> Terrarium.Logic.Simulation.LoreImportance
+Terrarium.Logic.Simulation.LoreImportance.Medium -> Terrarium.Logic.Simulation.LoreImportance
+Terrarium.Logic.Simulation.LoreImportance.Major -> Terrarium.Logic.Simulation.LoreImportance

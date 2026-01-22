@@ -59,8 +59,122 @@ Terrarium.Desktop.Rendering.Renderer.TriggerPlantShake(Terrarium.Logic.Entities.
 
 Terrarium.Desktop.Rendering.SystemMonitor
 Terrarium.Desktop.Rendering.SystemMonitor.SystemMonitor() -> void
+Terrarium.Desktop.Rendering.SystemMonitor.GetCpuUsage() -> double
+Terrarium.Desktop.Rendering.SystemMonitor.GetMemoryUsageMB() -> double
 Terrarium.Desktop.Rendering.SystemMonitor.Dispose() -> void
 
 Terrarium.Desktop.Rendering.SoundManager
 Terrarium.Desktop.Rendering.SoundManager.SoundManager() -> void
+Terrarium.Desktop.Rendering.SoundManager.MasterVolume -> double
+Terrarium.Desktop.Rendering.SoundManager.MasterVolume.set -> void
+Terrarium.Desktop.Rendering.SoundManager.SetTheme(Terrarium.Logic.TerrariumType) -> void
+Terrarium.Desktop.Rendering.SoundManager.PlayEffect(string) -> void
+Terrarium.Desktop.Rendering.SoundManager.PlayAnimationSound() -> void
+Terrarium.Desktop.Rendering.SoundManager.SetMuted(bool) -> void
+Terrarium.Desktop.Rendering.SoundManager.SetVolume(double) -> void
 Terrarium.Desktop.Rendering.SoundManager.Dispose() -> void
+
+Terrarium.Desktop.Rendering.SettingsPanel
+Terrarium.Desktop.Rendering.SettingsPanel.SettingsPanel(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.SettingsPanel.Show() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.Hide() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.Toggle() -> void
+
+Terrarium.Desktop.Rendering.BreedingIndicator
+Terrarium.Desktop.Rendering.BreedingIndicator.BreedingIndicator(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.BreedingIndicator.Update(double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> void
+Terrarium.Desktop.Rendering.BreedingIndicator.Clear() -> void
+
+Terrarium.Desktop.Rendering.NotificationManager
+Terrarium.Desktop.Rendering.NotificationManager.NotificationManager(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.NotificationManager.Update(double) -> void
+Terrarium.Desktop.Rendering.NotificationManager.ClearAll() -> void
+Terrarium.Desktop.Rendering.NotificationManager.Notify(string, Terrarium.Desktop.Rendering.NotificationType) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyBirth(string) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyDeath(string, string) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyWarning(string) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyMilestone(string, int) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyWeatherChange(bool) -> void
+Terrarium.Desktop.Rendering.NotificationManager.NotifyDayPhaseChange(string) -> void
+
+Terrarium.Desktop.Rendering.PredatorWarningSystem
+Terrarium.Desktop.Rendering.PredatorWarningSystem.PredatorWarningSystem(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.PredatorWarningSystem.Update(double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> void
+Terrarium.Desktop.Rendering.PredatorWarningSystem.Clear() -> void
+
+Terrarium.Desktop.Rendering.MiniMap
+Terrarium.Desktop.Rendering.MiniMap.MiniMap(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.MiniMap.Update(Terrarium.Logic.Simulation.World, double, double) -> void
+Terrarium.Desktop.Rendering.MiniMap.Toggle() -> void
+
+Terrarium.Desktop.Rendering.SessionTimer
+Terrarium.Desktop.Rendering.SessionTimer.SessionTimer(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.SessionTimer.Update(double) -> void
+Terrarium.Desktop.Rendering.SessionTimer.IncrementGeneration() -> void
+Terrarium.Desktop.Rendering.SessionTimer.GetSessionTime() -> double
+Terrarium.Desktop.Rendering.SessionTimer.GetDayCount() -> int
+Terrarium.Desktop.Rendering.SessionTimer.SetSessionTime(double) -> void
+Terrarium.Desktop.Rendering.SessionTimer.SetGenerationCount(int) -> void
+Terrarium.Desktop.Rendering.SessionTimer.Reset() -> void
+
+Terrarium.Desktop.Rendering.ParticleSystem
+Terrarium.Desktop.Rendering.ParticleSystem.ParticleSystem(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.Update(double) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.Clear() -> void
+Terrarium.Desktop.Rendering.ParticleSystem.SpawnEatEffect(double, double, bool) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.SpawnBirthEffect(double, double) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.SpawnDeathEffect(double, double) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.SpawnWaterEffect(double, double) -> void
+Terrarium.Desktop.Rendering.ParticleSystem.SpawnFeedEffect(double, double) -> void
+
+Terrarium.Desktop.Rendering.CreatureMoodIndicator
+Terrarium.Desktop.Rendering.CreatureMoodIndicator.CreatureMoodIndicator(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.CreatureMoodIndicator.Update(double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> void
+Terrarium.Desktop.Rendering.CreatureMoodIndicator.Clear() -> void
+
+Terrarium.Desktop.Rendering.TooltipManager
+Terrarium.Desktop.Rendering.TooltipManager.TooltipManager(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.TooltipManager.ShowTooltip(Terrarium.Logic.Entities.WorldEntity, double, double) -> void
+Terrarium.Desktop.Rendering.TooltipManager.HideTooltip() -> void
+Terrarium.Desktop.Rendering.TooltipManager.UpdatePosition(double, double) -> void
+Terrarium.Desktop.Rendering.TooltipManager.Update() -> void
+
+Terrarium.Desktop.Rendering.WeatherEffects
+Terrarium.Desktop.Rendering.WeatherEffects.WeatherEffects(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.WeatherEffects.Update(double, double) -> void
+Terrarium.Desktop.Rendering.WeatherEffects.Clear() -> void
+
+Terrarium.Desktop.Rendering.EcosystemHealthBar
+Terrarium.Desktop.Rendering.EcosystemHealthBar.EcosystemHealthBar(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.EcosystemHealthBar.Update(double, int, int, int) -> void
+
+Terrarium.Desktop.Rendering.AchievementSystem
+Terrarium.Desktop.Rendering.AchievementSystem.AchievementSystem(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.AchievementSystem.Update(double) -> void
+
+Terrarium.Desktop.Rendering.PopulationGraph
+Terrarium.Desktop.Rendering.PopulationGraph.PopulationGraph(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.PopulationGraph.Update(double, int, int, int) -> void
+Terrarium.Desktop.Rendering.PopulationGraph.Toggle() -> void
+
+Terrarium.Desktop.Services.GodPowerService
+Terrarium.Desktop.Services.GodPowerService.GodPowerService(Terrarium.Logic.Simulation.SimulationEngine) -> void
+Terrarium.Desktop.Services.GodPowerService.ExecuteLightningStrike() -> int
+Terrarium.Desktop.Services.GodPowerService.ExecuteMeteorShower() -> int
+Terrarium.Desktop.Services.GodPowerService.ExecutePlague() -> int
+Terrarium.Desktop.Services.GodPowerService.ExecuteCorruption() -> int
+
+Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Info -> Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Birth -> Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Death -> Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Warning -> Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Milestone -> Terrarium.Desktop.Rendering.NotificationType
+Terrarium.Desktop.Rendering.NotificationType.Achievement -> Terrarium.Desktop.Rendering.NotificationType
+
+Terrarium.Desktop.GodPaintMode
+Terrarium.Desktop.GodPaintMode.None -> Terrarium.Desktop.GodPaintMode
+Terrarium.Desktop.GodPaintMode.Life -> Terrarium.Desktop.GodPaintMode
+Terrarium.Desktop.GodPaintMode.Death -> Terrarium.Desktop.GodPaintMode
+Terrarium.Desktop.GodPaintMode.Stone -> Terrarium.Desktop.GodPaintMode
+Terrarium.Desktop.GodPaintMode.Water -> Terrarium.Desktop.GodPaintMode

@@ -26,9 +26,6 @@ dotnet_diagnostic.SA1009.severity = none  # Closing parenthesis should not be pr
 dotnet_diagnostic.SA1503.severity = none  # Braces should not be omitted
 dotnet_diagnostic.SA0001.severity = none  # XML comment analysis disabled
 
-# Security Code Scan - suppress weak RNG warnings for game code
-dotnet_diagnostic.SCS0005.severity = none  # Weak random number generator
-
 # Roslynator settings - enable useful ones
 dotnet_diagnostic.RCS1001.severity = none  # Remove unnecessary braces
 dotnet_diagnostic.RCS1002.severity = none  # Remove unnecessary else

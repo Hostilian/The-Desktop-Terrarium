@@ -4,6 +4,9 @@
 
 ---
 
+![Desktop Terrarium Main View](screenshots/terrarium-main.png)
+
+
 ## 📥 Installation
 
 ### System Requirements
@@ -126,6 +129,9 @@ The central canvas shows your living ecosystem with:
 
 ## 📊 Understanding Statistics (F3)
 
+![Statistics Overlay](screenshots/terrarium-stats.png)
+
+
 ### Population Panel
 - **Total Population** - All living creatures
 - **Plants** - Green producers
@@ -208,6 +214,9 @@ The Chronicle records major events:
 ---
 
 ## ⚙️ Settings (F2)
+
+![Settings Dialog](screenshots/terrarium-settings.png)
+
 
 ### Graphics Options
 - **Visual Quality** - Low/Medium/High

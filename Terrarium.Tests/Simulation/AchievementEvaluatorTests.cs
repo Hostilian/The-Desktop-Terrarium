@@ -365,7 +365,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert - should have many achievements
-            Assert.True(achievements.Count >= 10);
+            Assert.IsTrue(achievements.Count >= 10);
         }
     }
 }

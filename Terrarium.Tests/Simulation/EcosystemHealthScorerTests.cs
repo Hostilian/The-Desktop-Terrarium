@@ -90,7 +90,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.Equal(0, health);
+            Assert.AreEqual(0, health);
         }
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should get diversity bonus
-            Assert.True(health > 50);
+            Assert.IsTrue(health > 50);
         }
 
         [TestMethod]
@@ -151,7 +151,7 @@ namespace Terrarium.Tests.Simulation
             double healthPercent = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.Equal(healthPercent / 100.0, health01, precision: 5);
+            Assert.AreEqual(healthPercent / 100.0, health01, precision: 5);
         }
 
         [TestMethod]
@@ -166,7 +166,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.True(health <= 100);
+            Assert.IsTrue(health <= 100);
         }
 
         [TestMethod]
@@ -181,7 +181,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.True(health >= 0);
+            Assert.IsTrue(health >= 0);
         }
     }
 }

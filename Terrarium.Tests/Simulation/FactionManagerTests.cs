@@ -20,7 +20,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.NotNull(manager.Factions);
             var factionCount = System.Enum.GetValues(typeof(FactionType)).Length;
-            Assert.Equal(factionCount, manager.Factions.Count);
+            Assert.AreEqual(factionCount, manager.Factions.Count);
         }
 
         [TestMethod]
@@ -34,7 +34,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.NotNull(faction);
-            Assert.Equal(FactionType.VerdantCollective, faction.Type);
+            Assert.AreEqual(FactionType.VerdantCollective, faction.Type);
         }
 
         [TestMethod]
@@ -54,10 +54,10 @@ namespace Terrarium.Tests.Simulation
             manager.UpdatePopulations(creatures);
 
             // Assert
-            Assert.Equal(2, manager.GetFaction(FactionType.VerdantCollective).Population);
-            Assert.Equal(1, manager.GetFaction(FactionType.AshenLegion).Population);
-            Assert.Equal(1, manager.GetFaction(FactionType.TideWalkers).Population);
-            Assert.Equal(0, manager.GetFaction(FactionType.CrystalChoir).Population);
+            Assert.AreEqual(2, manager.GetFaction(FactionType.VerdantCollective).Population);
+            Assert.AreEqual(1, manager.GetFaction(FactionType.AshenLegion).Population);
+            Assert.AreEqual(1, manager.GetFaction(FactionType.TideWalkers).Population);
+            Assert.AreEqual(0, manager.GetFaction(FactionType.CrystalChoir).Population);
         }
 
         [TestMethod]
@@ -82,8 +82,8 @@ namespace Terrarium.Tests.Simulation
             manager.UpdatePopulations(creatures2);
 
             // Assert - population should be reset
-            Assert.Equal(0, manager.GetFaction(FactionType.VerdantCollective).Population);
-            Assert.Equal(1, manager.GetFaction(FactionType.AshenLegion).Population);
+            Assert.AreEqual(0, manager.GetFaction(FactionType.VerdantCollective).Population);
+            Assert.AreEqual(1, manager.GetFaction(FactionType.AshenLegion).Population);
         }
 
         [TestMethod]
@@ -106,8 +106,8 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.NotNull(dominant);
-            Assert.Equal(FactionType.VerdantCollective, dominant.Type);
-            Assert.Equal(3, dominant.Population);
+            Assert.AreEqual(FactionType.VerdantCollective, dominant.Type);
+            Assert.AreEqual(3, dominant.Population);
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert - should return first faction even with 0 population
             Assert.NotNull(dominant);
-            Assert.Equal(0, dominant.Population);
+            Assert.AreEqual(0, dominant.Population);
         }
 
         [TestMethod]
@@ -146,9 +146,9 @@ namespace Terrarium.Tests.Simulation
             var sortedFactions = manager.GetFactionsByPopulation().ToList();
 
             // Assert
-            Assert.True(sortedFactions[0].Population >= sortedFactions[1].Population);
-            Assert.True(sortedFactions[1].Population >= sortedFactions[2].Population);
-            Assert.Equal(3, sortedFactions[0].Population);
+            Assert.IsTrue(sortedFactions[0].Population >= sortedFactions[1].Population);
+            Assert.IsTrue(sortedFactions[1].Population >= sortedFactions[2].Population);
+            Assert.AreEqual(3, sortedFactions[0].Population);
         }
 
         [TestMethod]
@@ -161,7 +161,7 @@ namespace Terrarium.Tests.Simulation
             bool hostile = manager.AreHostile(FactionType.VerdantCollective, FactionType.VerdantCollective);
 
             // Assert
-            Assert.False(hostile);
+            Assert.IsFalse(hostile);
         }
 
         [TestMethod]
@@ -179,7 +179,7 @@ namespace Terrarium.Tests.Simulation
             bool hostile = manager.AreHostile(FactionType.VerdantCollective, FactionType.AshenLegion);
 
             // Assert
-            Assert.True(hostile);
+            Assert.IsTrue(hostile);
         }
 
         [TestMethod]
@@ -198,7 +198,7 @@ namespace Terrarium.Tests.Simulation
             bool hostile = manager.AreHostile(FactionType.VerdantCollective, FactionType.TideWalkers);
 
             // Assert
-            Assert.False(hostile);
+            Assert.IsFalse(hostile);
         }
 
         [TestMethod]
@@ -211,7 +211,7 @@ namespace Terrarium.Tests.Simulation
             bool allied = manager.AreAllied(FactionType.VerdantCollective, FactionType.VerdantCollective);
 
             // Assert
-            Assert.True(allied);
+            Assert.IsTrue(allied);
         }
 
         [TestMethod]
@@ -230,7 +230,7 @@ namespace Terrarium.Tests.Simulation
             bool allied = manager.AreAllied(FactionType.VerdantCollective, FactionType.TideWalkers);
 
             // Assert
-            Assert.True(allied);
+            Assert.IsTrue(allied);
         }
 
         [TestMethod]
@@ -249,7 +249,7 @@ namespace Terrarium.Tests.Simulation
             bool allied = manager.AreAllied(FactionType.VerdantCollective, FactionType.AshenLegion);
 
             // Assert
-            Assert.False(allied);
+            Assert.IsFalse(allied);
         }
 
         [TestMethod]
@@ -268,7 +268,7 @@ namespace Terrarium.Tests.Simulation
             bool allied = manager.AreAllied(FactionType.VerdantCollective, FactionType.TideWalkers);
 
             // Assert
-            Assert.False(allied);
+            Assert.IsFalse(allied);
         }
     }
 }

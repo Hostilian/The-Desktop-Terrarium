@@ -324,7 +324,7 @@ namespace Terrarium.Tests.Simulation
             bool converted = world.AttemptTerrainConversion(100, 100, FactionType.VerdantCollective);
 
             // Assert
-            Assert.False(converted);
+            Assert.IsFalse(converted);
         }
 
         [TestMethod]
@@ -345,7 +345,7 @@ namespace Terrarium.Tests.Simulation
                 .ToList();
             
             // At least one cell should show conquest happened
-            Assert.True(allTerrain.Any());
+            Assert.IsTrue(allTerrain.Any());
         }
 
         [TestMethod]

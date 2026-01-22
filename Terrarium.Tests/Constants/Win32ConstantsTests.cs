@@ -11,14 +11,14 @@ namespace Terrarium.Tests.Constants
         public void WM_NC_HITTEST_HasCorrectValue()
         {
             // Assert
-            Assert.Equal(0x0084, Win32Constants.WM_NC_HITTEST);
+            Assert.AreEqual(0x0084, Win32Constants.WM_NC_HITTEST);
         }
 
         [TestMethod]
         public void HT_TRANSPARENT_HasCorrectValue()
         {
             // Assert
-            Assert.Equal(-1, Win32Constants.HT_TRANSPARENT);
+            Assert.AreEqual(-1, Win32Constants.HT_TRANSPARENT);
         }
     }
 }

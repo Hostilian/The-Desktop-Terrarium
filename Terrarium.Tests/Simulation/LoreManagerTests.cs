@@ -61,7 +61,7 @@ namespace Terrarium.Tests.Simulation
             }
 
             // Assert
-            Assert.True(loreManager.Chronicle.Count <= 100);
+            Assert.IsTrue(loreManager.Chronicle.Count <= 100);
         }
 
         [TestMethod]
@@ -166,7 +166,7 @@ namespace Terrarium.Tests.Simulation
             loreManager.RecordCharacterDeath(namedChar.Id);
 
             // Assert
-            Assert.False(namedChar.IsAlive);
+            Assert.IsFalse(namedChar.IsAlive);
             Assert.NotNull(namedChar.DeathTime);
         }
 
@@ -235,11 +235,11 @@ namespace Terrarium.Tests.Simulation
             };
 
             // Assert
-            Assert.Equal(1, namedChar.Id);
-            Assert.Equal("Test Hero", namedChar.Name);
-            Assert.Equal(FactionType.VerdantCollective, namedChar.Faction);
+            Assert.AreEqual(1, namedChar.Id);
+            Assert.AreEqual("Test Hero", namedChar.Name);
+            Assert.AreEqual(FactionType.VerdantCollective, namedChar.Faction);
             Assert.NotNull(namedChar.Titles);
-            Assert.True(namedChar.IsAlive);
+            Assert.IsTrue(namedChar.IsAlive);
         }
 
         [TestMethod]
@@ -256,9 +256,9 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.NotEqual(0, loreEvent.Timestamp);
-            Assert.Equal("Test event", loreEvent.Description);
-            Assert.Equal(LoreEventType.Battle, loreEvent.Type);
-            Assert.Equal(LoreImportance.Major, loreEvent.Importance);
+            Assert.AreEqual("Test event", loreEvent.Description);
+            Assert.AreEqual(LoreEventType.Battle, loreEvent.Type);
+            Assert.AreEqual(LoreImportance.Major, loreEvent.Importance);
         }
     }
 }

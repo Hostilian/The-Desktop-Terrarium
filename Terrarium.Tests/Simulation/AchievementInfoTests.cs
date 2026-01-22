@@ -14,9 +14,9 @@ namespace Terrarium.Tests.Simulation
             var achievement = new AchievementInfo("test_id", "Test Title", "Test Description");
 
             // Assert
-            Assert.Equal("test_id", achievement.Id);
-            Assert.Equal("Test Title", achievement.Title);
-            Assert.Equal("Test Description", achievement.Description);
+            Assert.AreEqual("test_id", achievement.Id);
+            Assert.AreEqual("Test Title", achievement.Title);
+            Assert.AreEqual("Test Description", achievement.Description);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Terrarium.Tests.Simulation
             var achievement2 = new AchievementInfo("test", "Title", "Desc");
 
             // Act & Assert
-            Assert.Equal(achievement1, achievement2);
+            Assert.AreEqual(achievement1, achievement2);
         }
 
         [TestMethod]

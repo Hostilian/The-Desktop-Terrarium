@@ -19,9 +19,9 @@ namespace Terrarium.Tests.Desktop
             };
 
             // Assert
-            Assert.Equal("Test Display", option.DisplayName);
-            Assert.Equal("Test Description", option.Description);
-            Assert.Equal(global::Terrarium.Logic.Simulation.TerrariumType.Forest, option.Type);
+            Assert.AreEqual("Test Display", option.DisplayName);
+            Assert.AreEqual("Test Description", option.Description);
+            Assert.AreEqual(global::Terrarium.Logic.Simulation.TerrariumType.Forest, option.Type);
         }
     }
 }

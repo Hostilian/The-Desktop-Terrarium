@@ -38,6 +38,7 @@ Terrarium.Desktop.StatsWindow.StatsWindow() -> void
 Terrarium.Desktop.StatsWindow.InitializeComponent() -> void
 Terrarium.Desktop.StatsWindow.Show() -> void
 Terrarium.Desktop.StatsWindow.Close() -> void
+Terrarium.Desktop.StatsWindow.UpdateStats() -> void
 
 Terrarium.Desktop.TerrariumTypeOption
 Terrarium.Desktop.TerrariumTypeOption.TerrariumTypeOption() -> void
@@ -65,6 +66,8 @@ Terrarium.Desktop.Rendering.SystemMonitor.Dispose() -> void
 
 Terrarium.Desktop.Rendering.SoundManager
 Terrarium.Desktop.Rendering.SoundManager.SoundManager() -> void
+Terrarium.Desktop.Rendering.SoundManager.IsEnabled -> bool
+Terrarium.Desktop.Rendering.SoundManager.IsEnabled.set -> void
 Terrarium.Desktop.Rendering.SoundManager.MasterVolume -> double
 Terrarium.Desktop.Rendering.SoundManager.MasterVolume.set -> void
 Terrarium.Desktop.Rendering.SoundManager.SetTheme(Terrarium.Logic.TerrariumType) -> void
@@ -79,6 +82,7 @@ Terrarium.Desktop.Rendering.SettingsPanel.SettingsPanel(System.Windows.Controls.
 Terrarium.Desktop.Rendering.SettingsPanel.Show() -> void
 Terrarium.Desktop.Rendering.SettingsPanel.Hide() -> void
 Terrarium.Desktop.Rendering.SettingsPanel.Toggle() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.IsVisible.get -> bool
 
 Terrarium.Desktop.Rendering.BreedingIndicator
 Terrarium.Desktop.Rendering.BreedingIndicator.BreedingIndicator(System.Windows.Controls.Canvas) -> void
@@ -101,6 +105,10 @@ Terrarium.Desktop.Rendering.PredatorWarningSystem
 Terrarium.Desktop.Rendering.PredatorWarningSystem.PredatorWarningSystem(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.PredatorWarningSystem.Update(double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> void
 Terrarium.Desktop.Rendering.PredatorWarningSystem.Clear() -> void
+Terrarium.Desktop.Rendering.PredatorWarningSystem.IsEnabled -> bool
+Terrarium.Desktop.Rendering.PredatorWarningSystem.IsEnabled.set -> void
+Terrarium.Desktop.Rendering.PredatorWarningSystem.IsVisible -> bool
+Terrarium.Desktop.Rendering.PredatorWarningSystem.IsVisible.set -> void
 
 Terrarium.Desktop.Rendering.MiniMap
 Terrarium.Desktop.Rendering.MiniMap.MiniMap(System.Windows.Controls.Canvas) -> void
@@ -140,6 +148,15 @@ Terrarium.Desktop.Rendering.CreatureMoodIndicator.CreatureMoodIndicator(System.W
 Terrarium.Desktop.Rendering.CreatureMoodIndicator.Update(double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> void
 Terrarium.Desktop.Rendering.CreatureMoodIndicator.Clear() -> void
 
+Terrarium.Desktop.Rendering.EntitySelector
+Terrarium.Desktop.Rendering.EntitySelector.EntitySelector(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.EntitySelector.TrySelect(double, double, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Plant>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Herbivore>, System.Collections.Generic.IEnumerable<Terrarium.Logic.Entities.Carnivore>) -> bool
+Terrarium.Desktop.Rendering.EntitySelector.Select(Terrarium.Logic.Entities.WorldEntity) -> void
+Terrarium.Desktop.Rendering.EntitySelector.Deselect() -> void
+Terrarium.Desktop.Rendering.EntitySelector.Update(double) -> void
+Terrarium.Desktop.Rendering.EntitySelector.GetSelectedEntityCenter() -> System.Windows.Point
+Terrarium.Desktop.Rendering.EntitySelector.Clear() -> void
+
 Terrarium.Desktop.Rendering.TooltipManager
 Terrarium.Desktop.Rendering.TooltipManager.TooltipManager(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.TooltipManager.ShowTooltip(Terrarium.Logic.Entities.WorldEntity, double, double) -> void
@@ -170,6 +187,8 @@ Terrarium.Desktop.Rendering.PopulationGraph
 Terrarium.Desktop.Rendering.PopulationGraph.PopulationGraph(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.PopulationGraph.Update(double, int, int, int) -> void
 Terrarium.Desktop.Rendering.PopulationGraph.Toggle() -> void
+Terrarium.Desktop.Rendering.PopulationGraph.IsVisible -> bool
+Terrarium.Desktop.Rendering.PopulationGraph.IsVisible.set -> void
 
 Terrarium.Desktop.Services.GodPowerService
 Terrarium.Desktop.Services.GodPowerService.GodPowerService(Terrarium.Logic.Simulation.SimulationEngine) -> void

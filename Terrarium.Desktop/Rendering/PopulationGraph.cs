@@ -187,9 +187,9 @@ public class PopulationGraph
         }
         maxValue = (int)(maxValue * 1.2); // Add 20% headroom
 
-        this.UpdateLine(_history, s => s.Plants, _plantsGlowLine!, _plantsLine!, _plantsPoints!, maxValue);
-        this.UpdateLine(_history, s => s.Herbivores, _herbGlowLine!, _herbLine!, _herbPoints!, maxValue);
-        this.UpdateLine(_history, s => s.Carnivores, _carnGlowLine!, _carnLine!, _carnPoints!, maxValue);
+        UpdateLine(_history, s => s.Plants, _plantsGlowLine!, _plantsLine!, _plantsPoints!, maxValue);
+        UpdateLine(_history, s => s.Herbivores, _herbGlowLine!, _herbLine!, _herbPoints!, maxValue);
+        UpdateLine(_history, s => s.Carnivores, _carnGlowLine!, _carnLine!, _carnPoints!, maxValue);
     }
 
     private void EnsureGraphVisuals()

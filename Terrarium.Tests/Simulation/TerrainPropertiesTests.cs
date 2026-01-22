@@ -19,10 +19,10 @@ namespace Terrarium.Tests.Simulation
             var properties = TerrainProperties.GetProperties(type);
 
             // Assert
-            Assert.Equal(expectedName, properties.Name);
-            Assert.Equal(expectedColor, properties.Color);
-            Assert.Equal(expectedWalkable, properties.Walkable);
-            Assert.Equal(expectedFertility, properties.Fertility);
+            Assert.AreEqual(expectedName, properties.Name);
+            Assert.AreEqual(expectedColor, properties.Color);
+            Assert.AreEqual(expectedWalkable, properties.Walkable);
+            Assert.AreEqual(expectedFertility, properties.Fertility);
             Assert.NotNull(properties.Description);
         }
 
@@ -40,7 +40,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.NotNull(faction);
-            Assert.Equal(expectedFaction, faction.Value);
+            Assert.AreEqual(expectedFaction, faction.Value);
         }
 
         [DataTestMethod]
@@ -70,7 +70,7 @@ namespace Terrarium.Tests.Simulation
             var terrain = TerrainProperties.GetFactionTerrain(faction);
 
             // Assert
-            Assert.Equal(expectedTerrain, terrain);
+            Assert.AreEqual(expectedTerrain, terrain);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace Terrarium.Tests.Simulation
                 FactionType.VerdantCollective);
 
             // Assert
-            Assert.True(canConvert);
+            Assert.IsTrue(canConvert);
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace Terrarium.Tests.Simulation
                 FactionType.AshenLegion);
 
             // Assert
-            Assert.True(canConvert);
+            Assert.IsTrue(canConvert);
         }
 
         [TestMethod]
@@ -109,7 +109,7 @@ namespace Terrarium.Tests.Simulation
                 FactionType.TideWalkers);
 
             // Assert
-            Assert.True(canConvert);
+            Assert.IsTrue(canConvert);
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace Terrarium.Tests.Simulation
                 FactionType.AshenLegion); // Wrong faction
 
             // Assert
-            Assert.False(canConvert);
+            Assert.IsFalse(canConvert);
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace Terrarium.Tests.Simulation
                 FactionType.VerdantCollective);
 
             // Assert
-            Assert.False(canConvert);
+            Assert.IsFalse(canConvert);
         }
 
         [TestMethod]
@@ -152,11 +152,11 @@ namespace Terrarium.Tests.Simulation
             };
 
             // Assert
-            Assert.Equal("Test Terrain", terrainData.Name);
-            Assert.Equal("#FF0000", terrainData.Color);
-            Assert.True(terrainData.Walkable);
-            Assert.Equal(75, terrainData.Fertility);
-            Assert.Equal("Test description", terrainData.Description);
+            Assert.AreEqual("Test Terrain", terrainData.Name);
+            Assert.AreEqual("#FF0000", terrainData.Color);
+            Assert.IsTrue(terrainData.Walkable);
+            Assert.AreEqual(75, terrainData.Fertility);
+            Assert.AreEqual("Test description", terrainData.Description);
         }
     }
 }

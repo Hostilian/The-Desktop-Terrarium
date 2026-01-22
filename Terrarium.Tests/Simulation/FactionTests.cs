@@ -107,7 +107,7 @@ namespace Terrarium.Tests.Simulation
             faction.AddResource("Wood", 50);
 
             // Assert
-            Assert.True(faction.Resources.ContainsKey("Wood"));
+            Assert.IsTrue(faction.Resources.ContainsKey("Wood"));
             Assert.AreEqual(50, faction.Resources["Wood"]);
         }
 
@@ -136,7 +136,7 @@ namespace Terrarium.Tests.Simulation
             bool consumed = faction.ConsumeResource("Crystal", 40);
 
             // Assert
-            Assert.True(consumed);
+            Assert.IsTrue(consumed);
             Assert.AreEqual(60, faction.Resources["Crystal"]);
         }
 
@@ -151,7 +151,7 @@ namespace Terrarium.Tests.Simulation
             bool consumed = faction.ConsumeResource("Water", 50);
 
             // Assert
-            Assert.False(consumed);
+            Assert.IsFalse(consumed);
             Assert.AreEqual(30, faction.Resources["Water"]);
         }
 
@@ -165,7 +165,7 @@ namespace Terrarium.Tests.Simulation
             bool consumed = faction.ConsumeResource("Oil", 10);
 
             // Assert
-            Assert.False(consumed);
+            Assert.IsFalse(consumed);
         }
 
         [TestMethod]

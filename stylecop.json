@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "documentationRules": {
+      "companyName": "Desktop Terrarium",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.",
+      "variables": {
+        "licenseName": "MIT"
+      },
+      "xmlHeader": false
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "require"
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace"
+    },
+    "readabilityRules": {
+      "allowBuiltInTypeAliases": true
+    },
+    "namingRules": {
+      "allowCommonHungarianPrefixes": false
+    }
+  }
+}

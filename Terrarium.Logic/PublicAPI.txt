@@ -30,11 +30,12 @@ Terrarium.Logic.Simulation.SimulationEngine.Speed -> int
 Terrarium.Logic.Simulation.SimulationEngine.Speed.set -> void
 Terrarium.Logic.Simulation.SimulationEngine.TerrariumType -> Terrarium.Logic.TerrariumType
 Terrarium.Logic.Simulation.SimulationEngine.TogglePause() -> void
-Terrarium.Logic.Simulation.SimulationEngine.FindClickableAt(int, int) -> Terrarium.Logic.Entities.Interfaces.IEntity
+Terrarium.Logic.Simulation.SimulationEngine.FindClickableAt(double, double) -> Terrarium.Logic.Interfaces.IClickable?
 Terrarium.Logic.Simulation.SimulationEngine.IsEcosystemBalanced() -> bool
-Terrarium.Logic.Simulation.SimulationEngine.GetEcosystemHealth() -> int
+Terrarium.Logic.Simulation.SimulationEngine.GetEcosystemHealth() -> double
 Terrarium.Logic.Simulation.SimulationEngine.GetTimeOfDayString() -> string
 Terrarium.Logic.Simulation.SimulationEngine.LightLevel -> double
+Terrarium.Logic.Simulation.SimulationEngine.LightLevel.get -> double
 
 Terrarium.Logic.Simulation.StatisticsTracker
 Terrarium.Logic.Simulation.StatisticsTracker.StatisticsTracker() -> void

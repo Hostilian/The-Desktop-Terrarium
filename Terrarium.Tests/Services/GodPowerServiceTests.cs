@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Services;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.Services;
 using Terrarium.Logic.Simulation;
 

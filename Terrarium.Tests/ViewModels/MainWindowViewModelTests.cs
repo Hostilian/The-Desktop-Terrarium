@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.ViewModels;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.ViewModels;
 using Terrarium.Logic.Simulation;
 

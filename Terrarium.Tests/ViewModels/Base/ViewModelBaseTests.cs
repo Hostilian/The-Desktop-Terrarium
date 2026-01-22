@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.ViewModels.Base;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.ViewModels.Base;
 
 /// <summary>
@@ -10,29 +9,6 @@ using Terrarium.Desktop.ViewModels.Base;
 [TestClass]
 public class ViewModelBaseTests
 {
-    private class TestViewModel : ViewModelBase
-    {
-        private string testProperty = string.Empty;
-        private int counter;
-
-        public string TestProperty
-        {
-            get => testProperty;
-            set => SetProperty(ref testProperty, value);
-        }
-
-        public int Counter
-        {
-            get => counter;
-            set => SetProperty(ref counter, value);
-        }
-
-        public void RaisePropertyChangedManually(string propertyName)
-        {
-            OnPropertyChanged(propertyName);
-        }
-    }
-
     [TestMethod]
     public void SetProperty_WithDifferentValue_RaisesPropertyChanged()
     {
@@ -119,5 +95,28 @@ public class ViewModelBaseTests
 
         Assert.IsTrue(eventRaised);
         Assert.AreEqual(42, viewModel.Counter);
+    }
+
+    private class TestViewModel : ViewModelBase
+    {
+        private string testProperty = string.Empty;
+        private int counter;
+
+        public string TestProperty
+        {
+            get => testProperty;
+            set => SetProperty(ref testProperty, value);
+        }
+
+        public int Counter
+        {
+            get => counter;
+            set => SetProperty(ref counter, value);
+        }
+
+        public void RaisePropertyChangedManually(string propertyName)
+        {
+            OnPropertyChanged(propertyName);
+        }
     }
 }

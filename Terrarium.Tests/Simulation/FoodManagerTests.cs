@@ -1,7 +1,6 @@
 namespace Terrarium.Tests.Simulation
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Terrarium.Logic.Simulation;
 
     /// <summary>

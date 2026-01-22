@@ -45,3 +45,12 @@ Terrarium.Desktop.TerrariumTypeOption.DisplayName -> string
 Terrarium.Desktop.TerrariumTypeOption.DisplayName.set -> void
 Terrarium.Desktop.TerrariumTypeOption.Description -> string
 Terrarium.Desktop.TerrariumTypeOption.Description.set -> void
+
+Terrarium.Desktop.Rendering.Renderer
+Terrarium.Desktop.Rendering.Renderer.Renderer(System.Windows.Controls.Canvas canvas, Terrarium.Logic.TerrariumType terrariumType) -> void
+Terrarium.Desktop.Rendering.Renderer.SetRenderQuality(string quality) -> void
+Terrarium.Desktop.Rendering.Renderer.SetShowScenery(bool show) -> void
+Terrarium.Desktop.Rendering.Renderer.SetShowShadows(bool show) -> void
+Terrarium.Desktop.Rendering.Renderer.Clear() -> void
+Terrarium.Desktop.Rendering.Renderer.RenderWorld(Terrarium.Logic.Simulation.World world, double weatherIntensity, System.Windows.Point mousePosition, bool mouseInCanvas) -> void
+Terrarium.Desktop.Rendering.Renderer.TriggerPlantShake(Terrarium.Logic.Entities.Plant plant) -> void

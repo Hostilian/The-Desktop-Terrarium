@@ -577,6 +577,11 @@ public class Renderer
     /// </summary>
     public void RenderWorld(World world, double weatherIntensity, Point mousePosition, bool mouseInCanvas)
     {
+        if (world is null)
+        {
+            throw new ArgumentNullException(nameof(world));
+        }
+
         // Update plant shake timers
         UpdateShakeAnimations();
 
@@ -1045,11 +1050,21 @@ public class Renderer
             var uri = new Uri($"pack://application:,,,/Assets/{fileName}");
             image.Source = new BitmapImage(uri);
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
-            // Fallback: create colored rectangle if sprite not found
+            // Fallback: create colored rectangle if sprite file not found
             // This allows the app to run without sprite assets
             Debug.WriteLine($"Failed to load sprite '{fileName}': {ex.Message}");
+        }
+        catch (UriFormatException ex)
+        {
+            // Fallback: create colored rectangle if URI is malformed
+            Debug.WriteLine($"Invalid sprite URI for '{fileName}': {ex.Message}");
+        }
+        catch (NotSupportedException ex)
+        {
+            // Fallback: create colored rectangle if image format not supported
+            Debug.WriteLine($"Unsupported sprite format for '{fileName}': {ex.Message}");
         }
 
         return image;
@@ -1070,6 +1085,11 @@ public class Renderer
     /// </summary>
     public void TriggerPlantShake(Plant plant)
     {
+        if (plant is null)
+        {
+            throw new ArgumentNullException(nameof(plant));
+        }
+
         _plantShakeTimers[plant.Id] = ShakeDuration;
     }
 

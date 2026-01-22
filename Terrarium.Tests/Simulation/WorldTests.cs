@@ -1,7 +1,6 @@
-using Xunit;
+
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
-using Assert = Xunit.Assert;
 using System.Linq;
 
 namespace Terrarium.Tests.Simulation
@@ -385,5 +384,8 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+
+
 
 

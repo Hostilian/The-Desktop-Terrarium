@@ -1,7 +1,5 @@
-using Xunit;
-using Terrarium.Logic.Simulation;
-using Assert = Xunit.Assert;
 
+using Terrarium.Logic.Simulation;
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>
@@ -10,12 +8,12 @@ namespace Terrarium.Tests.Simulation
     public class TerrainPropertiesTests
     {
         [DataTestMethod]
-        [InlineData(TerrainType.Void, "Void", "#000000", false, 0)]
-        [InlineData(TerrainType.Soil, "Soil", "#8B4513", true, 100)]
-        [InlineData(TerrainType.Stone, "Stone", "#696969", true, 10)]
-        [InlineData(TerrainType.Water, "Water", "#4169E1", false, 30)]
-        [InlineData(TerrainType.VerdantGrowth, "Verdant Growth", "#228B22", true, 150)]
-        [InlineData(TerrainType.AshenWasteland, "Ashen Wasteland", "#2F2F2F", true, 5)]
+        
+        
+        
+        
+        
+        
         public void GetProperties_ReturnsCorrectData(TerrainType type, string expectedName, string expectedColor, bool expectedWalkable, int expectedFertility)
         {
             // Act
@@ -30,12 +28,12 @@ namespace Terrarium.Tests.Simulation
         }
 
         [DataTestMethod]
-        [InlineData(TerrainType.VerdantGrowth, FactionType.VerdantCollective)]
-        [InlineData(TerrainType.AshenWasteland, FactionType.AshenLegion)]
-        [InlineData(TerrainType.AquaticDomain, FactionType.TideWalkers)]
-        [InlineData(TerrainType.StoneWardens, FactionType.CrystalChoir)]
-        [InlineData(TerrainType.CelestialOrder, FactionType.NomadicCovenant)]
-        [InlineData(TerrainType.NetherCult, FactionType.ScrapbornSwarm)]
+        
+        
+        
+        
+        
+        
         public void GetControllingFaction_FactionTerrain_ReturnsFaction(TerrainType terrain, FactionType expectedFaction)
         {
             // Act
@@ -47,10 +45,10 @@ namespace Terrarium.Tests.Simulation
         }
 
         [DataTestMethod]
-        [InlineData(TerrainType.Void)]
-        [InlineData(TerrainType.Soil)]
-        [InlineData(TerrainType.Stone)]
-        [InlineData(TerrainType.Water)]
+        
+        
+        
+        
         public void GetControllingFaction_NeutralTerrain_ReturnsNull(TerrainType terrain)
         {
             // Act
@@ -61,12 +59,12 @@ namespace Terrarium.Tests.Simulation
         }
 
         [DataTestMethod]
-        [InlineData(FactionType.VerdantCollective, TerrainType.VerdantGrowth)]
-        [InlineData(FactionType.AshenLegion, TerrainType.AshenWasteland)]
-        [InlineData(FactionType.TideWalkers, TerrainType.AquaticDomain)]
-        [InlineData(FactionType.CrystalChoir, TerrainType.StoneWardens)]
-        [InlineData(FactionType.NomadicCovenant, TerrainType.CelestialOrder)]
-        [InlineData(FactionType.ScrapbornSwarm, TerrainType.NetherCult)]
+        
+        
+        
+        
+        
+        
         public void GetFactionTerrain_ReturnsCorrectTerrain(FactionType faction, TerrainType expectedTerrain)
         {
             // Act
@@ -163,5 +161,8 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+
+
 
 

@@ -1,7 +1,5 @@
-using Xunit;
-using Terrarium.Logic.Simulation.Achievements;
-using Assert = Xunit.Assert;
 
+using Terrarium.Logic.Simulation.Achievements;
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>
@@ -44,5 +42,8 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+
+
 
 

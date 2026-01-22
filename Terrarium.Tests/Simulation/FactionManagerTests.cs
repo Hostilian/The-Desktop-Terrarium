@@ -1,6 +1,5 @@
-using Xunit;
+
 using Terrarium.Logic.Simulation;
-using Assert = Xunit.Assert;
 using Terrarium.Logic.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Terrarium.Tests.Simulation
     /// </summary>
     public class FactionManagerTests
     {
-        [Fact]
+        [TestMethod]
         public void Constructor_InitializesAllFactions()
         {
             // Arrange & Act
@@ -24,7 +23,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(factionCount, manager.Factions.Count);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetFaction_ReturnsCorrectFaction()
         {
             // Arrange
@@ -38,7 +37,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(FactionType.VerdantCollective, faction.Type);
         }
 
-        [Fact]
+        [TestMethod]
         public void UpdatePopulations_CountsCreaturesCorrectly()
         {
             // Arrange
@@ -61,7 +60,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(0, manager.GetFaction(FactionType.CrystalChoir).Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void UpdatePopulations_ResetsPopulationsFirst()
         {
             // Arrange
@@ -87,7 +86,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(1, manager.GetFaction(FactionType.AshenLegion).Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetDominantFaction_ReturnsHighestPopulation()
         {
             // Arrange
@@ -111,7 +110,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(3, dominant.Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetDominantFaction_WithNoCreatures_ReturnsFirstFaction()
         {
             // Arrange
@@ -126,7 +125,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(0, dominant.Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetFactionsByPopulation_ReturnsSortedList()
         {
             // Arrange
@@ -152,7 +151,7 @@ namespace Terrarium.Tests.Simulation
             Assert.Equal(3, sortedFactions[0].Population);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreHostile_SameFaction_ReturnsFalse()
         {
             // Arrange
@@ -165,7 +164,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(hostile);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreHostile_WithNegativeRelationship_ReturnsTrue()
         {
             // Arrange
@@ -183,7 +182,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(hostile);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreHostile_WithPositiveRelationship_ReturnsFalse()
         {
             // Arrange
@@ -202,7 +201,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(hostile);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreAllied_SameFaction_ReturnsTrue()
         {
             // Arrange
@@ -215,7 +214,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(allied);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreAllied_WithHighPositiveRelationship_ReturnsTrue()
         {
             // Arrange
@@ -234,7 +233,7 @@ namespace Terrarium.Tests.Simulation
             Assert.True(allied);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreAllied_WithLowRelationship_ReturnsFalse()
         {
             // Arrange
@@ -253,7 +252,7 @@ namespace Terrarium.Tests.Simulation
             Assert.False(allied);
         }
 
-        [Fact]
+        [TestMethod]
         public void AreAllied_WithAsymmetricRelationship_ReturnsFalse()
         {
             // Arrange
@@ -273,5 +272,8 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
+
+
+
 
 

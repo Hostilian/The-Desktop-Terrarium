@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Entities
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Unit tests for Herbivore eating behavior.
     /// Tests the interaction between herbivores and plants.
@@ -66,7 +66,7 @@ namespace Terrarium.Tests.Entities
             {
                 new Plant(200, 200), // Far
                 closePlant,           // Close
-                new Plant(300, 300)   // Very far
+                new Plant(300, 300) // Very far
             };
 
             // Act
@@ -94,8 +94,3 @@ namespace Terrarium.Tests.Entities
         }
     }
 }
-
-
-
-
-

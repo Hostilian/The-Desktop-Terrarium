@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Unit tests for CollisionDetector.
     /// Tests collision detection logic.
@@ -52,7 +52,7 @@ namespace Terrarium.Tests.Simulation
             {
                 new Plant(110, 110), // Close
                 new Plant(300, 300), // Far
-                new Plant(120, 100)  // Close
+                new Plant(120, 100) // Close
             };
 
             // Act
@@ -99,8 +99,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

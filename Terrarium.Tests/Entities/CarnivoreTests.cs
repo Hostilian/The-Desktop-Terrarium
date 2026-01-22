@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Entities
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Unit tests for Carnivore hunting behavior.
     /// Tests the predator-prey interaction.
@@ -56,7 +56,7 @@ namespace Terrarium.Tests.Entities
             {
                 new Herbivore(300, 300, "Rabbit"), // Far
                 closePrey,                          // Close
-                new Herbivore(400, 400, "Deer")     // Very far
+                new Herbivore(400, 400, "Deer") // Very far
             };
 
             // Act
@@ -96,8 +96,3 @@ namespace Terrarium.Tests.Entities
         }
     }
 }
-
-
-
-
-

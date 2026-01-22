@@ -5,9 +5,9 @@ namespace Terrarium.Logic.Entities
     /// </summary>
     public abstract class LivingEntity : WorldEntity
     {
-        private double _health;
-        private double _age;
-        private bool _isAlive;
+        private double health;
+        private double age;
+        private bool isAlive;
 
         // Named constants instead of magic numbers
         protected const double MaxHealth = 100.0;
@@ -15,43 +15,43 @@ namespace Terrarium.Logic.Entities
         protected const double HealthDecayRate = 0.1;
 
         /// <summary>
-        /// Current health of the entity (0-100).
+        /// Gets current health of the entity (0-100).
         /// </summary>
         public double Health
         {
-            get => _health;
+            get => health;
             private set
             {
-                _health = Math.Clamp(value, MinHealth, MaxHealth);
-                if (_health <= MinHealth)
+                health = Math.Clamp(value, MinHealth, MaxHealth);
+                if (health <= MinHealth)
                 {
-                    _isAlive = false;
+                    isAlive = false;
                 }
             }
         }
 
         /// <summary>
-        /// Age of the entity in simulation ticks.
+        /// Gets age of the entity in simulation ticks.
         /// </summary>
         public double Age
         {
-            get => _age;
-            private set => _age = value;
+            get => age;
+            private set => age = value;
         }
 
         /// <summary>
-        /// Whether the entity is still alive.
+        /// Gets a value indicating whether whether the entity is still alive.
         /// </summary>
         public bool IsAlive
         {
-            get => _isAlive;
-            private set => _isAlive = value;
+            get => isAlive;
+            private set => isAlive = value;
         }
 
         protected LivingEntity(double x, double y, string type, double initialHealth = MaxHealth)
             : base(x, y, type)
         {
-            _isAlive = true;
+            isAlive = true;
             Health = initialHealth;
             Age = 0;
         }
@@ -65,7 +65,7 @@ namespace Terrarium.Logic.Entities
 
         internal void RestoreVitalStats(double health, double age)
         {
-            _isAlive = true;
+            isAlive = true;
             Health = health;
             Age = age;
         }

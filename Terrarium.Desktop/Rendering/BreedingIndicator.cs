@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -6,25 +8,23 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Shows visual indicators for breeding-ready creatures.
 /// </summary>
 public class BreedingIndicator
 {
-    private readonly Canvas _canvas;
-    private readonly Dictionary<Creature, HeartVisual> _hearts;
-    private double _updateTimer;
-    private double _animationTime;
+    private readonly Canvas canvas;
+    private readonly Dictionary<Creature, HeartVisual> hearts;
+    private double updateTimer;
+    private double animationTime;
 
-    private readonly HashSet<Creature> _existingCreaturesBuffer = new();
-    private readonly List<Creature> _toRemoveBuffer = new();
+    private readonly HashSet<Creature> existingCreaturesBuffer = new();
+    private readonly List<Creature> toRemoveBuffer = new();
 
-    private const double _updateInterval = 0.3;
-    private const double _minHealthForBreeding = 60;
-    private const double _maxHungerForBreeding = 40;
-    private const double _minAgeForBreeding = 5.0;
+    private const double updateInterval = 0.3;
+    private const double minHealthForBreeding = 60;
+    private const double maxHungerForBreeding = 40;
+    private const double minAgeForBreeding = 5.0;
 
     public bool IsEnabled { get; set; } = true;
 
@@ -32,10 +32,10 @@ public class BreedingIndicator
 
     public BreedingIndicator(Canvas canvas)
     {
-        _canvas = canvas;
-        _hearts = new Dictionary<Creature, HeartVisual>();
-        _updateTimer = 0;
-        _animationTime = 0;
+        this.canvas = canvas;
+        hearts = new Dictionary<Creature, HeartVisual>();
+        updateTimer = 0;
+        animationTime = 0;
     }
 
     /// <summary>
@@ -55,28 +55,28 @@ public class BreedingIndicator
             return;
         }
 
-        _animationTime += deltaTime;
-        _updateTimer += deltaTime;
+        animationTime += deltaTime;
+        updateTimer += deltaTime;
 
         // Update existing heart animations
-        foreach (var heart in _hearts.Values)
+        foreach (var heart in hearts.Values)
         {
-            double bounce = Math.Sin(_animationTime * 4 + heart.AnimOffset) * 3;
+            double bounce = Math.Sin((animationTime * 4) + heart.AnimOffset) * 3;
             Canvas.SetTop(heart.Visual, heart.BaseY + bounce);
 
             // Pulse effect
-            double scale = 1.0 + 0.15 * Math.Sin(_animationTime * 3 + heart.AnimOffset);
+            double scale = 1.0 + (0.15 * Math.Sin((animationTime * 3) + heart.AnimOffset));
             heart.ScaleTransform.ScaleX = scale;
             heart.ScaleTransform.ScaleY = scale;
         }
 
-        if (_updateTimer < _updateInterval)
+        if (updateTimer < updateInterval)
         {
             return;
         }
-        _updateTimer = 0;
+        updateTimer = 0;
 
-        _existingCreaturesBuffer.Clear();
+        existingCreaturesBuffer.Clear();
 
         // Check herbivores
         foreach (var herbivore in herbivores)
@@ -85,7 +85,7 @@ public class BreedingIndicator
             {
                 continue;
             }
-            _existingCreaturesBuffer.Add(herbivore);
+            existingCreaturesBuffer.Add(herbivore);
 
             if (CanBreed(herbivore))
             {
@@ -104,7 +104,7 @@ public class BreedingIndicator
             {
                 continue;
             }
-            _existingCreaturesBuffer.Add(carnivore);
+            existingCreaturesBuffer.Add(carnivore);
 
             if (CanBreed(carnivore))
             {
@@ -117,15 +117,15 @@ public class BreedingIndicator
         }
 
         // Clean up removed creatures
-        _toRemoveBuffer.Clear();
-        foreach (var kvp in _hearts)
+        toRemoveBuffer.Clear();
+        foreach (var kvp in hearts)
         {
             var creature = kvp.Key;
             var heart = kvp.Value;
-            if (!_existingCreaturesBuffer.Contains(creature))
+            if (!existingCreaturesBuffer.Contains(creature))
             {
-                _canvas.Children.Remove(heart.Visual);
-                _toRemoveBuffer.Add(creature);
+                canvas.Children.Remove(heart.Visual);
+                toRemoveBuffer.Add(creature);
             }
             else
             {
@@ -134,23 +134,23 @@ public class BreedingIndicator
             }
         }
 
-        foreach (var creature in _toRemoveBuffer)
+        foreach (var creature in toRemoveBuffer)
         {
-            _hearts.Remove(creature);
+            hearts.Remove(creature);
         }
     }
 
     private bool CanBreed(Creature creature)
     {
         return creature.IsAlive &&
-               creature.Health >= _minHealthForBreeding &&
-               creature.Hunger <= _maxHungerForBreeding &&
-               creature.Age >= _minAgeForBreeding;
+               creature.Health >= minHealthForBreeding &&
+               creature.Hunger <= maxHungerForBreeding &&
+               creature.Age >= minAgeForBreeding;
     }
 
     private void ShowHeart(Creature creature)
     {
-        if (_hearts.ContainsKey(creature))
+        if (hearts.ContainsKey(creature))
         {
             return;
         }
@@ -168,9 +168,9 @@ public class BreedingIndicator
         Canvas.SetTop(heart, creature.Y - 28);
         Canvas.SetZIndex(heart, 550);
 
-        _canvas.Children.Add(heart);
+        canvas.Children.Add(heart);
 
-        _hearts[creature] = new HeartVisual
+        hearts[creature] = new HeartVisual
         {
             Visual = heart,
             BaseY = creature.Y - 28,
@@ -181,10 +181,10 @@ public class BreedingIndicator
 
     private void HideHeart(Creature creature)
     {
-        if (_hearts.TryGetValue(creature, out var heart))
+        if (hearts.TryGetValue(creature, out var heart))
         {
-            _canvas.Children.Remove(heart.Visual);
-            _hearts.Remove(creature);
+            canvas.Children.Remove(heart.Visual);
+            hearts.Remove(creature);
         }
     }
 
@@ -193,18 +193,21 @@ public class BreedingIndicator
     /// </summary>
     public void Clear()
     {
-        foreach (var heart in _hearts.Values)
+        foreach (var heart in hearts.Values)
         {
-            _canvas.Children.Remove(heart.Visual);
+            canvas.Children.Remove(heart.Visual);
         }
-        _hearts.Clear();
+        hearts.Clear();
     }
 }
 
 internal class HeartVisual
 {
     public TextBlock Visual { get; set; } = null!;
+
     public double BaseY { get; set; }
+
     public double AnimOffset { get; set; }
+
     public ScaleTransform ScaleTransform { get; set; } = null!;
 }

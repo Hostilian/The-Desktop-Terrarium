@@ -1,46 +1,47 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Diagnostics;
-
-namespace Terrarium.Desktop.Rendering;
 
 /// <summary>
 /// Monitors system resources (CPU usage) to affect simulation weather.
 /// </summary>
 public class SystemMonitor : IDisposable
 {
-    private readonly PerformanceCounter? _cpuCounter;
-    private bool _disposed;
+    private readonly PerformanceCounter? cpuCounter;
+    private bool disposed;
 
     public SystemMonitor()
     {
         try
         {
-            _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             // Initialize with first read
-            _cpuCounter.NextValue();
+            cpuCounter.NextValue();
         }
         catch (Exception)
         {
             // Performance counters may not be available on all systems (e.g., restricted environments,
             // missing performance counter categories, or insufficient permissions).
             // Graceful degradation: continue without CPU monitoring - weather will remain calm.
-            _cpuCounter = null;
+            cpuCounter = null;
         }
     }
 
     /// <summary>
     /// Gets current CPU usage as a value between 0.0 and 1.0.
     /// </summary>
+    /// <returns></returns>
     public double GetCpuUsage()
     {
-        if (_cpuCounter == null)
+        if (cpuCounter == null)
         {
             return 0.0;
         }
 
         try
         {
-            float cpuPercent = _cpuCounter.NextValue();
+            float cpuPercent = cpuCounter.NextValue();
             return Math.Clamp(cpuPercent / 100.0, 0.0, 1.0);
         }
         catch (Exception)
@@ -54,6 +55,7 @@ public class SystemMonitor : IDisposable
     /// <summary>
     /// Gets current memory usage in MB.
     /// </summary>
+    /// <returns></returns>
     public double GetMemoryUsageMB()
     {
         return GC.GetTotalMemory(false) / (1024.0 * 1024.0);
@@ -61,12 +63,12 @@ public class SystemMonitor : IDisposable
 
     public void Dispose()
     {
-        if (_disposed)
+        if (disposed)
         {
             return;
         }
 
-        _cpuCounter?.Dispose();
-        _disposed = true;
+        cpuCounter?.Dispose();
+        disposed = true;
     }
 }

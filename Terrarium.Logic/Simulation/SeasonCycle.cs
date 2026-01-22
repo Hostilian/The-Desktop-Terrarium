@@ -8,21 +8,21 @@ namespace Terrarium.Logic.Simulation
         private const double SeasonDurationSeconds = 120.0;
         private const double TotalCycleDuration = SeasonDurationSeconds * 4.0;
 
-        private double _currentTime;
+        private double currentTime;
 
         /// <summary>
-        /// Current time in the season cycle (0.0 to TotalCycleDuration).
+        /// Gets current time in the season cycle (0.0 to TotalCycleDuration).
         /// </summary>
-        public double CurrentTime => _currentTime;
+        public double CurrentTime => currentTime;
 
         /// <summary>
-        /// Current season.
+        /// Gets current season.
         /// </summary>
         public Season CurrentSeason
         {
             get
             {
-                double t = _currentTime % TotalCycleDuration;
+                double t = currentTime % TotalCycleDuration;
                 if (t < SeasonDurationSeconds)
                     return Season.Spring;
                 if (t < SeasonDurationSeconds * 2.0)
@@ -34,20 +34,20 @@ namespace Terrarium.Logic.Simulation
         }
 
         /// <summary>
-        /// Progress within the current season (0.0 to 1.0).
+        /// Gets progress within the current season (0.0 to 1.0).
         /// </summary>
         public double SeasonProgress
         {
             get
             {
-                double t = _currentTime % TotalCycleDuration;
+                double t = currentTime % TotalCycleDuration;
                 double within = t % SeasonDurationSeconds;
                 return within / SeasonDurationSeconds;
             }
         }
 
         /// <summary>
-        /// Multiplier applied to plant spawn chance.
+        /// Gets multiplier applied to plant spawn chance.
         /// </summary>
         public double PlantSpawnChanceMultiplier => CurrentSeason switch
         {
@@ -60,30 +60,30 @@ namespace Terrarium.Logic.Simulation
 
         public SeasonCycle()
         {
-            _currentTime = 0;
+            currentTime = 0;
         }
 
         public void Update(double deltaTime)
         {
-            _currentTime += deltaTime;
-            if (_currentTime >= TotalCycleDuration)
+            currentTime += deltaTime;
+            if (currentTime >= TotalCycleDuration)
             {
-                _currentTime -= TotalCycleDuration;
+                currentTime -= TotalCycleDuration;
             }
         }
 
         public void SetTime(double time)
         {
-            _currentTime = time % TotalCycleDuration;
-            if (_currentTime < 0)
+            currentTime = time % TotalCycleDuration;
+            if (currentTime < 0)
             {
-                _currentTime += TotalCycleDuration;
+                currentTime += TotalCycleDuration;
             }
         }
 
         public void SetSeason(Season season)
         {
-            _currentTime = season switch
+            currentTime = season switch
             {
                 Season.Spring => 0,
                 Season.Summer => SeasonDurationSeconds,

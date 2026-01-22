@@ -6,17 +6,17 @@ namespace Terrarium.Logic.Interfaces;
 public interface IMovable
 {
     /// <summary>
-    /// Current X velocity.
+    /// Gets or sets current X velocity.
     /// </summary>
     public double VelocityX { get; set; }
 
     /// <summary>
-    /// Current Y velocity.
+    /// Gets or sets current Y velocity.
     /// </summary>
     public double VelocityY { get; set; }
 
     /// <summary>
-    /// Maximum movement speed.
+    /// Gets maximum movement speed.
     /// </summary>
     public double Speed { get; }
 

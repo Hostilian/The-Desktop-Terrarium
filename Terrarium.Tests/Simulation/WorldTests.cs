@@ -1,10 +1,11 @@
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-using System.Linq;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive unit tests for World class to achieve 100% code coverage.
     /// </summary>
@@ -46,7 +47,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsTrue(world.Plants.Contains(plant));
-            Assert.AreEqual(1, world.Plants.Count);
+            Assert.HasCount(1, world.Plants);
         }
 
         [TestMethod]
@@ -61,7 +62,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsTrue(world.Herbivores.Contains(herbivore));
-            Assert.AreEqual(1, world.Herbivores.Count);
+            Assert.HasCount(1, world.Herbivores);
         }
 
         [TestMethod]
@@ -76,7 +77,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsTrue(world.Carnivores.Contains(carnivore));
-            Assert.AreEqual(1, world.Carnivores.Count);
+            Assert.HasCount(1, world.Carnivores);
         }
 
         [TestMethod]
@@ -246,7 +247,7 @@ namespace Terrarium.Tests.Simulation
             var allEntities = world.GetAllEntities().ToList();
 
             // Assert
-            Assert.AreEqual(3, allEntities.Count);
+            Assert.HasCount(3, allEntities);
         }
 
         [TestMethod]
@@ -344,7 +345,7 @@ namespace Terrarium.Tests.Simulation
             var allTerrain = Enumerable.Range(0, 5)
                 .SelectMany(x => Enumerable.Range(0, 5).Select(y => world.GetTerrainAt(x * 20, y * 20)))
                 .ToList();
-            
+
             // At least one cell should show conquest happened
             Assert.IsTrue(allTerrain.Any());
         }
@@ -384,4 +385,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-

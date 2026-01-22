@@ -1,23 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terrarium.Logic.Entities;
-using Terrarium.Logic.Simulation;
-
 namespace Terrarium.Logic.Simulation
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Manages procedural lore generation and chronicle system.
     /// Inspired by Caves of Qud's narrative depth.
     /// </summary>
     public class LoreManager
     {
-        private readonly Random _random;
-        private readonly List<LoreEvent> _chronicle = new();
-        private readonly Dictionary<int, NamedCharacter> _namedCharacters = new();
+        private readonly Random random;
+        private readonly List<LoreEvent> chronicle = new();
+        private readonly Dictionary<int, NamedCharacter> namedCharacters = new();
 
         // Ancient events that explain the world state
-        private readonly List<string> _ancientEvents = new()
+        private readonly List<string> ancientEvents = new()
         {
             "The Sundering - When the First Root split into many minds, creating the Verdant Collective",
             "The Forge Pact - Treaty signed in cooling lava, now broken by the Ashen Legion",
@@ -28,7 +28,7 @@ namespace Terrarium.Logic.Simulation
         };
 
         // Event templates for procedural generation
-        private readonly List<string> _eventTemplates = new()
+        private readonly List<string> eventTemplates = new()
         {
             "{0} warriors of the {1} clashed with {2} forces of the {3} at the {4}",
             "A great famine struck the lands, weakening the {1} but strengthening the {3}",
@@ -40,37 +40,37 @@ namespace Terrarium.Logic.Simulation
             "Betrayal within the {3} led to civil war and division"
         };
 
-        private readonly List<string> _battleNames = new()
+        private readonly List<string> battleNames = new()
         {
             "Battle of Crying Stones", "Siege of the Crystal Spire", "Clash at Forge's Heart",
             "Tidal Massacre", "Swarm Incursion", "Prophet's Stand", "Root War", "Ash Storm"
         };
 
-        private readonly List<string> _technologyTypes = new()
+        private readonly List<string> technologyTypes = new()
         {
             "crystalline", "volcanic", "aquatic", "mechanical", "organic", "mystical"
         };
 
-        private readonly List<string> _diplomacyResults = new()
+        private readonly List<string> diplomacyResults = new()
         {
             "alliance", "truce", "trade agreement", "non-aggression pact", "hostile standoff"
         };
 
         public LoreManager(Random? random = null)
         {
-            _random = random ?? new Random();
+            this.random = random ?? new Random();
             GenerateAncientHistory();
         }
 
         /// <summary>
-        /// The chronicle of events that have occurred.
+        /// Gets the chronicle of events that have occurred.
         /// </summary>
-        public IReadOnlyList<LoreEvent> Chronicle => _chronicle.AsReadOnly();
+        public IReadOnlyList<LoreEvent> Chronicle => chronicle.AsReadOnly();
 
         /// <summary>
-        /// Named characters in the world.
+        /// Gets named characters in the world.
         /// </summary>
-        public IReadOnlyDictionary<int, NamedCharacter> NamedCharacters => _namedCharacters;
+        public IReadOnlyDictionary<int, NamedCharacter> NamedCharacters => namedCharacters;
 
         /// <summary>
         /// Generates the ancient history that explains the current world state.
@@ -78,14 +78,14 @@ namespace Terrarium.Logic.Simulation
         private void GenerateAncientHistory()
         {
             // Select 3-5 ancient events
-            int numEvents = _random.Next(3, 6);
-            var selectedEvents = _ancientEvents.OrderBy(x => _random.Next()).Take(numEvents);
+            int numEvents = random.Next(3, 6);
+            var selectedEvents = ancientEvents.OrderBy(x => random.Next()).Take(numEvents);
 
             foreach (var ancientEvent in selectedEvents)
             {
-                _chronicle.Add(new LoreEvent
+                chronicle.Add(new LoreEvent
                 {
-                    Timestamp = -_random.Next(100, 1000), // Years ago
+                    Timestamp = -random.Next(100, 1000), // Years ago
                     Description = ancientEvent,
                     Type = LoreEventType.AncientHistory,
                     Importance = LoreImportance.Major
@@ -98,7 +98,7 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void RecordEvent(string description, LoreEventType type, LoreImportance importance = LoreImportance.Minor)
         {
-            _chronicle.Add(new LoreEvent
+            chronicle.Add(new LoreEvent
             {
                 Timestamp = DateTime.Now.Ticks,
                 Description = description,
@@ -107,15 +107,16 @@ namespace Terrarium.Logic.Simulation
             });
 
             // Keep only the most recent 100 events
-            if (_chronicle.Count > 100)
+            if (chronicle.Count > 100)
             {
-                _chronicle.RemoveAt(0);
+                chronicle.RemoveAt(0);
             }
         }
 
         /// <summary>
         /// Generates procedural event descriptions.
         /// </summary>
+        /// <returns></returns>
         public string GenerateEventDescription(FactionManager factionManager)
         {
             if (factionManager is null)
@@ -126,18 +127,18 @@ namespace Terrarium.Logic.Simulation
             var factions = factionManager.GetFactionsByPopulation().ToList();
             if (factions.Count < 2) return "Peace reigns as a single faction dominates the land.";
 
-            var faction1 = factions[_random.Next(factions.Count)];
-            var faction2 = factions.Where(f => f.Type != faction1.Type).ToList()[_random.Next(Math.Min(2, factions.Count - 1))];
+            var faction1 = factions[random.Next(factions.Count)];
+            var faction2 = factions.Where(f => f.Type != faction1.Type).ToList()[random.Next(Math.Min(2, factions.Count - 1))];
 
-            string template = _eventTemplates[_random.Next(_eventTemplates.Count)];
-            string battleName = _battleNames[_random.Next(_battleNames.Count)];
-            string technology = _technologyTypes[_random.Next(_technologyTypes.Count)];
-            string diplomacy = _diplomacyResults[_random.Next(_diplomacyResults.Count)];
+            string template = eventTemplates[random.Next(eventTemplates.Count)];
+            string battleName = battleNames[random.Next(battleNames.Count)];
+            string technology = technologyTypes[random.Next(technologyTypes.Count)];
+            string diplomacy = diplomacyResults[random.Next(diplomacyResults.Count)];
 
             return string.Format(template,
-                _random.Next(10, 100), // number
+                random.Next(10, 100), // number
                 faction1.Name,
-                _random.Next(5, 50), // number
+                random.Next(5, 50), // number
                 faction2.Name,
                 battleName,
                 technology,
@@ -155,7 +156,7 @@ namespace Terrarium.Logic.Simulation
             }
 
             // 1 in 50 chance for a creature to become "named"
-            if (_random.Next(50) != 0) return;
+            if (random.Next(50) != 0) return;
 
             string name = GenerateName(creature.Faction);
             var namedChar = new NamedCharacter
@@ -169,7 +170,7 @@ namespace Terrarium.Logic.Simulation
                 IsAlive = true
             };
 
-            _namedCharacters[creature.Id] = namedChar;
+            namedCharacters[creature.Id] = namedChar;
             RecordEvent($"{name} has risen to prominence among the {GetFactionName(creature.Faction)}", LoreEventType.CharacterBirth, LoreImportance.Medium);
         }
 
@@ -178,7 +179,7 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void RecordCharacterDeath(int creatureId)
         {
-            if (_namedCharacters.TryGetValue(creatureId, out var character))
+            if (namedCharacters.TryGetValue(creatureId, out var character))
             {
                 character.IsAlive = false;
                 character.DeathTime = DateTime.Now;
@@ -189,9 +190,10 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets lore for a specific entity.
         /// </summary>
+        /// <returns></returns>
         public string GetEntityLore(Creature creature)
         {
-            if (_namedCharacters.TryGetValue(creature.Id, out var character))
+            if (namedCharacters.TryGetValue(creature.Id, out var character))
             {
                 return $"{character.Name} - {character.Biography}";
             }
@@ -211,7 +213,7 @@ namespace Terrarium.Logic.Simulation
                 $"Guardian of the {GetFactionName(creature.Faction)}, protector of their people's future"
             };
 
-            return templates[_random.Next(templates.Length)];
+            return templates[random.Next(templates.Length)];
         }
 
         private string GenerateName(FactionType faction)
@@ -229,8 +231,8 @@ namespace Terrarium.Logic.Simulation
 
             var titles = new[] { "the Brave", "Bloodied", "Wise", "Fierce", "Ancient", "Young" };
 
-            string baseName = nameParts[_random.Next(nameParts.Length)];
-            string title = _random.Next(3) == 0 ? " " + titles[_random.Next(titles.Length)] : "";
+            string baseName = nameParts[random.Next(nameParts.Length)];
+            string title = random.Next(3) == 0 ? " " + titles[random.Next(titles.Length)] : string.Empty;
 
             return baseName + title;
         }
@@ -269,14 +271,14 @@ namespace Terrarium.Logic.Simulation
 
         private string GetRecentEventContext()
         {
-            if (_chronicle.Count == 0) return "recent times";
-            var recentEvent = _chronicle.Last();
+            if (chronicle.Count == 0) return "recent times";
+            var recentEvent = chronicle.Last();
             return recentEvent.Description.Length > 20
                 ? recentEvent.Description.Substring(0, 20) + "..."
                 : recentEvent.Description;
         }
 
-        private string GetRandomBattleName() => _battleNames[_random.Next(_battleNames.Count)];
+        private string GetRandomBattleName() => battleNames[random.Next(battleNames.Count)];
     }
 
     /// <summary>
@@ -285,8 +287,11 @@ namespace Terrarium.Logic.Simulation
     public class LoreEvent
     {
         public long Timestamp { get; set; }
-        public string Description { get; set; } = "";
+
+        public string Description { get; set; } = string.Empty;
+
         public LoreEventType Type { get; set; }
+
         public LoreImportance Importance { get; set; }
     }
 
@@ -321,12 +326,19 @@ namespace Terrarium.Logic.Simulation
     public class NamedCharacter
     {
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+
+        public string Name { get; set; } = string.Empty;
+
         public FactionType Faction { get; set; }
+
         public List<string> Titles { get; set; } = new();
-        public string Biography { get; set; } = "";
+
+        public string Biography { get; set; } = string.Empty;
+
         public DateTime BirthTime { get; set; }
+
         public DateTime? DeathTime { get; set; }
+
         public bool IsAlive { get; set; }
     }
 }

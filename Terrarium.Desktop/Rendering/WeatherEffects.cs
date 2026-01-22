@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -5,16 +7,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Handles weather visual effects like rain particles.
 /// </summary>
 public class WeatherEffects
 {
-    private readonly Canvas _canvas;
-    private readonly List<RainDrop> _rainDrops;
-    private readonly Random _random;
+    private readonly Canvas canvas;
+    private readonly List<RainDrop> rainDrops;
+    private readonly Random random;
 
     // Rain configuration
     private const int MaxRainDrops = 100;
@@ -45,26 +45,26 @@ public class WeatherEffects
     private static readonly Brush RainColor = CreateFrozenBrush(Color.FromArgb(180, 150, 180, 220));
     private static readonly Brush LightningColor = CreateFrozenBrush(Color.FromArgb(200, 255, 255, 200));
 
-    private double _currentIntensity;
-    private bool _isRaining;
-    private double _lightningTimer;
-    private double _nextLightningTime;
-    private Rectangle? _lightningFlash;
+    private double currentIntensity;
+    private bool isRaining;
+    private double lightningTimer;
+    private double nextLightningTime;
+    private Rectangle? lightningFlash;
 
     /// <summary>
-    /// Gets or sets whether weather effects are enabled.
+    /// Gets or sets a value indicating whether gets or sets whether weather effects are enabled.
     /// </summary>
     public bool IsEnabled { get; set; } = true;
 
     public WeatherEffects(Canvas canvas)
     {
-        _canvas = canvas;
-        _rainDrops = new List<RainDrop>();
-        _random = new Random();
-        _currentIntensity = 0;
-        _isRaining = false;
-        _lightningTimer = 0;
-        _nextLightningTime = _random.NextDouble() * InitialLightningIntervalRangeSeconds + InitialLightningIntervalMinSeconds; // 5-15 seconds
+        this.canvas = canvas;
+        rainDrops = new List<RainDrop>();
+        random = new Random();
+        currentIntensity = 0;
+        isRaining = false;
+        lightningTimer = 0;
+        nextLightningTime = (random.NextDouble() * InitialLightningIntervalRangeSeconds) + InitialLightningIntervalMinSeconds; // 5-15 seconds
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class WeatherEffects
     {
         if (!IsEnabled)
         {
-            if (_isRaining)
+            if (isRaining)
             {
                 StopRain();
             }
@@ -82,19 +82,19 @@ public class WeatherEffects
             return;
         }
 
-        _currentIntensity = weatherIntensity;
+        currentIntensity = weatherIntensity;
         bool shouldRain = weatherIntensity > RainIntensityThreshold;
 
-        if (shouldRain && !_isRaining)
+        if (shouldRain && !isRaining)
         {
             StartRain();
         }
-        else if (!shouldRain && _isRaining)
+        else if (!shouldRain && isRaining)
         {
             StopRain();
         }
 
-        if (_isRaining)
+        if (isRaining)
         {
             UpdateRain(deltaTime);
             UpdateLightning(deltaTime, weatherIntensity);
@@ -106,7 +106,7 @@ public class WeatherEffects
     /// </summary>
     private void StartRain()
     {
-        _isRaining = true;
+        isRaining = true;
         SpawnInitialRainDrops();
     }
 
@@ -115,7 +115,7 @@ public class WeatherEffects
     /// </summary>
     private void StopRain()
     {
-        _isRaining = false;
+        isRaining = false;
         ClearAllRainDrops();
     }
 
@@ -124,7 +124,7 @@ public class WeatherEffects
     /// </summary>
     private void SpawnInitialRainDrops()
     {
-        int dropCount = (int)(MaxRainDrops * _currentIntensity);
+        int dropCount = (int)(MaxRainDrops * currentIntensity);
         for (int i = 0; i < dropCount; i++)
         {
             SpawnRainDrop(randomizeY: true);
@@ -136,10 +136,10 @@ public class WeatherEffects
     /// </summary>
     private void SpawnRainDrop(bool randomizeY = false)
     {
-        double x = _random.NextDouble() * _canvas.ActualWidth;
-        double y = randomizeY ? _random.NextDouble() * _canvas.ActualHeight : RainSpawnStartYOffset;
-        double speed = RainDropMinSpeed + _random.NextDouble() * (RainDropMaxSpeed - RainDropMinSpeed);
-        double length = RainDropMinLength + _random.NextDouble() * (RainDropMaxLength - RainDropMinLength);
+        double x = random.NextDouble() * canvas.ActualWidth;
+        double y = randomizeY ? random.NextDouble() * canvas.ActualHeight : RainSpawnStartYOffset;
+        double speed = RainDropMinSpeed + (random.NextDouble() * (RainDropMaxSpeed - RainDropMinSpeed));
+        double length = RainDropMinLength + (random.NextDouble() * (RainDropMaxLength - RainDropMinLength));
 
         var line = new Line
         {
@@ -155,9 +155,9 @@ public class WeatherEffects
 
         Canvas.SetLeft(line, x);
         Canvas.SetTop(line, y);
-        _canvas.Children.Add(line);
+        canvas.Children.Add(line);
 
-        _rainDrops.Add(new RainDrop
+        rainDrops.Add(new RainDrop
         {
             Visual = line,
             Speed = speed,
@@ -172,21 +172,21 @@ public class WeatherEffects
     private void UpdateRain(double deltaTime)
     {
         // Adjust number of drops based on intensity
-        int targetDropCount = (int)(MaxRainDrops * _currentIntensity);
+        int targetDropCount = (int)(MaxRainDrops * currentIntensity);
 
         // Spawn more drops if needed
-        while (_rainDrops.Count < targetDropCount)
+        while (rainDrops.Count < targetDropCount)
         {
             SpawnRainDrop();
         }
 
         // Update existing drops (iterate backwards so we can remove in-place)
         double driftStep = Math.Sin(RainAngleRadians) * RainDriftSpeedMultiplier;
-        double offscreenY = _canvas.ActualHeight + RainOffscreenBottomPadding;
+        double offscreenY = canvas.ActualHeight + RainOffscreenBottomPadding;
 
-        for (int i = _rainDrops.Count - 1; i >= 0; i--)
+        for (int i = rainDrops.Count - 1; i >= 0; i--)
         {
-            var drop = _rainDrops[i];
+            var drop = rainDrops[i];
 
             // Move the drop
             drop.Y += drop.Speed * deltaTime;
@@ -198,8 +198,8 @@ public class WeatherEffects
             // Remove off-screen drops
             if (drop.Y > offscreenY)
             {
-                _canvas.Children.Remove(drop.Visual);
-                _rainDrops.RemoveAt(i);
+                canvas.Children.Remove(drop.Visual);
+                rainDrops.RemoveAt(i);
             }
         }
     }
@@ -222,23 +222,23 @@ public class WeatherEffects
             return;
         }
 
-        _lightningTimer += deltaTime;
+        lightningTimer += deltaTime;
 
         // Flash lightning
-        if (_lightningTimer >= _nextLightningTime)
+        if (lightningTimer >= nextLightningTime)
         {
             ShowLightningFlash();
-            _lightningTimer = 0;
-            _nextLightningTime = _random.NextDouble() * LightningIntervalRangeSeconds + LightningIntervalMinSeconds; // 2-10 seconds
+            lightningTimer = 0;
+            nextLightningTime = (random.NextDouble() * LightningIntervalRangeSeconds) + LightningIntervalMinSeconds; // 2-10 seconds
         }
 
-        if (_lightningFlash != null && _lightningFlash.Opacity > 0)
+        if (lightningFlash != null && lightningFlash.Opacity > 0)
         {
-            _lightningFlash.Opacity -= deltaTime * LightningFlashFadeRate; // Fast fade
-            if (_lightningFlash.Opacity <= 0)
+            lightningFlash.Opacity -= deltaTime * LightningFlashFadeRate; // Fast fade
+            if (lightningFlash.Opacity <= 0)
             {
-                _canvas.Children.Remove(_lightningFlash);
-                _lightningFlash = null;
+                canvas.Children.Remove(lightningFlash);
+                lightningFlash = null;
             }
         }
     }
@@ -248,24 +248,24 @@ public class WeatherEffects
     /// </summary>
     private void ShowLightningFlash()
     {
-        if (_lightningFlash != null)
+        if (lightningFlash != null)
         {
-            _canvas.Children.Remove(_lightningFlash);
+            canvas.Children.Remove(lightningFlash);
         }
 
-        _lightningFlash = new Rectangle
+        lightningFlash = new Rectangle
         {
-            Width = _canvas.ActualWidth,
-            Height = _canvas.ActualHeight,
+            Width = canvas.ActualWidth,
+            Height = canvas.ActualHeight,
             Fill = LightningColor,
             Opacity = LightningFlashInitialOpacity
         };
 
-        Canvas.SetLeft(_lightningFlash, 0);
-        Canvas.SetTop(_lightningFlash, 0);
-        Panel.SetZIndex(_lightningFlash, LightningFlashZIndex); // On top of everything
+        Canvas.SetLeft(lightningFlash, 0);
+        Canvas.SetTop(lightningFlash, 0);
+        Panel.SetZIndex(lightningFlash, LightningFlashZIndex); // On top of everything
 
-        _canvas.Children.Add(_lightningFlash);
+        canvas.Children.Add(lightningFlash);
     }
 
     /// <summary>
@@ -273,16 +273,16 @@ public class WeatherEffects
     /// </summary>
     private void ClearAllRainDrops()
     {
-        foreach (var drop in _rainDrops)
+        foreach (var drop in rainDrops)
         {
-            _canvas.Children.Remove(drop.Visual);
+            canvas.Children.Remove(drop.Visual);
         }
-        _rainDrops.Clear();
+        rainDrops.Clear();
 
-        if (_lightningFlash != null)
+        if (lightningFlash != null)
         {
-            _canvas.Children.Remove(_lightningFlash);
-            _lightningFlash = null;
+            canvas.Children.Remove(lightningFlash);
+            lightningFlash = null;
         }
     }
 
@@ -300,8 +300,11 @@ public class WeatherEffects
     private class RainDrop
     {
         public Line Visual { get; set; } = null!;
+
         public double Speed { get; set; }
+
         public double X { get; set; }
+
         public double Y { get; set; }
     }
 }

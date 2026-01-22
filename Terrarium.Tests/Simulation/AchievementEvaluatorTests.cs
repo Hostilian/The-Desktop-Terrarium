@@ -1,10 +1,10 @@
-
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Simulation.Achievements;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation;
+    using Terrarium.Logic.Simulation.Achievements;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive tests for AchievementEvaluator to achieve 100% coverage.
     /// </summary>
@@ -21,8 +21,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 1,
                 currentCarnivores: 0,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "first_birth"));
@@ -39,8 +38,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 5,
                 currentCarnivores: 0,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "population_10"));
@@ -57,8 +55,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 10,
                 currentCarnivores: 5,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "population_25"));
@@ -75,8 +72,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 20,
                 currentHerbivores: 20,
                 currentCarnivores: 10,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "population_50"));
@@ -93,8 +89,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 5,
                 currentCarnivores: 0,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "births_10"));
@@ -111,8 +106,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 5,
                 currentCarnivores: 0,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "births_50"));
@@ -129,8 +123,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 10,
                 currentCarnivores: 5,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "births_100"));
@@ -147,8 +140,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 3,
                 currentCarnivores: 2,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "survivor"));
@@ -165,8 +157,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 0,
                 currentHerbivores: 5,
                 currentCarnivores: 5,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
             Assert.IsFalse(achievements.Any(a => a.Id == "survivor"));
@@ -183,8 +174,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 5,
                 currentHerbivores: 2,
                 currentCarnivores: 0,
-                simulationTime: 300
-            );
+                simulationTime: 300);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "time_5min"));
@@ -201,8 +191,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 5,
                 currentCarnivores: 2,
-                simulationTime: 1800
-            );
+                simulationTime: 1800);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "time_30min"));
@@ -219,8 +208,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 15,
                 currentHerbivores: 10,
                 currentCarnivores: 5,
-                simulationTime: 3600
-            );
+                simulationTime: 3600);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "time_1hour"));
@@ -237,8 +225,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 20,
                 currentHerbivores: 8,
                 currentCarnivores: 2,
-                simulationTime: 100
-            );
+                simulationTime: 100);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "plants_20"));
@@ -255,8 +242,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 40,
                 currentHerbivores: 8,
                 currentCarnivores: 2,
-                simulationTime: 200
-            );
+                simulationTime: 200);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "plants_40"));
@@ -273,8 +259,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 7,
                 currentCarnivores: 3,
-                simulationTime: 100
-            );
+                simulationTime: 100);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "balance"));
@@ -291,8 +276,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 6,
                 currentCarnivores: 3,
-                simulationTime: 50
-            );
+                simulationTime: 50);
 
             // Assert
             Assert.IsFalse(achievements.Any(a => a.Id == "balance"));
@@ -309,8 +293,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 5,
                 currentCarnivores: 5,
-                simulationTime: 100
-            );
+                simulationTime: 100);
 
             // Assert
             Assert.IsFalse(achievements.Any(a => a.Id == "balance"));
@@ -327,8 +310,7 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 10,
                 currentHerbivores: 5,
                 currentCarnivores: 5,
-                simulationTime: 200
-            );
+                simulationTime: 200);
 
             // Assert
             Assert.IsTrue(achievements.Any(a => a.Id == "apex_predator"));
@@ -345,11 +327,10 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 0,
                 currentHerbivores: 0,
                 currentCarnivores: 0,
-                simulationTime: 0
-            );
+                simulationTime: 0);
 
             // Assert
-            Assert.AreEqual(0, achievements.Count);
+            Assert.IsEmpty(achievements);
         }
 
         [TestMethod]
@@ -363,16 +344,10 @@ namespace Terrarium.Tests.Simulation
                 currentPlants: 40,
                 currentHerbivores: 7,
                 currentCarnivores: 5,
-                simulationTime: 3600
-            );
+                simulationTime: 3600);
 
             // Assert - should have many achievements
-            Assert.IsTrue(achievements.Count >= 10);
+            Assert.IsGreaterThanOrEqualTo(10, achievements.Count);
         }
     }
 }
-
-
-
-
-

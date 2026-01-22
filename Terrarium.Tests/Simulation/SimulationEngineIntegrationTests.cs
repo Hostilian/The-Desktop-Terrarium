@@ -1,8 +1,8 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Simulation;
+namespace Terrarium.Tests.Simulation;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.Simulation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Terrarium.Logic.Simulation;
 
 /// <summary>
 /// Additional tests to increase code coverage to 70%+
@@ -11,64 +11,64 @@ namespace Terrarium.Tests.Simulation;
 [TestClass]
 public class SimulationEngineIntegrationTests
 {
-    private SimulationEngine? _engine;
+    private SimulationEngine? engine;
 
     [TestInitialize]
     public void Setup()
     {
-        _engine = new SimulationEngine(800, 600, TerrariumType.Forest);
+        engine = new SimulationEngine(800, 600, TerrariumType.Forest);
     }
 
     [TestMethod]
     public void Update_WithPausedEngine_DoesNotUpdateEntities()
     {
-        _engine!.Initialize();
-        int initialPlantCount = _engine.World.Plants.Count;
+        engine!.Initialize();
+        int initialPlantCount = engine.World.Plants.Count;
 
-        _engine.Pause();
-        _engine.Update(1.0);
+        engine.Pause();
+        engine.Update(1.0);
 
         // Entities should not have aged
-        Assert.HasCount(initialPlantCount, _engine.World.Plants);
+        Assert.HasCount(initialPlantCount, engine.World.Plants);
     }
 
     [TestMethod]
     public void SetSimulationSpeed_UpdatesEngineSpeed()
     {
-        _engine!.SetSimulationSpeed(2.0);
-        
+        engine!.SetSimulationSpeed(2.0);
+
         // Speed should be applied (can't directly test but verify no crash)
-        Assert.IsNotNull(_engine);
+        Assert.IsNotNull(engine);
     }
 
     [TestMethod]
     public void TogglePause_SwitchesPauseState()
     {
-        bool initialState = _engine!.IsPaused;
+        bool initialState = engine!.IsPaused;
 
-        _engine.TogglePause();
+        engine.TogglePause();
 
-        Assert.AreNotEqual(initialState, _engine.IsPaused);
+        Assert.AreNotEqual(initialState, engine.IsPaused);
     }
 
     [TestMethod]
     public void Initialize_CreatesEntities()
     {
-        _engine!.Initialize();
+        engine!.Initialize();
 
-        Assert.IsNotEmpty(_engine.World.Plants);
-        Assert.IsNotEmpty(_engine.World.Herbivores);
+        Assert.IsNotEmpty(engine.World.Plants);
+        Assert.IsNotEmpty(engine.World.Herbivores);
     }
 
     [TestMethod]
     public void Update_MultipleTimes_EntitiesAge()
     {
-        _engine!.Initialize();
-        var firstPlant = _engine.World.Plants.FirstOrDefault();
+        engine!.Initialize();
+        var firstPlant = engine.World.Plants.FirstOrDefault();
         double initialAge = firstPlant?.Age ?? 0;
 
-        _engine.Update(1.0);
-        _engine.Update(1.0);
+        engine.Update(1.0);
+        engine.Update(1.0);
 
         double finalAge = firstPlant?.Age ?? 0;
 #pragma warning disable MSTEST0037 // Use 'Assert.IsGreaterThan' instead of 'Assert.IsTrue' - plant reference may become stale, Assert.IsTrue is more appropriate here
@@ -76,8 +76,3 @@ public class SimulationEngineIntegrationTests
 #pragma warning restore MSTEST0037
     }
 }
-
-
-
-
-

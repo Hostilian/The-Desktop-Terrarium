@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Unit tests for StatisticsTracker.
     /// </summary>
@@ -191,8 +191,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

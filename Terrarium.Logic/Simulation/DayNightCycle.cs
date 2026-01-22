@@ -23,17 +23,17 @@ namespace Terrarium.Logic.Simulation
         private const double NightHungerRateMultiplier = 0.5;
         private const double DawnDuskSpeedMultiplier = 0.7;
 
-        private double _currentTime;
+        private double currentTime;
 
         /// <summary>
-        /// Current time in the day/night cycle (0.0 to TotalCycleDuration).
+        /// Gets current time in the day/night cycle (0.0 to TotalCycleDuration).
         /// </summary>
-        public double CurrentTime => _currentTime;
+        public double CurrentTime => currentTime;
 
         public DayPhase CurrentPhase =>
-            _currentTime < DawnDuration ? DayPhase.Dawn :
-            _currentTime < DuskStartTime - DuskDuration ? DayPhase.Day :
-            _currentTime < DuskStartTime ? DayPhase.Dusk : DayPhase.Night;
+            currentTime < DawnDuration ? DayPhase.Dawn :
+            currentTime < DuskStartTime - DuskDuration ? DayPhase.Day :
+            currentTime < DuskStartTime ? DayPhase.Dusk : DayPhase.Night;
 
         public bool IsDay => CurrentPhase != DayPhase.Night;
 
@@ -41,9 +41,9 @@ namespace Terrarium.Logic.Simulation
 
         public double LightLevel => CurrentPhase switch
         {
-            DayPhase.Dawn => _currentTime / DawnDuration,
+            DayPhase.Dawn => currentTime / DawnDuration,
             DayPhase.Day => 1.0,
-            DayPhase.Dusk => 1.0 - ((_currentTime - (DuskStartTime - DuskDuration)) / DuskDuration),
+            DayPhase.Dusk => 1.0 - ((currentTime - (DuskStartTime - DuskDuration)) / DuskDuration),
             DayPhase.Night => 0.2,
             _ => 1.0
         };
@@ -62,20 +62,20 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets the normalized time of day (0.0 = midnight, 0.5 = noon).
         /// </summary>
-        public double NormalizedTime => _currentTime / TotalCycleDuration;
+        public double NormalizedTime => currentTime / TotalCycleDuration;
 
-        public DayNightCycle() => _currentTime = 0;
+        public DayNightCycle() => currentTime = 0;
 
         public void Update(double deltaTime)
         {
-            _currentTime += deltaTime;
-            if (_currentTime >= TotalCycleDuration)
-                _currentTime -= TotalCycleDuration;
+            currentTime += deltaTime;
+            if (currentTime >= TotalCycleDuration)
+                currentTime -= TotalCycleDuration;
         }
 
-        public void SetTime(double time) => _currentTime = time % TotalCycleDuration;
+        public void SetTime(double time) => currentTime = time % TotalCycleDuration;
 
-        public void SetPhase(DayPhase phase) => _currentTime = phase switch
+        public void SetPhase(DayPhase phase) => currentTime = phase switch
         {
             DayPhase.Dawn => DawnStartTime,
             DayPhase.Day => DawnDuration,

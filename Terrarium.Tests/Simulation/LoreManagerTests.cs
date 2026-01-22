@@ -1,12 +1,12 @@
-
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using System;
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive tests for LoreManager to achieve 100% coverage.
     /// </summary>
@@ -45,7 +45,7 @@ namespace Terrarium.Tests.Simulation
             loreManager.RecordEvent("Test event", LoreEventType.Battle, LoreImportance.Major);
 
             // Assert
-            Assert.AreEqual(initialCount + 1, loreManager.Chronicle.Count);
+            Assert.HasCount(initialCount + 1, loreManager.Chronicle);
             Assert.IsTrue(loreManager.Chronicle.Any(e => e.Description == "Test event"));
         }
 
@@ -62,7 +62,7 @@ namespace Terrarium.Tests.Simulation
             }
 
             // Assert
-            Assert.IsTrue(loreManager.Chronicle.Count <= 100);
+            Assert.IsLessThanOrEqualTo(100, loreManager.Chronicle.Count);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Terrarium.Tests.Simulation
             var loreManager = new LoreManager();
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => 
+            var exception = Assert.Throws<ArgumentNullException>(() =>
                 loreManager.GenerateEventDescription(null!));
             Assert.IsNotNull(exception);
         }
@@ -114,7 +114,7 @@ namespace Terrarium.Tests.Simulation
             string description = loreManager.GenerateEventDescription(factionManager);
 
             // Assert
-            Assert.IsTrue(description.Contains("Peace reigns"));
+            Assert.Contains("Peace reigns", description);
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace Terrarium.Tests.Simulation
             var loreManager = new LoreManager();
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => 
+            var exception = Assert.Throws<ArgumentNullException>(() =>
                 loreManager.TryCreateNamedCharacter(null!));
             Assert.IsNotNull(exception);
         }
@@ -154,7 +154,7 @@ namespace Terrarium.Tests.Simulation
             // Arrange
             var random = new Random(42);
             var loreManager = new LoreManager(random);
-            
+
             // Force create a named character
             for (int i = 0; i < 200; i++)
             {
@@ -189,7 +189,7 @@ namespace Terrarium.Tests.Simulation
             // Arrange
             var random = new Random(42);
             var loreManager = new LoreManager(random);
-            
+
             // Create named character
             for (int i = 0; i < 200; i++)
             {
@@ -205,7 +205,7 @@ namespace Terrarium.Tests.Simulation
             string lore = loreManager.GetEntityLore(creature2);
 
             // Assert
-            Assert.IsTrue(lore.Contains(namedChar.Name));
+            Assert.Contains(namedChar.Name, lore);
         }
 
         [TestMethod]
@@ -265,8 +265,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

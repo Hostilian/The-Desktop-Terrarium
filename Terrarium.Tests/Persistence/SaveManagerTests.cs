@@ -1,12 +1,12 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using Terrarium.Logic.Entities;
-using Terrarium.Logic.Persistence;
-using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Persistence
 {
+    using System.IO;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Persistence;
+    using Terrarium.Logic.Simulation;
+
     [TestClass]
     public class SaveManagerTests
     {
@@ -349,7 +349,7 @@ namespace Terrarium.Tests.Persistence
                 // Manually write a save with invalid dimensions
                 string invalidJson = "{" +
                     "\"SchemaVersion\":1," +
-                    "\"Width\":0," +  // Invalid: zero width
+                    "\"Width\":0," + // Invalid: zero width
                     "\"Height\":200," +
                     "\"Plants\":[]," +
                     "\"Herbivores\":[]," +
@@ -376,8 +376,3 @@ namespace Terrarium.Tests.Persistence
         }
     }
 }
-
-
-
-
-

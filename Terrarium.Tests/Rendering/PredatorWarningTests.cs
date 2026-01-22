@@ -1,12 +1,12 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace Terrarium.Tests.Rendering;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.Rendering;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
 public class PredatorWarningTests
 {
-    private const double _WarningRadius = 100.0;
+    private const double WarningRadius = 100.0;
 
     [TestMethod]
     public void PredatorNearby_WithinRadius_ReturnsTrue()
@@ -15,7 +15,7 @@ public class PredatorWarningTests
         double carnivoreX = 150, carnivoreY = 100;
 
         double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
-        bool inDanger = distance < _WarningRadius;
+        bool inDanger = distance < WarningRadius;
 
         Assert.IsTrue(inDanger);
     }
@@ -27,7 +27,7 @@ public class PredatorWarningTests
         double carnivoreX = 300, carnivoreY = 100;
 
         double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
-        bool inDanger = distance < _WarningRadius;
+        bool inDanger = distance < WarningRadius;
 
         Assert.IsFalse(inDanger);
     }
@@ -36,10 +36,10 @@ public class PredatorWarningTests
     public void PredatorNearby_ExactRadius_ReturnsFalse()
     {
         double herbivoreX = 0, herbivoreY = 0;
-        double carnivoreX = _WarningRadius, carnivoreY = 0;
+        double carnivoreX = WarningRadius, carnivoreY = 0;
 
         double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
-        bool inDanger = distance < _WarningRadius;
+        bool inDanger = distance < WarningRadius;
 
         Assert.IsFalse(inDanger);
     }
@@ -54,7 +54,7 @@ public class PredatorWarningTests
         double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
         // sqrt(70^2 + 70^2) = sqrt(9800) ≈ 98.99
 
-        Assert.IsLessThan(_WarningRadius, distance, $"Diagonal distance {distance:F2} should be within {_WarningRadius}");
+        Assert.IsLessThan(WarningRadius, distance, $"Diagonal distance {distance:F2} should be within {WarningRadius}");
     }
 
     [TestMethod]
@@ -87,8 +87,3 @@ public class PredatorWarningTests
         return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
     }
 }
-
-
-
-
-

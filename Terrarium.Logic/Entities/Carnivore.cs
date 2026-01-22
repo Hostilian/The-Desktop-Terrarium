@@ -1,7 +1,7 @@
-using Terrarium.Logic.Simulation;
-
 namespace Terrarium.Logic.Entities
 {
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Represents a carnivore creature that hunts herbivores.
     /// </summary>
@@ -14,7 +14,7 @@ namespace Terrarium.Logic.Entities
         private const double DefaultPreyDetectionRange = 300.0;
 
         /// <summary>
-        /// Type name for the carnivore (e.g., "Wolf", "Fox").
+        /// Gets or sets type name for the carnivore (e.g., "Wolf", "Fox").
         /// </summary>
         public new string Type { get; set; }
 

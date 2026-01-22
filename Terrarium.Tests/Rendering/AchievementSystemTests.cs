@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using Terrarium.Logic.Simulation.Achievements;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Rendering
 {
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation.Achievements;
+
     [TestClass]
     public class AchievementSystemTests
     {
@@ -81,8 +81,3 @@ namespace Terrarium.Tests.Rendering
         }
     }
 }
-
-
-
-
-

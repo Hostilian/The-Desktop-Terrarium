@@ -1,0 +1,6 @@
+@echo off
+echo Running dotnet format whitespace...
+dotnet format whitespace src/DesktopTerrarium.sln > whitespace_log.txt 2>&1
+echo Running git status...
+git status > git_status_whitespace_log.txt 2>&1
+echo Done.

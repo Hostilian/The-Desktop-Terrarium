@@ -1,9 +1,9 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-
-namespace Terrarium.Desktop;
 
 public partial class MainWindow
 {
@@ -149,8 +149,7 @@ public partial class MainWindow
                $"Could not find 'python' executable.\n\nPlease ensure Python 3.8+ is installed and added to your system PATH.\n\nError: {ex.Message}",
                "Python Missing",
                System.Windows.MessageBoxButton.OK,
-               System.Windows.MessageBoxImage.Error
-           );
+               System.Windows.MessageBoxImage.Error);
         }
         catch (System.ComponentModel.Win32Exception ex)
         {
@@ -159,8 +158,7 @@ public partial class MainWindow
                 $"Failed to launch {displayName} simulation.\n\nError: {ex.Message}",
                 "Launch Error",
                 System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Error
-            );
+                System.Windows.MessageBoxImage.Error);
         }
         catch (InvalidOperationException ex)
         {
@@ -169,8 +167,7 @@ public partial class MainWindow
                 $"Failed to launch {displayName} simulation.\n\nError: {ex.Message}",
                 "Launch Error",
                 System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Error
-            );
+                System.Windows.MessageBoxImage.Error);
         }
     }
 }

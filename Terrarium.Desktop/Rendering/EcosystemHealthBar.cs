@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,30 +7,28 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Shows a visual indicator of ecosystem health and balance.
 /// </summary>
 public class EcosystemHealthBar
 {
-    private readonly Canvas _canvas;
-    private Border? _container;
-    private Rectangle? _healthBar;
-    private TextBlock? _statusText;
-    private TextBlock? _scoreText;
+    private readonly Canvas canvas;
+    private Border? container;
+    private Rectangle? healthBar;
+    private TextBlock? statusText;
+    private TextBlock? scoreText;
 
-    private LinearGradientBrush? _healthGradient;
-    private GradientStop? _healthGradientLightStop;
-    private GradientStop? _healthGradientDarkStop;
-    private SolidColorBrush? _scoreForegroundBrush;
-    private SolidColorBrush? _statusForegroundBrush;
+    private LinearGradientBrush? healthGradient;
+    private GradientStop? healthGradientLightStop;
+    private GradientStop? healthGradientDarkStop;
+    private SolidColorBrush? scoreForegroundBrush;
+    private SolidColorBrush? statusForegroundBrush;
 
     private const double BarMaxWidth = 180;
 
-    private double _currentHealth;
-    private double _displayHealth;
-    private double _pulsePhase;
+    private double currentHealth;
+    private double displayHealth;
+    private double pulsePhase;
 
     private const double AnimationSpeed = 3.0;
 
@@ -38,15 +38,15 @@ public class EcosystemHealthBar
 
     public EcosystemHealthBar(Canvas canvas)
     {
-        _canvas = canvas;
-        _currentHealth = 100;
-        _displayHealth = 100;
+        this.canvas = canvas;
+        currentHealth = 100;
+        displayHealth = 100;
         CreateUI();
     }
 
     private void CreateUI()
     {
-        _container = new Border
+        container = new Border
         {
             Width = 200,
             Background = CreateFrozenBrush(Color.FromArgb(200, 20, 30, 40)),
@@ -72,16 +72,16 @@ public class EcosystemHealthBar
         Grid.SetColumn(title, 0);
         titleRow.Children.Add(title);
 
-        _scoreForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
-        _scoreText = new TextBlock
+        scoreForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
+        scoreText = new TextBlock
         {
             Text = "100%",
             FontSize = 11,
             FontWeight = FontWeights.Bold,
-            Foreground = _scoreForegroundBrush
+            Foreground = scoreForegroundBrush
         };
-        Grid.SetColumn(_scoreText, 1);
-        titleRow.Children.Add(_scoreText);
+        Grid.SetColumn(scoreText, 1);
+        titleRow.Children.Add(scoreText);
 
         stack.Children.Add(titleRow);
 
@@ -93,51 +93,51 @@ public class EcosystemHealthBar
             Margin = new Thickness(0, 6, 0, 6)
         };
 
-        _healthGradientLightStop = new GradientStop(Color.FromRgb(140, 255, 190), 0);
-        _healthGradientDarkStop = new GradientStop(Color.FromRgb(100, 255, 150), 1);
-        _healthGradient = new LinearGradientBrush
+        healthGradientLightStop = new GradientStop(Color.FromRgb(140, 255, 190), 0);
+        healthGradientDarkStop = new GradientStop(Color.FromRgb(100, 255, 150), 1);
+        healthGradient = new LinearGradientBrush
         {
             StartPoint = new Point(0, 0),
             EndPoint = new Point(0, 1),
             GradientStops = new GradientStopCollection
             {
-                _healthGradientLightStop,
-                _healthGradientDarkStop
+                healthGradientLightStop,
+                healthGradientDarkStop
             }
         };
 
-        _healthBar = new Rectangle
+        healthBar = new Rectangle
         {
             Height = 12,
             RadiusX = 6,
             RadiusY = 6,
-            Fill = _healthGradient
+            Fill = healthGradient
         };
 
         var barContainer = new Grid();
         barContainer.Children.Add(barBg);
-        barContainer.Children.Add(_healthBar);
+        barContainer.Children.Add(healthBar);
         stack.Children.Add(barContainer);
 
         // Status text
-        _statusForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
-        _statusText = new TextBlock
+        statusForegroundBrush = new SolidColorBrush(Color.FromRgb(100, 255, 150));
+        statusText = new TextBlock
         {
             Text = "✨ Thriving",
             FontSize = 10,
-            Foreground = _statusForegroundBrush,
+            Foreground = statusForegroundBrush,
             TextAlignment = TextAlignment.Center
         };
-        stack.Children.Add(_statusText);
+        stack.Children.Add(statusText);
 
-        _container.Child = stack;
+        container.Child = stack;
 
-        Canvas.SetLeft(_container, 10);
-        Canvas.SetBottom(_container, 80);
-        Canvas.SetTop(_container, double.NaN);
-        Canvas.SetZIndex(_container, 800);
+        Canvas.SetLeft(container, 10);
+        Canvas.SetBottom(container, 80);
+        Canvas.SetTop(container, double.NaN);
+        Canvas.SetZIndex(container, 800);
 
-        _canvas.Children.Add(_container);
+        canvas.Children.Add(container);
     }
 
     /// <summary>
@@ -147,65 +147,65 @@ public class EcosystemHealthBar
     {
         if (!IsEnabled)
         {
-            if (_container != null)
+            if (container != null)
             {
-                _container.Visibility = Visibility.Collapsed;
+                container.Visibility = Visibility.Collapsed;
             }
 
             return;
         }
 
-        if (_container != null)
+        if (container != null)
         {
-            _container.Visibility = Visibility.Visible;
+            container.Visibility = Visibility.Visible;
         }
 
         // Calculate health score based on ecosystem balance
-        _currentHealth = EcosystemHealthScorer.CalculateHealthPercent(plantCount, herbivoreCount, carnivoreCount);
+        currentHealth = EcosystemHealthScorer.CalculateHealthPercent(plantCount, herbivoreCount, carnivoreCount);
 
-        _displayHealth += (_currentHealth - _displayHealth) * AnimationSpeed * deltaTime;
-        _displayHealth = Math.Clamp(_displayHealth, 0, 100);
+        displayHealth += (currentHealth - displayHealth) * AnimationSpeed * deltaTime;
+        displayHealth = Math.Clamp(displayHealth, 0, 100);
 
-        _pulsePhase += deltaTime * 2;
+        pulsePhase += deltaTime * 2;
 
         UpdateVisuals();
     }
 
     private void UpdateVisuals()
     {
-        if (_healthBar == null || _scoreText == null || _statusText == null ||
-            _healthGradientLightStop == null || _healthGradientDarkStop == null ||
-            _scoreForegroundBrush == null || _statusForegroundBrush == null)
+        if (healthBar == null || scoreText == null || statusText == null ||
+            healthGradientLightStop == null || healthGradientDarkStop == null ||
+            scoreForegroundBrush == null || statusForegroundBrush == null)
         {
             return;
         }
 
-        _healthBar.Width = (_displayHealth / 100) * BarMaxWidth;
+        healthBar.Width = (displayHealth / 100) * BarMaxWidth;
 
-        var color = GetHealthColor(_displayHealth);
+        var color = GetHealthColor(displayHealth);
         var lighterColor = Color.FromRgb(
             (byte)Math.Min(255, color.R + 40),
             (byte)Math.Min(255, color.G + 40),
             (byte)Math.Min(255, color.B + 40));
-        _healthGradientLightStop.Color = lighterColor;
-        _healthGradientDarkStop.Color = color;
+        healthGradientLightStop.Color = lighterColor;
+        healthGradientDarkStop.Color = color;
 
-        _scoreText.Text = $"{_displayHealth:F0}%";
-        _scoreForegroundBrush.Color = color;
+        scoreText.Text = $"{displayHealth:F0}%";
+        scoreForegroundBrush.Color = color;
 
-        var (status, statusColor) = GetStatus(_displayHealth);
-        _statusText.Text = status;
-        _statusForegroundBrush.Color = statusColor;
+        var (status, statusColor) = GetStatus(displayHealth);
+        statusText.Text = status;
+        statusForegroundBrush.Color = statusColor;
 
         // Pulse effect for critical health
-        if (_displayHealth < 25 && _container != null)
+        if (displayHealth < 25 && container != null)
         {
-            double pulse = 0.7 + 0.3 * Math.Sin(_pulsePhase * 3);
-            _container.Opacity = pulse;
+            double pulse = 0.7 + (0.3 * Math.Sin(pulsePhase * 3));
+            container.Opacity = pulse;
         }
-        else if (_container != null)
+        else if (container != null)
         {
-            _container.Opacity = 1.0;
+            container.Opacity = 1.0;
         }
     }
 

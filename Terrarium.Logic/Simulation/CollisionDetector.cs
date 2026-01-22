@@ -1,7 +1,7 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Handles collision detection between entities.
     /// Separates collision logic from entity classes.
@@ -28,7 +28,7 @@ namespace Terrarium.Logic.Simulation
 
         private double GetCollisionRadius(WorldEntity entity) => entity switch
         {
-            Plant plant => PlantCollisionRadius + plant.Size * PlantSizeRadiusMultiplier,
+            Plant plant => PlantCollisionRadius + (plant.Size * PlantSizeRadiusMultiplier),
             Creature => CreatureCollisionRadius,
             _ => DefaultCollisionRadius
         };
@@ -49,7 +49,7 @@ namespace Terrarium.Logic.Simulation
         {
             double dx = creature2.X - creature1.X;
             double dy = creature2.Y - creature1.Y;
-            double distance = Math.Sqrt(dx * dx + dy * dy);
+            double distance = Math.Sqrt((dx * dx) + (dy * dy));
 
             if (distance >= CreatureCollisionRadius * 2) return;
 

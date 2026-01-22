@@ -1,8 +1,8 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Desktop.Commands;
+namespace Terrarium.Tests.Commands;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.Commands;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Terrarium.Desktop.Commands;
 
 /// <summary>
 /// Tests for RelayCommand to ensure command pattern works correctly.
@@ -77,8 +77,3 @@ public class RelayCommandTests
         Assert.IsFalse(command.CanExecute(-1));
     }
 }
-
-
-
-
-

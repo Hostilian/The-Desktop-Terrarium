@@ -1,8 +1,8 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Rendering
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class CreatureMoodTests
     {
@@ -88,8 +88,3 @@ namespace Terrarium.Tests.Rendering
         }
     }
 }
-
-
-
-
-

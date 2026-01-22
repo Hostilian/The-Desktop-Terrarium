@@ -1,0 +1,52 @@
+Unable to fix SA1203. No associated code fix found.
+Unable to fix CA1021. No associated code fix found.
+Unable to fix SA1204. No associated code fix found.
+Unable to fix SA1316. Code fix SA1316CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1316. Code fix SA1316CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1316. Code fix SA1316CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix CA1030. No associated code fix found.
+Unable to fix SA1402. Code fix SA1402CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1402. Code fix SA1402CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1402. Code fix SA1402CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix CA1003. No associated code fix found.
+Unable to fix SA1602. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1602. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1602. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SCS0005. No associated code fix found.
+Unable to fix SA1202. No associated code fix found.
+Unable to fix RS0026. No associated code fix found.
+Unable to fix SA1214. No associated code fix found.
+Unable to fix CA1024. No associated code fix found.
+Unable to fix SA1649. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1649. Code fix SA1649CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1649. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1649. Code fix SA1649CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1649. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1649. Code fix SA1649CodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1611. No associated code fix found.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix CA1062. No associated code fix found.
+Unable to fix SA1201. No associated code fix found.
+Unable to fix SA1601. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1601. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1601. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix CS0103. Code fix RemoveClassCleanupBehaviorArgumentFixer didn't return a Fix All action.
+Unable to fix CA1063. No associated code fix found.
+Unable to fix RCS1046. No associated code fix found.
+Unable to fix CA1031. No associated code fix found.
+Unable to fix SA1117. No associated code fix found.
+Unable to fix SA1508. Code fix SA1508CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1508. Code fix SA1508CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1508. Code fix SA1508CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1505. Code fix SA1505CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1505. Code fix SA1505CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1505. Code fix SA1505CodeFixProvider didn't return a Fix All action.
+Unable to fix MSTEST0032. No associated code fix found.

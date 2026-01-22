@@ -1,10 +1,11 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Controls;
-using System.Windows;
-namespace Terrarium.Desktop.Rendering;
 
 /// <summary>
 /// Types of notifications.
@@ -26,9 +27,9 @@ public enum NotificationType
 /// </summary>
 public class NotificationManager
 {
-    private readonly Canvas _canvas;
-    private readonly Queue<NotificationItem> _pendingNotifications;
-    private readonly List<NotificationItem> _activeNotifications;
+    private readonly Canvas canvas;
+    private readonly Queue<NotificationItem> pendingNotifications;
+    private readonly List<NotificationItem> activeNotifications;
 
     private static readonly Brush NotificationBorderBrush = CreateFrozenBrush(Color.FromArgb(50, 255, 255, 255));
 
@@ -46,17 +47,19 @@ public class NotificationManager
     private const double NotificationHeight = 50;
     private const double NotificationMargin = 10;
     private const double SlideInDuration = 0.3;
+
     /// <summary>
-    /// Gets or sets whether notifications are enabled.
+    /// Gets or sets a value indicating whether gets or sets whether notifications are enabled.
     /// </summary>
     public bool IsEnabled { get; set; } = true;
 
     public NotificationManager(Canvas canvas)
     {
-        _canvas = canvas;
-        _pendingNotifications = new Queue<NotificationItem>();
-        _activeNotifications = new List<NotificationItem>();
+        this.canvas = canvas;
+        pendingNotifications = new Queue<NotificationItem>();
+        activeNotifications = new List<NotificationItem>();
     }
+
     public void Update(double deltaTime)
     {
         if (!IsEnabled)
@@ -64,14 +67,14 @@ public class NotificationManager
             return;
         }
 
-        for (int i = _activeNotifications.Count - 1; i >= 0; i--)
+        for (int i = activeNotifications.Count - 1; i >= 0; i--)
         {
-            var notification = _activeNotifications[i];
+            var notification = activeNotifications[i];
             notification.TimeRemaining -= deltaTime;
 
             if (notification.TimeRemaining <= 0)
             {
-                _activeNotifications.RemoveAt(i);
+                activeNotifications.RemoveAt(i);
             }
             else if (notification.TimeRemaining <= FadeOutDuration)
             {
@@ -84,9 +87,9 @@ public class NotificationManager
         }
 
         // Show pending notifications
-        while (_activeNotifications.Count < MaxActiveNotifications && _pendingNotifications.Count > 0)
+        while (activeNotifications.Count < MaxActiveNotifications && pendingNotifications.Count > 0)
         {
-            var notification = _pendingNotifications.Dequeue();
+            var notification = pendingNotifications.Dequeue();
             ShowNotification(notification);
         }
     }
@@ -96,16 +99,17 @@ public class NotificationManager
     /// </summary>
     public void ClearAll()
     {
-        foreach (var notification in _activeNotifications)
+        foreach (var notification in activeNotifications)
         {
             if (notification.Visual != null)
             {
-                _canvas.Children.Remove(notification.Visual);
+                canvas.Children.Remove(notification.Visual);
             }
         }
-        _activeNotifications.Clear();
-        _pendingNotifications.Clear();
+        activeNotifications.Clear();
+        pendingNotifications.Clear();
     }
+
     public void Notify(string message, NotificationType type)
     {
         if (!IsEnabled)
@@ -212,7 +216,7 @@ public class NotificationManager
             TimeRemaining = NotificationDuration
         };
 
-        _pendingNotifications.Enqueue(notification);
+        pendingNotifications.Enqueue(notification);
     }
 
     private void ShowNotification(NotificationItem notification)
@@ -251,16 +255,16 @@ public class NotificationManager
         border.Child = textBlock;
         notification.Visual = border;
 
-        double canvasWidth = _canvas.ActualWidth > 0 ? _canvas.ActualWidth : 1920;
+        double canvasWidth = canvas.ActualWidth > 0 ? canvas.ActualWidth : 1920;
         double targetX = canvasWidth - NotificationWidth - NotificationMargin;
-        double targetY = NotificationMargin + (_activeNotifications.Count * (NotificationHeight + NotificationMargin));
+        double targetY = NotificationMargin + (activeNotifications.Count * (NotificationHeight + NotificationMargin));
 
         Canvas.SetLeft(border, canvasWidth); // Start off-screen
         Canvas.SetTop(border, targetY);
         Canvas.SetZIndex(border, 1000); // On top of everything
 
-        _canvas.Children.Add(border);
-        _activeNotifications.Add(notification);
+        canvas.Children.Add(border);
+        activeNotifications.Add(notification);
 
         var animation = new DoubleAnimation
         {
@@ -293,16 +297,14 @@ public class NotificationManager
         return brush;
     }
 }
+
 public class NotificationItem
 {
     public string Message { get; set; } = string.Empty;
+
     public NotificationType Type { get; set; }
+
     public double TimeRemaining { get; set; }
+
     public Border? Visual { get; set; }
 }
-
-
-
-
-
-

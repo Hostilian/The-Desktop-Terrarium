@@ -1,7 +1,7 @@
-using Terrarium.Logic.Simulation;
-
 namespace Terrarium.Logic.Entities
 {
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Represents a herbivore creature that eats plants.
     /// </summary>
@@ -13,7 +13,7 @@ namespace Terrarium.Logic.Entities
         private const double DefaultPlantDetectionRange = 200.0;
 
         /// <summary>
-        /// Type name for the herbivore (e.g., "Sheep", "Rabbit").
+        /// Gets or sets type name for the herbivore (e.g., "Sheep", "Rabbit").
         /// </summary>
         public new string Type { get; set; }
 

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace Terrarium.Logic.Simulation.Achievements
 {
+    using System.Collections.Generic;
+
     public static class AchievementEvaluator
     {
         public const int TotalAchievements = 15;

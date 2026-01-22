@@ -1,27 +1,27 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Main simulation engine that orchestrates all game logic.
     /// Coordinates updates without becoming a "God Object" by delegating to specialized managers.
     /// </summary>
     public class SimulationEngine
     {
-        private readonly World _world;
-        private readonly MovementCalculator _movementCalculator;
-        private readonly CollisionDetector _collisionDetector;
-        private readonly FoodManager _foodManager;
-        private readonly DayNightCycle _dayNightCycle;
-        private readonly SeasonCycle _seasonCycle;
-        private readonly DiseaseManager _diseaseManager;
-        private readonly ReproductionManager _reproductionManager;
-        private readonly StatisticsTracker _statisticsTracker;
-        private readonly EventSystem _eventSystem;
-        private readonly FactionManager _factionManager;
-        private readonly LoreManager _loreManager;
+        private readonly World world;
+        private readonly MovementCalculator movementCalculator;
+        private readonly CollisionDetector collisionDetector;
+        private readonly FoodManager foodManager;
+        private readonly DayNightCycle dayNightCycle;
+        private readonly SeasonCycle seasonCycle;
+        private readonly DiseaseManager diseaseManager;
+        private readonly ReproductionManager reproductionManager;
+        private readonly StatisticsTracker statisticsTracker;
+        private readonly EventSystem eventSystem;
+        private readonly FactionManager factionManager;
+        private readonly LoreManager loreManager;
 
-        private readonly List<Creature> _creatureCollisionBuffer = new();
+        private readonly List<Creature> creatureCollisionBuffer = new();
 
         // Simulation timing constants
         private const double LogicTickRate = 0.2; // Logic updates 5 times per second
@@ -37,62 +37,62 @@ namespace Terrarium.Logic.Simulation
         private const double FleeDetectionRange = 100.0;
         private const double FleeSpeedMultiplier = 1.5;
 
-        private double _logicAccumulator;
-        private double _previousWeatherIntensity;
-        private string _previousDayPhase = "";
+        private double logicAccumulator;
+        private double previousWeatherIntensity;
+        private string previousDayPhase = string.Empty;
 
         /// <summary>
-        /// The simulation world.
+        /// Gets the simulation world.
         /// </summary>
-        public World World => _world;
+        public World World => world;
 
         /// <summary>
-        /// The food manager.
+        /// Gets the food manager.
         /// </summary>
-        public FoodManager FoodManager => _foodManager;
+        public FoodManager FoodManager => foodManager;
 
         /// <summary>
-        /// The day/night cycle manager.
+        /// Gets the day/night cycle manager.
         /// </summary>
-        public DayNightCycle DayNightCycle => _dayNightCycle;
+        public DayNightCycle DayNightCycle => dayNightCycle;
 
         /// <summary>
-        /// The season cycle manager.
+        /// Gets the season cycle manager.
         /// </summary>
-        public SeasonCycle SeasonCycle => _seasonCycle;
+        public SeasonCycle SeasonCycle => seasonCycle;
 
         /// <summary>
-        /// The statistics tracker.
+        /// Gets the statistics tracker.
         /// </summary>
-        public StatisticsTracker Statistics => _statisticsTracker;
+        public StatisticsTracker Statistics => statisticsTracker;
 
         /// <summary>
-        /// The faction manager.
+        /// Gets the faction manager.
         /// </summary>
-        public FactionManager FactionManager => _factionManager;
+        public FactionManager FactionManager => factionManager;
 
         /// <summary>
-        /// The lore manager.
+        /// Gets the lore manager.
         /// </summary>
-        public LoreManager LoreManager => _loreManager;
+        public LoreManager LoreManager => loreManager;
 
         /// <summary>
-        /// The reproduction manager.
+        /// Gets the reproduction manager.
         /// </summary>
-        public ReproductionManager ReproductionManager => _reproductionManager;
+        public ReproductionManager ReproductionManager => reproductionManager;
 
         /// <summary>
-        /// Weather intensity (0.0 = calm, 1.0 = stormy).
+        /// Gets or sets weather intensity (0.0 = calm, 1.0 = stormy).
         /// </summary>
         public double WeatherIntensity { get; set; }
 
         /// <summary>
-        /// Simulation speed multiplier (default 1.0).
+        /// Gets or sets simulation speed multiplier (default 1.0).
         /// </summary>
         public double SimulationSpeed { get; set; } = 1.0;
 
         /// <summary>
-        /// Whether the simulation is currently paused.
+        /// Gets a value indicating whether whether the simulation is currently paused.
         /// </summary>
         public bool IsPaused { get; private set; }
 
@@ -106,22 +106,22 @@ namespace Terrarium.Logic.Simulation
 
         public SimulationEngine(World world)
         {
-            _world = world ?? throw new ArgumentNullException(nameof(world));
-            _movementCalculator = new MovementCalculator(_world);
-            _collisionDetector = new CollisionDetector();
-            _foodManager = new FoodManager(_world);
-            _dayNightCycle = new DayNightCycle();
-            _seasonCycle = new SeasonCycle();
-            _diseaseManager = new DiseaseManager();
-            _statisticsTracker = new StatisticsTracker();
-            _eventSystem = new EventSystem();
-            _factionManager = new FactionManager();
-            _loreManager = new LoreManager();
-            _reproductionManager = new ReproductionManager(_world, _eventSystem);
+            this.world = world ?? throw new ArgumentNullException(nameof(world));
+            movementCalculator = new MovementCalculator(this.world);
+            collisionDetector = new CollisionDetector();
+            foodManager = new FoodManager(this.world);
+            dayNightCycle = new DayNightCycle();
+            seasonCycle = new SeasonCycle();
+            diseaseManager = new DiseaseManager();
+            statisticsTracker = new StatisticsTracker();
+            eventSystem = new EventSystem();
+            factionManager = new FactionManager();
+            loreManager = new LoreManager();
+            reproductionManager = new ReproductionManager(this.world, eventSystem);
 
             // Hook into events for lore generation
-            _eventSystem.EntityDied += OnEntityDied;
-            _eventSystem.OnCreatureBorn += OnCreatureBorn;
+            eventSystem.EntityDied += OnEntityDied;
+            eventSystem.OnCreatureBorn += OnCreatureBorn;
         }
 
         /// <summary>
@@ -129,12 +129,12 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void Initialize()
         {
-            _foodManager.InitializeStartingFood();
+            foodManager.InitializeStartingFood();
 
             // Spawn starting creatures
-            _world.SpawnRandomHerbivore("Sheep");
-            _world.SpawnRandomHerbivore("Rabbit");
-            _world.SpawnRandomCarnivore("Wolf");
+            world.SpawnRandomHerbivore("Sheep");
+            world.SpawnRandomHerbivore("Rabbit");
+            world.SpawnRandomCarnivore("Wolf");
         }
 
         /// <summary>
@@ -149,13 +149,13 @@ namespace Terrarium.Logic.Simulation
             double scaledDelta = deltaTime * SimulationSpeed;
 
             // Accumulate time for fixed logic updates
-            _logicAccumulator += scaledDelta;
+            logicAccumulator += scaledDelta;
 
             // Run logic updates at a fixed rate
-            while (_logicAccumulator >= LogicTickRate)
+            while (logicAccumulator >= LogicTickRate)
             {
                 UpdateLogic(LogicTickRate);
-                _logicAccumulator -= LogicTickRate;
+                logicAccumulator -= LogicTickRate;
             }
         }
 
@@ -182,58 +182,58 @@ namespace Terrarium.Logic.Simulation
 
         private void UpdateCyclesAndEvents(double deltaTime)
         {
-            _dayNightCycle.Update(deltaTime);
-            _seasonCycle.Update(deltaTime);
+            dayNightCycle.Update(deltaTime);
+            seasonCycle.Update(deltaTime);
 
             string currentPhase = GetTimeOfDayString();
-            if (currentPhase != _previousDayPhase)
+            if (currentPhase != previousDayPhase)
             {
-                _eventSystem.RaiseDayPhaseChanged(currentPhase);
-                _previousDayPhase = currentPhase;
+                eventSystem.RaiseDayPhaseChanged(currentPhase);
+                previousDayPhase = currentPhase;
             }
 
-            if (Math.Abs(WeatherIntensity - _previousWeatherIntensity) > 0.1)
-                _previousWeatherIntensity = WeatherIntensity;
+            if (Math.Abs(WeatherIntensity - previousWeatherIntensity) > 0.1)
+                previousWeatherIntensity = WeatherIntensity;
         }
 
         private void UpdateManagers(double deltaTime)
         {
-            _foodManager.PlantSpawnChanceMultiplier = _seasonCycle.PlantSpawnChanceMultiplier;
-            _foodManager.Update(deltaTime);
+            foodManager.PlantSpawnChanceMultiplier = seasonCycle.PlantSpawnChanceMultiplier;
+            foodManager.Update(deltaTime);
 
-            int plantCount = _world.Plants.Count;
-            int herbivoreCount = _world.Herbivores.Count;
-            int carnivoreCount = _world.Carnivores.Count;
+            int plantCount = world.Plants.Count;
+            int herbivoreCount = world.Herbivores.Count;
+            int carnivoreCount = world.Carnivores.Count;
 
-            _reproductionManager.HerbivoreReproductionChanceMultiplier = Math.Clamp(plantCount / Math.Max(1.0, herbivoreCount), 0.2, 1.5);
-            _reproductionManager.CarnivoreReproductionChanceMultiplier = Math.Clamp(herbivoreCount / Math.Max(1.0, carnivoreCount), 0.2, 1.5);
-            _reproductionManager.Update(deltaTime);
-            _diseaseManager.Update(_world, deltaTime);
+            reproductionManager.HerbivoreReproductionChanceMultiplier = Math.Clamp(plantCount / Math.Max(1.0, herbivoreCount), 0.2, 1.5);
+            reproductionManager.CarnivoreReproductionChanceMultiplier = Math.Clamp(herbivoreCount / Math.Max(1.0, carnivoreCount), 0.2, 1.5);
+            reproductionManager.Update(deltaTime);
+            diseaseManager.Update(world, deltaTime);
 
             // Generate lore events periodically
-            if (_statisticsTracker.SessionTime % 30 < deltaTime) // Every 30 seconds
+            if (statisticsTracker.SessionTime % 30 < deltaTime) // Every 30 seconds
             {
-                string eventDescription = _loreManager.GenerateEventDescription(_factionManager);
-                _loreManager.RecordEvent(eventDescription, LoreEventType.FactionEvent, LoreImportance.Medium);
+                string eventDescription = loreManager.GenerateEventDescription(factionManager);
+                loreManager.RecordEvent(eventDescription, LoreEventType.FactionEvent, LoreImportance.Medium);
             }
         }
 
         private void UpdateStatistics(double deltaTime)
         {
-            _statisticsTracker.UpdateTime(deltaTime);
-            _statisticsTracker.UpdateSnapshot(
-                _world.Plants.Count,
-                _world.Herbivores.Count,
-                _world.Carnivores.Count);
+            statisticsTracker.UpdateTime(deltaTime);
+            statisticsTracker.UpdateSnapshot(
+                world.Plants.Count,
+                world.Herbivores.Count,
+                world.Carnivores.Count);
 
             // Update faction populations
-            var allCreatures = _world.Herbivores.Cast<Creature>().Concat(_world.Carnivores.Cast<Creature>());
-            _factionManager.UpdatePopulations(allCreatures);
+            var allCreatures = world.Herbivores.Cast<Creature>().Concat(world.Carnivores.Cast<Creature>());
+            factionManager.UpdatePopulations(allCreatures);
         }
 
         private void UpdateAllEntities(double deltaTime)
         {
-            foreach (var entity in _world.GetAllEntities())
+            foreach (var entity in world.GetAllEntities())
             {
                 entity.Update(deltaTime);
             }
@@ -245,7 +245,7 @@ namespace Terrarium.Logic.Simulation
             UpdateCarnivores(deltaTime);
             ResolveCreatureCollisions();
             ApplyWeatherEffects(deltaTime);
-            _world.RemoveDeadEntities();
+            world.RemoveDeadEntities();
         }
 
         /// <summary>
@@ -254,19 +254,19 @@ namespace Terrarium.Logic.Simulation
         private void UpdateTerrainConquest(double deltaTime)
         {
             // Process cellular automata terrain conquest
-            _world.ProcessTerrainConquest();
+            world.ProcessTerrainConquest();
 
             // Generate lore events for significant territory changes
-            var territoryControl = _world.GetTerritoryControl();
+            var territoryControl = world.GetTerritoryControl();
             foreach (var kvp in territoryControl)
             {
                 if (kvp.Value > 50.0) // Major faction controls more than half the territory
                 {
-                    var faction = _factionManager.GetFaction(kvp.Key);
+                    var faction = factionManager.GetFaction(kvp.Key);
                     if (faction != null)
                     {
                         string eventDescription = $"{faction.Name} has claimed dominion over {kvp.Value:F1}% of the land, their territory expanding relentlessly.";
-                        _loreManager.RecordEvent(eventDescription, LoreEventType.FactionEvent, LoreImportance.Major);
+                        loreManager.RecordEvent(eventDescription, LoreEventType.FactionEvent, LoreImportance.Major);
                         break; // Only record one major event per update
                     }
                 }
@@ -278,26 +278,26 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void ResolveCreatureCollisions()
         {
-            _creatureCollisionBuffer.Clear();
+            creatureCollisionBuffer.Clear();
 
-            foreach (var herbivore in _world.Herbivores)
+            foreach (var herbivore in world.Herbivores)
             {
                 if (herbivore.IsAlive)
-                    _creatureCollisionBuffer.Add(herbivore);
+                    creatureCollisionBuffer.Add(herbivore);
             }
 
-            foreach (var carnivore in _world.Carnivores)
+            foreach (var carnivore in world.Carnivores)
             {
                 if (carnivore.IsAlive)
-                    _creatureCollisionBuffer.Add(carnivore);
+                    creatureCollisionBuffer.Add(carnivore);
             }
 
-            _collisionDetector.ResolveCreatureCollisions(_creatureCollisionBuffer);
+            collisionDetector.ResolveCreatureCollisions(creatureCollisionBuffer);
         }
 
         private void UpdateHerbivores(double deltaTime)
         {
-            foreach (var herbivore in _world.Herbivores)
+            foreach (var herbivore in world.Herbivores)
             {
                 if (!herbivore.IsAlive) continue;
 
@@ -306,7 +306,7 @@ namespace Terrarium.Logic.Simulation
                 HandleHungerBehavior(herbivore, deltaTime);
                 HandleLeisureBehavior(herbivore, deltaTime);
 
-                _movementCalculator.EnforceBoundaries(herbivore);
+                movementCalculator.EnforceBoundaries(herbivore);
             }
         }
 
@@ -333,16 +333,16 @@ namespace Terrarium.Logic.Simulation
 
         private void HandleHungerBehavior(Herbivore herbivore, double deltaTime)
         {
-            if (herbivore.Hunger > HerbivoreHungryThreshold && _dayNightCycle.IsDay)
+            if (herbivore.Hunger > HerbivoreHungryThreshold && dayNightCycle.IsDay)
             {
-                var nearestPlant = herbivore.FindNearestPlant(_world.Plants);
+                var nearestPlant = herbivore.FindNearestPlant(world.Plants);
                 if (nearestPlant != null)
                 {
                     MoveTowardFood(herbivore, nearestPlant);
                     if (herbivore.TryEat(nearestPlant))
                     {
-                        _eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
-                        _statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
+                        eventSystem.OnEntityFed(herbivore, nearestPlant, 30.0);
+                        statisticsTracker.RecordFeeding(herbivore, nearestPlant, 30.0);
                     }
                 }
                 else
@@ -370,21 +370,21 @@ namespace Terrarium.Logic.Simulation
         {
             if (herbivore.Curiosity > 0.6)
             {
-                _movementCalculator.UpdateExploration(herbivore, deltaTime);
+                movementCalculator.UpdateExploration(herbivore, deltaTime);
             }
             else
             {
-                _movementCalculator.UpdateWandering(herbivore, deltaTime);
+                movementCalculator.UpdateWandering(herbivore, deltaTime);
             }
         }
 
         private void HandleLeisureBehavior(Herbivore herbivore, double deltaTime)
         {
-            if (_dayNightCycle.IsNight)
+            if (dayNightCycle.IsNight)
             {
                 if (herbivore.Curiosity > 0.8)
                 {
-                    _movementCalculator.UpdateWandering(herbivore, deltaTime * 0.5);
+                    movementCalculator.UpdateWandering(herbivore, deltaTime * 0.5);
                 }
                 else
                 {
@@ -395,7 +395,7 @@ namespace Terrarium.Logic.Simulation
             {
                 if (herbivore.Curiosity > 0.7)
                 {
-                    _movementCalculator.UpdateExploration(herbivore, deltaTime);
+                    movementCalculator.UpdateExploration(herbivore, deltaTime);
                 }
                 else if (herbivore.SocialTendency > 0.6)
                 {
@@ -406,12 +406,12 @@ namespace Terrarium.Logic.Simulation
                     }
                     else
                     {
-                        _movementCalculator.UpdateWandering(herbivore, deltaTime);
+                        movementCalculator.UpdateWandering(herbivore, deltaTime);
                     }
                 }
                 else
                 {
-                    _movementCalculator.UpdateWandering(herbivore, deltaTime);
+                    movementCalculator.UpdateWandering(herbivore, deltaTime);
                 }
             }
         }
@@ -421,7 +421,7 @@ namespace Terrarium.Logic.Simulation
             Carnivore? nearest = null;
             double minDistance = double.MaxValue;
 
-            foreach (var carnivore in _world.Carnivores)
+            foreach (var carnivore in world.Carnivores)
             {
                 if (!carnivore.IsAlive || carnivore == source) continue;
 
@@ -441,7 +441,7 @@ namespace Terrarium.Logic.Simulation
             Carnivore? nearest = null;
             double minDistance = FleeDetectionRange;
 
-            foreach (var carnivore in _world.Carnivores)
+            foreach (var carnivore in world.Carnivores)
             {
                 if (!carnivore.IsAlive) continue;
 
@@ -461,7 +461,7 @@ namespace Terrarium.Logic.Simulation
             Herbivore? nearest = null;
             double minDistance = double.MaxValue;
 
-            foreach (var herbivore in _world.Herbivores)
+            foreach (var herbivore in world.Herbivores)
             {
                 if (!herbivore.IsAlive || herbivore == source) continue;
 
@@ -480,7 +480,7 @@ namespace Terrarium.Logic.Simulation
         {
             double dx = herbivore.X - predator.X;
             double dy = herbivore.Y - predator.Y;
-            double length = Math.Sqrt(dx * dx + dy * dy);
+            double length = Math.Sqrt((dx * dx) + (dy * dy));
 
             if (length > 0)
                 herbivore.SetDirection(dx / length * FleeSpeedMultiplier, dy / length * FleeSpeedMultiplier);
@@ -488,7 +488,7 @@ namespace Terrarium.Logic.Simulation
 
         private void UpdateCarnivores(double deltaTime)
         {
-            foreach (var carnivore in _world.Carnivores)
+            foreach (var carnivore in world.Carnivores)
             {
                 if (!carnivore.IsAlive) continue;
 
@@ -496,7 +496,7 @@ namespace Terrarium.Logic.Simulation
                 HandleHuntingBehavior(carnivore, deltaTime);
                 HandleCarnivoreLeisureBehavior(carnivore, deltaTime);
 
-                _movementCalculator.EnforceBoundaries(carnivore);
+                movementCalculator.EnforceBoundaries(carnivore);
             }
         }
 
@@ -507,18 +507,18 @@ namespace Terrarium.Logic.Simulation
                 var nearestPackMate = FindNearestCarnivore(carnivore);
                 if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 40)
                 {
-                    _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
+                    movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
                 }
             }
         }
 
         private void HandleHuntingBehavior(Carnivore carnivore, double deltaTime)
         {
-            bool isHuntingTime = _dayNightCycle.CurrentPhase is DayPhase.Dawn or DayPhase.Dusk or DayPhase.Day;
+            bool isHuntingTime = dayNightCycle.CurrentPhase is DayPhase.Dawn or DayPhase.Dusk or DayPhase.Day;
 
             if (carnivore.Hunger > CarnivoreHungryThreshold && isHuntingTime)
             {
-                var nearestPrey = carnivore.FindNearestPrey(_world.Herbivores);
+                var nearestPrey = carnivore.FindNearestPrey(world.Herbivores);
                 if (nearestPrey != null)
                 {
                     PerformHunt(carnivore, nearestPrey);
@@ -541,7 +541,7 @@ namespace Terrarium.Logic.Simulation
                 double stalkDistance = 80 + (carnivore.Intelligence * 40);
                 if (carnivore.DistanceTo(nearestPrey) > stalkDistance)
                 {
-                    _movementCalculator.MoveToward(carnivore, nearestPrey.X, nearestPrey.Y);
+                    movementCalculator.MoveToward(carnivore, nearestPrey.X, nearestPrey.Y);
                 }
                 else
                 {
@@ -551,13 +551,13 @@ namespace Terrarium.Logic.Simulation
 
             if (carnivore.TryEat(nearestPrey))
             {
-                _eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
-                _statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
+                eventSystem.OnEntityFed(carnivore, nearestPrey, 50.0);
+                statisticsTracker.RecordFeeding(carnivore, nearestPrey, 50.0);
 
                 if (!nearestPrey.IsAlive)
                 {
-                    _eventSystem.OnEntityDied(nearestPrey, DeathCause.Predation);
-                    _statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
+                    eventSystem.OnEntityDied(nearestPrey, DeathCause.Predation);
+                    statisticsTracker.RecordDeath(nearestPrey, DeathCause.Predation);
                 }
             }
         }
@@ -566,21 +566,21 @@ namespace Terrarium.Logic.Simulation
         {
             if (carnivore.Curiosity > 0.6)
             {
-                _movementCalculator.UpdateExploration(carnivore, deltaTime);
+                movementCalculator.UpdateExploration(carnivore, deltaTime);
             }
             else
             {
-                _movementCalculator.UpdateWandering(carnivore, deltaTime);
+                movementCalculator.UpdateWandering(carnivore, deltaTime);
             }
         }
 
         private void HandleCarnivoreLeisureBehavior(Carnivore carnivore, double deltaTime)
         {
-            if (_dayNightCycle.IsNight)
+            if (dayNightCycle.IsNight)
             {
                 if (carnivore.Curiosity > 0.8 || carnivore.Hunger > CarnivoreHungryThreshold * 0.8)
                 {
-                    _movementCalculator.UpdateWandering(carnivore, deltaTime * 0.7);
+                    movementCalculator.UpdateWandering(carnivore, deltaTime * 0.7);
                 }
                 else
                 {
@@ -591,23 +591,23 @@ namespace Terrarium.Logic.Simulation
             {
                 if (carnivore.Curiosity > 0.7)
                 {
-                    _movementCalculator.UpdateExploration(carnivore, deltaTime);
+                    movementCalculator.UpdateExploration(carnivore, deltaTime);
                 }
                 else if (carnivore.SocialTendency > 0.5)
                 {
                     var nearestPackMate = FindNearestCarnivore(carnivore);
                     if (nearestPackMate != null && carnivore.DistanceTo(nearestPackMate) > 60)
                     {
-                        _movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
+                        movementCalculator.MoveToward(carnivore, nearestPackMate.X, nearestPackMate.Y);
                     }
                     else
                     {
-                        _movementCalculator.UpdateWandering(carnivore, deltaTime);
+                        movementCalculator.UpdateWandering(carnivore, deltaTime);
                     }
                 }
                 else
                 {
-                    _movementCalculator.UpdateWandering(carnivore, deltaTime);
+                    movementCalculator.UpdateWandering(carnivore, deltaTime);
                 }
             }
         }
@@ -616,7 +616,7 @@ namespace Terrarium.Logic.Simulation
         {
             if (WeatherIntensity <= StormWeatherThreshold) return;
 
-            foreach (var plant in _world.Plants)
+            foreach (var plant in world.Plants)
             {
                 plant.TakeDamage(WeatherIntensity * StormPlantDamageRate * deltaTime);
                 plant.Water(WeatherIntensity * StormPlantWaterBonus * deltaTime);
@@ -625,13 +625,13 @@ namespace Terrarium.Logic.Simulation
 
         public Interfaces.IClickable? FindClickableAt(double x, double y)
         {
-            foreach (var creature in _world.GetAllEntities().OfType<Creature>())
+            foreach (var creature in world.GetAllEntities().OfType<Creature>())
             {
                 if (creature.IsAlive && creature.ContainsPoint(x, y))
                     return creature;
             }
 
-            foreach (var plant in _world.Plants)
+            foreach (var plant in world.Plants)
             {
                 if (plant.IsAlive && plant.ContainsPoint(x, y))
                     return plant;
@@ -642,17 +642,17 @@ namespace Terrarium.Logic.Simulation
 
         public bool IsEcosystemBalanced()
         {
-            return _foodManager.IsEcosystemBalanced();
+            return foodManager.IsEcosystemBalanced();
         }
 
         public double GetEcosystemHealth()
         {
-            return _foodManager.GetEcosystemHealth();
+            return foodManager.GetEcosystemHealth();
         }
 
-        public string GetTimeOfDayString() => _dayNightCycle.CurrentPhase.ToString();
+        public string GetTimeOfDayString() => dayNightCycle.CurrentPhase.ToString();
 
-        public double LightLevel => _dayNightCycle.LightLevel;
+        public double LightLevel => dayNightCycle.LightLevel;
 
         /// <summary>
         /// Handles entity death events for lore generation.
@@ -662,11 +662,11 @@ namespace Terrarium.Logic.Simulation
             if (e.Entity is Creature creature)
             {
                 // Check if this was a named character
-                _loreManager.RecordCharacterDeath(creature.Id);
+                loreManager.RecordCharacterDeath(creature.Id);
 
                 // Potentially create a named character from this death (for dramatic effect)
                 // This gives dead creatures a chance to become legendary
-                _loreManager.TryCreateNamedCharacter(creature);
+                loreManager.TryCreateNamedCharacter(creature);
             }
         }
 
@@ -676,7 +676,7 @@ namespace Terrarium.Logic.Simulation
         private void OnCreatureBorn(Creature creature, Creature? parent1, Creature? parent2)
         {
             // Potentially create a named character from newborn creatures
-            _loreManager.TryCreateNamedCharacter(creature);
+            loreManager.TryCreateNamedCharacter(creature);
         }
     }
 }

@@ -1,7 +1,7 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Event system for broadcasting entity lifecycle and interaction events.
     /// Follows the Observer pattern for loose coupling.
@@ -9,8 +9,9 @@ namespace Terrarium.Logic.Simulation
     public class EventSystem
     {
         // Singleton instance for global access
-        private static EventSystem? _instance;
-        public static EventSystem Instance => _instance ??= new EventSystem();
+        private static EventSystem? instance;
+
+        public static EventSystem Instance => instance ??= new EventSystem();
 
         /// <summary>
         /// Raised when an entity is born/spawned.
@@ -43,6 +44,7 @@ namespace Terrarium.Logic.Simulation
         public event EventHandler<WeatherEventArgs>? WeatherChanged;
 
         // Simple delegate-based events for UI integration
+
         /// <summary>
         /// Simple event for creature births: (creature, parent1, parent2)
         /// </summary>
@@ -153,7 +155,7 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public static void Reset()
         {
-            _instance = new EventSystem();
+            instance = new EventSystem();
         }
     }
 
@@ -177,7 +179,8 @@ namespace Terrarium.Logic.Simulation
     {
         public DeathCause Cause { get; }
 
-        public EntityDeathEventArgs(WorldEntity entity, DeathCause cause) : base(entity)
+        public EntityDeathEventArgs(WorldEntity entity, DeathCause cause)
+            : base(entity)
         {
             Cause = cause;
         }
@@ -189,7 +192,9 @@ namespace Terrarium.Logic.Simulation
     public class EntityFeedEventArgs : EventArgs
     {
         public Creature Eater { get; }
+
         public WorldEntity Food { get; }
+
         public double NutritionValue { get; }
 
         public EntityFeedEventArgs(Creature eater, WorldEntity food, double nutritionValue)
@@ -206,7 +211,9 @@ namespace Terrarium.Logic.Simulation
     public class ReproductionEventArgs : EventArgs
     {
         public Creature Parent1 { get; }
+
         public Creature? Parent2 { get; }
+
         public Creature Offspring { get; }
 
         public ReproductionEventArgs(Creature parent1, Creature? parent2, Creature offspring)
@@ -223,6 +230,7 @@ namespace Terrarium.Logic.Simulation
     public class DayPhaseEventArgs : EventArgs
     {
         public DayPhase NewPhase { get; }
+
         public DayPhase OldPhase { get; }
 
         public DayPhaseEventArgs(DayPhase newPhase, DayPhase oldPhase)
@@ -238,7 +246,9 @@ namespace Terrarium.Logic.Simulation
     public class WeatherEventArgs : EventArgs
     {
         public double NewIntensity { get; }
+
         public double OldIntensity { get; }
+
         public bool IsStormy => NewIntensity > 0.5;
 
         public WeatherEventArgs(double newIntensity, double oldIntensity)

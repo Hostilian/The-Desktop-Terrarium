@@ -1,20 +1,16 @@
-using Terrarium.Logic.Simulation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive tests for TerrainProperties to achieve 100% coverage.
     /// </summary>
     public class TerrainPropertiesTests
     {
-        [DataTestMethod]
-        
-        
-        
-        
-        
-        
+        [TestMethod]
+
         public void GetProperties_ReturnsCorrectData(TerrainType type, string expectedName, string expectedColor, bool expectedWalkable, int expectedFertility)
         {
             // Act
@@ -28,13 +24,8 @@ namespace Terrarium.Tests.Simulation
             Assert.IsNotNull(properties.Description);
         }
 
-        [DataTestMethod]
-        
-        
-        
-        
-        
-        
+        [TestMethod]
+
         public void GetControllingFaction_FactionTerrain_ReturnsFaction(TerrainType terrain, FactionType expectedFaction)
         {
             // Act
@@ -45,11 +36,8 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(expectedFaction, faction.Value);
         }
 
-        [DataTestMethod]
-        
-        
-        
-        
+        [TestMethod]
+
         public void GetControllingFaction_NeutralTerrain_ReturnsNull(TerrainType terrain)
         {
             // Act
@@ -59,13 +47,8 @@ namespace Terrarium.Tests.Simulation
             Assert.IsNull(faction);
         }
 
-        [DataTestMethod]
-        
-        
-        
-        
-        
-        
+        [TestMethod]
+
         public void GetFactionTerrain_ReturnsCorrectTerrain(FactionType faction, TerrainType expectedTerrain)
         {
             // Act
@@ -80,8 +63,8 @@ namespace Terrarium.Tests.Simulation
         {
             // Act
             bool canConvert = TerrainProperties.CanConvert(
-                TerrainType.Soil, 
-                TerrainType.VerdantGrowth, 
+                TerrainType.Soil,
+                TerrainType.VerdantGrowth,
                 FactionType.VerdantCollective);
 
             // Assert
@@ -93,8 +76,8 @@ namespace Terrarium.Tests.Simulation
         {
             // Act
             bool canConvert = TerrainProperties.CanConvert(
-                TerrainType.Soil, 
-                TerrainType.AshenWasteland, 
+                TerrainType.Soil,
+                TerrainType.AshenWasteland,
                 FactionType.AshenLegion);
 
             // Assert
@@ -106,8 +89,8 @@ namespace Terrarium.Tests.Simulation
         {
             // Act
             bool canConvert = TerrainProperties.CanConvert(
-                TerrainType.Water, 
-                TerrainType.AquaticDomain, 
+                TerrainType.Water,
+                TerrainType.AquaticDomain,
                 FactionType.TideWalkers);
 
             // Assert
@@ -119,8 +102,8 @@ namespace Terrarium.Tests.Simulation
         {
             // Act
             bool canConvert = TerrainProperties.CanConvert(
-                TerrainType.Soil, 
-                TerrainType.VerdantGrowth, 
+                TerrainType.Soil,
+                TerrainType.VerdantGrowth,
                 FactionType.AshenLegion); // Wrong faction
 
             // Assert
@@ -132,8 +115,8 @@ namespace Terrarium.Tests.Simulation
         {
             // Act
             bool canConvert = TerrainProperties.CanConvert(
-                TerrainType.Stone, 
-                TerrainType.VerdantGrowth, 
+                TerrainType.Stone,
+                TerrainType.VerdantGrowth,
                 FactionType.VerdantCollective);
 
             // Assert
@@ -162,6 +145,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-

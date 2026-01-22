@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,44 +14,42 @@ using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Handles all rendering logic - separates presentation from simulation.
 /// Supports both shape-based and sprite-based rendering.
 /// </summary>
 public class Renderer
 {
-    private readonly Canvas _canvas;
-    private readonly Dictionary<int, UIElement> _entityVisuals;
-    private readonly Dictionary<int, double> _plantShakeTimers;
-    private readonly Random _random;
+    private readonly Canvas canvas;
+    private readonly Dictionary<int, UIElement> entityVisuals;
+    private readonly Dictionary<int, double> plantShakeTimers;
+    private readonly Random random;
 
-    private readonly List<int> _orphanIdsBuffer = new();
-    private readonly List<int> _expiredShakeIdsBuffer = new();
-    private readonly List<int> _shakeKeyBuffer = new();
-    private readonly HashSet<int> _aliveIdsBuffer = new();
-    private readonly List<int> _deadIdsBuffer = new();
+    private readonly List<int> orphanIdsBuffer = new();
+    private readonly List<int> expiredShakeIdsBuffer = new();
+    private readonly List<int> shakeKeyBuffer = new();
+    private readonly HashSet<int> aliveIdsBuffer = new();
+    private readonly List<int> deadIdsBuffer = new();
 
     // Rendering mode
-    private readonly bool _useSpriteMode = false; // Set to true to use sprites instead of shapes
+    private readonly bool useSpriteMode = false; // Set to true to use sprites instead of shapes
 
     // Modern color palette for shape mode
-    private Brush? PlantStemColor;
-    private Brush? PlantLeafColor;
-    private Brush? PlantLeafHighlight;
-    private Brush? PlantAccentColor;
+    private Brush? plantStemColor;
+    private Brush? plantLeafColor;
+    private Brush? plantLeafHighlight;
+    private Brush? plantAccentColor;
 
-    private Brush? HerbivoreBodyColor;
-    private Brush? HerbivoreBellyColor;
-    private Brush? HerbivoreEarColor;
-    private Brush? HerbivoreOutlineColor;
+    private Brush? herbivoreBodyColor;
+    private Brush? herbivoreBellyColor;
+    private Brush? herbivoreEarColor;
+    private Brush? herbivoreOutlineColor;
 
-    private Brush? CarnivoreBodyColor;
-    private Brush? CarnivoreFurColor;
-    private Brush? CarnivoreAccentColor;
-    private Brush? CarnivoreOutlineColor;
-    private Brush? CarnivoreEyeColor;
+    private Brush? carnivoreBodyColor;
+    private Brush? carnivoreFurColor;
+    private Brush? carnivoreAccentColor;
+    private Brush? carnivoreOutlineColor;
+    private Brush? carnivoreEyeColor;
 
     private static readonly Brush DeadColor = CreateFrozenBrush(Color.FromRgb(128, 128, 128));
 
@@ -164,10 +164,10 @@ public class Renderer
 
     public Renderer(Canvas canvas, TerrariumType terrariumType)
     {
-        _canvas = canvas;
-        _entityVisuals = new Dictionary<int, UIElement>();
-        _plantShakeTimers = new Dictionary<int, double>();
-        _random = new Random();
+        this.canvas = canvas;
+        entityVisuals = new Dictionary<int, UIElement>();
+        plantShakeTimers = new Dictionary<int, double>();
+        random = new Random();
 
         // Set colors based on terrarium type
         SetThemeColors(terrariumType);
@@ -179,64 +179,64 @@ public class Renderer
         switch (terrariumType)
         {
             case TerrariumType.Forest:
-                PlantStemColor = CreateFrozenBrush(Color.FromRgb(34, 139, 34)); // Dark green
-                PlantLeafColor = CreateFrozenBrush(Color.FromRgb(76, 175, 80)); // Green
-                PlantLeafHighlight = CreateFrozenBrush(Color.FromRgb(129, 199, 132)); // Light green
-                PlantAccentColor = CreateFrozenBrush(Color.FromRgb(244, 67, 54)); // Red
-                HerbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(255, 183, 77)); // Orange
-                HerbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(255, 224, 178)); // Light orange
-                HerbivoreEarColor = CreateFrozenBrush(Color.FromRgb(255, 138, 128)); // Pink
-                HerbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(230, 150, 50)); // Brown
-                CarnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(120, 120, 130)); // Gray
-                CarnivoreFurColor = CreateFrozenBrush(Color.FromRgb(150, 150, 160)); // Light gray
-                CarnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(200, 80, 80)); // Red
-                CarnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(90, 90, 100)); // Dark gray
-                CarnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 193, 7)); // Yellow
+                plantStemColor = CreateFrozenBrush(Color.FromRgb(34, 139, 34)); // Dark green
+                plantLeafColor = CreateFrozenBrush(Color.FromRgb(76, 175, 80)); // Green
+                plantLeafHighlight = CreateFrozenBrush(Color.FromRgb(129, 199, 132)); // Light green
+                plantAccentColor = CreateFrozenBrush(Color.FromRgb(244, 67, 54)); // Red
+                herbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(255, 183, 77)); // Orange
+                herbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(255, 224, 178)); // Light orange
+                herbivoreEarColor = CreateFrozenBrush(Color.FromRgb(255, 138, 128)); // Pink
+                herbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(230, 150, 50)); // Brown
+                carnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(120, 120, 130)); // Gray
+                carnivoreFurColor = CreateFrozenBrush(Color.FromRgb(150, 150, 160)); // Light gray
+                carnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(200, 80, 80)); // Red
+                carnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(90, 90, 100)); // Dark gray
+                carnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 193, 7)); // Yellow
                 break;
             case TerrariumType.Desert:
-                PlantStemColor = CreateFrozenBrush(Color.FromRgb(210, 180, 140)); // Tan
-                PlantLeafColor = CreateFrozenBrush(Color.FromRgb(222, 184, 135)); // Burlywood
-                PlantLeafHighlight = CreateFrozenBrush(Color.FromRgb(245, 222, 179)); // Wheat
-                PlantAccentColor = CreateFrozenBrush(Color.FromRgb(255, 140, 0)); // Dark orange
-                HerbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(210, 180, 140)); // Tan
-                HerbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(222, 184, 135)); // Burlywood
-                HerbivoreEarColor = CreateFrozenBrush(Color.FromRgb(160, 82, 45)); // Sienna
-                HerbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(139, 69, 19)); // Saddle brown
-                CarnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(105, 105, 105)); // Dim gray
-                CarnivoreFurColor = CreateFrozenBrush(Color.FromRgb(128, 128, 128)); // Gray
-                CarnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(139, 69, 19)); // Saddle brown
-                CarnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(47, 79, 79)); // Dark slate gray
-                CarnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 215, 0)); // Gold
+                plantStemColor = CreateFrozenBrush(Color.FromRgb(210, 180, 140)); // Tan
+                plantLeafColor = CreateFrozenBrush(Color.FromRgb(222, 184, 135)); // Burlywood
+                plantLeafHighlight = CreateFrozenBrush(Color.FromRgb(245, 222, 179)); // Wheat
+                plantAccentColor = CreateFrozenBrush(Color.FromRgb(255, 140, 0)); // Dark orange
+                herbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(210, 180, 140)); // Tan
+                herbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(222, 184, 135)); // Burlywood
+                herbivoreEarColor = CreateFrozenBrush(Color.FromRgb(160, 82, 45)); // Sienna
+                herbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(139, 69, 19)); // Saddle brown
+                carnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(105, 105, 105)); // Dim gray
+                carnivoreFurColor = CreateFrozenBrush(Color.FromRgb(128, 128, 128)); // Gray
+                carnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(139, 69, 19)); // Saddle brown
+                carnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(47, 79, 79)); // Dark slate gray
+                carnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 215, 0)); // Gold
                 break;
             case TerrariumType.Aquatic:
-                PlantStemColor = CreateFrozenBrush(Color.FromRgb(70, 130, 180)); // Steel blue
-                PlantLeafColor = CreateFrozenBrush(Color.FromRgb(100, 149, 237)); // Cornflower blue
-                PlantLeafHighlight = CreateFrozenBrush(Color.FromRgb(135, 206, 250)); // Light sky blue
-                PlantAccentColor = CreateFrozenBrush(Color.FromRgb(0, 206, 209)); // Dark turquoise
-                HerbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(70, 130, 180)); // Steel blue
-                HerbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(100, 149, 237)); // Cornflower blue
-                HerbivoreEarColor = CreateFrozenBrush(Color.FromRgb(0, 191, 255)); // Deep sky blue
-                HerbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(25, 25, 112)); // Midnight blue
-                CarnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(0, 0, 139)); // Dark blue
-                CarnivoreFurColor = CreateFrozenBrush(Color.FromRgb(0, 0, 205)); // Medium blue
-                CarnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(255, 0, 0)); // Red
-                CarnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(0, 0, 0)); // Black
-                CarnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 255, 0)); // Yellow
+                plantStemColor = CreateFrozenBrush(Color.FromRgb(70, 130, 180)); // Steel blue
+                plantLeafColor = CreateFrozenBrush(Color.FromRgb(100, 149, 237)); // Cornflower blue
+                plantLeafHighlight = CreateFrozenBrush(Color.FromRgb(135, 206, 250)); // Light sky blue
+                plantAccentColor = CreateFrozenBrush(Color.FromRgb(0, 206, 209)); // Dark turquoise
+                herbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(70, 130, 180)); // Steel blue
+                herbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(100, 149, 237)); // Cornflower blue
+                herbivoreEarColor = CreateFrozenBrush(Color.FromRgb(0, 191, 255)); // Deep sky blue
+                herbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(25, 25, 112)); // Midnight blue
+                carnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(0, 0, 139)); // Dark blue
+                carnivoreFurColor = CreateFrozenBrush(Color.FromRgb(0, 0, 205)); // Medium blue
+                carnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(255, 0, 0)); // Red
+                carnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(0, 0, 0)); // Black
+                carnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(255, 255, 0)); // Yellow
                 break;
             case TerrariumType.GodSimulator:
-                PlantStemColor = CreateFrozenBrush(Color.FromRgb(138, 43, 226)); // Blue violet
-                PlantLeafColor = CreateFrozenBrush(Color.FromRgb(186, 85, 211)); // Medium orchid
-                PlantLeafHighlight = CreateFrozenBrush(Color.FromRgb(221, 160, 221)); // Plum
-                PlantAccentColor = CreateFrozenBrush(Color.FromRgb(255, 20, 147)); // Deep pink
-                HerbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(255, 215, 0)); // Gold
-                HerbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(255, 255, 0)); // Yellow
-                HerbivoreEarColor = CreateFrozenBrush(Color.FromRgb(255, 105, 180)); // Hot pink
-                HerbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(75, 0, 130)); // Indigo
-                CarnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(220, 20, 60)); // Crimson
-                CarnivoreFurColor = CreateFrozenBrush(Color.FromRgb(255, 69, 0)); // Red orange
-                CarnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(255, 0, 255)); // Magenta
-                CarnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(25, 25, 25)); // Very dark gray
-                CarnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(0, 255, 255)); // Cyan
+                plantStemColor = CreateFrozenBrush(Color.FromRgb(138, 43, 226)); // Blue violet
+                plantLeafColor = CreateFrozenBrush(Color.FromRgb(186, 85, 211)); // Medium orchid
+                plantLeafHighlight = CreateFrozenBrush(Color.FromRgb(221, 160, 221)); // Plum
+                plantAccentColor = CreateFrozenBrush(Color.FromRgb(255, 20, 147)); // Deep pink
+                herbivoreBodyColor = CreateFrozenBrush(Color.FromRgb(255, 215, 0)); // Gold
+                herbivoreBellyColor = CreateFrozenBrush(Color.FromRgb(255, 255, 0)); // Yellow
+                herbivoreEarColor = CreateFrozenBrush(Color.FromRgb(255, 105, 180)); // Hot pink
+                herbivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(75, 0, 130)); // Indigo
+                carnivoreBodyColor = CreateFrozenBrush(Color.FromRgb(220, 20, 60)); // Crimson
+                carnivoreFurColor = CreateFrozenBrush(Color.FromRgb(255, 69, 0)); // Red orange
+                carnivoreAccentColor = CreateFrozenBrush(Color.FromRgb(255, 0, 255)); // Magenta
+                carnivoreOutlineColor = CreateFrozenBrush(Color.FromRgb(25, 25, 25)); // Very dark gray
+                carnivoreEyeColor = CreateFrozenBrush(Color.FromRgb(0, 255, 255)); // Cyan
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(terrariumType), terrariumType, null);
@@ -246,13 +246,13 @@ public class Renderer
     private void CreateBackgroundScenery(TerrariumType terrariumType)
     {
         // Clear existing background elements
-        var backgroundElements = _canvas.Children.OfType<UIElement>()
+        var backgroundElements = canvas.Children.OfType<UIElement>()
             .Where(e => e is Rectangle || e is Ellipse || e is Polygon)
-            .Where(e => !_entityVisuals.ContainsValue(e))
+            .Where(e => !entityVisuals.ContainsValue(e))
             .ToList();
         foreach (var element in backgroundElements)
         {
-            _canvas.Children.Remove(element);
+            canvas.Children.Remove(element);
         }
 
         // Add theme-specific background scenery
@@ -293,7 +293,7 @@ public class Renderer
             };
             Canvas.SetLeft(trunk, treeX);
             Canvas.SetTop(trunk, treeY);
-            _canvas.Children.Insert(0, trunk);
+            canvas.Children.Insert(0, trunk);
 
             // Tree foliage
             var foliage = new Ellipse
@@ -305,7 +305,7 @@ public class Renderer
             };
             Canvas.SetLeft(foliage, treeX - 13);
             Canvas.SetTop(foliage, treeY - 25);
-            _canvas.Children.Insert(0, foliage);
+            canvas.Children.Insert(0, foliage);
         }
 
         // Add bushes
@@ -323,7 +323,7 @@ public class Renderer
             };
             Canvas.SetLeft(bush, bushX);
             Canvas.SetTop(bush, bushY);
-            _canvas.Children.Insert(0, bush);
+            canvas.Children.Insert(0, bush);
         }
     }
 
@@ -347,7 +347,7 @@ public class Renderer
             };
             Canvas.SetLeft(body, cactusX);
             Canvas.SetTop(body, cactusY);
-            _canvas.Children.Insert(0, body);
+            canvas.Children.Insert(0, body);
 
             // Cactus arms
             if (random.Next(2) == 0)
@@ -361,7 +361,7 @@ public class Renderer
                 };
                 Canvas.SetLeft(arm, cactusX - 6);
                 Canvas.SetTop(arm, cactusY + 10);
-                _canvas.Children.Insert(0, arm);
+                canvas.Children.Insert(0, arm);
             }
         }
 
@@ -380,7 +380,7 @@ public class Renderer
             };
             Canvas.SetLeft(rock, rockX);
             Canvas.SetTop(rock, rockY);
-            _canvas.Children.Insert(0, rock);
+            canvas.Children.Insert(0, rock);
         }
     }
 
@@ -409,7 +409,7 @@ public class Renderer
             };
             Canvas.SetLeft(coral, coralX);
             Canvas.SetTop(coral, coralY);
-            _canvas.Children.Insert(0, coral);
+            canvas.Children.Insert(0, coral);
         }
 
         // Add seaweed
@@ -427,7 +427,7 @@ public class Renderer
             };
             Canvas.SetLeft(seaweed, seaweedX);
             Canvas.SetTop(seaweed, seaweedY);
-            _canvas.Children.Insert(0, seaweed);
+            canvas.Children.Insert(0, seaweed);
         }
 
         // Add bubbles
@@ -445,7 +445,7 @@ public class Renderer
             };
             Canvas.SetLeft(bubble, bubbleX);
             Canvas.SetTop(bubble, bubbleY);
-            _canvas.Children.Insert(0, bubble);
+            canvas.Children.Insert(0, bubble);
         }
     }
 
@@ -473,7 +473,7 @@ public class Renderer
             };
             Canvas.SetLeft(crystal, crystalX);
             Canvas.SetTop(crystal, crystalY);
-            _canvas.Children.Insert(0, crystal);
+            canvas.Children.Insert(0, crystal);
         }
 
         // Add energy orbs
@@ -491,7 +491,7 @@ public class Renderer
             };
             Canvas.SetLeft(orb, orbX);
             Canvas.SetTop(orb, orbY);
-            _canvas.Children.Insert(0, orb);
+            canvas.Children.Insert(0, orb);
         }
 
         // Add mystical runes/symbols
@@ -509,7 +509,7 @@ public class Renderer
             };
             Canvas.SetLeft(rune, runeX);
             Canvas.SetTop(rune, runeY);
-            _canvas.Children.Insert(0, rune);
+            canvas.Children.Insert(0, rune);
         }
     }
 
@@ -528,9 +528,9 @@ public class Renderer
     public void SetShowScenery(bool show)
     {
         // Toggle visibility of scenery elements
-        var sceneryElements = _canvas.Children.OfType<UIElement>()
+        var sceneryElements = canvas.Children.OfType<UIElement>()
             .Where(e => e is Rectangle || e is Ellipse || e is Polygon)
-            .Where(e => !_entityVisuals.ContainsValue(e));
+            .Where(e => !entityVisuals.ContainsValue(e));
 
         foreach (var element in sceneryElements)
         {
@@ -545,10 +545,10 @@ public class Renderer
     {
         // This would affect drop shadows and other effects
         // For now, just store the setting
-        _showShadows = show;
+        showShadows = show;
     }
 
-    private bool _showShadows = true;
+    private bool showShadows = true;
 
     /// <summary>
     /// Clears all rendered elements.
@@ -556,20 +556,20 @@ public class Renderer
     public void Clear()
     {
         // Remove any orphaned visuals (e.g., removed from canvas elsewhere).
-        _orphanIdsBuffer.Clear();
+        orphanIdsBuffer.Clear();
 
-        foreach (var kvp in _entityVisuals)
+        foreach (var kvp in entityVisuals)
         {
-            if (!_canvas.Children.Contains(kvp.Value))
+            if (!canvas.Children.Contains(kvp.Value))
             {
-                _orphanIdsBuffer.Add(kvp.Key);
+                orphanIdsBuffer.Add(kvp.Key);
             }
         }
 
-        foreach (var id in _orphanIdsBuffer)
+        foreach (var id in orphanIdsBuffer)
         {
-            _entityVisuals.Remove(id);
-            _plantShakeTimers.Remove(id);
+            entityVisuals.Remove(id);
+            plantShakeTimers.Remove(id);
         }
     }
 
@@ -614,7 +614,7 @@ public class Renderer
     /// </summary>
     private void RenderPlant(Plant plant, Point mousePosition, bool mouseInCanvas)
     {
-        if (!_entityVisuals.ContainsKey(plant.Id))
+        if (!entityVisuals.ContainsKey(plant.Id))
         {
             CreatePlantVisual(plant);
         }
@@ -627,12 +627,12 @@ public class Renderer
     /// </summary>
     private void CreatePlantVisual(Plant plant)
     {
-        if (_useSpriteMode)
+        if (useSpriteMode)
         {
             // Sprite mode: Load plant image
             var image = CreateSpriteImage("plant.png");
-            _canvas.Children.Add(image);
-            _entityVisuals[plant.Id] = image;
+            canvas.Children.Add(image);
+            entityVisuals[plant.Id] = image;
         }
         else
         {
@@ -644,7 +644,7 @@ public class Renderer
             {
                 Width = PlantStemWidth,
                 Height = plant.Size,
-                Fill = PlantStemColor!,
+                Fill = plantStemColor!,
                 RadiusX = PlantStemCornerRadius,
                 RadiusY = PlantStemCornerRadius
             };
@@ -654,7 +654,7 @@ public class Renderer
             {
                 Width = plant.Size * PlantLeavesSizeRatio,
                 Height = plant.Size * PlantLeavesSizeRatio,
-                Fill = PlantLeafColor!
+                Fill = plantLeafColor!
             };
 
             // Highlight leaf (smaller, lighter)
@@ -662,7 +662,7 @@ public class Renderer
             {
                 Width = plant.Size * PlantHighlightSizeRatio,
                 Height = plant.Size * PlantHighlightSizeRatio,
-                Fill = PlantLeafHighlight!,
+                Fill = plantLeafHighlight!,
                 Opacity = PlantHighlightOpacity
             };
 
@@ -671,7 +671,7 @@ public class Renderer
             {
                 Width = PlantAccentSize,
                 Height = PlantAccentSize,
-                Fill = PlantAccentColor!,
+                Fill = plantAccentColor!,
                 Opacity = PlantAccentOpacity
             };
 
@@ -687,8 +687,8 @@ public class Renderer
             Canvas.SetLeft(accent, plant.Size * PlantAccentLeftOffsetRatio);
             Canvas.SetTop(accent, -plant.Size * PlantAccentTopOffsetRatio);
 
-            _canvas.Children.Add(plantGroup);
-            _entityVisuals[plant.Id] = plantGroup;
+            canvas.Children.Add(plantGroup);
+            entityVisuals[plant.Id] = plantGroup;
         }
     }
 
@@ -697,7 +697,7 @@ public class Renderer
     /// </summary>
     private void UpdatePlantVisual(Plant plant, Point mousePosition, bool mouseInCanvas)
     {
-        if (!_entityVisuals.TryGetValue(plant.Id, out var visual))
+        if (!entityVisuals.TryGetValue(plant.Id, out var visual))
         {
             return;
         }
@@ -706,7 +706,7 @@ public class Renderer
         double y = plant.Y;
 
         // Apply shake animation if active
-        if (_plantShakeTimers.TryGetValue(plant.Id, out double shakeTimer))
+        if (plantShakeTimers.TryGetValue(plant.Id, out double shakeTimer))
         {
             x += Math.Sin(shakeTimer * ShakeFrequencyRadiansPerSecond) * ShakeMagnitude;
         }
@@ -721,9 +721,9 @@ public class Renderer
         // Apply mouse glow effect
         if (mouseInCanvas && visual is Canvas glowCanvas)
         {
-            double distance = Math.Sqrt(Math.Pow(mousePosition.X - (x + plant.Size / 2), 2) +
+            double distance = Math.Sqrt(Math.Pow(mousePosition.X - (x + (plant.Size / 2)), 2) +
                                        Math.Pow(mousePosition.Y - (y + plant.Size), 2));
-            double glowIntensity = Math.Max(0, 1 - distance / 100); // Glow within 100 pixels
+            double glowIntensity = Math.Max(0, 1 - (distance / 100)); // Glow within 100 pixels
 
             if (glowIntensity > 0)
             {
@@ -779,7 +779,7 @@ public class Renderer
     /// </summary>
     private void RenderHerbivore(Herbivore herbivore, Point mousePosition, bool mouseInCanvas)
     {
-        if (!_entityVisuals.ContainsKey(herbivore.Id))
+        if (!entityVisuals.ContainsKey(herbivore.Id))
         {
             CreateCreatureVisual(herbivore);
         }
@@ -792,7 +792,7 @@ public class Renderer
     /// </summary>
     private void RenderCarnivore(Carnivore carnivore, Point mousePosition, bool mouseInCanvas)
     {
-        if (!_entityVisuals.ContainsKey(carnivore.Id))
+        if (!entityVisuals.ContainsKey(carnivore.Id))
         {
             CreateCreatureVisual(carnivore);
         }
@@ -805,12 +805,12 @@ public class Renderer
     /// </summary>
     private void CreateCreatureVisual(Creature creature)
     {
-        if (_useSpriteMode)
+        if (useSpriteMode)
         {
             string spriteFile = creature is Herbivore ? "herbivore.png" : "carnivore.png";
             var image = CreateSpriteImage(spriteFile);
-            _canvas.Children.Add(image);
-            _entityVisuals[creature.Id] = image;
+            canvas.Children.Add(image);
+            entityVisuals[creature.Id] = image;
         }
         else
         {
@@ -825,8 +825,8 @@ public class Renderer
                 {
                     Width = HerbivoreBodyWidth,
                     Height = HerbivoreBodyHeight,
-                    Fill = HerbivoreBodyColor!,
-                    Stroke = HerbivoreOutlineColor!,
+                    Fill = herbivoreBodyColor!,
+                    Stroke = herbivoreOutlineColor!,
                     StrokeThickness = HerbivoreBodyStrokeThickness
                 };
 
@@ -835,7 +835,7 @@ public class Renderer
                 {
                     Width = HerbivoreBellyWidth,
                     Height = HerbivoreBellyHeight,
-                    Fill = HerbivoreBellyColor!,
+                    Fill = herbivoreBellyColor!,
                     Opacity = HerbivoreBellyOpacity
                 };
 
@@ -844,7 +844,7 @@ public class Renderer
                 {
                     Width = HerbivoreEarWidth,
                     Height = HerbivoreEarHeight,
-                    Fill = HerbivoreEarColor!
+                    Fill = herbivoreEarColor!
                 };
 
                 // Right ear
@@ -852,7 +852,7 @@ public class Renderer
                 {
                     Width = HerbivoreEarWidth,
                     Height = HerbivoreEarHeight,
-                    Fill = HerbivoreEarColor!
+                    Fill = herbivoreEarColor!
                 };
 
                 // Eyes
@@ -862,8 +862,7 @@ public class Renderer
                 var rightPupil = new Ellipse { Width = HerbivorePupilSize, Height = HerbivorePupilSize, Fill = Brushes.Black };
 
                 // Nose
-                var nose = new Ellipse { Width = HerbivoreNoseWidth, Height = HerbivoreNoseHeight, Fill = HerbivoreEarColor! };
-
+                var nose = new Ellipse { Width = HerbivoreNoseWidth, Height = HerbivoreNoseHeight, Fill = herbivoreEarColor! };
 
                 creatureGroup.Children.Add(leftEar);
                 creatureGroup.Children.Add(rightEar);
@@ -902,8 +901,8 @@ public class Renderer
                 {
                     Width = CarnivoreBodyWidth,
                     Height = CarnivoreBodyHeight,
-                    Fill = CarnivoreBodyColor!,
-                    Stroke = CarnivoreOutlineColor!,
+                    Fill = carnivoreBodyColor!,
+                    Stroke = carnivoreOutlineColor!,
                     StrokeThickness = CarnivoreBodyStrokeThickness
                 };
 
@@ -912,15 +911,15 @@ public class Renderer
                 {
                     Width = CarnivoreSnoutWidth,
                     Height = CarnivoreSnoutHeight,
-                    Fill = CarnivoreFurColor!
+                    Fill = carnivoreFurColor!
                 };
 
                 // Left ear (pointy)
                 var leftEar = new Polygon
                 {
                     Points = CarnivoreEarPoints,
-                    Fill = CarnivoreBodyColor!,
-                    Stroke = CarnivoreOutlineColor!,
+                    Fill = carnivoreBodyColor!,
+                    Stroke = carnivoreOutlineColor!,
                     StrokeThickness = CarnivoreEarStrokeThickness
                 };
 
@@ -928,14 +927,14 @@ public class Renderer
                 var rightEar = new Polygon
                 {
                     Points = CarnivoreEarPoints,
-                    Fill = CarnivoreBodyColor!,
-                    Stroke = CarnivoreOutlineColor!,
+                    Fill = carnivoreBodyColor!,
+                    Stroke = carnivoreOutlineColor!,
                     StrokeThickness = CarnivoreEarStrokeThickness
                 };
 
                 // Eyes (menacing)
-                var leftEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = CarnivoreEyeColor! }; // Yellow
-                var rightEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = CarnivoreEyeColor! };
+                var leftEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = carnivoreEyeColor! }; // Yellow
+                var rightEye = new Ellipse { Width = CarnivoreEyeWidth, Height = CarnivoreEyeHeight, Fill = carnivoreEyeColor! };
                 var leftPupil = new Ellipse { Width = CarnivorePupilWidth, Height = CarnivorePupilHeight, Fill = Brushes.Black };
                 var rightPupil = new Ellipse { Width = CarnivorePupilWidth, Height = CarnivorePupilHeight, Fill = Brushes.Black };
 
@@ -972,8 +971,8 @@ public class Renderer
                 Canvas.SetTop(nose, CarnivoreNoseY);
             }
 
-            _canvas.Children.Add(creatureGroup);
-            _entityVisuals[creature.Id] = creatureGroup;
+            canvas.Children.Add(creatureGroup);
+            entityVisuals[creature.Id] = creatureGroup;
         }
     }
 
@@ -982,7 +981,7 @@ public class Renderer
     /// </summary>
     private void UpdateCreatureVisual(Creature creature, Point mousePosition, bool mouseInCanvas)
     {
-        if (!_entityVisuals.TryGetValue(creature.Id, out var visual))
+        if (!entityVisuals.TryGetValue(creature.Id, out var visual))
         {
             return;
         }
@@ -999,7 +998,7 @@ public class Renderer
         {
             double distance = Math.Sqrt(Math.Pow(mousePosition.X - creature.X, 2) +
                                        Math.Pow(mousePosition.Y - creature.Y, 2));
-            double glowIntensity = Math.Max(0, 1 - distance / 80); // Glow within 80 pixels for creatures
+            double glowIntensity = Math.Max(0, 1 - (distance / 80)); // Glow within 80 pixels for creatures
 
             if (glowIntensity > 0)
             {
@@ -1091,7 +1090,7 @@ public class Renderer
             throw new ArgumentNullException(nameof(plant));
         }
 
-        _plantShakeTimers[plant.Id] = ShakeDuration;
+        plantShakeTimers[plant.Id] = ShakeDuration;
     }
 
     /// <summary>
@@ -1099,30 +1098,30 @@ public class Renderer
     /// </summary>
     private void UpdateShakeAnimations()
     {
-        _expiredShakeIdsBuffer.Clear();
-        _shakeKeyBuffer.Clear();
+        expiredShakeIdsBuffer.Clear();
+        shakeKeyBuffer.Clear();
 
-        foreach (var id in _plantShakeTimers.Keys)
+        foreach (var id in plantShakeTimers.Keys)
         {
-            _shakeKeyBuffer.Add(id);
+            shakeKeyBuffer.Add(id);
         }
 
-        foreach (var id in _shakeKeyBuffer)
+        foreach (var id in shakeKeyBuffer)
         {
-            double newTime = _plantShakeTimers[id] - ApproxFrameDeltaSecondsAt60Fps;
+            double newTime = plantShakeTimers[id] - ApproxFrameDeltaSecondsAt60Fps;
             if (newTime <= 0)
             {
-                _expiredShakeIdsBuffer.Add(id);
+                expiredShakeIdsBuffer.Add(id);
             }
             else
             {
-                _plantShakeTimers[id] = newTime;
+                plantShakeTimers[id] = newTime;
             }
         }
 
-        foreach (var id in _expiredShakeIdsBuffer)
+        foreach (var id in expiredShakeIdsBuffer)
         {
-            _plantShakeTimers.Remove(id);
+            plantShakeTimers.Remove(id);
         }
     }
 
@@ -1131,28 +1130,28 @@ public class Renderer
     /// </summary>
     private void CleanupDeadEntities(World world)
     {
-        _aliveIdsBuffer.Clear();
+        aliveIdsBuffer.Clear();
         foreach (var entity in world.GetAllEntities())
         {
-            _aliveIdsBuffer.Add(entity.Id);
+            aliveIdsBuffer.Add(entity.Id);
         }
 
-        _deadIdsBuffer.Clear();
-        foreach (var id in _entityVisuals.Keys)
+        deadIdsBuffer.Clear();
+        foreach (var id in entityVisuals.Keys)
         {
-            if (!_aliveIdsBuffer.Contains(id))
+            if (!aliveIdsBuffer.Contains(id))
             {
-                _deadIdsBuffer.Add(id);
+                deadIdsBuffer.Add(id);
             }
         }
 
-        foreach (var id in _deadIdsBuffer)
+        foreach (var id in deadIdsBuffer)
         {
-            if (_entityVisuals.TryGetValue(id, out var visual))
+            if (entityVisuals.TryGetValue(id, out var visual))
             {
-                _canvas.Children.Remove(visual);
-                _entityVisuals.Remove(id);
-                _plantShakeTimers.Remove(id);
+                canvas.Children.Remove(visual);
+                entityVisuals.Remove(id);
+                plantShakeTimers.Remove(id);
             }
         }
     }

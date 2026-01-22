@@ -1,29 +1,29 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop;
-
 public partial class MainWindow
 {
     private void RenderTimer_Tick(object? sender, EventArgs e)
     {
-        if (_simulationEngine == null || _renderer == null)
+        if (simulationEngine == null || renderer == null)
         {
             return;
         }
 
         try
         {
-            double deltaTime = _frameStopwatch.Elapsed.TotalSeconds;
-            _frameStopwatch.Restart();
+            double deltaTime = frameStopwatch.Elapsed.TotalSeconds;
+            frameStopwatch.Restart();
 
-            _simulationEngine.Update(deltaTime);
+            simulationEngine.Update(deltaTime);
 
-            _renderer.Clear();
-            _renderer.RenderWorld(_simulationEngine.World, _simulationEngine.WeatherIntensity, _mousePosition, _mouseInCanvas);
+            renderer.Clear();
+            renderer.RenderWorld(simulationEngine.World, simulationEngine.WeatherIntensity, mousePosition, mouseInCanvas);
 
             // Check for sound events
             CheckForSoundEvents();
@@ -35,8 +35,8 @@ public partial class MainWindow
         catch (Exception ex)
         {
             MessageBox.Show($"Error in RenderTimer_Tick: {ex.Message}", "Error");
-            _renderTimer?.Stop();
-            _systemMonitorTimer?.Stop();
+            renderTimer?.Stop();
+            systemMonitorTimer?.Stop();
         }
     }
 
@@ -47,21 +47,21 @@ public partial class MainWindow
 
     private void UpdateFpsCounter(double deltaTime)
     {
-        _frameCount++;
-        _fpsAccumulator += deltaTime;
-        if (_fpsAccumulator >= 1.0)
+        frameCount++;
+        fpsAccumulator += deltaTime;
+        if (fpsAccumulator >= 1.0)
         {
-            _currentFps = _frameCount / _fpsAccumulator;
-            _frameCount = 0;
-            _fpsAccumulator = 0;
+            currentFps = frameCount / fpsAccumulator;
+            frameCount = 0;
+            fpsAccumulator = 0;
 
             // Update UI
             Dispatcher.Invoke(() =>
             {
-                FpsTextBlock.Text = $"FPS: {_currentFps:F1}";
-                if (_systemMonitor != null)
+                FpsTextBlock.Text = $"FPS: {currentFps:F1}";
+                if (systemMonitor != null)
                 {
-                    MemoryTextBlock.Text = $"MEM: {_systemMonitor.GetMemoryUsageMB():F1} MB";
+                    MemoryTextBlock.Text = $"MEM: {systemMonitor.GetMemoryUsageMB():F1} MB";
                 }
             });
         }
@@ -69,14 +69,14 @@ public partial class MainWindow
 
     private void UpdateStatusDisplay()
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        int plantCount = _simulationEngine.World.Plants.Count;
-        int herbivoreCount = _simulationEngine.World.Herbivores.Count;
-        int carnivoreCount = _simulationEngine.World.Carnivores.Count;
+        int plantCount = simulationEngine.World.Plants.Count;
+        int herbivoreCount = simulationEngine.World.Herbivores.Count;
+        int carnivoreCount = simulationEngine.World.Carnivores.Count;
 
         // UI updates removed for god simulator - population tracking now handled by faction system
         /*
@@ -122,34 +122,32 @@ public partial class MainWindow
 
     private void CheckForSoundEvents()
     {
-        if (_simulationEngine == null || _soundManager == null)
+        if (simulationEngine == null || soundManager == null)
         {
             return;
         }
 
-        var stats = _simulationEngine.Statistics;
+        var stats = simulationEngine.Statistics;
 
         // Check for births
-        if (stats.TotalBirths > _lastTotalBirths)
+        if (stats.TotalBirths > lastTotalBirths)
         {
-            _soundManager.PlayEffect("birth");
-            _lastTotalBirths = stats.TotalBirths;
+            soundManager.PlayEffect("birth");
+            lastTotalBirths = stats.TotalBirths;
         }
 
         // Check for deaths
-        if (stats.TotalDeaths > _lastTotalDeaths)
+        if (stats.TotalDeaths > lastTotalDeaths)
         {
-            _soundManager.PlayEffect("death");
-            _lastTotalDeaths = stats.TotalDeaths;
+            soundManager.PlayEffect("death");
+            lastTotalDeaths = stats.TotalDeaths;
         }
 
         // Check for eating
-        if (stats.TotalPlantsEaten > _lastTotalPlantsEaten)
+        if (stats.TotalPlantsEaten > lastTotalPlantsEaten)
         {
-            _soundManager.PlayEffect("eat");
-            _lastTotalPlantsEaten = stats.TotalPlantsEaten;
+            soundManager.PlayEffect("eat");
+            lastTotalPlantsEaten = stats.TotalPlantsEaten;
         }
     }
-
-
 }

@@ -1,9 +1,9 @@
+namespace Terrarium.Tests.ViewModels;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.ViewModels;
 using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.ViewModels;
 
 /// <summary>
 /// Tests for MainWindowViewModel to ensure MVVM pattern works correctly.
@@ -11,80 +11,75 @@ namespace Terrarium.Tests.ViewModels;
 [TestClass]
 public class MainWindowViewModelTests
 {
-    private SimulationEngine? _engine;
-    private MainWindowViewModel? _viewModel;
+    private SimulationEngine? engine;
+    private MainWindowViewModel? viewModel;
 
     [TestInitialize]
     public void Setup()
     {
-        _engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
-        _engine.Initialize();
-        _viewModel = new MainWindowViewModel(_engine);
+        engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
+        engine.Initialize();
+        viewModel = new MainWindowViewModel(engine);
     }
 
     [TestMethod]
     public void Constructor_InitializesWithDefaultValues()
     {
-        Assert.IsFalse(_viewModel!.IsPaused);
-        Assert.AreEqual(1.0, _viewModel.SimulationSpeed);
-        Assert.AreEqual("Ready", _viewModel.StatusMessage);
+        Assert.IsFalse(viewModel!.IsPaused);
+        Assert.AreEqual(1.0, viewModel.SimulationSpeed);
+        Assert.AreEqual("Ready", viewModel.StatusMessage);
     }
 
     [TestMethod]
     public void PlayPauseCommand_TogglesPausedState()
     {
-        bool initialState = _viewModel!.IsPaused;
+        bool initialState = viewModel!.IsPaused;
 
-        _viewModel.PlayPauseCommand.Execute(null);
+        viewModel.PlayPauseCommand.Execute(null);
 
-        Assert.AreNotEqual(initialState, _viewModel.IsPaused);
+        Assert.AreNotEqual(initialState, viewModel.IsPaused);
     }
 
     [TestMethod]
     public void SpeedUpCommand_CyclesThroughSpeeds()
     {
-        Assert.AreEqual(1.0, _viewModel!.SimulationSpeed);
+        Assert.AreEqual(1.0, viewModel!.SimulationSpeed);
 
-        _viewModel.SpeedUpCommand.Execute(null);
-        Assert.AreEqual(2.0, _viewModel.SimulationSpeed);
+        viewModel.SpeedUpCommand.Execute(null);
+        Assert.AreEqual(2.0, viewModel.SimulationSpeed);
 
-        _viewModel.SpeedUpCommand.Execute(null);
-        Assert.AreEqual(5.0, _viewModel.SimulationSpeed);
+        viewModel.SpeedUpCommand.Execute(null);
+        Assert.AreEqual(5.0, viewModel.SimulationSpeed);
     }
 
     [TestMethod]
     public void SpawnPlantCommand_UpdatesStatusMessage()
     {
-        _viewModel!.SpawnPlantCommand.Execute(null);
+        viewModel!.SpawnPlantCommand.Execute(null);
 
-        Assert.IsTrue(_viewModel.StatusMessage.Contains("Plant spawned"));
+        Assert.Contains("Plant spawned", viewModel.StatusMessage);
     }
 
     [TestMethod]
     public void LightningStrikeCommand_UpdatesStatusMessage()
     {
-        _viewModel!.LightningStrikeCommand.Execute(null);
+        viewModel!.LightningStrikeCommand.Execute(null);
 
-        Assert.IsTrue(_viewModel.StatusMessage.Contains("Lightning"));
+        Assert.Contains("Lightning", viewModel.StatusMessage);
     }
 
     [TestMethod]
     public void PropertyChanged_RaisesEvent()
     {
         bool eventRaised = false;
-        _viewModel!.PropertyChanged += (s, e) =>
+        viewModel!.PropertyChanged += (s, e) =>
         {
-            if (e.PropertyName == nameof(_viewModel.IsPaused))
+            if (e.PropertyName == nameof(viewModel.IsPaused))
                 eventRaised = true;
         };
 
-        _viewModel.IsPaused = true;
+        viewModel.IsPaused = true;
 
         Assert.IsTrue(eventRaised);
     }
 }
-
-
-
-
-

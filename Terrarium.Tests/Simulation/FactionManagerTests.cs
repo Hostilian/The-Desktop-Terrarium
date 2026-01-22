@@ -1,12 +1,12 @@
-
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-using System.Collections.Generic;
-using System.Linq;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive unit tests for FactionManager to achieve 100% code coverage.
     /// </summary>
@@ -21,7 +21,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsNotNull(manager.Factions);
             var factionCount = System.Enum.GetValues(typeof(FactionType)).Length;
-            Assert.AreEqual(factionCount, manager.Factions.Count);
+            Assert.HasCount(factionCount, manager.Factions);
         }
 
         [TestMethod]
@@ -147,8 +147,8 @@ namespace Terrarium.Tests.Simulation
             var sortedFactions = manager.GetFactionsByPopulation().ToList();
 
             // Assert
-            Assert.IsTrue(sortedFactions[0].Population >= sortedFactions[1].Population);
-            Assert.IsTrue(sortedFactions[1].Population >= sortedFactions[2].Population);
+            Assert.IsGreaterThanOrEqualTo(sortedFactions[1].Population, sortedFactions[0].Population);
+            Assert.IsGreaterThanOrEqualTo(sortedFactions[2].Population, sortedFactions[1].Population);
             Assert.AreEqual(3, sortedFactions[0].Population);
         }
 
@@ -172,7 +172,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
             var faction1 = manager.GetFaction(FactionType.VerdantCollective);
             var faction2 = manager.GetFaction(FactionType.AshenLegion);
-            
+
             // Set hostile relationship
             faction1.Relationships[FactionType.AshenLegion] = -60;
 
@@ -190,7 +190,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
             var faction1 = manager.GetFaction(FactionType.VerdantCollective);
             var faction2 = manager.GetFaction(FactionType.TideWalkers);
-            
+
             // Set friendly relationship
             faction1.Relationships[FactionType.TideWalkers] = 20;
             faction2.Relationships[FactionType.VerdantCollective] = 20;
@@ -222,7 +222,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
             var faction1 = manager.GetFaction(FactionType.VerdantCollective);
             var faction2 = manager.GetFaction(FactionType.TideWalkers);
-            
+
             // Set alliance relationship
             faction1.Relationships[FactionType.TideWalkers] = 60;
             faction2.Relationships[FactionType.VerdantCollective] = 60;
@@ -241,7 +241,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
             var faction1 = manager.GetFaction(FactionType.VerdantCollective);
             var faction2 = manager.GetFaction(FactionType.AshenLegion);
-            
+
             // Set neutral relationship
             faction1.Relationships[FactionType.AshenLegion] = 0;
             faction2.Relationships[FactionType.VerdantCollective] = 0;
@@ -260,7 +260,7 @@ namespace Terrarium.Tests.Simulation
             var manager = new FactionManager();
             var faction1 = manager.GetFaction(FactionType.VerdantCollective);
             var faction2 = manager.GetFaction(FactionType.TideWalkers);
-            
+
             // One likes the other, but not mutual
             faction1.Relationships[FactionType.TideWalkers] = 60;
             faction2.Relationships[FactionType.VerdantCollective] = 30;
@@ -273,8 +273,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

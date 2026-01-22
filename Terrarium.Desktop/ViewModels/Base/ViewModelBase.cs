@@ -1,7 +1,7 @@
+namespace Terrarium.Desktop.ViewModels.Base;
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
-namespace Terrarium.Desktop.ViewModels.Base;
 
 /// <summary>
 /// Base class for all ViewModels implementing INotifyPropertyChanged.

@@ -6,46 +6,46 @@ namespace Terrarium.Logic.Entities
     /// </summary>
     public abstract class WorldEntity
     {
-        private static int _nextId = 0;
-        private readonly int _id;
-        private double _x;
-        private double _y;
-        private string _type;
+        private static int nextId = 0;
+        private readonly int id;
+        private double x;
+        private double y;
+        private string type;
 
         /// <summary>
-        /// Unique identifier for this entity.
+        /// Gets unique identifier for this entity.
         /// </summary>
-        public int Id => _id;
+        public int Id => id;
 
         /// <summary>
-        /// X coordinate position in the world.
+        /// Gets or sets x coordinate position in the world.
         /// </summary>
         public double X
         {
-            get => _x;
-            set => _x = value;
+            get => x;
+            set => x = value;
         }
 
         /// <summary>
-        /// Y coordinate position in the world.
+        /// Gets or sets y coordinate position in the world.
         /// </summary>
         public double Y
         {
-            get => _y;
-            set => _y = value;
+            get => y;
+            set => y = value;
         }
 
         /// <summary>
-        /// Type of the entity (e.g., "Tree", "Deer").
+        /// Gets type of the entity (e.g., "Tree", "Deer").
         /// </summary>
-        public string Type => _type;
+        public string Type => type;
 
         protected WorldEntity(double x, double y, string type)
         {
-            _id = _nextId++;
-            _x = x;
-            _y = y;
-            _type = type;
+            id = nextId++;
+            this.x = x;
+            this.y = y;
+            this.type = type;
         }
 
         /// <summary>
@@ -56,11 +56,12 @@ namespace Terrarium.Logic.Entities
         /// <summary>
         /// Calculates the distance to another entity.
         /// </summary>
+        /// <returns></returns>
         public double DistanceTo(WorldEntity other)
         {
             double dx = X - other.X;
             double dy = Y - other.Y;
-            return Math.Sqrt(dx * dx + dy * dy);
+            return Math.Sqrt((dx * dx) + (dy * dy));
         }
     }
 }

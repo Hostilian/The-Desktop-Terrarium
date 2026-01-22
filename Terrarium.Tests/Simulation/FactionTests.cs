@@ -1,15 +1,15 @@
-
-using Terrarium.Logic.Simulation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive tests for Faction class to achieve 100% coverage.
     /// </summary>
     public class FactionTests
     {
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(FactionType.VerdantCollective, "Verdant Collective", "#22AA22")]
         [DataRow(FactionType.AshenLegion, "Ashen Legion", "#AA2222")]
         [DataRow(FactionType.CrystalChoir, "Crystal Choir", "#AA22AA")]
@@ -197,8 +197,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

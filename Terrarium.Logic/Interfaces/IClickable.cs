@@ -13,6 +13,7 @@ namespace Terrarium.Logic.Interfaces
         /// <summary>
         /// Determines if a point (x, y) is within the clickable area of this entity.
         /// </summary>
+        /// <returns></returns>
         bool ContainsPoint(double x, double y);
     }
 }

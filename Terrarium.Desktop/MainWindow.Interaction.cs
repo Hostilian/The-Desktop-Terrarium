@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Linq;
 using System.Windows;
@@ -6,8 +8,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Simulation;
-
-namespace Terrarium.Desktop;
 
 public partial class MainWindow
 {
@@ -19,7 +19,7 @@ public partial class MainWindow
     /// </summary>
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
@@ -27,7 +27,7 @@ public partial class MainWindow
         var position = e.GetPosition(RenderCanvas);
 
         // Handle god painting modes first
-        if (_godPaintMode != GodPaintMode.None)
+        if (godPaintMode != GodPaintMode.None)
         {
             HandleGodPainting(position.X, position.Y);
             e.Handled = true;
@@ -35,7 +35,7 @@ public partial class MainWindow
         }
 
         // Try to interact with clickable entities (feed creatures)
-        var clickable = _simulationEngine.FindClickableAt(position.X, position.Y);
+        var clickable = simulationEngine.FindClickableAt(position.X, position.Y);
         if (clickable != null)
         {
             clickable.OnClick();
@@ -49,11 +49,11 @@ public partial class MainWindow
     /// </summary>
     private void HandleGodPainting(double worldX, double worldY)
     {
-        if (_simulationEngine == null) return;
+        if (simulationEngine == null) return;
 
         const double paintRadius = 25.0; // Radius of paint effect
 
-        switch (_godPaintMode)
+        switch (godPaintMode)
         {
             case GodPaintMode.Life:
                 // Spawn plants in radius
@@ -61,7 +61,7 @@ public partial class MainWindow
                 {
                     double offsetX = (Random.Shared.NextDouble() - 0.5) * paintRadius * 2;
                     double offsetY = (Random.Shared.NextDouble() - 0.5) * paintRadius * 2;
-                    var plant = _simulationEngine.World.SpawnPlantAt(worldX + offsetX, worldY + offsetY);
+                    var plant = simulationEngine.World.SpawnPlantAt(worldX + offsetX, worldY + offsetY);
                     if (plant != null)
                     {
                         ShowNotification($"🌱 Life painted at ({worldX:F0}, {worldY:F0})", "#44FF44");
@@ -71,7 +71,7 @@ public partial class MainWindow
 
             case GodPaintMode.Death:
                 // Kill entities in radius
-                var entitiesInRadius = _simulationEngine.World.GetAllEntities()
+                var entitiesInRadius = simulationEngine.World.GetAllEntities()
                     .Where(e => Math.Sqrt(Math.Pow(e.X - worldX, 2) + Math.Pow(e.Y - worldY, 2)) <= paintRadius)
                     .ToList();
 
@@ -95,7 +95,7 @@ public partial class MainWindow
                         double distance = Math.Sqrt(Math.Pow(x - worldX, 2) + Math.Pow(y - worldY, 2));
                         if (distance <= paintRadius)
                         {
-                            _simulationEngine.World.SetTerrainAt(x, y, TerrainType.Stone);
+                            simulationEngine.World.SetTerrainAt(x, y, TerrainType.Stone);
                         }
                     }
                 }
@@ -111,7 +111,7 @@ public partial class MainWindow
                         double distance = Math.Sqrt(Math.Pow(x - worldX, 2) + Math.Pow(y - worldY, 2));
                         if (distance <= paintRadius)
                         {
-                            _simulationEngine.World.SetTerrainAt(x, y, TerrainType.Water);
+                            simulationEngine.World.SetTerrainAt(x, y, TerrainType.Water);
                         }
                     }
                 }
@@ -134,8 +134,8 @@ public partial class MainWindow
     private void Window_MouseMove(object sender, MouseEventArgs e)
     {
         var position = e.GetPosition(RenderCanvas);
-        _mousePosition = position;
-        _mouseInCanvas = position.X >= 0 && position.X <= RenderCanvas.ActualWidth &&
+        mousePosition = position;
+        mouseInCanvas = position.X >= 0 && position.X <= RenderCanvas.ActualWidth &&
                        position.Y >= 0 && position.Y <= RenderCanvas.ActualHeight;
     }
 
@@ -144,7 +144,7 @@ public partial class MainWindow
     /// </summary>
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
@@ -152,37 +152,37 @@ public partial class MainWindow
         switch (e.Key)
         {
             case Key.Space:
-                _simulationEngine.TogglePause();
+                simulationEngine.TogglePause();
                 e.Handled = true;
                 break;
 
             case Key.OemPlus:
             case Key.Add:
-                _simulationEngine.SetSimulationSpeed(_simulationEngine.SimulationSpeed + SpeedStep);
+                simulationEngine.SetSimulationSpeed(simulationEngine.SimulationSpeed + SpeedStep);
                 e.Handled = true;
                 break;
 
             case Key.OemMinus:
             case Key.Subtract:
-                _simulationEngine.SetSimulationSpeed(_simulationEngine.SimulationSpeed - SpeedStep);
+                simulationEngine.SetSimulationSpeed(simulationEngine.SimulationSpeed - SpeedStep);
                 e.Handled = true;
                 break;
 
             case Key.P:
                 // P: Spawn plant
-                _simulationEngine.World.SpawnRandomPlant();
+                simulationEngine.World.SpawnRandomPlant();
                 e.Handled = true;
                 break;
 
             case Key.H:
                 // H: Spawn herbivore
-                _simulationEngine.World.SpawnRandomHerbivore();
+                simulationEngine.World.SpawnRandomHerbivore();
                 e.Handled = true;
                 break;
 
             case Key.C:
                 // C: Spawn carnivore
-                _simulationEngine.World.SpawnRandomCarnivore();
+                simulationEngine.World.SpawnRandomCarnivore();
                 e.Handled = true;
                 break;
 
@@ -199,7 +199,7 @@ public partial class MainWindow
     /// </summary>
     private void UpdateGodPowersVisibility()
     {
-        bool isGodMode = _terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator;
+        bool isGodMode = terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator;
 
         // Find the god powers toolbar sections
         var godPowersBorder = FindName("GodPowersBorder") as Border;

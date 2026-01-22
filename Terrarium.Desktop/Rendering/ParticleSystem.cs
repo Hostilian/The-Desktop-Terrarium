@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -5,16 +7,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Manages particle effects for visual feedback on events like eating, births, and deaths.
 /// </summary>
 public class ParticleSystem
 {
-    private readonly Canvas _canvas;
-    private readonly List<Particle> _particles;
-    private readonly Random _random;
+    private readonly Canvas canvas;
+    private readonly List<Particle> particles;
+    private readonly Random random;
 
     // Particle limits
     private const int MaxParticles = 200;
@@ -62,15 +62,15 @@ public class ParticleSystem
     private const double RandomCenterOffset = 0.5;
 
     /// <summary>
-    /// Gets or sets whether the particle system is enabled.
+    /// Gets or sets a value indicating whether gets or sets whether the particle system is enabled.
     /// </summary>
     public bool IsEnabled { get; set; } = true;
 
     public ParticleSystem(Canvas canvas)
     {
-        _canvas = canvas;
-        _particles = new List<Particle>();
-        _random = new Random();
+        this.canvas = canvas;
+        particles = new List<Particle>();
+        random = new Random();
     }
 
     /// <summary>
@@ -83,15 +83,15 @@ public class ParticleSystem
             return;
         }
 
-        for (int i = _particles.Count - 1; i >= 0; i--)
+        for (int i = particles.Count - 1; i >= 0; i--)
         {
-            var particle = _particles[i];
+            var particle = particles[i];
             particle.Update(deltaTime);
 
             if (particle.IsDead)
             {
-                _canvas.Children.Remove(particle.Visual);
-                _particles.RemoveAt(i);
+                canvas.Children.Remove(particle.Visual);
+                particles.RemoveAt(i);
             }
         }
     }
@@ -101,11 +101,11 @@ public class ParticleSystem
     /// </summary>
     public void Clear()
     {
-        foreach (var particle in _particles)
+        foreach (var particle in particles)
         {
-            _canvas.Children.Remove(particle.Visual);
+            canvas.Children.Remove(particle.Visual);
         }
-        _particles.Clear();
+        particles.Clear();
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class ParticleSystem
     public void SpawnEatEffect(double x, double y, bool isPlantEating = true)
     {
         var color = isPlantEating
-            ? Color.FromRgb(76, 175, 80)  // Green for plant eating
+            ? Color.FromRgb(76, 175, 80) // Green for plant eating
             : Color.FromRgb(200, 80, 80); // Red for carnivore eating
 
         SpawnBurst(x, y, color, 8, ParticleType.Sparkle);
@@ -160,16 +160,16 @@ public class ParticleSystem
     /// </summary>
     private void SpawnBurst(double x, double y, Color color, int count, ParticleType type)
     {
-        if (_particles.Count >= MaxParticles)
+        if (particles.Count >= MaxParticles)
         {
             return;
         }
 
-        for (int i = 0; i < count && _particles.Count < MaxParticles; i++)
+        for (int i = 0; i < count && particles.Count < MaxParticles; i++)
         {
             var particle = CreateParticle(x, y, color, type);
-            _particles.Add(particle);
-            _canvas.Children.Add(particle.Visual);
+            particles.Add(particle);
+            canvas.Children.Add(particle.Visual);
         }
     }
 
@@ -179,30 +179,30 @@ public class ParticleSystem
     private Particle CreateParticle(double x, double y, Color color, ParticleType type)
     {
         UIElement visual;
-        double size = ParticleBaseSizeMin + _random.NextDouble() * ParticleBaseSizeRange;
-        double lifetime = ParticleDefaultLifetimeMinSeconds + _random.NextDouble() * ParticleDefaultLifetimeRangeSeconds;
-        double speed = ParticleDefaultSpeedMin + _random.NextDouble() * ParticleDefaultSpeedRange;
-        double angle = _random.NextDouble() * FullCircleRadians;
+        double size = ParticleBaseSizeMin + (random.NextDouble() * ParticleBaseSizeRange);
+        double lifetime = ParticleDefaultLifetimeMinSeconds + (random.NextDouble() * ParticleDefaultLifetimeRangeSeconds);
+        double speed = ParticleDefaultSpeedMin + (random.NextDouble() * ParticleDefaultSpeedRange);
+        double angle = random.NextDouble() * FullCircleRadians;
 
         switch (type)
         {
             case ParticleType.Heart:
                 visual = CreateHeartVisual(color, size);
-                lifetime = HeartLifetimeMinSeconds + _random.NextDouble() * HeartLifetimeRangeSeconds;
-                speed = HeartSpeedMin + _random.NextDouble() * HeartSpeedRange;
+                lifetime = HeartLifetimeMinSeconds + (random.NextDouble() * HeartLifetimeRangeSeconds);
+                speed = HeartSpeedMin + (random.NextDouble() * HeartSpeedRange);
                 break;
 
             case ParticleType.Wisp:
                 visual = CreateWispVisual(color, size);
-                lifetime = WispLifetimeMinSeconds + _random.NextDouble() * WispLifetimeRangeSeconds;
-                speed = WispSpeedMin + _random.NextDouble() * WispSpeedRange;
-                angle = WispBaseAngleRadians + (_random.NextDouble() - RandomCenterOffset) * WispAngleJitterRadians; // Mostly upward
+                lifetime = WispLifetimeMinSeconds + (random.NextDouble() * WispLifetimeRangeSeconds);
+                speed = WispSpeedMin + (random.NextDouble() * WispSpeedRange);
+                angle = WispBaseAngleRadians + ((random.NextDouble() - RandomCenterOffset) * WispAngleJitterRadians); // Mostly upward
                 break;
 
             case ParticleType.Droplet:
                 visual = CreateDropletVisual(color, size);
-                lifetime = DropletLifetimeMinSeconds + _random.NextDouble() * DropletLifetimeRangeSeconds;
-                angle = DropletBaseAngleRadians + (_random.NextDouble() - RandomCenterOffset) * DropletAngleJitterRadians; // Mostly downward
+                lifetime = DropletLifetimeMinSeconds + (random.NextDouble() * DropletLifetimeRangeSeconds);
+                angle = DropletBaseAngleRadians + ((random.NextDouble() - RandomCenterOffset) * DropletAngleJitterRadians); // Mostly downward
                 break;
 
             case ParticleType.Sparkle:
@@ -308,13 +308,21 @@ public class ParticleSystem
 internal class Particle
 {
     public UIElement Visual { get; set; } = null!;
+
     public double X { get; set; }
+
     public double Y { get; set; }
+
     public double VelocityX { get; set; }
+
     public double VelocityY { get; set; }
+
     public double Gravity { get; set; }
+
     public double Lifetime { get; set; }
+
     public double MaxLifetime { get; set; }
+
     public ParticleType Type { get; set; }
 
     public bool IsDead => Lifetime <= 0;

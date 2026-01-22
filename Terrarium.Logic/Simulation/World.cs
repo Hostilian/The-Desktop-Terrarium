@@ -1,23 +1,23 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Represents the simulation world containing all entities and terrain.
     /// Implements cellular automata for terrain conquest and faction warfare.
     /// </summary>
     public class World
     {
-        private readonly List<Plant> _plants;
-        private readonly List<Herbivore> _herbivores;
-        private readonly List<Carnivore> _carnivores;
-        private readonly Random _random;
+        private readonly List<Plant> plants;
+        private readonly List<Herbivore> herbivores;
+        private readonly List<Carnivore> carnivores;
+        private readonly Random random;
 
         // Terrain grid system
-        private TerrainType[,] _terrainGrid;
-        private readonly int _gridWidth;
-        private readonly int _gridHeight;
-        private readonly int _cellSize = 20; // Size of each terrain cell in pixels
+        private TerrainType[,] terrainGrid;
+        private readonly int gridWidth;
+        private readonly int gridHeight;
+        private readonly int cellSize = 20; // Size of each terrain cell in pixels
 
         // World boundary constants
         public const double MinX = 0;
@@ -26,32 +26,32 @@ namespace Terrarium.Logic.Simulation
         public const double MaxY = 200; // Bottom strip of screen
 
         /// <summary>
-        /// The type of terrarium.
+        /// Gets the type of terrarium.
         /// </summary>
         public TerrariumType TerrariumType { get; }
 
         /// <summary>
-        /// All plants in the world.
+        /// Gets all plants in the world.
         /// </summary>
-        public IReadOnlyList<Plant> Plants => _plants.AsReadOnly();
+        public IReadOnlyList<Plant> Plants => plants.AsReadOnly();
 
         /// <summary>
-        /// All herbivores in the world.
+        /// Gets all herbivores in the world.
         /// </summary>
-        public IReadOnlyList<Herbivore> Herbivores => _herbivores.AsReadOnly();
+        public IReadOnlyList<Herbivore> Herbivores => herbivores.AsReadOnly();
 
         /// <summary>
-        /// All carnivores in the world.
+        /// Gets all carnivores in the world.
         /// </summary>
-        public IReadOnlyList<Carnivore> Carnivores => _carnivores.AsReadOnly();
+        public IReadOnlyList<Carnivore> Carnivores => carnivores.AsReadOnly();
 
         /// <summary>
-        /// Width of the world.
+        /// Gets or sets width of the world.
         /// </summary>
         public double Width { get; set; }
 
         /// <summary>
-        /// Height of the world.
+        /// Gets or sets height of the world.
         /// </summary>
         public double Height { get; set; }
 
@@ -65,40 +65,41 @@ namespace Terrarium.Logic.Simulation
             Width = width;
             Height = height;
             TerrariumType = terrariumType;
-            _plants = new List<Plant>();
-            _herbivores = new List<Herbivore>();
-            _carnivores = new List<Carnivore>();
-            _random = random ?? new Random();
+            plants = new List<Plant>();
+            herbivores = new List<Herbivore>();
+            carnivores = new List<Carnivore>();
+            this.random = random ?? new Random();
 
             // Initialize terrain grid
-            _gridWidth = (int)Math.Ceiling(width / _cellSize);
-            _gridHeight = (int)Math.Ceiling(height / _cellSize);
-            _terrainGrid = new TerrainType[_gridWidth, _gridHeight];
+            gridWidth = (int)Math.Ceiling(width / cellSize);
+            gridHeight = (int)Math.Ceiling(height / cellSize);
+            terrainGrid = new TerrainType[gridWidth, gridHeight];
 
             // Initialize terrain based on terrarium type
             InitializeTerrain();
         }
 
-        public void AddPlant(Plant plant) => _plants.Add(plant);
+        public void AddPlant(Plant plant) => plants.Add(plant);
 
-        public void AddHerbivore(Herbivore herbivore) => _herbivores.Add(herbivore);
+        public void AddHerbivore(Herbivore herbivore) => herbivores.Add(herbivore);
 
-        public void AddCarnivore(Carnivore carnivore) => _carnivores.Add(carnivore);
+        public void AddCarnivore(Carnivore carnivore) => carnivores.Add(carnivore);
 
         public void RemoveDeadEntities()
         {
-            _plants.RemoveAll(p => !p.IsAlive);
-            _herbivores.RemoveAll(h => !h.IsAlive);
-            _carnivores.RemoveAll(c => !c.IsAlive);
+            plants.RemoveAll(p => !p.IsAlive);
+            herbivores.RemoveAll(h => !h.IsAlive);
+            carnivores.RemoveAll(c => !c.IsAlive);
         }
 
         /// <summary>
         /// Spawns a random plant in the world.
         /// </summary>
+        /// <returns></returns>
         public Plant SpawnRandomPlant()
         {
-            double x = _random.NextDouble() * Width;
-            double y = _random.NextDouble() * Height;
+            double x = random.NextDouble() * Width;
+            double y = random.NextDouble() * Height;
             string type = TerrariumType switch
             {
                 TerrariumType.Forest => "Tree",
@@ -115,6 +116,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Spawns a plant at the specified position.
         /// </summary>
+        /// <returns></returns>
         public Plant SpawnPlantAt(double x, double y)
         {
             string type = TerrariumType switch
@@ -133,10 +135,11 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Spawns a random herbivore in the world.
         /// </summary>
+        /// <returns></returns>
         public Herbivore SpawnRandomHerbivore(string? type = null, FactionType? factionOverride = null)
         {
-            double x = _random.NextDouble() * Width;
-            double y = _random.NextDouble() * Height;
+            double x = random.NextDouble() * Width;
+            double y = random.NextDouble() * Height;
             string t = type ?? TerrariumType switch
             {
                 TerrariumType.Forest => "Deer",
@@ -149,7 +152,7 @@ namespace Terrarium.Logic.Simulation
             // Assign faction based on terrarium type or override
             FactionType faction = factionOverride ?? TerrariumType switch
             {
-                TerrariumType.GodSimulator => (FactionType)_random.Next(Enum.GetValues(typeof(FactionType)).Length),
+                TerrariumType.GodSimulator => (FactionType)random.Next(Enum.GetValues(typeof(FactionType)).Length),
                 _ => FactionType.VerdantCollective // Default faction for other modes
             };
 
@@ -161,10 +164,11 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Spawns a random carnivore in the world.
         /// </summary>
+        /// <returns></returns>
         public Carnivore SpawnRandomCarnivore(string? type = null, FactionType? factionOverride = null)
         {
-            double x = _random.NextDouble() * Width;
-            double y = _random.NextDouble() * Height;
+            double x = random.NextDouble() * Width;
+            double y = random.NextDouble() * Height;
             string t = type ?? TerrariumType switch
             {
                 TerrariumType.Forest => "Wolf",
@@ -177,7 +181,7 @@ namespace Terrarium.Logic.Simulation
             // Assign faction based on terrarium type or override
             FactionType faction = factionOverride ?? TerrariumType switch
             {
-                TerrariumType.GodSimulator => (FactionType)_random.Next(Enum.GetValues(typeof(FactionType)).Length),
+                TerrariumType.GodSimulator => (FactionType)random.Next(Enum.GetValues(typeof(FactionType)).Length),
                 _ => FactionType.AshenLegion // Default faction for other modes
             };
 
@@ -188,9 +192,9 @@ namespace Terrarium.Logic.Simulation
 
         public IEnumerable<LivingEntity> GetAllEntities()
         {
-            foreach (var plant in _plants) yield return plant;
-            foreach (var herbivore in _herbivores) yield return herbivore;
-            foreach (var carnivore in _carnivores) yield return carnivore;
+            foreach (var plant in plants) yield return plant;
+            foreach (var herbivore in herbivores) yield return herbivore;
+            foreach (var carnivore in carnivores) yield return carnivore;
         }
 
         /// <summary>
@@ -198,11 +202,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         private void InitializeTerrain()
         {
-            for (int x = 0; x < _gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (int y = 0; y < _gridHeight; y++)
+                for (int y = 0; y < gridHeight; y++)
                 {
-                    _terrainGrid[x, y] = TerrariumType switch
+                    terrainGrid[x, y] = TerrariumType switch
                     {
                         TerrariumType.GodSimulator => GenerateProceduralTerrain(x, y),
                         TerrariumType.Forest => TerrainType.VerdantGrowth,
@@ -232,11 +236,11 @@ namespace Terrarium.Logic.Simulation
             };
 
             // Divide world into faction territories
-            int factionIndex = (x / (_gridWidth / 6)) % 6;
+            int factionIndex = (x / (gridWidth / 6)) % 6;
             var faction = (FactionType)factionIndex;
 
             // Add some natural variation and neutral areas
-            double noise = _random.NextDouble();
+            double noise = random.NextDouble();
             if (noise < 0.1) return TerrainType.Void; // 10% void areas
             if (noise < 0.3) return TerrainType.Soil; // 20% neutral soil
             if (noise < 0.5) return TerrainType.Stone; // 20% stone formations
@@ -249,15 +253,16 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets the terrain type at the specified world coordinates.
         /// </summary>
+        /// <returns></returns>
         public TerrainType GetTerrainAt(double worldX, double worldY)
         {
-            int gridX = (int)(worldX / _cellSize);
-            int gridY = (int)(worldY / _cellSize);
+            int gridX = (int)(worldX / cellSize);
+            int gridY = (int)(worldY / cellSize);
 
-            if (gridX < 0 || gridX >= _gridWidth || gridY < 0 || gridY >= _gridHeight)
+            if (gridX < 0 || gridX >= gridWidth || gridY < 0 || gridY >= gridHeight)
                 return TerrainType.Void;
 
-            return _terrainGrid[gridX, gridY];
+            return terrainGrid[gridX, gridY];
         }
 
         /// <summary>
@@ -266,12 +271,12 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void SetTerrainAt(double worldX, double worldY, TerrainType terrainType)
         {
-            int gridX = (int)(worldX / _cellSize);
-            int gridY = (int)(worldY / _cellSize);
+            int gridX = (int)(worldX / cellSize);
+            int gridY = (int)(worldY / cellSize);
 
-            if (gridX >= 0 && gridX < _gridWidth && gridY >= 0 && gridY < _gridHeight)
+            if (gridX >= 0 && gridX < gridWidth && gridY >= 0 && gridY < gridHeight)
             {
-                _terrainGrid[gridX, gridY] = terrainType;
+                terrainGrid[gridX, gridY] = terrainType;
             }
         }
 
@@ -279,6 +284,7 @@ namespace Terrarium.Logic.Simulation
         /// Attempts to convert terrain at the specified location based on faction conquest rules.
         /// Returns true if conversion was successful.
         /// </summary>
+        /// <returns></returns>
         public bool AttemptTerrainConversion(double worldX, double worldY, FactionType conqueringFaction)
         {
             TerrainType currentTerrain = GetTerrainAt(worldX, worldY);
@@ -338,7 +344,7 @@ namespace Terrarium.Logic.Simulation
         public void ProcessTerrainConquest()
         {
             // Create a copy of current terrain for this step
-            var newTerrain = (TerrainType[,])_terrainGrid.Clone();
+            var newTerrain = (TerrainType[,])terrainGrid.Clone();
 
             // Process conquest from each entity
             foreach (var entity in GetAllEntities())
@@ -349,8 +355,8 @@ namespace Terrarium.Logic.Simulation
                 TerrainType factionTerrain = TerrainProperties.GetFactionTerrain(creature.Faction);
 
                 // Check adjacent cells for conversion opportunities
-                int centerX = (int)(entity.X / _cellSize);
-                int centerY = (int)(entity.Y / _cellSize);
+                int centerX = (int)(entity.X / cellSize);
+                int centerY = (int)(entity.Y / cellSize);
 
                 for (int dx = -1; dx <= 1; dx++)
                 {
@@ -359,9 +365,9 @@ namespace Terrarium.Logic.Simulation
                         int gridX = centerX + dx;
                         int gridY = centerY + dy;
 
-                        if (gridX >= 0 && gridX < _gridWidth && gridY >= 0 && gridY < _gridHeight)
+                        if (gridX >= 0 && gridX < gridWidth && gridY >= 0 && gridY < gridHeight)
                         {
-                            TerrainType current = _terrainGrid[gridX, gridY];
+                            TerrainType current = terrainGrid[gridX, gridY];
                             if (CanConvertTerrain(current, factionTerrain))
                             {
                                 newTerrain[gridX, gridY] = factionTerrain;
@@ -371,23 +377,24 @@ namespace Terrarium.Logic.Simulation
                 }
             }
 
-            _terrainGrid = newTerrain;
+            terrainGrid = newTerrain;
         }
 
         /// <summary>
         /// Gets all terrain cells controlled by a specific faction.
         /// </summary>
+        /// <returns></returns>
         public IEnumerable<(int x, int y, TerrainType terrain)> GetFactionTerritory(FactionType faction)
         {
             TerrainType factionTerrain = TerrainProperties.GetFactionTerrain(faction);
 
-            for (int x = 0; x < _gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (int y = 0; y < _gridHeight; y++)
+                for (int y = 0; y < gridHeight; y++)
                 {
-                    if (_terrainGrid[x, y] == factionTerrain)
+                    if (terrainGrid[x, y] == factionTerrain)
                     {
-                        yield return (x, y, _terrainGrid[x, y]);
+                        yield return (x, y, terrainGrid[x, y]);
                     }
                 }
             }
@@ -396,10 +403,11 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Calculates territory control percentage for each faction.
         /// </summary>
+        /// <returns></returns>
         public Dictionary<FactionType, double> GetTerritoryControl()
         {
             var control = new Dictionary<FactionType, double>();
-            int totalCells = _gridWidth * _gridHeight;
+            int totalCells = gridWidth * gridHeight;
 
             foreach (FactionType faction in Enum.GetValues(typeof(FactionType)))
             {

@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -8,13 +10,11 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Terrarium.Desktop.Constants;
-using Terrarium.Desktop.Services;
 using Terrarium.Desktop.Rendering;
+using Terrarium.Desktop.Services;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Persistence;
 using Terrarium.Logic.Simulation;
-
-namespace Terrarium.Desktop;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml.
@@ -28,80 +28,80 @@ namespace Terrarium.Desktop;
 /// </remarks>
 public partial class MainWindow : Window, IDisposable
 {
-    private SimulationEngine? _simulationEngine;
-    private Renderer? _renderer;
-    private DispatcherTimer? _renderTimer;
-    private DispatcherTimer? _systemMonitorTimer;
-    private readonly Stopwatch _frameStopwatch;
-    private SystemMonitor? _systemMonitor;
-    private SaveManager? _saveManager;
-    private SoundManager? _soundManager;
+    private SimulationEngine? simulationEngine;
+    private Renderer? renderer;
+    private DispatcherTimer? renderTimer;
+    private DispatcherTimer? systemMonitorTimer;
+    private readonly Stopwatch frameStopwatch;
+    private SystemMonitor? systemMonitor;
+    private SaveManager? saveManager;
+    private SoundManager? soundManager;
 #pragma warning disable CS0169 // _godPowerService is reserved for future god powers functionality
-    private GodPowerService? _godPowerService;
+    private GodPowerService? godPowerService;
 #pragma warning restore CS0169
 
     // Win32 hit testing constants
-    private const int WmNcHitTest = Win32Constants.WM_NC_HITTEST;
-    private const int HtTransparent = Win32Constants.HT_TRANSPARENT;
+    private const int WmNcHitTest = Win32Constants.WMNCHITTEST;
+    private const int HtTransparent = Win32Constants.HTTRANSPARENT;
 
     // Timing constants
-    private const int RenderFps = RenderingConstants.DEFAULT_RENDER_FPS;
-    private const double RenderInterval = RenderingConstants.RENDER_INTERVAL_MS;
-    private const double SystemMonitorInterval = RenderingConstants.SYSTEM_MONITOR_UPDATE_INTERVAL_MS;
+    private const int RenderFps = RenderingConstants.DEFAULTRENDERFPS;
+    private const double RenderInterval = RenderingConstants.RENDERINTERVALMS;
+    private const double SystemMonitorInterval = RenderingConstants.SYSTEMMONITORUPDATEINTERVALMS;
 
-    private int _frameCount;
-    private double _fpsAccumulator;
-    private double _currentFps;
+    private int frameCount;
+    private double fpsAccumulator;
+    private double currentFps;
 
     /// <summary>
     /// Gets the current FPS for display.
     /// </summary>
-    public double CurrentFps => _currentFps;
+    public double CurrentFps => currentFps;
 
     // God painting mode
-    private GodPaintMode _godPaintMode = GodPaintMode.None;
+    private GodPaintMode godPaintMode = GodPaintMode.None;
 
     // Sound effect tracking
-    private int _lastTotalBirths = 0;
-    private int _lastTotalDeaths = 0;
-    private int _lastTotalPlantsEaten = 0;
+    private int lastTotalBirths = 0;
+    private int lastTotalDeaths = 0;
+    private int lastTotalPlantsEaten = 0;
 
-    private Terrarium.Logic.Simulation.TerrariumType _terrariumType;
-    private double _simulationSpeed = 1.0;
+    private Terrarium.Logic.Simulation.TerrariumType terrariumType;
+    private double simulationSpeed = 1.0;
 
     // Mouse interaction fields
-    private Point _mousePosition = new Point(0, 0);
-    private bool _mouseInCanvas = false;
+    private Point mousePosition = new Point(0, 0);
+    private bool mouseInCanvas = false;
 
     /// <summary>
-    /// Initializes a new instance of the MainWindow class.
+    /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// Sets up the frame stopwatch for FPS tracking.
     /// </summary>
     public MainWindow()
     {
         InitializeComponent();
-        _frameStopwatch = new Stopwatch();
+        frameStopwatch = new Stopwatch();
     }
 
     private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        if (_simulationEngine.IsPaused)
+        if (simulationEngine.IsPaused)
         {
-            _simulationEngine.Resume();
-            _renderTimer?.Start();
-            _systemMonitorTimer?.Start();
+            simulationEngine.Resume();
+            renderTimer?.Start();
+            systemMonitorTimer?.Start();
             PlayPauseButton.Content = "⏸️";
         }
         else
         {
-            _simulationEngine.Pause();
-            _renderTimer?.Stop();
-            _systemMonitorTimer?.Stop();
+            simulationEngine.Pause();
+            renderTimer?.Stop();
+            systemMonitorTimer?.Stop();
             PlayPauseButton.Content = "▶️";
         }
     }
@@ -113,12 +113,12 @@ public partial class MainWindow : Window, IDisposable
     private void SpeedButton_Click(object sender, RoutedEventArgs e)
     {
         // Cycle through speed options
-        int currentIndex = Array.IndexOf(UIConstants.SIMULATION_SPEED_PRESETS, _simulationSpeed);
-        int nextIndex = (currentIndex + 1) % UIConstants.SIMULATION_SPEED_PRESETS.Length;
-        _simulationSpeed = UIConstants.SIMULATION_SPEED_PRESETS[nextIndex];
+        int currentIndex = Array.IndexOf(UIConstants.SIMULATIONSPEEDPRESETS, simulationSpeed);
+        int nextIndex = (currentIndex + 1) % UIConstants.SIMULATIONSPEEDPRESETS.Length;
+        simulationSpeed = UIConstants.SIMULATIONSPEEDPRESETS[nextIndex];
 
-        _simulationEngine?.SetSimulationSpeed(_simulationSpeed);
-        SpeedButton.Content = $"{_simulationSpeed}x";
+        simulationEngine?.SetSimulationSpeed(simulationSpeed);
+        SpeedButton.Content = $"{simulationSpeed}x";
     }
 
     /// <summary>
@@ -132,58 +132,58 @@ public partial class MainWindow : Window, IDisposable
     // God Power Button Handlers
     private void SpawnPlantButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var plant = _simulationEngine.World.SpawnRandomPlant();
+        var plant = simulationEngine.World.SpawnRandomPlant();
         ShowNotification($"🌱 Plant spawned at ({plant.X:F0}, {plant.Y:F0})", "#44FF44");
     }
 
     private void SpawnHerbivoreButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Get random faction for God Simulator mode
-        var faction = _terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator
+        var faction = terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator
             ? (FactionType)new Random().Next(Enum.GetValues(typeof(FactionType)).Length)
             : FactionType.VerdantCollective;
 
-        var herbivore = _simulationEngine.World.SpawnRandomHerbivore("Rabbit", faction);
-        var factionName = _simulationEngine.FactionManager.GetFaction(herbivore.Faction).Name;
+        var herbivore = simulationEngine.World.SpawnRandomHerbivore("Rabbit", faction);
+        var factionName = simulationEngine.FactionManager.GetFaction(herbivore.Faction).Name;
         ShowNotification($"🐰 {factionName} Herbivore spawned at ({herbivore.X:F0}, {herbivore.Y:F0})", "#FFFFFF");
     }
 
     private void SpawnCarnivoreButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Get random faction for God Simulator mode
-        var faction = _terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator
+        var faction = terrariumType == Terrarium.Logic.Simulation.TerrariumType.GodSimulator
             ? (FactionType)new Random().Next(Enum.GetValues(typeof(FactionType)).Length)
             : FactionType.AshenLegion;
 
-        var carnivore = _simulationEngine.World.SpawnRandomCarnivore("Wolf", faction);
-        var factionName = _simulationEngine.FactionManager.GetFaction(carnivore.Faction).Name;
+        var carnivore = simulationEngine.World.SpawnRandomCarnivore("Wolf", faction);
+        var factionName = simulationEngine.FactionManager.GetFaction(carnivore.Faction).Name;
         ShowNotification($"🐺 {factionName} Carnivore spawned at ({carnivore.X:F0}, {carnivore.Y:F0})", "#FF4444");
     }
 
     private void LightningStrikeButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         var random = new Random();
-        var allEntities = _simulationEngine.World.GetAllEntities().ToList();
+        var allEntities = simulationEngine.World.GetAllEntities().ToList();
 
         if (allEntities.Count == 0)
         {
@@ -191,10 +191,10 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        for (int i = 0; i < Math.Min(GodPowerConstants.LIGHTNING_STRIKE_TARGET_COUNT, allEntities.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.LIGHTNINGSTRIKETARGETCOUNT, allEntities.Count); i++)
         {
             var entity = allEntities[random.Next(allEntities.Count)];
-            entity.TakeDamage(GodPowerConstants.LIGHTNING_STRIKE_DAMAGE);
+            entity.TakeDamage(GodPowerConstants.LIGHTNINGSTRIKEDAMAGE);
 
             if (entity is Creature creature)
             {
@@ -209,13 +209,13 @@ public partial class MainWindow : Window, IDisposable
 
     private void MeteorShowerButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         var random = new Random();
-        var allEntities = _simulationEngine.World.GetAllEntities().ToList();
+        var allEntities = simulationEngine.World.GetAllEntities().ToList();
 
         if (allEntities.Count == 0)
         {
@@ -223,12 +223,12 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        for (int i = 0; i < GodPowerConstants.METEOR_SHOWER_COUNT; i++)
+        for (int i = 0; i < GodPowerConstants.METEORSHOWERCOUNT; i++)
         {
             // Random impact point
-            double impactX = random.NextDouble() * _simulationEngine.World.Width;
-            double impactY = random.NextDouble() * _simulationEngine.World.Height;
-            double impactRadius = GodPowerConstants.METEOR_IMPACT_RADIUS_PIXELS;
+            double impactX = random.NextDouble() * simulationEngine.World.Width;
+            double impactY = random.NextDouble() * simulationEngine.World.Height;
+            double impactRadius = GodPowerConstants.METEORIMPACTRADIUSPIXELS;
 
             // Damage entities within radius
             foreach (var entity in allEntities)
@@ -236,7 +236,7 @@ public partial class MainWindow : Window, IDisposable
                 double distance = Math.Sqrt(Math.Pow(entity.X - impactX, 2) + Math.Pow(entity.Y - impactY, 2));
                 if (distance <= impactRadius)
                 {
-                    double damage = GodPowerConstants.METEOR_BASE_DAMAGE * (1 - (distance / impactRadius));
+                    double damage = GodPowerConstants.METEORBASEDAMAGE * (1 - (distance / impactRadius));
                     entity.TakeDamage(damage);
 
                     if (entity is Creature creature)
@@ -256,13 +256,13 @@ public partial class MainWindow : Window, IDisposable
 
     private void PlagueButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         var random = new Random();
-        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        var allCreatures = simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
         int infectedCount = 0;
 
         if (allCreatures.Count == 0)
@@ -271,10 +271,10 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        for (int i = 0; i < Math.Min(GodPowerConstants.PLAGUE_INFECTION_COUNT, allCreatures.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.PLAGUEINFECTIONCOUNT, allCreatures.Count); i++)
         {
             var creature = allCreatures[random.Next(allCreatures.Count)];
-            creature.TakeDamage(GodPowerConstants.PLAGUE_INITIAL_DAMAGE);
+            creature.TakeDamage(GodPowerConstants.PLAGUEINITIALDAMAGE);
 
             ShowNotification($"💀 {creature.GetType().Name} infected with plague at ({creature.X:F0}, {creature.Y:F0})", "#AA44AA");
             infectedCount++;
@@ -285,21 +285,21 @@ public partial class MainWindow : Window, IDisposable
 
     private void FertilityBlessingButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
-        _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
+        simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITYBLESSINGMULTIPLIER;
+        simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier *= GodPowerConstants.FERTILITYBLESSINGMULTIPLIER;
 
         ShowNotification("🌸 Fertility blessing granted! Reproduction rates doubled for 30 seconds!", "#FF88FF");
 
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.FERTILITY_BLESSING_DURATION_SECONDS) };
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.FERTILITYBLESSINGDURATIONSECONDS) };
         timer.Tick += (s, args) =>
         {
-            _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
-            _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITY_BLESSING_MULTIPLIER;
+            simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITYBLESSINGMULTIPLIER;
+            simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier /= GodPowerConstants.FERTILITYBLESSINGMULTIPLIER;
             ShowNotification("🌸 Fertility blessing faded", "#FF88FF");
             timer.Stop();
         };
@@ -308,14 +308,14 @@ public partial class MainWindow : Window, IDisposable
 
     private void AbundanceButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        for (int i = 0; i < GodPowerConstants.ABUNDANCE_PLANT_COUNT; i++)
+        for (int i = 0; i < GodPowerConstants.ABUNDANCEPLANTCOUNT; i++)
         {
-            _simulationEngine.World.SpawnRandomPlant();
+            simulationEngine.World.SpawnRandomPlant();
         }
 
         ShowNotification("🍎 Abundance bestowed! 10 extra plants created!", "#88FF88");
@@ -323,12 +323,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void DivineProtectionButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        var allCreatures = simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
 
         if (allCreatures.Count == 0)
         {
@@ -345,7 +345,7 @@ public partial class MainWindow : Window, IDisposable
 
         ShowNotification($"🛡️ Divine protection granted to {allCreatures.Count} creatures!", "#8888FF");
 
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.DIVINE_PROTECTION_DURATION_SECONDS) };
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.DIVINEPROTECTIONDURATIONSECONDS) };
         timer.Tick += (s, args) =>
         {
             ShowNotification("🛡️ Divine protection faded", "#8888FF");
@@ -356,12 +356,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void FamineButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var allPlants = _simulationEngine.World.Plants.ToList();
+        var allPlants = simulationEngine.World.Plants.ToList();
 
         if (allPlants.Count == 0)
         {
@@ -371,7 +371,7 @@ public partial class MainWindow : Window, IDisposable
 
         foreach (var plant in allPlants)
         {
-            plant.TakeDamage(GodPowerConstants.FAMINE_DAMAGE);
+            plant.TakeDamage(GodPowerConstants.FAMINEDAMAGE);
         }
 
         ShowNotification($"🏜️ Famine strikes! {allPlants.Count} plants withered!", "#FFAA44");
@@ -379,12 +379,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void MadnessButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        var allCreatures = simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
 
         if (allCreatures.Count == 0)
         {
@@ -395,11 +395,11 @@ public partial class MainWindow : Window, IDisposable
         var random = new Random();
         int maddenedCount = 0;
 
-        for (int i = 0; i < Math.Min(GodPowerConstants.MADNESS_TARGET_COUNT, allCreatures.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.MADNESSTARGETCOUNT, allCreatures.Count); i++)
         {
             var creature = allCreatures[random.Next(allCreatures.Count)];
             // In a full implementation, this would alter behavior (e.g., random movement, attack allies)
-            creature.TakeDamage(GodPowerConstants.MADNESS_DAMAGE);
+            creature.TakeDamage(GodPowerConstants.MADNESSDAMAGE);
             maddenedCount++;
         }
 
@@ -408,24 +408,24 @@ public partial class MainWindow : Window, IDisposable
 
     private void StagnationButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Halt reproduction and growth temporarily
-        _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 0;
-        _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 0;
-        _simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 0;
+        simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 0;
+        simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 0;
+        simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 0;
 
         ShowNotification("🕳️ Stagnation curse! No growth or reproduction for 60 seconds!", "#666666");
 
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.STAGNATION_DURATION_SECONDS) };
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(GodPowerConstants.STAGNATIONDURATIONSECONDS) };
         timer.Tick += (s, args) =>
         {
-            _simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 1.0;
-            _simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 1.0;
-            _simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 1.0;
+            simulationEngine.ReproductionManager.HerbivoreReproductionChanceMultiplier = 1.0;
+            simulationEngine.ReproductionManager.CarnivoreReproductionChanceMultiplier = 1.0;
+            simulationEngine.FoodManager.PlantSpawnChanceMultiplier = 1.0;
             ShowNotification("🕳️ Stagnation lifted", "#666666");
             timer.Stop();
         };
@@ -434,7 +434,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void ChangeBiomeButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
@@ -450,31 +450,31 @@ public partial class MainWindow : Window, IDisposable
 
     private void ChangeSeasonButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Force season change
-        _simulationEngine.SeasonCycle.SetSeason((Season)((int)(_simulationEngine.SeasonCycle.CurrentSeason + 1) % 4));
+        simulationEngine.SeasonCycle.SetSeason((Season)((int)(simulationEngine.SeasonCycle.CurrentSeason + 1) % 4));
 
-        ShowNotification($"🌤️ Season forcibly changed to {_simulationEngine.SeasonCycle.CurrentSeason}!", "#FFFF88");
+        ShowNotification($"🌤️ Season forcibly changed to {simulationEngine.SeasonCycle.CurrentSeason}!", "#FFFF88");
     }
 
     private void FloodButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Convert random areas to water
         var random = new Random();
-        for (int i = 0; i < GodPowerConstants.FLOOD_AREA_COUNT; i++)
+        for (int i = 0; i < GodPowerConstants.FLOODAREACOUNT; i++)
         {
-            double x = random.NextDouble() * _simulationEngine.World.Width;
-            double y = random.NextDouble() * _simulationEngine.World.Height;
-            _simulationEngine.World.SetTerrainAt(x, y, TerrainType.Water);
+            double x = random.NextDouble() * simulationEngine.World.Width;
+            double y = random.NextDouble() * simulationEngine.World.Height;
+            simulationEngine.World.SetTerrainAt(x, y, TerrainType.Water);
         }
 
         ShowNotification("🌊 Flood waters rise! Areas converted to aquatic terrain.", "#4488FF");
@@ -482,12 +482,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void WeaknessButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        var allCreatures = simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
 
         if (allCreatures.Count == 0)
         {
@@ -497,7 +497,7 @@ public partial class MainWindow : Window, IDisposable
 
         foreach (var creature in allCreatures)
         {
-            creature.TakeDamage(creature.Health * (1 - GodPowerConstants.WEAKNESS_HEALTH_MULTIPLIER));
+            creature.TakeDamage(creature.Health * (1 - GodPowerConstants.WEAKNESSHEALTHMULTIPLIER));
         }
 
         ShowNotification($"💪 Weakness curse affects {allCreatures.Count} creatures!", "#FF8844");
@@ -505,12 +505,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void CorruptionButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var allCreatures = _simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
+        var allCreatures = simulationEngine.World.GetAllEntities().OfType<Creature>().ToList();
 
         if (allCreatures.Count == 0)
         {
@@ -522,7 +522,7 @@ public partial class MainWindow : Window, IDisposable
         var factionTypes = Enum.GetValues<FactionType>().ToArray();
         int corruptedCount = 0;
 
-        for (int i = 0; i < Math.Min(GodPowerConstants.CORRUPTION_TARGET_COUNT, allCreatures.Count); i++)
+        for (int i = 0; i < Math.Min(GodPowerConstants.CORRUPTIONTARGETCOUNT, allCreatures.Count); i++)
         {
             var creature = allCreatures[random.Next(allCreatures.Count)];
             var currentFaction = creature.Faction;
@@ -542,65 +542,63 @@ public partial class MainWindow : Window, IDisposable
         ShowNotification($"😈 Corruption spreads! {corruptedCount} creatures changed allegiance!", "#880088");
     }
 
-
-
     // God Painting Tools - Terrain Manipulation
     private void PaintLifeButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Enable life painting mode - convert terrain to faction-specific growth
         ShowNotification("🌱 Life Brush activated! Click to paint fertile growth.", "#44FF44");
-        _godPaintMode = GodPaintMode.Life;
+        godPaintMode = GodPaintMode.Life;
     }
 
     private void PaintDeathButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Enable death painting mode - convert terrain to void
         ShowNotification("💀 Death Brush activated! Click to erase life.", "#444444");
-        _godPaintMode = GodPaintMode.Death;
+        godPaintMode = GodPaintMode.Death;
     }
 
     private void PaintStoneButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Enable stone painting mode - convert terrain to stone
         ShowNotification("🪨 Stone Brush activated! Click to create fortifications.", "#888888");
-        _godPaintMode = GodPaintMode.Stone;
+        godPaintMode = GodPaintMode.Stone;
     }
 
     private void PaintWaterButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Enable water painting mode - convert terrain to water
         ShowNotification("🌊 Water Brush activated! Click to create aquatic zones.", "#4488FF");
-        _godPaintMode = GodPaintMode.Water;
+        godPaintMode = GodPaintMode.Water;
     }
 
     private void UpdateFactionDisplay()
     {
-        if (_simulationEngine == null || FactionPopulationPanel == null) return;
+        if (simulationEngine == null || FactionPopulationPanel == null) return;
 
         FactionPopulationPanel.Children.Clear();
         FactionPopulationPanel.Children.Add(CreateFactionHeader());
 
-        foreach (var faction in _simulationEngine.FactionManager.GetFactionsByPopulation())
+        foreach (var faction in simulationEngine.FactionManager.GetFactionsByPopulation())
         {
             if (faction.Population > 0)
             {
@@ -660,8 +658,6 @@ public partial class MainWindow : Window, IDisposable
         };
     }
 
-
-
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         // Open settings dialog
@@ -684,11 +680,11 @@ public partial class MainWindow : Window, IDisposable
 
     private void ApplySoundSettings(SettingsDialog settings)
     {
-        if (_soundManager == null) return;
+        if (soundManager == null) return;
 
-        _soundManager.IsEnabled = settings.EnableSound;
-        _soundManager.MasterVolume = settings.MasterVolume;
-        _soundManager.SetMuted(!settings.EnableAmbientMusic);
+        soundManager.IsEnabled = settings.EnableSound;
+        soundManager.MasterVolume = settings.MasterVolume;
+        soundManager.SetMuted(!settings.EnableAmbientMusic);
     }
 
     private void ApplyDisplaySettings(SettingsDialog settings)
@@ -705,9 +701,9 @@ public partial class MainWindow : Window, IDisposable
 
     private void ApplyRendererSettings(SettingsDialog settings)
     {
-        _renderer?.SetRenderQuality(settings.RenderQuality);
-        _renderer?.SetShowScenery(settings.ShowScenery);
-        _renderer?.SetShowShadows(settings.ShowEntityShadows);
+        renderer?.SetRenderQuality(settings.RenderQuality);
+        renderer?.SetShowScenery(settings.ShowScenery);
+        renderer?.SetShowShadows(settings.ShowEntityShadows);
     }
 
     private void ApplySimulationSpeedSettings(SettingsDialog settings)
@@ -717,8 +713,8 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        _simulationEngine?.SetSimulationSpeed(speed);
-        _simulationSpeed = speed;
+        simulationEngine?.SetSimulationSpeed(speed);
+        simulationSpeed = speed;
     }
 
     private void CheckAndNotifyRestartRequirements(SettingsDialog settings)
@@ -749,12 +745,12 @@ public partial class MainWindow : Window, IDisposable
     private void StatsButton_Click(object sender, RoutedEventArgs e)
     {
         // Open stats window
-        if (_simulationEngine == null || _systemMonitor == null)
+        if (simulationEngine == null || systemMonitor == null)
         {
             return;
         }
 
-        var statsWindow = new StatsWindow(_simulationEngine, _systemMonitor);
+        var statsWindow = new StatsWindow(simulationEngine, systemMonitor);
         statsWindow.Owner = this;
         statsWindow.Show();
     }
@@ -762,21 +758,21 @@ public partial class MainWindow : Window, IDisposable
     private void ChronicleButton_Click(object sender, RoutedEventArgs e)
     {
         // Open chronicle window
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        var chronicleWindow = new ChronicleWindow(_simulationEngine);
+        var chronicleWindow = new ChronicleWindow(simulationEngine);
         chronicleWindow.Owner = this;
         chronicleWindow.Show();
     }
 
     private void Window_Closed(object sender, EventArgs e)
     {
-        _renderTimer?.Stop();
-        _systemMonitorTimer?.Stop();
-        _systemMonitor?.Dispose();
+        renderTimer?.Stop();
+        systemMonitorTimer?.Stop();
+        systemMonitor?.Dispose();
     }
 
     /// <summary>
@@ -796,31 +792,31 @@ public partial class MainWindow : Window, IDisposable
     {
         if (disposing)
         {
-            _renderTimer?.Stop();
-            _systemMonitorTimer?.Stop();
-            _systemMonitor?.Dispose();
-            _soundManager?.Dispose(); // Assuming SoundManager implements IDisposable
+            renderTimer?.Stop();
+            systemMonitorTimer?.Stop();
+            systemMonitor?.Dispose();
+            soundManager?.Dispose(); // Assuming SoundManager implements IDisposable
         }
     }
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        _renderTimer?.Stop();
-        _systemMonitorTimer?.Stop();
+        renderTimer?.Stop();
+        systemMonitorTimer?.Stop();
     }
 
     private void ShowEntityInfoAtPoint(Point point)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
         // Check for plants
-        foreach (var plant in _simulationEngine.World.Plants)
+        foreach (var plant in simulationEngine.World.Plants)
         {
             double distance = Math.Sqrt(Math.Pow(plant.X - point.X, 2) + Math.Pow(plant.Y - point.Y, 2));
-            if (distance <= UIConstants.ENTITY_CLICK_TOLERANCE_PIXELS)
+            if (distance <= UIConstants.ENTITYCLICKTOLERANCEPIXELS)
             {
                 ShowEntityInfoDialog($"🌿 Plant #{plant.Id}",
                     $"Health: {plant.Health:F1}%\n" +
@@ -832,7 +828,7 @@ public partial class MainWindow : Window, IDisposable
         }
 
         // Check for herbivores
-        foreach (var herbivore in _simulationEngine.World.Herbivores)
+        foreach (var herbivore in simulationEngine.World.Herbivores)
         {
             double distance = Math.Sqrt(Math.Pow(herbivore.X - point.X, 2) + Math.Pow(herbivore.Y - point.Y, 2));
             if (distance <= 25) // Click tolerance
@@ -848,7 +844,7 @@ public partial class MainWindow : Window, IDisposable
         }
 
         // Check for carnivores
-        foreach (var carnivore in _simulationEngine.World.Carnivores)
+        foreach (var carnivore in simulationEngine.World.Carnivores)
         {
             double distance = Math.Sqrt(Math.Pow(carnivore.X - point.X, 2) + Math.Pow(carnivore.Y - point.Y, 2));
             if (distance <= 25) // Click tolerance
@@ -909,7 +905,7 @@ public partial class MainWindow : Window, IDisposable
         Point clickPoint = e.GetPosition(RenderCanvas);
 
         // Handle god painting first
-        if (_godPaintMode != GodPaintMode.None && _simulationEngine != null)
+        if (godPaintMode != GodPaintMode.None && simulationEngine != null)
         {
             HandleGodPainting(clickPoint);
             return;
@@ -924,12 +920,12 @@ public partial class MainWindow : Window, IDisposable
     /// </summary>
     private void HandleGodPainting(Point clickPoint)
     {
-        if (_simulationEngine == null)
+        if (simulationEngine == null)
         {
             return;
         }
 
-        TerrainType paintTerrain = _godPaintMode switch
+        TerrainType paintTerrain = godPaintMode switch
         {
             GodPaintMode.Life => TerrainType.VerdantGrowth, // Default to Verdant for life
             GodPaintMode.Death => TerrainType.Void,
@@ -951,16 +947,16 @@ public partial class MainWindow : Window, IDisposable
                 double worldY = (centerGridY + dy) * 20;
 
                 // Only paint within world bounds
-                if (worldX >= 0 && worldX < _simulationEngine.World.Width &&
-                    worldY >= 0 && worldY < _simulationEngine.World.Height)
+                if (worldX >= 0 && worldX < simulationEngine.World.Width &&
+                    worldY >= 0 && worldY < simulationEngine.World.Height)
                 {
-                    _simulationEngine.World.SetTerrainAt(worldX, worldY, paintTerrain);
+                    simulationEngine.World.SetTerrainAt(worldX, worldY, paintTerrain);
                 }
             }
         }
 
         // Show painting feedback
-        string paintName = _godPaintMode switch
+        string paintName = godPaintMode switch
         {
             GodPaintMode.Life => "Life",
             GodPaintMode.Death => "Death",

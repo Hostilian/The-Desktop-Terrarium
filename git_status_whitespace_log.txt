@@ -1,0 +1,125 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Terrarium.Desktop/App.xaml.cs
+	modified:   Terrarium.Desktop/ChronicleWindow.xaml.cs
+	modified:   Terrarium.Desktop/Commands/RelayCommand.cs
+	modified:   Terrarium.Desktop/Constants/GodPowerConstants.cs
+	modified:   Terrarium.Desktop/Constants/RenderingConstants.cs
+	modified:   Terrarium.Desktop/Constants/UIConstants.cs
+	modified:   Terrarium.Desktop/Constants/Win32Constants.cs
+	modified:   Terrarium.Desktop/MainWindow.Initialization.cs
+	modified:   Terrarium.Desktop/MainWindow.Interaction.cs
+	modified:   Terrarium.Desktop/MainWindow.PowderToy.cs
+	modified:   Terrarium.Desktop/MainWindow.RenderLoop.cs
+	modified:   Terrarium.Desktop/MainWindow.xaml.cs
+	modified:   Terrarium.Desktop/Rendering/AchievementSystem.cs
+	modified:   Terrarium.Desktop/Rendering/AnimationController.cs
+	modified:   Terrarium.Desktop/Rendering/BreedingIndicator.cs
+	modified:   Terrarium.Desktop/Rendering/CreatureMoodIndicator.cs
+	modified:   Terrarium.Desktop/Rendering/EcosystemHealthBar.cs
+	modified:   Terrarium.Desktop/Rendering/EntitySelector.cs
+	modified:   Terrarium.Desktop/Rendering/MiniMap.cs
+	modified:   Terrarium.Desktop/Rendering/NotificationManager.cs
+	modified:   Terrarium.Desktop/Rendering/ParticleSystem.cs
+	modified:   Terrarium.Desktop/Rendering/PopulationGraph.cs
+	modified:   Terrarium.Desktop/Rendering/PredatorWarningSystem.cs
+	modified:   Terrarium.Desktop/Rendering/Renderer.cs
+	modified:   Terrarium.Desktop/Rendering/SessionTimer.cs
+	modified:   Terrarium.Desktop/Rendering/SettingsPanel.cs
+	modified:   Terrarium.Desktop/Rendering/SoundManager.cs
+	modified:   Terrarium.Desktop/Rendering/SpeedIndicator.cs
+	modified:   Terrarium.Desktop/Rendering/SystemMonitor.cs
+	modified:   Terrarium.Desktop/Rendering/TooltipManager.cs
+	modified:   Terrarium.Desktop/Rendering/WeatherEffects.cs
+	modified:   Terrarium.Desktop/Services/GodPowerService.cs
+	modified:   Terrarium.Desktop/SettingsDialog.xaml.cs
+	modified:   Terrarium.Desktop/StartupDialog.xaml.cs
+	modified:   Terrarium.Desktop/StatsWindow.xaml.cs
+	modified:   Terrarium.Desktop/TerrariumTypeOption.cs
+	modified:   Terrarium.Desktop/ViewModels/Base/ViewModelBase.cs
+	modified:   Terrarium.Desktop/ViewModels/MainWindowViewModel.cs
+	modified:   Terrarium.Logic/Entities/Carnivore.cs
+	modified:   Terrarium.Logic/Entities/Creature.cs
+	modified:   Terrarium.Logic/Entities/Herbivore.cs
+	modified:   Terrarium.Logic/Entities/LivingEntity.cs
+	modified:   Terrarium.Logic/Entities/Plant.cs
+	modified:   Terrarium.Logic/Entities/WorldEntity.cs
+	modified:   Terrarium.Logic/Interfaces/IClickable.cs
+	modified:   Terrarium.Logic/Interfaces/IMovable.cs
+	modified:   Terrarium.Logic/Persistence/SaveManager.cs
+	modified:   Terrarium.Logic/Simulation/Achievements/AchievementEvaluator.cs
+	modified:   Terrarium.Logic/Simulation/CollisionDetector.cs
+	modified:   Terrarium.Logic/Simulation/DayNightCycle.cs
+	modified:   Terrarium.Logic/Simulation/DiseaseManager.cs
+	modified:   Terrarium.Logic/Simulation/EcosystemHealthScorer.cs
+	modified:   Terrarium.Logic/Simulation/EventSystem.cs
+	modified:   Terrarium.Logic/Simulation/Faction.cs
+	modified:   Terrarium.Logic/Simulation/FactionManager.cs
+	modified:   Terrarium.Logic/Simulation/FoodManager.cs
+	modified:   Terrarium.Logic/Simulation/LoreManager.cs
+	modified:   Terrarium.Logic/Simulation/MovementCalculator.cs
+	modified:   Terrarium.Logic/Simulation/ReproductionManager.cs
+	modified:   Terrarium.Logic/Simulation/SeasonCycle.cs
+	modified:   Terrarium.Logic/Simulation/SimulationEngine.cs
+	modified:   Terrarium.Logic/Simulation/StatisticsTracker.cs
+	modified:   Terrarium.Logic/Simulation/TerrainType.cs
+	modified:   Terrarium.Logic/Simulation/World.cs
+	modified:   Terrarium.Logic/TerrariumType.cs
+	modified:   Terrarium.Tests/Commands/RelayCommandTests.cs
+	modified:   Terrarium.Tests/Constants/GodPowerConstantsTests.cs
+	modified:   Terrarium.Tests/Constants/RenderingConstantsTests.cs
+	modified:   Terrarium.Tests/Constants/UIConstantsTests.cs
+	modified:   Terrarium.Tests/Constants/Win32ConstantsTests.cs
+	modified:   Terrarium.Tests/Desktop/TerrariumTypeOptionTests.cs
+	modified:   Terrarium.Tests/Entities/CarnivoreTests.cs
+	modified:   Terrarium.Tests/Entities/CreatureFeedTests.cs
+	modified:   Terrarium.Tests/Entities/CreatureTests.cs
+	modified:   Terrarium.Tests/Entities/HerbivoreTests.cs
+	modified:   Terrarium.Tests/Entities/LivingEntityTests.cs
+	modified:   Terrarium.Tests/Entities/PlantTests.cs
+	modified:   Terrarium.Tests/Entities/WorldEntityTests.cs
+	modified:   Terrarium.Tests/Helpers/CalculationHelpersTests.cs
+	modified:   Terrarium.Tests/Parallelization.cs
+	modified:   Terrarium.Tests/Persistence/SaveManagerTests.cs
+	modified:   Terrarium.Tests/Rendering/AchievementSystemTests.cs
+	modified:   Terrarium.Tests/Rendering/BreedingIndicatorTests.cs
+	modified:   Terrarium.Tests/Rendering/CreatureMoodTests.cs
+	modified:   Terrarium.Tests/Rendering/EcosystemHealthTests.cs
+	modified:   Terrarium.Tests/Rendering/PredatorWarningTests.cs
+	modified:   Terrarium.Tests/Rendering/SessionTimerTests.cs
+	modified:   Terrarium.Tests/Services/GodPowerServiceTests.cs
+	modified:   Terrarium.Tests/Simulation/AchievementEvaluatorTests.cs
+	modified:   Terrarium.Tests/Simulation/AchievementInfoTests.cs
+	modified:   Terrarium.Tests/Simulation/CollisionDetectorTests.cs
+	modified:   Terrarium.Tests/Simulation/DayNightCycleTests.cs
+	modified:   Terrarium.Tests/Simulation/DiseaseManagerTests.cs
+	modified:   Terrarium.Tests/Simulation/EcosystemHealthScorerTests.cs
+	modified:   Terrarium.Tests/Simulation/EventSystemTests.cs
+	modified:   Terrarium.Tests/Simulation/FactionManagerTests.cs
+	modified:   Terrarium.Tests/Simulation/FactionTests.cs
+	modified:   Terrarium.Tests/Simulation/FoodManagerTests.cs
+	modified:   Terrarium.Tests/Simulation/LoreManagerTests.cs
+	modified:   Terrarium.Tests/Simulation/MovementCalculatorTests.cs
+	modified:   Terrarium.Tests/Simulation/ReproductionManagerTests.cs
+	modified:   Terrarium.Tests/Simulation/SeasonCycleTests.cs
+	modified:   Terrarium.Tests/Simulation/SimulationEngineIntegrationTests.cs
+	modified:   Terrarium.Tests/Simulation/SimulationEngineTests.cs
+	modified:   Terrarium.Tests/Simulation/StatisticsTrackerTests.cs
+	modified:   Terrarium.Tests/Simulation/TerrainPropertiesTests.cs
+	modified:   Terrarium.Tests/Simulation/WorldTests.cs
+	modified:   Terrarium.Tests/ViewModels/Base/ViewModelBaseTests.cs
+	modified:   Terrarium.Tests/ViewModels/MainWindowViewModelTests.cs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	format_log.txt
+	git_status_log.txt
+	git_status_whitespace_log.txt
+	run_whitespace_fix.bat
+	whitespace_log.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

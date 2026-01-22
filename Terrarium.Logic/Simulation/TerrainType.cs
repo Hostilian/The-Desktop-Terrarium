@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace Terrarium.Logic.Simulation
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents different terrain types in the cellular automata world.
     /// Each terrain type has properties that affect gameplay and faction interactions.
@@ -21,7 +21,7 @@ namespace Terrarium.Logic.Simulation
         AquaticDomain = 12,    // Aquatic Domain - flooded, aquatic zones
         StoneWardens = 13,     // Stone Wardens - rocky fortifications
         CelestialOrder = 14,   // Celestial Order - purified holy ground
-        NetherCult = 15        // Nether Cult - corrupted, twisted terrain
+        NetherCult = 15 // Nether Cult - corrupted, twisted terrain
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ namespace Terrarium.Logic.Simulation
     /// </summary>
     public static class TerrainProperties
     {
-        private static readonly Dictionary<TerrainType, TerrainData> _properties = new()
+        private static readonly Dictionary<TerrainType, TerrainData> properties = new()
         {
             [TerrainType.Void] = new TerrainData
             {
@@ -113,11 +113,12 @@ namespace Terrarium.Logic.Simulation
             }
         };
 
-        public static TerrainData GetProperties(TerrainType type) => _properties[type];
+        public static TerrainData GetProperties(TerrainType type) => properties[type];
 
         /// <summary>
         /// Gets the faction that controls this terrain type, or null if neutral.
         /// </summary>
+        /// <returns></returns>
         public static FactionType? GetControllingFaction(TerrainType terrain)
         {
             return terrain switch
@@ -135,6 +136,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets the terrain type associated with a specific faction.
         /// </summary>
+        /// <returns></returns>
         public static TerrainType GetFactionTerrain(FactionType faction)
         {
             return faction switch
@@ -152,6 +154,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Determines if one terrain type can convert another.
         /// </summary>
+        /// <returns></returns>
         public static bool CanConvert(TerrainType from, TerrainType to, FactionType faction)
         {
             var controllingFaction = GetControllingFaction(to);
@@ -177,10 +180,14 @@ namespace Terrarium.Logic.Simulation
     /// </summary>
     public class TerrainData
     {
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
+
         public string Color { get; set; } = "#FFFFFF";
+
         public bool Walkable { get; set; }
+
         public int Fertility { get; set; }
-        public string Description { get; set; } = "";
+
+        public string Description { get; set; } = string.Empty;
     }
 }

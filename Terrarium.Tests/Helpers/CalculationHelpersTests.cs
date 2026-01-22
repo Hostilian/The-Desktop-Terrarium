@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Helpers;
+
+using System.Windows;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Terrarium.Logic.Entities;
 
 /// <summary>
 /// Tests for helper methods extracted during refactoring.
@@ -54,8 +54,3 @@ public class CalculationHelpersTests
         return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
     }
 }
-
-
-
-
-

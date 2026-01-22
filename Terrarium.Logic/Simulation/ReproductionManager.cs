@@ -1,16 +1,16 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Manages creature reproduction mechanics.
     /// Creatures can reproduce when well-fed, healthy, and near a mate.
     /// </summary>
     public class ReproductionManager
     {
-        private readonly World _world;
-        private readonly EventSystem _eventSystem;
-        private readonly Random _random;
+        private readonly World world;
+        private readonly EventSystem eventSystem;
+        private readonly Random random;
 
         // Reproduction requirements
         private const double MinHealthForReproduction = 70.0;
@@ -33,34 +33,40 @@ namespace Terrarium.Logic.Simulation
         // Offspring position offset
         private const double OffspringSpawnRadius = 30.0;
 
-        private readonly Dictionary<int, double> _reproductionCooldowns;
+        private readonly Dictionary<int, double> reproductionCooldowns;
 
-        private readonly List<int> _expiredCooldownIdsBuffer = new();
-        private readonly List<Herbivore> _herbivoreIterationBuffer = new();
-        private readonly List<Carnivore> _carnivoreIterationBuffer = new();
+        private readonly List<int> expiredCooldownIdsBuffer = new();
+        private readonly List<Herbivore> herbivoreIterationBuffer = new();
+        private readonly List<Carnivore> carnivoreIterationBuffer = new();
 
         /// <summary>
-        /// Multiplier applied to the base herbivore reproduction chance.
+        /// Gets or sets multiplier applied to the base herbivore reproduction chance.
         /// Allows the simulation engine to apply gentle population pressure.
         /// </summary>
         public double HerbivoreReproductionChanceMultiplier { get; set; } = 1.0;
 
         /// <summary>
-        /// Multiplier applied to the base carnivore reproduction chance.
+        /// Gets or sets multiplier applied to the base carnivore reproduction chance.
         /// Allows the simulation engine to apply gentle population pressure.
         /// </summary>
         public double CarnivoreReproductionChanceMultiplier { get; set; } = 1.0;
 
-        public ReproductionManager(World world) : this(world, EventSystem.Instance, random: null) { }
+        public ReproductionManager(World world)
+            : this(world, EventSystem.Instance, random: null)
+        {
+        }
 
-        public ReproductionManager(World world, EventSystem eventSystem) : this(world, eventSystem, random: null) { }
+        public ReproductionManager(World world, EventSystem eventSystem)
+            : this(world, eventSystem, random: null)
+        {
+        }
 
         public ReproductionManager(World world, EventSystem eventSystem, Random? random)
         {
-            _world = world;
-            _eventSystem = eventSystem;
-            _random = random ?? new Random();
-            _reproductionCooldowns = new Dictionary<int, double>();
+            this.world = world;
+            this.eventSystem = eventSystem;
+            this.random = random ?? new Random();
+            reproductionCooldowns = new Dictionary<int, double>();
         }
 
         /// <summary>
@@ -77,42 +83,42 @@ namespace Terrarium.Logic.Simulation
 
         private void UpdateCooldowns(double deltaTime)
         {
-            _expiredCooldownIdsBuffer.Clear();
-            foreach (var kvp in _reproductionCooldowns)
+            expiredCooldownIdsBuffer.Clear();
+            foreach (var kvp in reproductionCooldowns)
             {
-                _reproductionCooldowns[kvp.Key] = kvp.Value - deltaTime;
-                if (_reproductionCooldowns[kvp.Key] <= 0)
-                    _expiredCooldownIdsBuffer.Add(kvp.Key);
+                reproductionCooldowns[kvp.Key] = kvp.Value - deltaTime;
+                if (reproductionCooldowns[kvp.Key] <= 0)
+                    expiredCooldownIdsBuffer.Add(kvp.Key);
             }
-            foreach (var id in _expiredCooldownIdsBuffer)
-                _reproductionCooldowns.Remove(id);
+            foreach (var id in expiredCooldownIdsBuffer)
+                reproductionCooldowns.Remove(id);
         }
 
         private void TryReproduceHerbivores()
         {
-            if (_world.Herbivores.Count >= MaxHerbivores) return;
+            if (world.Herbivores.Count >= MaxHerbivores) return;
 
             double chance = Math.Clamp(BaseReproductionChance * HerbivoreReproductionChanceMultiplier, 0.0, 1.0);
-            _herbivoreIterationBuffer.Clear();
-            _herbivoreIterationBuffer.AddRange(_world.Herbivores);
+            herbivoreIterationBuffer.Clear();
+            herbivoreIterationBuffer.AddRange(world.Herbivores);
 
-            foreach (var herbivore in _herbivoreIterationBuffer)
+            foreach (var herbivore in herbivoreIterationBuffer)
             {
                 if (!CanReproduce(herbivore)) continue;
 
-                var mate = FindMate(herbivore, _world.Herbivores);
-                if (mate != null && _random.NextDouble() < chance)
+                var mate = FindMate(herbivore, world.Herbivores);
+                if (mate != null && random.NextDouble() < chance)
                 {
                     var offspring = CreateOffspring(herbivore, mate);
                     if (offspring != null)
                     {
-                        _world.AddHerbivore((Herbivore)offspring);
+                        world.AddHerbivore((Herbivore)offspring);
                         ApplyReproductionCost(herbivore);
                         ApplyReproductionCost(mate);
                         SetCooldown(herbivore);
                         SetCooldown(mate);
-                        _eventSystem.OnEntityBorn(offspring);
-                        _eventSystem.OnEntityReproduced(herbivore, mate, offspring);
+                        eventSystem.OnEntityBorn(offspring);
+                        eventSystem.OnEntityReproduced(herbivore, mate, offspring);
                     }
                 }
             }
@@ -120,29 +126,29 @@ namespace Terrarium.Logic.Simulation
 
         private void TryReproduceCarnivores()
         {
-            if (_world.Carnivores.Count >= MaxCarnivores) return;
+            if (world.Carnivores.Count >= MaxCarnivores) return;
 
             double chance = Math.Clamp(BaseReproductionChance * CarnivoreReproductionChanceMultiplier, 0.0, 1.0);
-            _carnivoreIterationBuffer.Clear();
-            _carnivoreIterationBuffer.AddRange(_world.Carnivores);
+            carnivoreIterationBuffer.Clear();
+            carnivoreIterationBuffer.AddRange(world.Carnivores);
 
-            foreach (var carnivore in _carnivoreIterationBuffer)
+            foreach (var carnivore in carnivoreIterationBuffer)
             {
                 if (!CanReproduce(carnivore)) continue;
 
-                var mate = FindMate(carnivore, _world.Carnivores);
-                if (mate != null && _random.NextDouble() < chance)
+                var mate = FindMate(carnivore, world.Carnivores);
+                if (mate != null && random.NextDouble() < chance)
                 {
                     var offspring = CreateOffspring(carnivore, mate);
                     if (offspring != null)
                     {
-                        _world.AddCarnivore((Carnivore)offspring);
+                        world.AddCarnivore((Carnivore)offspring);
                         ApplyReproductionCost(carnivore);
                         ApplyReproductionCost(mate);
                         SetCooldown(carnivore);
                         SetCooldown(mate);
-                        _eventSystem.OnEntityBorn(offspring);
-                        _eventSystem.OnEntityReproduced(carnivore, mate, offspring);
+                        eventSystem.OnEntityBorn(offspring);
+                        eventSystem.OnEntityReproduced(carnivore, mate, offspring);
                     }
                 }
             }
@@ -159,10 +165,11 @@ namespace Terrarium.Logic.Simulation
                    creature.Health >= MinHealthForReproduction &&
                    creature.Hunger <= MaxHungerForReproduction &&
                    creature.Age >= MinAgeForReproduction &&
-                   !_reproductionCooldowns.ContainsKey(creature.Id);
+                   !reproductionCooldowns.ContainsKey(creature.Id);
         }
 
-        private T? FindMate<T>(T creature, IEnumerable<T> potentialMates) where T : Creature
+        private T? FindMate<T>(T creature, IEnumerable<T> potentialMates)
+            where T : Creature
         {
             foreach (var potential in potentialMates)
             {
@@ -177,11 +184,11 @@ namespace Terrarium.Logic.Simulation
         {
             double midX = (parent1.X + parent2.X) / 2;
             double midY = (parent1.Y + parent2.Y) / 2;
-            double angle = _random.NextDouble() * Math.PI * 2;
-            double offsetX = Math.Cos(angle) * OffspringSpawnRadius * _random.NextDouble();
-            double offsetY = Math.Sin(angle) * OffspringSpawnRadius * _random.NextDouble();
-            double spawnX = Math.Clamp(midX + offsetX, 0, _world.Width);
-            double spawnY = Math.Clamp(midY + offsetY, 0, _world.Height);
+            double angle = random.NextDouble() * Math.PI * 2;
+            double offsetX = Math.Cos(angle) * OffspringSpawnRadius * random.NextDouble();
+            double offsetY = Math.Sin(angle) * OffspringSpawnRadius * random.NextDouble();
+            double spawnX = Math.Clamp(midX + offsetX, 0, world.Width);
+            double spawnY = Math.Clamp(midY + offsetY, 0, world.Height);
 
             return parent1 switch
             {
@@ -197,8 +204,8 @@ namespace Terrarium.Logic.Simulation
             creature.Feed(-ReproductionHungerCost);
         }
 
-        private void SetCooldown(Creature creature) => _reproductionCooldowns[creature.Id] = ReproductionCooldown;
+        private void SetCooldown(Creature creature) => reproductionCooldowns[creature.Id] = ReproductionCooldown;
 
-        public void ClearCooldown(int creatureId) => _reproductionCooldowns.Remove(creatureId);
+        public void ClearCooldown(int creatureId) => reproductionCooldowns.Remove(creatureId);
     }
 }

@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Unit tests for DayNightCycle.
     /// </summary>
@@ -150,8 +150,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

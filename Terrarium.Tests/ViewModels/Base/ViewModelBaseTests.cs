@@ -1,8 +1,8 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Desktop.ViewModels.Base;
+namespace Terrarium.Tests.ViewModels.Base;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.ViewModels.Base;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Terrarium.Desktop.ViewModels.Base;
 
 /// <summary>
 /// Tests for ViewModelBase to ensure INotifyPropertyChanged works correctly.
@@ -12,19 +12,19 @@ public class ViewModelBaseTests
 {
     private class TestViewModel : ViewModelBase
     {
-        private string _testProperty = "";
-        private int _counter;
+        private string testProperty = string.Empty;
+        private int counter;
 
         public string TestProperty
         {
-            get => _testProperty;
-            set => SetProperty(ref _testProperty, value);
+            get => testProperty;
+            set => SetProperty(ref testProperty, value);
         }
 
         public int Counter
         {
-            get => _counter;
-            set => SetProperty(ref _counter, value);
+            get => counter;
+            set => SetProperty(ref counter, value);
         }
 
         public void RaisePropertyChangedManually(string propertyName)
@@ -121,8 +121,3 @@ public class ViewModelBaseTests
         Assert.AreEqual(42, viewModel.Counter);
     }
 }
-
-
-
-
-

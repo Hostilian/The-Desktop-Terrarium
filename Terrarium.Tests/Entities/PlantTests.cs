@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Entities
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Unit tests for Plant entity growth and behavior.
     /// Tests the Logic layer independently from the UI.
@@ -98,8 +98,3 @@ namespace Terrarium.Tests.Entities
         }
     }
 }
-
-
-
-
-

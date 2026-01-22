@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.ViewModels;
+
 using System;
 using System.Windows.Input;
 using Terrarium.Desktop.Commands;
@@ -5,22 +7,20 @@ using Terrarium.Desktop.Services;
 using Terrarium.Desktop.ViewModels.Base;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop.ViewModels;
-
 /// <summary>
 /// ViewModel for MainWindow - handles all UI logic and state without business logic.
 /// Follows MVVM pattern by delegating all operations to services.
 /// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly GodPowerService _godPowerService;
-    private bool _isPaused;
-    private double _simulationSpeed = 1.0;
-    private string _statusMessage = "Ready";
+    private readonly GodPowerService godPowerService;
+    private bool isPaused;
+    private double simulationSpeed = 1.0;
+    private string statusMessage = "Ready";
 
     public MainWindowViewModel(SimulationEngine simulationEngine)
     {
-        _godPowerService = new GodPowerService(simulationEngine);
+        godPowerService = new GodPowerService(simulationEngine);
 
         // Initialize commands
         PlayPauseCommand = new RelayCommand(ExecutePlayPause);
@@ -36,15 +36,13 @@ public class MainWindowViewModel : ViewModelBase
         CorruptionCommand = new RelayCommand(ExecuteCorruption);
     }
 
-    #region Properties
-
     /// <summary>
-    /// Gets or sets whether the simulation is paused.
+    /// Gets or sets a value indicating whether gets or sets whether the simulation is paused.
     /// </summary>
     public bool IsPaused
     {
-        get => _isPaused;
-        set => SetProperty(ref _isPaused, value);
+        get => isPaused;
+        set => SetProperty(ref isPaused, value);
     }
 
     /// <summary>
@@ -52,8 +50,8 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public double SimulationSpeed
     {
-        get => _simulationSpeed;
-        set => SetProperty(ref _simulationSpeed, value);
+        get => simulationSpeed;
+        set => SetProperty(ref simulationSpeed, value);
     }
 
     /// <summary>
@@ -61,29 +59,31 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public string StatusMessage
     {
-        get => _statusMessage;
-        set => SetProperty(ref _statusMessage, value);
+        get => statusMessage;
+        set => SetProperty(ref statusMessage, value);
     }
 
-    #endregion
-
-    #region Commands
-
     public ICommand PlayPauseCommand { get; }
+
     public ICommand SpeedUpCommand { get; }
+
     public ICommand SpawnPlantCommand { get; }
+
     public ICommand SpawnHerbivoreCommand { get; }
+
     public ICommand SpawnCarnivoreCommand { get; }
+
     public ICommand LightningStrikeCommand { get; }
+
     public ICommand MeteorShowerCommand { get; }
+
     public ICommand PlagueCommand { get; }
+
     public ICommand FertilityBlessingCommand { get; }
+
     public ICommand AbundanceCommand { get; }
+
     public ICommand CorruptionCommand { get; }
-
-    #endregion
-
-    #region Command Implementations
 
     private void ExecutePlayPause()
     {
@@ -102,57 +102,55 @@ public class MainWindowViewModel : ViewModelBase
 
     private void ExecuteSpawnPlant()
     {
-        var plant = _godPowerService.SpawnPlant();
+        var plant = godPowerService.SpawnPlant();
         StatusMessage = $"🌱 Plant spawned at ({plant.X:F0}, {plant.Y:F0})";
     }
 
     private void ExecuteSpawnHerbivore()
     {
-        var herbivore = _godPowerService.SpawnHerbivore();
+        var herbivore = godPowerService.SpawnHerbivore();
         StatusMessage = $"🐰 Herbivore spawned at ({herbivore.X:F0}, {herbivore.Y:F0})";
     }
 
     private void ExecuteSpawnCarnivore()
     {
-        var carnivore = _godPowerService.SpawnCarnivore();
+        var carnivore = godPowerService.SpawnCarnivore();
         StatusMessage = $"🐺 Carnivore spawned at ({carnivore.X:F0}, {carnivore.Y:F0})";
     }
 
     private void ExecuteLightningStrike()
     {
-        int struck = _godPowerService.ExecuteLightningStrike();
+        int struck = godPowerService.ExecuteLightningStrike();
         StatusMessage = $"⚡ Lightning struck {struck} entities";
     }
 
     private void ExecuteMeteorShower()
     {
-        int damaged = _godPowerService.ExecuteMeteorShower();
+        int damaged = godPowerService.ExecuteMeteorShower();
         StatusMessage = $"☄️ Meteor shower damaged {damaged} entities";
     }
 
     private void ExecutePlague()
     {
-        int infected = _godPowerService.ExecutePlague();
+        int infected = godPowerService.ExecutePlague();
         StatusMessage = $"💀 Plague infected {infected} creatures";
     }
 
     private void ExecuteFertilityBlessing()
     {
-        double duration = _godPowerService.ApplyFertilityBlessing();
+        double duration = godPowerService.ApplyFertilityBlessing();
         StatusMessage = $"🌸 Fertility blessing for {duration} seconds";
     }
 
     private void ExecuteAbundance()
     {
-        int plants = _godPowerService.CreateAbundance();
+        int plants = godPowerService.CreateAbundance();
         StatusMessage = $"🍎 Created {plants} plants";
     }
 
     private void ExecuteCorruption()
     {
-        int corrupted = _godPowerService.ExecuteCorruption();
+        int corrupted = godPowerService.ExecuteCorruption();
         StatusMessage = $"😈 Corrupted {corrupted} creatures";
     }
-
-    #endregion
 }

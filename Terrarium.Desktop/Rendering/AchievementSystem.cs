@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -6,20 +8,18 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Terrarium.Logic.Simulation.Achievements;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Manages ecosystem achievements and milestones.
 /// </summary>
 public class AchievementSystem
 {
-    private readonly Canvas _canvas;
-    private readonly HashSet<string> _unlockedAchievements;
-    private readonly Queue<Achievement> _pendingAchievements;
-    private Border? _achievementBanner;
-    private double _displayTimer;
-    private bool _isDisplaying;
-    private bool _isVisible = true;
+    private readonly Canvas canvas;
+    private readonly HashSet<string> unlockedAchievements;
+    private readonly Queue<Achievement> pendingAchievements;
+    private Border? achievementBanner;
+    private double displayTimer;
+    private bool isDisplaying;
+    private bool isVisible = true;
 
     private static readonly SolidColorBrush GoldBrush = CreateFrozenBrush(Color.FromRgb(255, 215, 0));
     private static readonly SolidColorBrush LightTextBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
@@ -27,6 +27,7 @@ public class AchievementSystem
         Color.FromArgb(240, 40, 40, 55),
         Color.FromArgb(240, 30, 30, 42),
         90));
+
     private static readonly System.Windows.Media.Effects.DropShadowEffect BannerShadowEffect = Freeze(new System.Windows.Media.Effects.DropShadowEffect
     {
         Color = Color.FromRgb(255, 215, 0),
@@ -44,24 +45,24 @@ public class AchievementSystem
 
     public bool IsVisible
     {
-        get => _isVisible;
+        get => isVisible;
         set
         {
-            _isVisible = value;
-            if (_achievementBanner != null)
+            isVisible = value;
+            if (achievementBanner != null)
             {
-                _achievementBanner.Visibility = _isVisible ? Visibility.Visible : Visibility.Collapsed;
+                achievementBanner.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
     }
 
     public AchievementSystem(Canvas canvas)
     {
-        _canvas = canvas;
-        _unlockedAchievements = new HashSet<string>();
-        _pendingAchievements = new Queue<Achievement>();
-        _displayTimer = 0;
-        _isDisplaying = false;
+        this.canvas = canvas;
+        unlockedAchievements = new HashSet<string>();
+        pendingAchievements = new Queue<Achievement>();
+        displayTimer = 0;
+        isDisplaying = false;
     }
 
     /// <summary>
@@ -80,9 +81,9 @@ public class AchievementSystem
                      currentCarnivores,
                      simulationTime))
         {
-            if (_unlockedAchievements.Add(achievement.Id))
+            if (unlockedAchievements.Add(achievement.Id))
             {
-                _pendingAchievements.Enqueue(new Achievement
+                pendingAchievements.Enqueue(new Achievement
                 {
                     Id = achievement.Id,
                     Title = achievement.Title,
@@ -98,35 +99,35 @@ public class AchievementSystem
     /// </summary>
     public void Update(double deltaTime)
     {
-        if (!_isVisible)
+        if (!isVisible)
         {
             return;
         }
 
-        if (_isDisplaying)
+        if (isDisplaying)
         {
-            _displayTimer -= deltaTime;
-            if (_displayTimer <= 0)
+            displayTimer -= deltaTime;
+            if (displayTimer <= 0)
             {
                 HideBanner();
-                _isDisplaying = false;
+                isDisplaying = false;
             }
         }
 
-        if (!_isDisplaying && _pendingAchievements.Count > 0)
+        if (!isDisplaying && pendingAchievements.Count > 0)
         {
-            var achievement = _pendingAchievements.Dequeue();
+            var achievement = pendingAchievements.Dequeue();
             ShowBanner(achievement);
-            _displayTimer = DisplayDuration;
-            _isDisplaying = true;
+            displayTimer = DisplayDuration;
+            isDisplaying = true;
         }
     }
 
     private void ShowBanner(Achievement achievement)
     {
-        if (_achievementBanner != null)
+        if (achievementBanner != null)
         {
-            _canvas.Children.Remove(_achievementBanner);
+            canvas.Children.Remove(achievementBanner);
         }
 
         var content = new StackPanel
@@ -173,7 +174,7 @@ public class AchievementSystem
         content.Children.Add(icon);
         content.Children.Add(textPanel);
 
-        _achievementBanner = new Border
+        achievementBanner = new Border
         {
             Width = BannerWidth,
             Height = BannerHeight,
@@ -185,12 +186,12 @@ public class AchievementSystem
             Effect = BannerShadowEffect
         };
 
-        double x = (_canvas.ActualWidth - BannerWidth) / 2;
-        Canvas.SetLeft(_achievementBanner, x);
-        Canvas.SetTop(_achievementBanner, -BannerHeight);
-        Canvas.SetZIndex(_achievementBanner, 950);
+        double x = (canvas.ActualWidth - BannerWidth) / 2;
+        Canvas.SetLeft(achievementBanner, x);
+        Canvas.SetTop(achievementBanner, -BannerHeight);
+        Canvas.SetZIndex(achievementBanner, 950);
 
-        _canvas.Children.Add(_achievementBanner);
+        canvas.Children.Add(achievementBanner);
 
         var slideIn = new DoubleAnimation
         {
@@ -199,12 +200,12 @@ public class AchievementSystem
             Duration = TimeSpan.FromMilliseconds(400),
             EasingFunction = new BackEase { EasingMode = EasingMode.EaseOut, Amplitude = 0.3 }
         };
-        _achievementBanner.BeginAnimation(Canvas.TopProperty, slideIn);
+        achievementBanner.BeginAnimation(Canvas.TopProperty, slideIn);
     }
 
     private void HideBanner()
     {
-        if (_achievementBanner == null)
+        if (achievementBanner == null)
         {
             return;
         }
@@ -218,20 +219,20 @@ public class AchievementSystem
 
         slideOut.Completed += (s, e) =>
         {
-            if (_achievementBanner != null)
+            if (achievementBanner != null)
             {
-                _canvas.Children.Remove(_achievementBanner);
-                _achievementBanner = null;
+                canvas.Children.Remove(achievementBanner);
+                achievementBanner = null;
             }
         };
 
-        _achievementBanner.BeginAnimation(Canvas.TopProperty, slideOut);
+        achievementBanner.BeginAnimation(Canvas.TopProperty, slideOut);
     }
 
     /// <summary>
     /// Gets the count of unlocked achievements.
     /// </summary>
-    public int UnlockedCount => _unlockedAchievements.Count;
+    public int UnlockedCount => unlockedAchievements.Count;
 
     /// <summary>
     /// Gets total available achievements.
@@ -245,7 +246,8 @@ public class AchievementSystem
         return brush;
     }
 
-    private static T Freeze<T>(T freezable) where T : Freezable
+    private static T Freeze<T>(T freezable)
+        where T : Freezable
     {
         if (freezable.CanFreeze)
         {
@@ -259,6 +261,8 @@ public class AchievementSystem
 internal class Achievement
 {
     public string Id { get; set; } = string.Empty;
+
     public string Title { get; set; } = string.Empty;
+
     public string Description { get; set; } = string.Empty;
 }

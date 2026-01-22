@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace Terrarium.Logic.Simulation
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents the different factions in the god simulator.
     /// Each faction has unique abilities, visuals, and behaviors.
@@ -46,47 +46,47 @@ namespace Terrarium.Logic.Simulation
     public class Faction
     {
         /// <summary>
-        /// The type of this faction.
+        /// Gets the type of this faction.
         /// </summary>
         public FactionType Type { get; }
 
         /// <summary>
-        /// Display name of the faction.
+        /// Gets display name of the faction.
         /// </summary>
         public string? Name { get; }
 
         /// <summary>
-        /// Color associated with this faction.
+        /// Gets color associated with this faction.
         /// </summary>
         public string? Color { get; }
 
         /// <summary>
-        /// Current population count.
+        /// Gets or sets current population count.
         /// </summary>
         public int Population { get; set; }
 
         /// <summary>
-        /// Territory control percentage (0-100).
+        /// Gets or sets territory control percentage (0-100).
         /// </summary>
         public double TerritoryControl { get; set; }
 
         /// <summary>
-        /// Resources owned by this faction.
+        /// Gets resources owned by this faction.
         /// </summary>
         public Dictionary<string, int> Resources { get; } = new();
 
         /// <summary>
-        /// Relationships with other factions (-100 to 100).
+        /// Gets relationships with other factions (-100 to 100).
         /// </summary>
         public Dictionary<FactionType, int> Relationships { get; } = new();
 
         /// <summary>
-        /// Special abilities of this faction.
+        /// Gets special abilities of this faction.
         /// </summary>
         public List<string> Abilities { get; } = new();
 
         /// <summary>
-        /// Lore and backstory of the faction.
+        /// Gets lore and backstory of the faction.
         /// </summary>
         public string? Lore { get; }
 
@@ -199,6 +199,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets the relationship status with another faction.
         /// </summary>
+        /// <returns></returns>
         public string GetRelationshipStatus(FactionType otherFaction)
         {
             if (!Relationships.TryGetValue(otherFaction, out int value))
@@ -224,6 +225,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Consumes resources from this faction.
         /// </summary>
+        /// <returns></returns>
         public bool ConsumeResource(string resourceType, int amount)
         {
             if (!Resources.ContainsKey(resourceType) || Resources[resourceType] < amount)

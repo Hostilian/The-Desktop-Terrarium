@@ -1,7 +1,7 @@
+namespace Terrarium.Desktop.Commands;
+
 using System;
 using System.Windows.Input;
-
-namespace Terrarium.Desktop.Commands;
 
 /// <summary>
 /// A command whose sole purpose is to relay its functionality to other objects by invoking delegates.
@@ -9,26 +9,29 @@ namespace Terrarium.Desktop.Commands;
 /// </summary>
 public class RelayCommand : ICommand
 {
-    private readonly Action _execute;
-    private readonly Func<bool>? _canExecute;
+    private readonly Action execute;
+    private readonly Func<bool>? canExecute;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="RelayCommand"/> class.
     /// Initializes a new instance of RelayCommand that can always execute.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
-    public RelayCommand(Action execute) : this(execute, null)
+    public RelayCommand(Action execute)
+        : this(execute, null)
     {
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="RelayCommand"/> class.
     /// Initializes a new instance of RelayCommand.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
     public RelayCommand(Action execute, Func<bool>? canExecute)
     {
-        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-        _canExecute = canExecute;
+        this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        this.canExecute = canExecute;
     }
 
     public event EventHandler? CanExecuteChanged
@@ -39,12 +42,12 @@ public class RelayCommand : ICommand
 
     public bool CanExecute(object? parameter)
     {
-        return _canExecute == null || _canExecute();
+        return canExecute == null || canExecute();
     }
 
     public void Execute(object? parameter)
     {
-        _execute();
+        execute();
     }
 
     /// <summary>
@@ -62,17 +65,18 @@ public class RelayCommand : ICommand
 /// <typeparam name="T">The type of the command parameter.</typeparam>
 public class RelayCommand<T> : ICommand
 {
-    private readonly Action<T?> _execute;
-    private readonly Func<T?, bool>? _canExecute;
+    private readonly Action<T?> execute;
+    private readonly Func<T?, bool>? canExecute;
 
-    public RelayCommand(Action<T?> execute) : this(execute, null)
+    public RelayCommand(Action<T?> execute)
+        : this(execute, null)
     {
     }
 
     public RelayCommand(Action<T?> execute, Func<T?, bool>? canExecute)
     {
-        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-        _canExecute = canExecute;
+        this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        this.canExecute = canExecute;
     }
 
     public event EventHandler? CanExecuteChanged
@@ -83,12 +87,12 @@ public class RelayCommand<T> : ICommand
 
     public bool CanExecute(object? parameter)
     {
-        return _canExecute == null || _canExecute((T?)parameter);
+        return canExecute == null || canExecute((T?)parameter);
     }
 
     public void Execute(object? parameter)
     {
-        _execute((T?)parameter);
+        execute((T?)parameter);
     }
 
     public void RaiseCanExecuteChanged()

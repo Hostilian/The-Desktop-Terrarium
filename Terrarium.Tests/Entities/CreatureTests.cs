@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Entities
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Unit tests for Creature movement and hunger mechanics.
     /// </summary>
@@ -129,8 +129,3 @@ namespace Terrarium.Tests.Entities
         }
     }
 }
-
-
-
-
-

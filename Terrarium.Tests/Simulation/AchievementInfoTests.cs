@@ -1,9 +1,9 @@
-
-using Terrarium.Logic.Simulation.Achievements;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation.Achievements;
+
+    [TestClass]
     /// <summary>
     /// Tests for AchievementInfo record to achieve 100% coverage.
     /// </summary>
@@ -44,8 +44,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

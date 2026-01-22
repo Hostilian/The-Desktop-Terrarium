@@ -1,20 +1,20 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
-namespace Terrarium.Desktop.Rendering;
 
 /// <summary>
 /// Displays session statistics including runtime and day count.
 /// </summary>
 public class SessionTimer
 {
-    private readonly Canvas _canvas;
-    private Border? _container;
-    private TextBlock? _timeText;
-    private TextBlock? _dayText;
-    private TextBlock? _generationText;
+    private readonly Canvas canvas;
+    private Border? container;
+    private TextBlock? timeText;
+    private TextBlock? dayText;
+    private TextBlock? generationText;
 
     private static readonly Brush ContainerBackgroundBrush = CreateFrozenBrush(Color.FromArgb(180, 20, 30, 40));
     private static readonly Brush ContainerBorderBrush = CreateFrozenBrush(Color.FromRgb(70, 70, 70));
@@ -26,11 +26,11 @@ public class SessionTimer
     private static readonly SolidColorBrush MilestoneOrangeBrush = CreateFrozenBrush(Color.FromRgb(255, 180, 100));
     private static readonly SolidColorBrush MilestoneGreenBrush = CreateFrozenBrush(Color.FromRgb(100, 255, 180));
 
-    private double _sessionTime;
-    private int _dayCount;
-    private int _generationCount;
+    private double sessionTime;
+    private int dayCount;
+    private int generationCount;
 
-    private int _lastDisplayedSessionSecond = -1;
+    private int lastDisplayedSessionSecond = -1;
 
     private const double DayDuration = 120.0; // 2 minutes per in-game day
 
@@ -40,16 +40,16 @@ public class SessionTimer
 
     public SessionTimer(Canvas canvas)
     {
-        _canvas = canvas;
-        _sessionTime = 0;
-        _dayCount = 1;
-        _generationCount = 1;
+        this.canvas = canvas;
+        sessionTime = 0;
+        dayCount = 1;
+        generationCount = 1;
         CreateUI();
     }
 
     private void CreateUI()
     {
-        _container = new Border
+        container = new Border
         {
             Background = ContainerBackgroundBrush,
             BorderBrush = ContainerBorderBrush,
@@ -73,7 +73,7 @@ public class SessionTimer
         };
         stack.Children.Add(clockIcon);
 
-        _timeText = new TextBlock
+        timeText = new TextBlock
         {
             Text = "00:00",
             FontSize = 11,
@@ -82,7 +82,7 @@ public class SessionTimer
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(0, 0, 10, 0)
         };
-        stack.Children.Add(_timeText);
+        stack.Children.Add(timeText);
 
         // Day counter
         var dayIcon = new TextBlock
@@ -94,7 +94,7 @@ public class SessionTimer
         };
         stack.Children.Add(dayIcon);
 
-        _dayText = new TextBlock
+        dayText = new TextBlock
         {
             Text = "Day 1",
             FontSize = 11,
@@ -102,7 +102,7 @@ public class SessionTimer
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(0, 0, 10, 0)
         };
-        stack.Children.Add(_dayText);
+        stack.Children.Add(dayText);
 
         // Generation counter
         var genIcon = new TextBlock
@@ -114,33 +114,33 @@ public class SessionTimer
         };
         stack.Children.Add(genIcon);
 
-        _generationText = new TextBlock
+        generationText = new TextBlock
         {
             Text = "Gen 1",
             FontSize = 11,
             Foreground = GenerationBaseBrush,
             VerticalAlignment = VerticalAlignment.Center
         };
-        stack.Children.Add(_generationText);
+        stack.Children.Add(generationText);
 
-        _container.Child = stack;
+        container.Child = stack;
 
-        Canvas.SetZIndex(_container, 700);
-        _canvas.Children.Add(_container);
+        Canvas.SetZIndex(container, 700);
+        canvas.Children.Add(container);
 
         UpdatePosition();
     }
 
     private void UpdatePosition()
     {
-        if (_container == null)
+        if (container == null)
         {
             return;
         }
 
-        double canvasWidth = _canvas.ActualWidth > 0 ? _canvas.ActualWidth : 800;
-        Canvas.SetLeft(_container, (canvasWidth - 200) / 2);
-        Canvas.SetTop(_container, 15);
+        double canvasWidth = canvas.ActualWidth > 0 ? canvas.ActualWidth : 800;
+        Canvas.SetLeft(container, (canvasWidth - 200) / 2);
+        Canvas.SetTop(container, 15);
     }
 
     /// <summary>
@@ -148,54 +148,54 @@ public class SessionTimer
     /// </summary>
     public void Update(double deltaTime)
     {
-        if (!IsEnabled || _container == null)
+        if (!IsEnabled || container == null)
         {
-            if (_container != null)
+            if (container != null)
             {
-                _container.Visibility = Visibility.Collapsed;
+                container.Visibility = Visibility.Collapsed;
             }
 
             return;
         }
 
-        _container.Visibility = Visibility.Visible;
-        _sessionTime += deltaTime;
+        container.Visibility = Visibility.Visible;
+        sessionTime += deltaTime;
 
-        int newDayCount = (int)(_sessionTime / DayDuration) + 1;
-        if (newDayCount != _dayCount)
+        int newDayCount = (int)(sessionTime / DayDuration) + 1;
+        if (newDayCount != dayCount)
         {
-            _dayCount = newDayCount;
-            if (_dayText != null)
+            dayCount = newDayCount;
+            if (dayText != null)
             {
-                _dayText.Text = $"Day {_dayCount}";
+                dayText.Text = $"Day {dayCount}";
             }
         }
 
         // Update time display (MM:SS format)
-        if (_timeText != null)
+        if (timeText != null)
         {
-            int totalSeconds = (int)_sessionTime;
-            if (totalSeconds != _lastDisplayedSessionSecond)
+            int totalSeconds = (int)sessionTime;
+            if (totalSeconds != lastDisplayedSessionSecond)
             {
-                _lastDisplayedSessionSecond = totalSeconds;
+                lastDisplayedSessionSecond = totalSeconds;
                 int minutes = totalSeconds / 60;
                 int seconds = totalSeconds % 60;
-                _timeText.Text = $"{minutes:D2}:{seconds:D2}";
+                timeText.Text = $"{minutes:D2}:{seconds:D2}";
             }
 
             Brush desiredBrush = Brushes.White;
-            if (_sessionTime > 3600) // Over 1 hour
+            if (sessionTime > 3600) // Over 1 hour
             {
                 desiredBrush = MilestoneGoldBrush;
             }
-            else if (_sessionTime > 1800) // Over 30 minutes
+            else if (sessionTime > 1800) // Over 30 minutes
             {
                 desiredBrush = TimeGreenBrush;
             }
 
-            if (!ReferenceEquals(_timeText.Foreground, desiredBrush))
+            if (!ReferenceEquals(timeText.Foreground, desiredBrush))
             {
-                _timeText.Foreground = desiredBrush;
+                timeText.Foreground = desiredBrush;
             }
         }
 
@@ -207,29 +207,29 @@ public class SessionTimer
     /// </summary>
     public void IncrementGeneration()
     {
-        _generationCount++;
-        if (_generationText != null)
+        generationCount++;
+        if (generationText != null)
         {
-            _generationText.Text = $"Gen {_generationCount}";
+            generationText.Text = $"Gen {generationCount}";
 
             // Milestone colors
             Brush? desiredBrush = null;
-            if (_generationCount >= 100)
+            if (generationCount >= 100)
             {
                 desiredBrush = MilestoneGoldBrush;
             }
-            else if (_generationCount >= 50)
+            else if (generationCount >= 50)
             {
                 desiredBrush = MilestoneOrangeBrush;
             }
-            else if (_generationCount >= 20)
+            else if (generationCount >= 20)
             {
                 desiredBrush = MilestoneGreenBrush;
             }
 
-            if (desiredBrush != null && !ReferenceEquals(_generationText.Foreground, desiredBrush))
+            if (desiredBrush != null && !ReferenceEquals(generationText.Foreground, desiredBrush))
             {
-                _generationText.Foreground = desiredBrush;
+                generationText.Foreground = desiredBrush;
             }
         }
     }
@@ -244,20 +244,22 @@ public class SessionTimer
     /// <summary>
     /// Gets the current session time in seconds.
     /// </summary>
-    public double GetSessionTime() => _sessionTime;
+    /// <returns></returns>
+    public double GetSessionTime() => sessionTime;
 
     /// <summary>
     /// Gets the current day count.
     /// </summary>
-    public int GetDayCount() => _dayCount;
+    /// <returns></returns>
+    public int GetDayCount() => dayCount;
 
     /// <summary>
     /// Sets the session time (for loading saved games).
     /// </summary>
     public void SetSessionTime(double time)
     {
-        _sessionTime = time;
-        _dayCount = (int)(time / DayDuration) + 1;
+        sessionTime = time;
+        dayCount = (int)(time / DayDuration) + 1;
     }
 
     /// <summary>
@@ -265,10 +267,10 @@ public class SessionTimer
     /// </summary>
     public void SetGenerationCount(int count)
     {
-        _generationCount = count;
-        if (_generationText != null)
+        generationCount = count;
+        if (generationText != null)
         {
-            _generationText.Text = $"Gen {_generationCount}";
+            generationText.Text = $"Gen {generationCount}";
         }
     }
 
@@ -277,22 +279,22 @@ public class SessionTimer
     /// </summary>
     public void Reset()
     {
-        _sessionTime = 0;
-        _dayCount = 1;
-        _generationCount = 1;
-        if (_timeText != null)
+        sessionTime = 0;
+        dayCount = 1;
+        generationCount = 1;
+        if (timeText != null)
         {
-            _timeText.Text = "00:00";
+            timeText.Text = "00:00";
         }
 
-        if (_dayText != null)
+        if (dayText != null)
         {
-            _dayText.Text = "Day 1";
+            dayText.Text = "Day 1";
         }
 
-        if (_generationText != null)
+        if (generationText != null)
         {
-            _generationText.Text = "Gen 1";
+            generationText.Text = "Gen 1";
         }
     }
 }

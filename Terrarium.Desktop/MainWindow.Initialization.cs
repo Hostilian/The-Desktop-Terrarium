@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -10,11 +12,8 @@ using Terrarium.Desktop.Rendering;
 using Terrarium.Logic.Persistence;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop;
-
 public partial class MainWindow
 {
-
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         PositionWindowAtBottom();
@@ -69,9 +68,9 @@ public partial class MainWindow
                 Environment.Exit(1);
                 return;
             }
-            _simulationEngine = new SimulationEngine(800, 600, type);
-            _simulationEngine.Initialize();
-            _terrariumType = type;
+            simulationEngine = new SimulationEngine(800, 600, type);
+            simulationEngine.Initialize();
+            terrariumType = type;
         }
         catch (Exception ex)
         {
@@ -83,15 +82,15 @@ public partial class MainWindow
 
     private void InitializeRendering()
     {
-        _renderer = new Renderer(RenderCanvas, _terrariumType);
+        renderer = new Renderer(RenderCanvas, terrariumType);
 
-        _renderTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(RenderInterval) };
-        _renderTimer.Tick += RenderTimer_Tick;
+        renderTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(RenderInterval) };
+        renderTimer.Tick += RenderTimer_Tick;
     }
 
     private void SetTheme()
     {
-        switch (_terrariumType)
+        switch (terrariumType)
         {
             case Terrarium.Logic.Simulation.TerrariumType.Forest:
                 RenderCanvas.Background = new SolidColorBrush(Color.FromRgb(34, 139, 34)); // Forest green
@@ -150,25 +149,25 @@ public partial class MainWindow
 
     private void InitializeSystemMonitoring()
     {
-        _systemMonitor = new SystemMonitor();
-        _systemMonitorTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval) };
-        _systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
+        systemMonitor = new SystemMonitor();
+        systemMonitorTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(SystemMonitorInterval) };
+        systemMonitorTimer.Tick += SystemMonitorTimer_Tick;
     }
 
     private async Task InitializeSaveSystem()
     {
-        _saveManager = new SaveManager();
-        if (!_saveManager.SaveFileExists())
+        saveManager = new SaveManager();
+        if (!saveManager.SaveFileExists())
         {
             return;
         }
 
         try
         {
-            var loadedWorld = await _saveManager.LoadWorldAsync();
-            if (_simulationEngine != null)
+            var loadedWorld = await saveManager.LoadWorldAsync();
+            if (simulationEngine != null)
             {
-                _simulationEngine = new SimulationEngine(loadedWorld);
+                simulationEngine = new SimulationEngine(loadedWorld);
             }
         }
         catch (Exception ex)
@@ -180,20 +179,20 @@ public partial class MainWindow
 
     private void InitializeSoundSystem()
     {
-        _soundManager = new SoundManager();
+        soundManager = new SoundManager();
         // Start playing theme music based on terrarium type
         PlayThemeMusic();
     }
 
     private void PlayThemeMusic()
     {
-        if (_soundManager == null)
+        if (soundManager == null)
         {
             return;
         }
 
         // Set theme for sound manager
-        _soundManager.SetTheme(_terrariumType);
+        soundManager.SetTheme(terrariumType);
 
         // Update visual theme
         UpdateThemeVisuals();
@@ -203,7 +202,7 @@ public partial class MainWindow
     {
         string? imagePath = null;
 
-        switch (_terrariumType)
+        switch (terrariumType)
         {
             case TerrariumType.Forest:
                 imagePath = "Assets/Images/forest_background.jpg";
@@ -231,7 +230,7 @@ public partial class MainWindow
         {
             // Fallback to solid color if image not found
             var solidBrush = new SolidColorBrush();
-            switch (_terrariumType)
+            switch (terrariumType)
             {
                 case TerrariumType.Forest:
                     solidBrush.Color = Color.FromRgb(34, 139, 34);
@@ -261,8 +260,8 @@ public partial class MainWindow
 
     private void StartSimulation()
     {
-        _frameStopwatch.Start();
-        _renderTimer?.Start();
-        _systemMonitorTimer?.Start();
+        frameStopwatch.Start();
+        renderTimer?.Start();
+        systemMonitorTimer?.Start();
     }
 }

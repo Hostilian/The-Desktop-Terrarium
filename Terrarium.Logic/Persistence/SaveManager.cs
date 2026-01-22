@@ -1,11 +1,11 @@
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Persistence
 {
+    using System.Linq;
+    using System.Text.Json;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Handles saving and loading simulation state.
     /// </summary>
@@ -367,12 +367,19 @@ namespace Terrarium.Logic.Persistence
         public const int CurrentSchemaVersion = 1;
 
         public int SchemaVersion { get; set; } = CurrentSchemaVersion;
+
         public double Width { get; set; }
+
         public double Height { get; set; }
+
         public Terrarium.Logic.Simulation.TerrariumType TerrariumType { get; set; }
+
         public List<EntitySaveData> Plants { get; set; } = new();
+
         public List<EntitySaveData> Herbivores { get; set; } = new();
+
         public List<EntitySaveData> Carnivores { get; set; } = new();
+
         public DateTime SaveDate { get; set; }
     }
 
@@ -382,15 +389,25 @@ namespace Terrarium.Logic.Persistence
     public class EntitySaveData
     {
         public int? Id { get; set; }
+
         public double X { get; set; }
+
         public double Y { get; set; }
+
         public double Health { get; set; }
+
         public double Age { get; set; }
+
         public double? Hunger { get; set; }
+
         public double VelocityX { get; set; }
+
         public double VelocityY { get; set; }
+
         public double? Size { get; set; }
+
         public double? WaterLevel { get; set; }
+
         public string? Type { get; set; }
     }
 }

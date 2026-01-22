@@ -1,9 +1,9 @@
-
-using Terrarium.Desktop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Desktop
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Desktop;
+
+    [TestClass]
     /// <summary>
     /// Tests for TerrariumTypeOption to achieve 100% coverage.
     /// </summary>
@@ -27,8 +27,3 @@ namespace Terrarium.Tests.Desktop
         }
     }
 }
-
-
-
-
-

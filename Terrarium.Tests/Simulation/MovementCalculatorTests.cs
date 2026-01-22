@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Unit tests for MovementCalculator.
     /// Tests movement logic separately from entity classes.
@@ -79,8 +79,3 @@ namespace Terrarium.Tests.Simulation
         }
     }
 }
-
-
-
-
-

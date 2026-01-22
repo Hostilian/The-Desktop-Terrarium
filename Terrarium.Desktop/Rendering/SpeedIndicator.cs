@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,28 +7,26 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Shows the current simulation speed with visual feedback.
 /// </summary>
 public class SpeedIndicator
 {
-    private readonly Canvas _canvas;
-    private Border? _container;
-    private TextBlock? _speedText;
-    private readonly Rectangle[] _speedBars;
-    private readonly SolidColorBrush[] _speedBarBrushes;
-    private double _currentSpeed;
-    private double _displaySpeed;
-    private double _hideTimer;
+    private readonly Canvas canvas;
+    private Border? container;
+    private TextBlock? speedText;
+    private readonly Rectangle[] speedBars;
+    private readonly SolidColorBrush[] speedBarBrushes;
+    private double currentSpeed;
+    private double displaySpeed;
+    private double hideTimer;
 
-    private int _lastDisplayedSpeedTenths = int.MinValue;
-    private Brush? _lastSpeedForeground;
+    private int lastDisplayedSpeedTenths = int.MinValue;
+    private Brush? lastSpeedForeground;
 
-    private readonly SolidColorBrush _speedTextSlowBrush = new(Color.FromRgb(100, 150, 255));
-    private readonly SolidColorBrush _speedTextFastBrush = new(Color.FromRgb(255, 150, 100));
-    private readonly SolidColorBrush _speedTextNormalBrush = new(Colors.White);
+    private readonly SolidColorBrush speedTextSlowBrush = new(Color.FromRgb(100, 150, 255));
+    private readonly SolidColorBrush speedTextFastBrush = new(Color.FromRgb(255, 150, 100));
+    private readonly SolidColorBrush speedTextNormalBrush = new(Colors.White);
 
     private static readonly Color InactiveBarColor = Color.FromRgb(60, 60, 60);
 
@@ -37,25 +37,25 @@ public class SpeedIndicator
 
     public SpeedIndicator(Canvas canvas)
     {
-        _canvas = canvas;
-        _speedBars = new Rectangle[5];
-        _speedBarBrushes = new SolidColorBrush[5];
-        _currentSpeed = 1.0;
-        _displaySpeed = 1.0;
+        this.canvas = canvas;
+        speedBars = new Rectangle[5];
+        speedBarBrushes = new SolidColorBrush[5];
+        currentSpeed = 1.0;
+        displaySpeed = 1.0;
 
-        if (_speedTextSlowBrush.CanFreeze)
+        if (speedTextSlowBrush.CanFreeze)
         {
-            _speedTextSlowBrush.Freeze();
+            speedTextSlowBrush.Freeze();
         }
 
-        if (_speedTextFastBrush.CanFreeze)
+        if (speedTextFastBrush.CanFreeze)
         {
-            _speedTextFastBrush.Freeze();
+            speedTextFastBrush.Freeze();
         }
 
-        if (_speedTextNormalBrush.CanFreeze)
+        if (speedTextNormalBrush.CanFreeze)
         {
-            _speedTextNormalBrush.Freeze();
+            speedTextNormalBrush.Freeze();
         }
 
         CreateUI();
@@ -63,7 +63,7 @@ public class SpeedIndicator
 
     private void CreateUI()
     {
-        _container = new Border
+        container = new Border
         {
             Background = CreateFrozenBrush(Color.FromArgb(200, 20, 30, 40)),
             BorderBrush = CreateFrozenBrush(Color.FromRgb(100, 100, 100)),
@@ -100,22 +100,22 @@ public class SpeedIndicator
         for (int i = 0; i < 5; i++)
         {
             var brush = new SolidColorBrush(InactiveBarColor);
-            _speedBarBrushes[i] = brush;
-            _speedBars[i] = new Rectangle
+            speedBarBrushes[i] = brush;
+            speedBars[i] = new Rectangle
             {
                 Width = 4,
-                Height = 8 + i * 3,
+                Height = 8 + (i * 3),
                 Fill = brush,
                 Margin = new Thickness(2, 0, 2, 0),
                 RadiusX = 1,
                 RadiusY = 1,
                 VerticalAlignment = VerticalAlignment.Bottom
             };
-            barsPanel.Children.Add(_speedBars[i]);
+            barsPanel.Children.Add(speedBars[i]);
         }
         stack.Children.Add(barsPanel);
 
-        _speedText = new TextBlock
+        speedText = new TextBlock
         {
             Text = "1.0x",
             FontSize = 12,
@@ -123,27 +123,27 @@ public class SpeedIndicator
             Foreground = Brushes.White,
             VerticalAlignment = VerticalAlignment.Center
         };
-        stack.Children.Add(_speedText);
+        stack.Children.Add(speedText);
 
-        _container.Child = stack;
+        container.Child = stack;
 
-        Canvas.SetZIndex(_container, 750);
-        _canvas.Children.Add(_container);
+        Canvas.SetZIndex(container, 750);
+        canvas.Children.Add(container);
 
         UpdatePosition();
     }
 
     private void UpdatePosition()
     {
-        if (_container == null)
+        if (container == null)
         {
             return;
         }
 
-        double canvasWidth = _canvas.ActualWidth > 0 ? _canvas.ActualWidth : 800;
-        Canvas.SetLeft(_container, (canvasWidth - 120) / 2);
-        Canvas.SetBottom(_container, 20);
-        Canvas.SetTop(_container, double.NaN);
+        double canvasWidth = canvas.ActualWidth > 0 ? canvas.ActualWidth : 800;
+        Canvas.SetLeft(container, (canvasWidth - 120) / 2);
+        Canvas.SetBottom(container, 20);
+        Canvas.SetTop(container, double.NaN);
     }
 
     /// <summary>
@@ -151,10 +151,10 @@ public class SpeedIndicator
     /// </summary>
     public void SetSpeed(double speed)
     {
-        if (Math.Abs(_currentSpeed - speed) > 0.01)
+        if (Math.Abs(currentSpeed - speed) > 0.01)
         {
-            _currentSpeed = speed;
-            _hideTimer = HideDelay;
+            currentSpeed = speed;
+            hideTimer = HideDelay;
             this.Show();
         }
     }
@@ -164,38 +164,38 @@ public class SpeedIndicator
     /// </summary>
     public void Update(double deltaTime)
     {
-        if (!IsEnabled || _container == null)
+        if (!IsEnabled || container == null)
         {
             return;
         }
 
-        _displaySpeed += (_currentSpeed - _displaySpeed) * AnimationSpeed * deltaTime;
-        _displaySpeed = Math.Clamp(_displaySpeed, 0.1, 5.0);
+        displaySpeed += (currentSpeed - displaySpeed) * AnimationSpeed * deltaTime;
+        displaySpeed = Math.Clamp(displaySpeed, 0.1, 5.0);
 
-        if (_speedText != null)
+        if (speedText != null)
         {
-            int speedTenths = (int)Math.Round(_displaySpeed * 10.0);
-            if (speedTenths != _lastDisplayedSpeedTenths)
+            int speedTenths = (int)Math.Round(displaySpeed * 10.0);
+            if (speedTenths != lastDisplayedSpeedTenths)
             {
-                _speedText.Text = $"{speedTenths / 10.0:F1}x";
-                _lastDisplayedSpeedTenths = speedTenths;
+                speedText.Text = $"{speedTenths / 10.0:F1}x";
+                lastDisplayedSpeedTenths = speedTenths;
             }
 
-            Brush desiredForeground = _displaySpeed switch
+            Brush desiredForeground = displaySpeed switch
             {
-                < 0.5 => _speedTextSlowBrush,
-                > 2.0 => _speedTextFastBrush,
-                _ => _speedTextNormalBrush
+                < 0.5 => speedTextSlowBrush,
+                > 2.0 => speedTextFastBrush,
+                _ => speedTextNormalBrush
             };
 
-            if (!ReferenceEquals(_lastSpeedForeground, desiredForeground))
+            if (!ReferenceEquals(lastSpeedForeground, desiredForeground))
             {
-                _speedText.Foreground = desiredForeground;
-                _lastSpeedForeground = desiredForeground;
+                speedText.Foreground = desiredForeground;
+                lastSpeedForeground = desiredForeground;
             }
         }
 
-        int activeBars = _displaySpeed switch
+        int activeBars = displaySpeed switch
         {
             < 0.5 => 1,
             < 1.0 => 2,
@@ -204,20 +204,20 @@ public class SpeedIndicator
             _ => 5
         };
 
-        Color activeBarColor = GetSpeedColor(_displaySpeed);
+        Color activeBarColor = GetSpeedColor(displaySpeed);
 
         for (int i = 0; i < 5; i++)
         {
             Color barColor = i < activeBars ? activeBarColor : InactiveBarColor;
-            if (_speedBarBrushes[i].Color != barColor)
+            if (speedBarBrushes[i].Color != barColor)
             {
-                _speedBarBrushes[i].Color = barColor;
+                speedBarBrushes[i].Color = barColor;
             }
         }
 
         // Auto-hide
-        _hideTimer -= deltaTime;
-        if (_hideTimer <= 0)
+        hideTimer -= deltaTime;
+        if (hideTimer <= 0)
         {
             Hide();
         }
@@ -247,7 +247,7 @@ public class SpeedIndicator
 
     private void Show()
     {
-        if (_container == null)
+        if (container == null)
         {
             return;
         }
@@ -258,12 +258,12 @@ public class SpeedIndicator
             Duration = TimeSpan.FromMilliseconds(200),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
         };
-        _container.BeginAnimation(UIElement.OpacityProperty, animation);
+        container.BeginAnimation(UIElement.OpacityProperty, animation);
     }
 
     private void Hide()
     {
-        if (_container == null)
+        if (container == null)
         {
             return;
         }
@@ -274,7 +274,7 @@ public class SpeedIndicator
             Duration = TimeSpan.FromMilliseconds(500),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
         };
-        _container.BeginAnimation(UIElement.OpacityProperty, animation);
+        container.BeginAnimation(UIElement.OpacityProperty, animation);
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ public class SpeedIndicator
     /// </summary>
     public void ForceShow()
     {
-        _hideTimer = HideDelay;
+        hideTimer = HideDelay;
         Show();
     }
 

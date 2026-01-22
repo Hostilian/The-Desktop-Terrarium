@@ -1,36 +1,37 @@
-using System.Collections.Generic;
-using System.Linq;
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Manages factions and their relationships in the god simulator.
     /// </summary>
     public class FactionManager
     {
-        private readonly Dictionary<FactionType, Faction> _factions = new();
+        private readonly Dictionary<FactionType, Faction> factions = new();
 
         /// <summary>
-        /// All factions in the simulation.
+        /// Gets all factions in the simulation.
         /// </summary>
-        public IReadOnlyDictionary<FactionType, Faction> Factions => _factions;
+        public IReadOnlyDictionary<FactionType, Faction> Factions => factions;
 
         public FactionManager()
         {
             // Initialize all factions
             foreach (FactionType factionType in System.Enum.GetValues(typeof(FactionType)))
             {
-                _factions[factionType] = new Faction(factionType);
+                factions[factionType] = new Faction(factionType);
             }
         }
 
         /// <summary>
         /// Gets a faction by type.
         /// </summary>
+        /// <returns></returns>
         public Faction GetFaction(FactionType type)
         {
-            return _factions[type];
+            return factions[type];
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace Terrarium.Logic.Simulation
         public void UpdatePopulations(IEnumerable<Creature> creatures)
         {
             // Reset populations
-            foreach (var faction in _factions.Values)
+            foreach (var faction in factions.Values)
             {
                 faction.Population = 0;
             }
@@ -47,9 +48,9 @@ namespace Terrarium.Logic.Simulation
             // Count current populations
             foreach (var creature in creatures)
             {
-                if (_factions.ContainsKey(creature.Faction))
+                if (factions.ContainsKey(creature.Faction))
                 {
-                    _factions[creature.Faction].Population++;
+                    factions[creature.Faction].Population++;
                 }
             }
         }
@@ -57,22 +58,25 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Gets the dominant faction (highest population).
         /// </summary>
+        /// <returns></returns>
         public Faction? GetDominantFaction()
         {
-            return _factions.Values.OrderByDescending(f => f.Population).FirstOrDefault();
+            return factions.Values.OrderByDescending(f => f.Population).FirstOrDefault();
         }
 
         /// <summary>
         /// Gets factions sorted by population.
         /// </summary>
+        /// <returns></returns>
         public IEnumerable<Faction> GetFactionsByPopulation()
         {
-            return _factions.Values.OrderByDescending(f => f.Population);
+            return factions.Values.OrderByDescending(f => f.Population);
         }
 
         /// <summary>
         /// Checks if two factions are hostile.
         /// </summary>
+        /// <returns></returns>
         public bool AreHostile(FactionType faction1, FactionType faction2)
         {
             if (faction1 == faction2) return false;
@@ -84,6 +88,7 @@ namespace Terrarium.Logic.Simulation
         /// <summary>
         /// Checks if two factions are allied.
         /// </summary>
+        /// <returns></returns>
         public bool AreAllied(FactionType faction1, FactionType faction2)
         {
             if (faction1 == faction2) return true;

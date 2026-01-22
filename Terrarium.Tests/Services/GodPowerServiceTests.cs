@@ -1,9 +1,9 @@
+namespace Terrarium.Tests.Services;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.Services;
 using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Terrarium.Tests.Services;
 
 /// <summary>
 /// Unit tests for GodPowerService to ensure all god powers work correctly.
@@ -11,15 +11,15 @@ namespace Terrarium.Tests.Services;
 [TestClass]
 public class GodPowerServiceTests
 {
-    private SimulationEngine? _engine;
-    private GodPowerService? _service;
+    private SimulationEngine? engine;
+    private GodPowerService? service;
 
     [TestInitialize]
     public void Setup()
     {
-        _engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
-        _engine.Initialize();
-        _service = new GodPowerService(_engine);
+        engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
+        engine.Initialize();
+        service = new GodPowerService(engine);
     }
 
     [TestMethod]
@@ -40,10 +40,10 @@ public class GodPowerServiceTests
     public void LightningStrike_WithNoEntities_ReturnsZero()
     {
         // Remove all entities
-        _engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
-        _service = new GodPowerService(_engine);
+        engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
+        service = new GodPowerService(engine);
 
-        int struck = _service!.ExecuteLightningStrike();
+        int struck = service!.ExecuteLightningStrike();
 
         Assert.AreEqual(0, struck);
     }
@@ -51,9 +51,9 @@ public class GodPowerServiceTests
     [TestMethod]
     public void LightningStrike_WithEntities_DamagesCreatures()
     {
-        int initialCount = _engine!.World.GetAllEntities().Count();
+        int initialCount = engine!.World.GetAllEntities().Count();
 
-        int struck = _service!.ExecuteLightningStrike();
+        int struck = service!.ExecuteLightningStrike();
 
         Assert.IsGreaterThan(0, struck, "Should strike at least one entity");
         Assert.IsLessThanOrEqualTo(struck, 3, "Should not strike more than 3 entities");
@@ -62,10 +62,10 @@ public class GodPowerServiceTests
     [TestMethod]
     public void MeteorShower_WithNoEntities_ReturnsZero()
     {
-        _engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
-        _service = new GodPowerService(_engine);
+        engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
+        service = new GodPowerService(engine);
 
-        int damaged = _service!.ExecuteMeteorShower();
+        int damaged = service!.ExecuteMeteorShower();
 
         Assert.AreEqual(0, damaged);
     }
@@ -73,10 +73,10 @@ public class GodPowerServiceTests
     [TestMethod]
     public void Plague_WithNoCreatures_ReturnsZero()
     {
-        _engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
-        _service = new GodPowerService(_engine);
+        engine = new SimulationEngine(800, 600, TerrariumType.GodSimulator);
+        service = new GodPowerService(engine);
 
-        int infected = _service!.ExecutePlague();
+        int infected = service!.ExecutePlague();
 
         Assert.AreEqual(0, infected);
     }
@@ -84,30 +84,30 @@ public class GodPowerServiceTests
     [TestMethod]
     public void FertilityBlessing_IncreasesReproductionRate()
     {
-        double originalHerbivoreRate = _engine!.ReproductionManager.HerbivoreReproductionChanceMultiplier;
-        double originalCarnivoreRate = _engine.ReproductionManager.CarnivoreReproductionChanceMultiplier;
+        double originalHerbivoreRate = engine!.ReproductionManager.HerbivoreReproductionChanceMultiplier;
+        double originalCarnivoreRate = engine.ReproductionManager.CarnivoreReproductionChanceMultiplier;
 
-        _service!.ApplyFertilityBlessing();
+        service!.ApplyFertilityBlessing();
 
-        Assert.IsGreaterThan(originalHerbivoreRate, _engine.ReproductionManager.HerbivoreReproductionChanceMultiplier);
-        Assert.IsGreaterThan(originalCarnivoreRate, _engine.ReproductionManager.CarnivoreReproductionChanceMultiplier);
+        Assert.IsGreaterThan(originalHerbivoreRate, engine.ReproductionManager.HerbivoreReproductionChanceMultiplier);
+        Assert.IsGreaterThan(originalCarnivoreRate, engine.ReproductionManager.CarnivoreReproductionChanceMultiplier);
     }
 
     [TestMethod]
     public void RemoveFertilityBlessing_RestoresOriginalRate()
     {
-        double originalRate = _engine!.ReproductionManager.HerbivoreReproductionChanceMultiplier;
+        double originalRate = engine!.ReproductionManager.HerbivoreReproductionChanceMultiplier;
 
-        _service!.ApplyFertilityBlessing();
-        _service.RemoveFertilityBlessing();
+        service!.ApplyFertilityBlessing();
+        service.RemoveFertilityBlessing();
 
-        Assert.AreEqual(originalRate, _engine.ReproductionManager.HerbivoreReproductionChanceMultiplier, 0.001);
+        Assert.AreEqual(originalRate, engine.ReproductionManager.HerbivoreReproductionChanceMultiplier, 0.001);
     }
 
     [TestMethod]
     public void CreateAbundance_ReturnsCorrectPlantCount()
     {
-        int plantsCreated = _service!.CreateAbundance();
+        int plantsCreated = service!.CreateAbundance();
 
         Assert.AreEqual(10, plantsCreated);
     }
@@ -115,18 +115,18 @@ public class GodPowerServiceTests
     [TestMethod]
     public void CreateAbundance_ActuallySpawnsPlants()
     {
-        int initialPlantCount = _engine!.World.Plants.Count;
+        int initialPlantCount = engine!.World.Plants.Count;
 
-        int plantsCreated = _service!.CreateAbundance();
+        int plantsCreated = service!.CreateAbundance();
 
-        int finalPlantCount = _engine.World.Plants.Count;
+        int finalPlantCount = engine.World.Plants.Count;
         Assert.IsGreaterThan(0, plantsCreated, "Should create some plants for abundance");
     }
 
     [TestMethod]
     public void SpawnPlant_ReturnsValidPlant()
     {
-        var plant = _service!.SpawnPlant();
+        var plant = service!.SpawnPlant();
 
         Assert.IsNotNull(plant);
         Assert.IsTrue(plant.IsAlive);
@@ -135,7 +135,7 @@ public class GodPowerServiceTests
     [TestMethod]
     public void SpawnHerbivore_ReturnsValidHerbivore()
     {
-        var herbivore = _service!.SpawnHerbivore();
+        var herbivore = service!.SpawnHerbivore();
 
         Assert.IsNotNull(herbivore);
         Assert.IsTrue(herbivore.IsAlive);
@@ -144,14 +144,9 @@ public class GodPowerServiceTests
     [TestMethod]
     public void SpawnCarnivore_ReturnsValidCarnivore()
     {
-        var carnivore = _service!.SpawnCarnivore();
+        var carnivore = service!.SpawnCarnivore();
 
         Assert.IsNotNull(carnivore);
         Assert.IsTrue(carnivore.IsAlive);
     }
 }
-
-
-
-
-

@@ -1,9 +1,9 @@
-
-using Terrarium.Desktop.Constants;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Constants
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Desktop.Constants;
+
+    [TestClass]
     /// <summary>
     /// Tests for Win32Constants to achieve 100% coverage.
     /// </summary>
@@ -13,19 +13,14 @@ namespace Terrarium.Tests.Constants
         public void WM_NC_HITTEST_HasCorrectValue()
         {
             // Assert
-            Assert.AreEqual(0x0084, Win32Constants.WM_NC_HITTEST);
+            Assert.AreEqual(0x0084, Win32Constants.WMNCHITTEST);
         }
 
         [TestMethod]
         public void HT_TRANSPARENT_HasCorrectValue()
         {
             // Assert
-            Assert.AreEqual(-1, Win32Constants.HT_TRANSPARENT);
+            Assert.AreEqual(-1, Win32Constants.HTTRANSPARENT);
         }
     }
 }
-
-
-
-
-

@@ -1,9 +1,9 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
-using System.Windows.Media.Animation;
 using System.Windows;
-
-namespace Terrarium.Desktop.Rendering;
+using System.Windows.Media.Animation;
 
 /// <summary>
 /// Manages sprite animations for entities.
@@ -11,8 +11,8 @@ namespace Terrarium.Desktop.Rendering;
 /// </summary>
 public class AnimationController
 {
-    private readonly Dictionary<int, Storyboard> _activeAnimations;
-    private readonly Random _random;
+    private readonly Dictionary<int, Storyboard> activeAnimations;
+    private readonly Random random;
 
     // Animation timing constants
     private const double IdleAnimationDuration = 2.0;
@@ -21,8 +21,8 @@ public class AnimationController
 
     public AnimationController()
     {
-        _activeAnimations = new Dictionary<int, Storyboard>();
-        _random = new Random();
+        activeAnimations = new Dictionary<int, Storyboard>();
+        random = new Random();
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public class AnimationController
         storyboard.Children.Add(bobAnimation);
 
         storyboard.Begin();
-        _activeAnimations[entityId] = storyboard;
+        activeAnimations[entityId] = storyboard;
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class AnimationController
         storyboard.Children.Add(rotateAnimation);
 
         storyboard.Begin();
-        _activeAnimations[entityId] = storyboard;
+        activeAnimations[entityId] = storyboard;
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public class AnimationController
         storyboard.Children.Add(scaleYAnimation);
 
         storyboard.Begin();
-        _activeAnimations[entityId] = storyboard;
+        activeAnimations[entityId] = storyboard;
     }
 
     /// <summary>
@@ -141,10 +141,10 @@ public class AnimationController
     /// </summary>
     public void StopAnimation(int entityId)
     {
-        if (_activeAnimations.TryGetValue(entityId, out var storyboard))
+        if (activeAnimations.TryGetValue(entityId, out var storyboard))
         {
             storyboard.Stop();
-            _activeAnimations.Remove(entityId);
+            activeAnimations.Remove(entityId);
         }
     }
 
@@ -153,10 +153,10 @@ public class AnimationController
     /// </summary>
     public void StopAllAnimations()
     {
-        foreach (var storyboard in _activeAnimations.Values)
+        foreach (var storyboard in activeAnimations.Values)
         {
             storyboard.Stop();
         }
-        _activeAnimations.Clear();
+        activeAnimations.Clear();
     }
 }

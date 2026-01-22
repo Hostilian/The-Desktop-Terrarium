@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -5,10 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Terrarium.Desktop;
-
 /// <summary>
-/// Interaction logic for StartupDialog.xaml
+/// Interaction logic for StartupDialog.xaml.
 /// </summary>
 public partial class StartupDialog : Window
 {

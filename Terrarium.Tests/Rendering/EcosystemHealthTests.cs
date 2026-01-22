@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Simulation;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Rendering
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Simulation;
+
     [TestClass]
     public class EcosystemHealthTests
     {
@@ -56,19 +56,14 @@ namespace Terrarium.Tests.Rendering
                 (20, 10, 0),
             };
 
-            foreach (var (Plants, Herbs, Carns) in scenarios)
+            foreach (var (plants, herbs, carns) in scenarios)
             {
-                double score = EcosystemHealthScorer.CalculateHealthPercent(Plants, Herbs, Carns);
+                double score = EcosystemHealthScorer.CalculateHealthPercent(plants, herbs, carns);
                 Assert.IsGreaterThanOrEqualTo(0, score,
-                    $"Score {score} should be >= 0 for ({Plants}, {Herbs}, {Carns})");
+                    $"Score {score} should be >= 0 for ({plants}, {herbs}, {carns})");
                 Assert.IsLessThanOrEqualTo(100, score,
-                    $"Score {score} should be <= 100 for ({Plants}, {Herbs}, {Carns})");
+                    $"Score {score} should be <= 100 for ({plants}, {herbs}, {carns})");
             }
         }
     }
 }
-
-
-
-
-

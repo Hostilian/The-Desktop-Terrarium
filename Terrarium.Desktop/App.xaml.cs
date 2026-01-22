@@ -1,12 +1,12 @@
+namespace Terrarium.Desktop;
+
 using System;
 using System.Windows;
 
-namespace Terrarium.Desktop;
-
 /// <summary>
-/// Interaction logic for App.xaml
+/// Interaction logic for App.xaml.
 /// </summary>
-public partial class App : Application
+public class App : Application
 {
     public string? SelectedTerrariumType { get; set; }
 
@@ -49,10 +49,10 @@ public partial class App : Application
             string appDataPath = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DesktopTerrarium");
-            
+
             System.IO.Directory.CreateDirectory(appDataPath);
             string logPath = System.IO.Path.Combine(appDataPath, "crash.log");
-            
+
             string logContent = $"[{DateTime.Now}] CRASH REPORT\n" +
                                 $"Exception: {e.Exception.Message}\n" +
                                 $"Stack Trace:\n{e.Exception.StackTrace}\n" +
@@ -60,10 +60,10 @@ public partial class App : Application
                                 "--------------------------------------------------\n\n";
 
             System.IO.File.AppendAllText(logPath, logContent);
-            
-            MessageBox.Show($"An unexpected error occurred. Logs saved to:\n{logPath}\n\nError: {e.Exception.Message}", 
-                          "Desktop Terrarium Crash", 
-                          MessageBoxButton.OK, 
+
+            MessageBox.Show($"An unexpected error occurred. Logs saved to:\n{logPath}\n\nError: {e.Exception.Message}",
+                          "Desktop Terrarium Crash",
+                          MessageBoxButton.OK,
                           MessageBoxImage.Error);
         }
         catch
@@ -71,7 +71,7 @@ public partial class App : Application
             // Fallback if logging fails
             MessageBox.Show($"Fatal Error: {e.Exception.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        
+
         e.Handled = true;
         Shutdown();
     }

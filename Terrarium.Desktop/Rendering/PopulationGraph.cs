@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -5,32 +7,30 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Displays a real-time population history graph.
 /// </summary>
 public class PopulationGraph
 {
-    private readonly Canvas _parentCanvas;
-    private readonly Border _graphContainer;
-    private readonly Canvas _graphCanvas;
-    private readonly List<PopulationSnapshot> _history;
+    private readonly Canvas parentCanvas;
+    private readonly Border graphContainer;
+    private readonly Canvas graphCanvas;
+    private readonly List<PopulationSnapshot> history;
 
-    private readonly List<Line> _gridLines = new();
-    private bool _gridBuilt;
-    private readonly SolidColorBrush _gridLineBrush = CreateFrozenBrush(Color.FromArgb(40, 255, 255, 255));
+    private readonly List<Line> gridLines = new();
+    private bool gridBuilt;
+    private readonly SolidColorBrush gridLineBrush = CreateFrozenBrush(Color.FromArgb(40, 255, 255, 255));
 
-    private Polyline? _plantsGlowLine;
-    private Polyline? _plantsLine;
-    private Polyline? _herbGlowLine;
-    private Polyline? _herbLine;
-    private Polyline? _carnGlowLine;
-    private Polyline? _carnLine;
+    private Polyline? plantsGlowLine;
+    private Polyline? plantsLine;
+    private Polyline? herbGlowLine;
+    private Polyline? herbLine;
+    private Polyline? carnGlowLine;
+    private Polyline? carnLine;
 
-    private PointCollection? _plantsPoints;
-    private PointCollection? _herbPoints;
-    private PointCollection? _carnPoints;
+    private PointCollection? plantsPoints;
+    private PointCollection? herbPoints;
+    private PointCollection? carnPoints;
 
     private const double GraphWidth = 200;
     private const double GraphHeight = 80;
@@ -38,26 +38,26 @@ public class PopulationGraph
     private const int MaxHistoryPoints = 60; // 60 seconds of history
     private const double SampleInterval = 1.0;
 
-    private double _sampleTimer;
-    private bool _isVisible = true;
+    private double sampleTimer;
+    private bool isVisible = true;
 
     public bool IsVisible
     {
-        get => _isVisible;
+        get => isVisible;
         set
         {
-            _isVisible = value;
-            _graphContainer.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            isVisible = value;
+            graphContainer.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
     public PopulationGraph(Canvas parentCanvas)
     {
-        _parentCanvas = parentCanvas;
-        _history = new List<PopulationSnapshot>();
-        _sampleTimer = 0;
+        this.parentCanvas = parentCanvas;
+        history = new List<PopulationSnapshot>();
+        sampleTimer = 0;
 
-        _graphCanvas = new Canvas
+        graphCanvas = new Canvas
         {
             Width = GraphWidth,
             Height = GraphHeight,
@@ -86,13 +86,13 @@ public class PopulationGraph
         content.Children.Add(legend);
         content.Children.Add(new Border
         {
-            Child = _graphCanvas,
+            Child = graphCanvas,
             Margin = new Thickness(4),
             Background = CreateFrozenBrush(Color.FromArgb(100, 20, 20, 30)),
             CornerRadius = new CornerRadius(4)
         });
 
-        _graphContainer = new Border
+        graphContainer = new Border
         {
             Width = GraphWidth + 16,
             Height = GraphHeight + 50,
@@ -103,9 +103,9 @@ public class PopulationGraph
             Child = content
         };
 
-        Canvas.SetZIndex(_graphContainer, 800);
-        _parentCanvas.Children.Add(_graphContainer);
-        _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
+        Canvas.SetZIndex(graphContainer, 800);
+        this.parentCanvas.Children.Add(graphContainer);
+        this.parentCanvas.SizeChanged += (s, e) => UpdatePosition();
         UpdatePosition();
 
         EnsureGraphVisuals();
@@ -133,9 +133,9 @@ public class PopulationGraph
 
     private void UpdatePosition()
     {
-        double x = _parentCanvas.ActualWidth - GraphWidth - 16 - Margin;
-        Canvas.SetLeft(_graphContainer, Math.Max(Margin, x));
-        Canvas.SetTop(_graphContainer, 80); // Below the day/night orb area
+        double x = parentCanvas.ActualWidth - GraphWidth - 16 - Margin;
+        Canvas.SetLeft(graphContainer, Math.Max(Margin, x));
+        Canvas.SetTop(graphContainer, 80); // Below the day/night orb area
     }
 
     /// <summary>
@@ -143,16 +143,16 @@ public class PopulationGraph
     /// </summary>
     public void Update(double deltaTime, int plants, int herbivores, int carnivores)
     {
-        if (!_isVisible)
+        if (!isVisible)
         {
             return;
         }
 
-        _sampleTimer += deltaTime;
-        if (_sampleTimer >= SampleInterval)
+        sampleTimer += deltaTime;
+        if (sampleTimer >= SampleInterval)
         {
-            _sampleTimer = 0;
-            _history.Add(new PopulationSnapshot
+            sampleTimer = 0;
+            history.Add(new PopulationSnapshot
             {
                 Plants = plants,
                 Herbivores = herbivores,
@@ -160,9 +160,9 @@ public class PopulationGraph
             });
 
             // Trim history
-            while (_history.Count > MaxHistoryPoints)
+            while (history.Count > MaxHistoryPoints)
             {
-                _history.RemoveAt(0);
+                history.RemoveAt(0);
             }
 
             RedrawGraph();
@@ -173,7 +173,7 @@ public class PopulationGraph
     {
         EnsureGraphVisuals();
 
-        if (_history.Count < 2)
+        if (history.Count < 2)
         {
             this.HideLines();
             return;
@@ -181,20 +181,20 @@ public class PopulationGraph
 
         // Find max value for scaling
         int maxValue = 1;
-        foreach (var snapshot in _history)
+        foreach (var snapshot in history)
         {
             maxValue = Math.Max(maxValue, Math.Max(snapshot.Plants, Math.Max(snapshot.Herbivores, snapshot.Carnivores)));
         }
         maxValue = (int)(maxValue * 1.2); // Add 20% headroom
 
-        UpdateLine(_history, s => s.Plants, _plantsGlowLine!, _plantsLine!, _plantsPoints!, maxValue);
-        UpdateLine(_history, s => s.Herbivores, _herbGlowLine!, _herbLine!, _herbPoints!, maxValue);
-        UpdateLine(_history, s => s.Carnivores, _carnGlowLine!, _carnLine!, _carnPoints!, maxValue);
+        UpdateLine(history, s => s.Plants, plantsGlowLine!, plantsLine!, plantsPoints!, maxValue);
+        UpdateLine(history, s => s.Herbivores, herbGlowLine!, herbLine!, herbPoints!, maxValue);
+        UpdateLine(history, s => s.Carnivores, carnGlowLine!, carnLine!, carnPoints!, maxValue);
     }
 
     private void EnsureGraphVisuals()
     {
-        if (!_gridBuilt)
+        if (!gridBuilt)
         {
             // Draw grid lines once
             for (int i = 1; i <= 3; i++)
@@ -206,39 +206,39 @@ public class PopulationGraph
                     Y1 = y,
                     X2 = GraphWidth,
                     Y2 = y,
-                    Stroke = _gridLineBrush,
+                    Stroke = gridLineBrush,
                     StrokeThickness = 1,
                     IsHitTestVisible = false
                 };
-                _gridLines.Add(gridLine);
-                _graphCanvas.Children.Add(gridLine);
+                gridLines.Add(gridLine);
+                graphCanvas.Children.Add(gridLine);
             }
-            _gridBuilt = true;
+            gridBuilt = true;
         }
 
-        if (_plantsLine != null)
+        if (plantsLine != null)
         {
             return;
         }
 
-        _plantsPoints = new PointCollection(MaxHistoryPoints);
-        _herbPoints = new PointCollection(MaxHistoryPoints);
-        _carnPoints = new PointCollection(MaxHistoryPoints);
+        plantsPoints = new PointCollection(MaxHistoryPoints);
+        herbPoints = new PointCollection(MaxHistoryPoints);
+        carnPoints = new PointCollection(MaxHistoryPoints);
 
-        _plantsGlowLine = CreateLine(Color.FromArgb(80, 76, 175, 80), _plantsPoints, 4);
-        _plantsLine = CreateLine(Color.FromRgb(76, 175, 80), _plantsPoints, 2);
-        _herbGlowLine = CreateLine(Color.FromArgb(80, 255, 183, 77), _herbPoints, 4);
-        _herbLine = CreateLine(Color.FromRgb(255, 183, 77), _herbPoints, 2);
-        _carnGlowLine = CreateLine(Color.FromArgb(80, 192, 57, 43), _carnPoints, 4);
-        _carnLine = CreateLine(Color.FromRgb(192, 57, 43), _carnPoints, 2);
+        plantsGlowLine = CreateLine(Color.FromArgb(80, 76, 175, 80), plantsPoints, 4);
+        plantsLine = CreateLine(Color.FromRgb(76, 175, 80), plantsPoints, 2);
+        herbGlowLine = CreateLine(Color.FromArgb(80, 255, 183, 77), herbPoints, 4);
+        herbLine = CreateLine(Color.FromRgb(255, 183, 77), herbPoints, 2);
+        carnGlowLine = CreateLine(Color.FromArgb(80, 192, 57, 43), carnPoints, 4);
+        carnLine = CreateLine(Color.FromRgb(192, 57, 43), carnPoints, 2);
 
         // Order: grid, glows, lines
-        _graphCanvas.Children.Add(_plantsGlowLine);
-        _graphCanvas.Children.Add(_herbGlowLine);
-        _graphCanvas.Children.Add(_carnGlowLine);
-        _graphCanvas.Children.Add(_plantsLine);
-        _graphCanvas.Children.Add(_herbLine);
-        _graphCanvas.Children.Add(_carnLine);
+        graphCanvas.Children.Add(plantsGlowLine);
+        graphCanvas.Children.Add(herbGlowLine);
+        graphCanvas.Children.Add(carnGlowLine);
+        graphCanvas.Children.Add(plantsLine);
+        graphCanvas.Children.Add(herbLine);
+        graphCanvas.Children.Add(carnLine);
     }
 
     private static Polyline CreateLine(Color strokeColor, PointCollection points, double thickness)
@@ -258,34 +258,34 @@ public class PopulationGraph
 
     private void HideLines()
     {
-        if (_plantsLine != null)
+        if (plantsLine != null)
         {
-            _plantsLine.Visibility = Visibility.Collapsed;
+            plantsLine.Visibility = Visibility.Collapsed;
         }
 
-        if (_plantsGlowLine != null)
+        if (plantsGlowLine != null)
         {
-            _plantsGlowLine.Visibility = Visibility.Collapsed;
+            plantsGlowLine.Visibility = Visibility.Collapsed;
         }
 
-        if (_herbLine != null)
+        if (herbLine != null)
         {
-            _herbLine.Visibility = Visibility.Collapsed;
+            herbLine.Visibility = Visibility.Collapsed;
         }
 
-        if (_herbGlowLine != null)
+        if (herbGlowLine != null)
         {
-            _herbGlowLine.Visibility = Visibility.Collapsed;
+            herbGlowLine.Visibility = Visibility.Collapsed;
         }
 
-        if (_carnLine != null)
+        if (carnLine != null)
         {
-            _carnLine.Visibility = Visibility.Collapsed;
+            carnLine.Visibility = Visibility.Collapsed;
         }
 
-        if (_carnGlowLine != null)
+        if (carnGlowLine != null)
         {
-            _carnGlowLine.Visibility = Visibility.Collapsed;
+            carnGlowLine.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -330,6 +330,8 @@ public class PopulationGraph
 internal class PopulationSnapshot
 {
     public int Plants { get; set; }
+
     public int Herbivores { get; set; }
+
     public int Carnivores { get; set; }
 }

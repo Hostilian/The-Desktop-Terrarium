@@ -6,7 +6,7 @@ namespace Terrarium.Desktop.Constants;
 /// </summary>
 /// <remarks>
 /// For more information, see:
-/// https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
+/// https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest.
 /// </remarks>
 public static class Win32Constants
 {
@@ -15,7 +15,7 @@ public static class Win32Constants
     /// Sent to a window to determine which part of the window corresponds to a particular screen coordinate.
     /// Value 0x0084 is defined by the Windows API.
     /// </summary>
-    public const int WM_NC_HITTEST = 0x0084;
+    public const int WMNCHITTEST = 0x0084;
 
     /// <summary>
     /// HTTRANSPARENT hit test result code.
@@ -23,5 +23,5 @@ public static class Win32Constants
     /// Value -1 is defined by the Windows API.
     /// Used to make UI elements ignore mouse clicks and pass them to windows beneath.
     /// </summary>
-    public const int HT_TRANSPARENT = -1;
+    public const int HTTRANSPARENT = -1;
 }

@@ -1,17 +1,17 @@
-using Terrarium.Logic.Interfaces;
-using Terrarium.Logic.Simulation;
-
 namespace Terrarium.Logic.Entities
 {
+    using Terrarium.Logic.Interfaces;
+    using Terrarium.Logic.Simulation;
+
     /// <summary>
     /// Base class for all creatures that can move and have hunger.
     /// </summary>
     public abstract class Creature : LivingEntity, IMovable, IClickable
     {
-        private double _speed;
-        private double _hunger;
-        private double _velocityX;
-        private double _velocityY;
+        private double speed;
+        private double hunger;
+        private double velocityX;
+        private double velocityY;
 
         // Creature-specific constants
         protected const double MaxHunger = 100.0;
@@ -25,73 +25,73 @@ namespace Terrarium.Logic.Entities
         private const double ClickRadius = 25.0;
 
         /// <summary>
-        /// Movement speed of the creature.
+        /// Gets or sets movement speed of the creature.
         /// </summary>
         public double Speed
         {
-            get => _speed;
-            protected set => _speed = Math.Max(0, value);
+            get => speed;
+            protected set => speed = Math.Max(0, value);
         }
 
         /// <summary>
-        /// Current hunger level (0-100). Higher values mean more hungry.
+        /// Gets or sets current hunger level (0-100). Higher values mean more hungry.
         /// </summary>
         public double Hunger
         {
-            get => _hunger;
-            protected set => _hunger = Math.Clamp(value, MinHunger, MaxHunger);
+            get => hunger;
+            protected set => hunger = Math.Clamp(value, MinHunger, MaxHunger);
         }
 
         /// <summary>
-        /// Horizontal velocity component.
+        /// Gets or sets horizontal velocity component.
         /// </summary>
         public double VelocityX
         {
-            get => _velocityX;
-            set => _velocityX = value;
+            get => velocityX;
+            set => velocityX = value;
         }
 
         /// <summary>
-        /// Vertical velocity component.
+        /// Gets or sets vertical velocity component.
         /// </summary>
         public double VelocityY
         {
-            get => _velocityY;
-            set => _velocityY = value;
+            get => velocityY;
+            set => velocityY = value;
         }
 
         /// <summary>
-        /// Faction allegiance of this creature.
+        /// Gets or sets faction allegiance of this creature.
         /// </summary>
         public FactionType Faction { get; set; }
 
         /// <summary>
-        /// Aggressiveness trait (0-1). Higher values mean more aggressive behavior.
+        /// Gets or sets aggressiveness trait (0-1). Higher values mean more aggressive behavior.
         /// </summary>
         public double Aggressiveness { get; set; }
 
         /// <summary>
-        /// Social trait (0-1). Higher values mean more social/grouping behavior.
+        /// Gets or sets social trait (0-1). Higher values mean more social/grouping behavior.
         /// </summary>
         public double SocialTendency { get; set; }
 
         /// <summary>
-        /// Curiosity trait (0-1). Higher values mean more exploration behavior.
+        /// Gets or sets curiosity trait (0-1). Higher values mean more exploration behavior.
         /// </summary>
         public double Curiosity { get; set; }
 
         /// <summary>
-        /// Intelligence trait (0-1). Higher values mean more complex decision making.
+        /// Gets or sets intelligence trait (0-1). Higher values mean more complex decision making.
         /// </summary>
         public double Intelligence { get; set; }
 
         protected Creature(double x, double y, string type, double speed = DefaultSpeed, FactionType faction = FactionType.VerdantCollective)
             : base(x, y, type)
         {
-            _speed = speed;
-            _hunger = MinHunger;
-            _velocityX = 0;
-            _velocityY = 0;
+            this.speed = speed;
+            hunger = MinHunger;
+            velocityX = 0;
+            velocityY = 0;
             Faction = faction;
 
             // Initialize personality traits with some randomness
@@ -130,7 +130,7 @@ namespace Terrarium.Logic.Entities
 
         public void SetDirection(double directionX, double directionY)
         {
-            double magnitude = Math.Sqrt(directionX * directionX + directionY * directionY);
+            double magnitude = Math.Sqrt((directionX * directionX) + (directionY * directionY));
             if (magnitude > 0)
             {
                 VelocityX = (directionX / magnitude) * Speed;
@@ -165,11 +165,12 @@ namespace Terrarium.Logic.Entities
         /// <summary>
         /// Checks if a point is within the creature's clickable area.
         /// </summary>
+        /// <returns></returns>
         public bool ContainsPoint(double x, double y)
         {
             double dx = x - X;
             double dy = y - Y;
-            return (dx * dx + dy * dy) <= (ClickRadius * ClickRadius);
+            return ((dx * dx) + (dy * dy)) <= (ClickRadius * ClickRadius);
         }
     }
 }

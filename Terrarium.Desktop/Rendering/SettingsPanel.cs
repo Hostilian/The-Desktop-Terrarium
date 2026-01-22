@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,34 +7,33 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Settings panel for simulation configuration.
 /// </summary>
 public class SettingsPanel
 {
-    private const double _panelWidth = 280;
-    private const double _panelHeight = 420;
+    private const double panelWidth = 280;
+    private const double panelHeight = 420;
 
     // Static fields with proper prefix
-    private static readonly Brush _settingsLabelBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
-    private static readonly Brush _visualHeaderBrush = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
-    private static readonly Brush _separatorBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
-    private static readonly Brush _toggleOnBrush = CreateFrozenBrush(Color.FromRgb(76, 175, 80));
-    private static readonly Brush _toggleOffBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 90));
-    private static readonly Brush _sliderBackgroundBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
+    private static readonly Brush settingsLabelBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
+    private static readonly Brush visualHeaderBrush = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
+    private static readonly Brush separatorBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
+    private static readonly Brush toggleOnBrush = CreateFrozenBrush(Color.FromRgb(76, 175, 80));
+    private static readonly Brush toggleOffBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 90));
+    private static readonly Brush sliderBackgroundBrush = CreateFrozenBrush(Color.FromRgb(60, 60, 70));
 
-    private static readonly Brush _closeButtonBackgroundBrush = CreateFrozenBrush(Color.FromRgb(70, 70, 80));
-    private static readonly Brush _closeButtonBorderBrush = CreateFrozenBrush(Color.FromRgb(100, 100, 110));
+    private static readonly Brush closeButtonBackgroundBrush = CreateFrozenBrush(Color.FromRgb(70, 70, 80));
+    private static readonly Brush closeButtonBorderBrush = CreateFrozenBrush(Color.FromRgb(100, 100, 110));
 
-    private static readonly LinearGradientBrush _panelBackgroundBrush = Freeze(new LinearGradientBrush(
+    private static readonly LinearGradientBrush panelBackgroundBrush = Freeze(new LinearGradientBrush(
         Color.FromArgb(245, 30, 30, 46),
         Color.FromArgb(245, 24, 24, 37),
         90));
-    private static readonly Brush _panelBorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255));
 
-    private static readonly System.Windows.Media.Effects.DropShadowEffect _panelShadowEffect = Freeze(new System.Windows.Media.Effects.DropShadowEffect
+    private static readonly Brush panelBorderBrush = CreateFrozenBrush(Color.FromArgb(100, 255, 255, 255));
+
+    private static readonly System.Windows.Media.Effects.DropShadowEffect panelShadowEffect = Freeze(new System.Windows.Media.Effects.DropShadowEffect
     {
         Color = Colors.Black,
         Direction = 270,
@@ -41,10 +42,10 @@ public class SettingsPanel
         Opacity = 0.7
     });
 
-    private readonly Canvas _parentCanvas;
-    private Border? _panelBorder;
-    private StackPanel? _settingsContent;
-    private bool _isVisible;
+    private readonly Canvas parentCanvas;
+    private Border? panelBorder;
+    private StackPanel? settingsContent;
+    private bool isVisible;
 
     /// <summary>
     /// Gets the current simulation speed multiplier.
@@ -142,13 +143,13 @@ public class SettingsPanel
     /// <param name="parentCanvas">The parent canvas to attach the panel to.</param>
     public SettingsPanel(Canvas parentCanvas)
     {
-        _parentCanvas = parentCanvas;
+        this.parentCanvas = parentCanvas;
         CreatePanel();
     }
 
     private void CreatePanel()
     {
-        _settingsContent = new StackPanel
+        settingsContent = new StackPanel
         {
             Margin = new Thickness(15)
         };
@@ -162,7 +163,7 @@ public class SettingsPanel
             Foreground = Brushes.White,
             Margin = new Thickness(0, 0, 0, 15),
         };
-        _settingsContent.Children.Add(header);
+        settingsContent.Children.Add(header);
 
         // Simulation Speed
         AddSliderSetting("Simulation Speed", "🏃", 0.1, 3.0, SimulationSpeed, value =>
@@ -201,10 +202,10 @@ public class SettingsPanel
             Text = "🎨 Visual Effects",
             FontSize = 14,
             FontWeight = FontWeights.SemiBold,
-            Foreground = _visualHeaderBrush,
+            Foreground = visualHeaderBrush,
             Margin = new Thickness(0, 5, 0, 10),
         };
-        _settingsContent.Children.Add(visualHeader);
+        settingsContent.Children.Add(visualHeader);
 
         // Toggle Settings
         AddToggleSetting("Particles", "✨", ShowParticles, value =>
@@ -243,38 +244,38 @@ public class SettingsPanel
             Width = 100,
             Height = 30,
             Margin = new Thickness(0, 20, 0, 0),
-            Background = _closeButtonBackgroundBrush,
+            Background = closeButtonBackgroundBrush,
             Foreground = Brushes.White,
-            BorderBrush = _closeButtonBorderBrush,
+            BorderBrush = closeButtonBorderBrush,
             Cursor = System.Windows.Input.Cursors.Hand,
         };
         closeButton.Click += (s, e) => Hide();
-        _settingsContent.Children.Add(closeButton);
+        settingsContent.Children.Add(closeButton);
 
-        _panelBorder = new Border
+        panelBorder = new Border
         {
-            Width = _panelWidth,
-            Height = _panelHeight,
-            Background = _panelBackgroundBrush,
-            BorderBrush = _panelBorderBrush,
+            Width = panelWidth,
+            Height = panelHeight,
+            Background = panelBackgroundBrush,
+            BorderBrush = panelBorderBrush,
             BorderThickness = new Thickness(1),
             CornerRadius = new CornerRadius(12),
-            Child = _settingsContent,
+            Child = settingsContent,
             Visibility = Visibility.Collapsed,
             RenderTransform = new TranslateTransform(0, 0),
-            Effect = _panelShadowEffect,
+            Effect = panelShadowEffect,
         };
 
-        Canvas.SetZIndex(_panelBorder, 900);
-        _parentCanvas.Children.Add(_panelBorder);
+        Canvas.SetZIndex(panelBorder, 900);
+        parentCanvas.Children.Add(panelBorder);
 
         // Update position when canvas size changes
-        _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
+        parentCanvas.SizeChanged += (s, e) => UpdatePosition();
     }
 
     private void AddSliderSetting(string label, string icon, double min, double max, double initial, Action<double> onChanged, string format)
     {
-        if (_settingsContent == null)
+        if (settingsContent == null)
         {
             return;
         }
@@ -290,7 +291,7 @@ public class SettingsPanel
         {
             Text = $"{icon} {label}",
             FontSize = 12,
-            Foreground = _settingsLabelBrush
+            Foreground = settingsLabelBrush
         };
 
         var valueText = new TextBlock
@@ -311,7 +312,7 @@ public class SettingsPanel
             Maximum = max,
             Value = initial,
             Margin = new Thickness(0, 5, 0, 0),
-            Background = _sliderBackgroundBrush
+            Background = sliderBackgroundBrush
         };
 
         slider.ValueChanged += (s, e) =>
@@ -322,12 +323,12 @@ public class SettingsPanel
 
         container.Children.Add(labelRow);
         container.Children.Add(slider);
-        _settingsContent.Children.Add(container);
+        settingsContent.Children.Add(container);
     }
 
     private void AddToggleSetting(string label, string icon, bool initial, Action<bool> onChanged)
     {
-        if (_settingsContent == null)
+        if (settingsContent == null)
         {
             return;
         }
@@ -343,7 +344,7 @@ public class SettingsPanel
         {
             Text = $"{icon} {label}",
             FontSize = 12,
-            Foreground = _settingsLabelBrush,
+            Foreground = settingsLabelBrush,
             VerticalAlignment = VerticalAlignment.Center
         };
 
@@ -353,7 +354,7 @@ public class SettingsPanel
             Width = 44,
             Height = 22,
             CornerRadius = new CornerRadius(11),
-            Background = initial ? _toggleOnBrush : _toggleOffBrush,
+            Background = initial ? toggleOnBrush : toggleOffBrush,
             Cursor = System.Windows.Input.Cursors.Hand
         };
 
@@ -374,18 +375,18 @@ public class SettingsPanel
         {
             currentValue = !currentValue;
             toggleKnob.HorizontalAlignment = currentValue ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-            toggleBorder.Background = currentValue ? _toggleOnBrush : _toggleOffBrush;
+            toggleBorder.Background = currentValue ? toggleOnBrush : toggleOffBrush;
             onChanged(currentValue);
         };
 
         row.Children.Add(labelText);
         row.Children.Add(toggleBorder);
-        _settingsContent.Children.Add(row);
+        settingsContent.Children.Add(row);
     }
 
     private void AddSeparator()
     {
-        if (_settingsContent == null)
+        if (settingsContent == null)
         {
             return;
         }
@@ -393,10 +394,10 @@ public class SettingsPanel
         var separator = new Border
         {
             Height = 1,
-            Background = _separatorBrush,
+            Background = separatorBrush,
             Margin = new Thickness(0, 10, 0, 10)
         };
-        _settingsContent.Children.Add(separator);
+        settingsContent.Children.Add(separator);
     }
 
     private static SolidColorBrush CreateFrozenBrush(Color color)
@@ -406,7 +407,8 @@ public class SettingsPanel
         return brush;
     }
 
-    private static T Freeze<T>(T freezable) where T : Freezable
+    private static T Freeze<T>(T freezable)
+        where T : Freezable
     {
         if (freezable.CanFreeze)
         {
@@ -417,17 +419,17 @@ public class SettingsPanel
 
     private void UpdatePosition()
     {
-        if (_panelBorder == null)
+        if (panelBorder == null)
         {
             return;
         }
 
         // Center the panel
-        double x = (_parentCanvas.ActualWidth - _panelWidth) / 2;
-        double y = (_parentCanvas.ActualHeight - _panelHeight) / 2;
+        double x = (parentCanvas.ActualWidth - panelWidth) / 2;
+        double y = (parentCanvas.ActualHeight - panelHeight) / 2;
 
-        Canvas.SetLeft(_panelBorder, Math.Max(20, x));
-        Canvas.SetTop(_panelBorder, Math.Max(20, y));
+        Canvas.SetLeft(panelBorder, Math.Max(20, x));
+        Canvas.SetTop(panelBorder, Math.Max(20, y));
     }
 
     /// <summary>
@@ -435,16 +437,16 @@ public class SettingsPanel
     /// </summary>
     public void Show()
     {
-        if (_panelBorder == null)
+        if (panelBorder == null)
         {
             return;
         }
 
         UpdatePosition();
-        _panelBorder.Visibility = Visibility.Visible;
-        _isVisible = true;
+        panelBorder.Visibility = Visibility.Visible;
+        isVisible = true;
 
-        var transform = _panelBorder.RenderTransform as TranslateTransform;
+        var transform = panelBorder.RenderTransform as TranslateTransform;
         if (transform != null)
         {
             transform.Y = -20;
@@ -461,13 +463,13 @@ public class SettingsPanel
     /// </summary>
     public void Hide()
     {
-        if (_panelBorder == null)
+        if (panelBorder == null)
         {
             return;
         }
 
-        _panelBorder.Visibility = Visibility.Collapsed;
-        _isVisible = false;
+        panelBorder.Visibility = Visibility.Collapsed;
+        isVisible = false;
     }
 
     /// <summary>
@@ -475,7 +477,7 @@ public class SettingsPanel
     /// </summary>
     public void Toggle()
     {
-        if (_isVisible)
+        if (isVisible)
         {
             Hide();
         }
@@ -488,5 +490,5 @@ public class SettingsPanel
     /// <summary>
     /// Gets a value indicating whether the settings panel is currently visible.
     /// </summary>
-    public bool IsVisible => _isVisible;
+    public bool IsVisible => isVisible;
 }

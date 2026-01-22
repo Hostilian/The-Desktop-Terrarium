@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,96 +8,95 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Manages sound effects and ambient audio for the terrarium.
 /// </summary>
 public class SoundManager : IDisposable
 {
-    private readonly MediaPlayer _backgroundPlayer;
-    private readonly Dictionary<string, SoundPlayer> _soundEffects;
-    private readonly Random _random;
-    private bool _isMuted;
-    private double _volume;
-    private TerrariumType _currentTheme;
-    private readonly DispatcherTimer _themeSongTimer;
+    private readonly MediaPlayer backgroundPlayer;
+    private readonly Dictionary<string, SoundPlayer> soundEffects;
+    private readonly Random random;
+    private bool isMuted;
+    private double volume;
+    private TerrariumType currentTheme;
+    private readonly DispatcherTimer themeSongTimer;
 
     // Constants
     private const double DefaultVolume = 0.5;
     private const int ThemeSongIntervalMinutes = 5;
 
     public bool IsEnabled { get; set; } = true;
-    public double MasterVolume { get => _volume; set => SetVolume(value); }
+
+    public double MasterVolume { get => volume; set => SetVolume(value); }
 
     public SoundManager()
     {
-        _backgroundPlayer = new MediaPlayer();
-        _soundEffects = new Dictionary<string, SoundPlayer>();
-        _random = new Random();
-        _isMuted = false;
-        _volume = DefaultVolume;
-        _currentTheme = TerrariumType.Forest;
+        backgroundPlayer = new MediaPlayer();
+        soundEffects = new Dictionary<string, SoundPlayer>();
+        random = new Random();
+        isMuted = false;
+        volume = DefaultVolume;
+        currentTheme = TerrariumType.Forest;
 
         // Timer for theme song changes
-        _themeSongTimer = new DispatcherTimer
+        themeSongTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMinutes(ThemeSongIntervalMinutes)
         };
-        _themeSongTimer.Tick += ThemeSongTimer_Tick;
+        themeSongTimer.Tick += ThemeSongTimer_Tick;
 
         // Initialize sound effects
         InitializeSoundEffects();
 
         // Start theme song
         PlayThemeSong();
-        _themeSongTimer.Start();
+        themeSongTimer.Start();
     }
 
     private void InitializeSoundEffects()
     {
         // Use system sounds for effects since we don't have audio files
-        _soundEffects["eat"] = new SoundPlayer(); // Will use beep
-        _soundEffects["birth"] = new SoundPlayer();
-        _soundEffects["death"] = new SoundPlayer();
-        _soundEffects["click"] = new SoundPlayer();
-        _soundEffects["ambient"] = new SoundPlayer();
+        soundEffects["eat"] = new SoundPlayer(); // Will use beep
+        soundEffects["birth"] = new SoundPlayer();
+        soundEffects["death"] = new SoundPlayer();
+        soundEffects["click"] = new SoundPlayer();
+        soundEffects["ambient"] = new SoundPlayer();
     }
 
     public void SetTheme(TerrariumType theme)
     {
-        _currentTheme = theme;
+        currentTheme = theme;
         PlayThemeSong();
     }
 
     private void PlayThemeSong()
     {
-        if (_isMuted)
+        if (isMuted)
         {
             return;
         }
 
-        _backgroundPlayer.Stop();
+        backgroundPlayer.Stop();
 
         // Simulate different theme songs with different frequencies
         // In a real implementation, you'd load actual audio files
-        switch (_currentTheme)
+        switch (currentTheme)
         {
             case TerrariumType.Forest:
                 // Forest theme - nature sounds
-                _backgroundPlayer.Volume = _volume * 0.3;
+                backgroundPlayer.Volume = volume * 0.3;
                 break;
             case TerrariumType.Desert:
                 // Desert theme - wind sounds
-                _backgroundPlayer.Volume = _volume * 0.2;
+                backgroundPlayer.Volume = volume * 0.2;
                 break;
             case TerrariumType.Aquatic:
                 // Aquatic theme - water sounds
-                _backgroundPlayer.Volume = _volume * 0.4;
+                backgroundPlayer.Volume = volume * 0.4;
                 break;
             case TerrariumType.GodSimulator:
                 // God Simulator theme - mystical/ambient sounds
-                _backgroundPlayer.Volume = _volume * 0.5;
+                backgroundPlayer.Volume = volume * 0.5;
                 break;
         }
 
@@ -110,7 +111,7 @@ public class SoundManager : IDisposable
 
     public void PlayEffect(string effectName)
     {
-        if (_isMuted || !_soundEffects.ContainsKey(effectName))
+        if (isMuted || !soundEffects.ContainsKey(effectName))
         {
             return;
         }
@@ -134,7 +135,7 @@ public class SoundManager : IDisposable
                     break;
                 case "ambient":
                     // Random ambient sound - 30% chance
-                    if (_random.Next(10) < 3)
+                    if (random.Next(10) < 3)
                     {
                         SystemSounds.Question.Play();
                     }
@@ -154,33 +155,33 @@ public class SoundManager : IDisposable
 
     public void SetMuted(bool muted)
     {
-        _isMuted = muted;
+        isMuted = muted;
         if (muted)
         {
-            _backgroundPlayer.Stop();
-            _themeSongTimer.Stop();
+            backgroundPlayer.Stop();
+            themeSongTimer.Stop();
         }
         else
         {
             PlayThemeSong();
-            _themeSongTimer.Start();
+            themeSongTimer.Start();
         }
     }
 
     public void SetVolume(double volume)
     {
-        _volume = Math.Clamp(volume, 0.0, 1.0);
-        _backgroundPlayer.Volume = _volume;
+        this.volume = Math.Clamp(volume, 0.0, 1.0);
+        backgroundPlayer.Volume = this.volume;
     }
 
     public void Dispose()
     {
-        _themeSongTimer.Stop();
-        _backgroundPlayer.Stop();
-        foreach (var effect in _soundEffects.Values)
+        themeSongTimer.Stop();
+        backgroundPlayer.Stop();
+        foreach (var effect in soundEffects.Values)
         {
             effect.Dispose();
         }
-        _soundEffects.Clear();
+        soundEffects.Clear();
     }
 }

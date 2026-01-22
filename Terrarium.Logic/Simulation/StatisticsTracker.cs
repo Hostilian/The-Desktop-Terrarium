@@ -1,7 +1,7 @@
-using Terrarium.Logic.Entities;
-
 namespace Terrarium.Logic.Simulation
 {
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Tracks simulation statistics and history.
     /// Useful for displaying metrics and debugging ecosystem balance.
@@ -9,118 +9,118 @@ namespace Terrarium.Logic.Simulation
     public class StatisticsTracker
     {
         // Lifetime counters
-        private int _totalBirths;
-        private int _totalDeaths;
-        private int _totalPlantsGrown;
-        private int _totalPlantsEaten;
-        private int _totalHerbivoresEaten;
-        private double _totalFoodConsumed;
+        private int totalBirths;
+        private int totalDeaths;
+        private int totalPlantsGrown;
+        private int totalPlantsEaten;
+        private int totalHerbivoresEaten;
+        private double totalFoodConsumed;
 
         // Session statistics
-        private int _sessionBirths;
-        private int _sessionDeaths;
-        private double _sessionTime;
+        private int sessionBirths;
+        private int sessionDeaths;
+        private double sessionTime;
 
         // Peak values
-        private int _peakPopulation;
-        private int _peakPlants;
-        private int _peakHerbivores;
-        private int _peakCarnivores;
+        private int peakPopulation;
+        private int peakPlants;
+        private int peakHerbivores;
+        private int peakCarnivores;
 
         // Current snapshot
-        private int _currentPlants;
-        private int _currentHerbivores;
-        private int _currentCarnivores;
+        private int currentPlants;
+        private int currentHerbivores;
+        private int currentCarnivores;
 
         /// <summary>
-        /// Total number of creatures born since tracking began.
+        /// Gets total number of creatures born since tracking began.
         /// </summary>
-        public int TotalBirths => _totalBirths;
+        public int TotalBirths => totalBirths;
 
         /// <summary>
-        /// Total number of creatures that died.
+        /// Gets total number of creatures that died.
         /// </summary>
-        public int TotalDeaths => _totalDeaths;
+        public int TotalDeaths => totalDeaths;
 
         /// <summary>
-        /// Total plants grown (spawned).
+        /// Gets total plants grown (spawned).
         /// </summary>
-        public int TotalPlantsGrown => _totalPlantsGrown;
+        public int TotalPlantsGrown => totalPlantsGrown;
 
         /// <summary>
-        /// Total plants eaten by herbivores.
+        /// Gets total plants eaten by herbivores.
         /// </summary>
-        public int TotalPlantsEaten => _totalPlantsEaten;
+        public int TotalPlantsEaten => totalPlantsEaten;
 
         /// <summary>
-        /// Total herbivores eaten by carnivores.
+        /// Gets total herbivores eaten by carnivores.
         /// </summary>
-        public int TotalHerbivoresEaten => _totalHerbivoresEaten;
+        public int TotalHerbivoresEaten => totalHerbivoresEaten;
 
         /// <summary>
-        /// Total nutrition value consumed by all creatures.
+        /// Gets total nutrition value consumed by all creatures.
         /// </summary>
-        public double TotalFoodConsumed => _totalFoodConsumed;
+        public double TotalFoodConsumed => totalFoodConsumed;
 
         /// <summary>
-        /// Births in the current session.
+        /// Gets births in the current session.
         /// </summary>
-        public int SessionBirths => _sessionBirths;
+        public int SessionBirths => sessionBirths;
 
         /// <summary>
-        /// Deaths in the current session.
+        /// Gets deaths in the current session.
         /// </summary>
-        public int SessionDeaths => _sessionDeaths;
+        public int SessionDeaths => sessionDeaths;
 
         /// <summary>
-        /// Total session time in seconds.
+        /// Gets total session time in seconds.
         /// </summary>
-        public double SessionTime => _sessionTime;
+        public double SessionTime => sessionTime;
 
         /// <summary>
-        /// Peak total population ever reached.
+        /// Gets peak total population ever reached.
         /// </summary>
-        public int PeakPopulation => _peakPopulation;
+        public int PeakPopulation => peakPopulation;
 
         /// <summary>
-        /// Peak plant count.
+        /// Gets peak plant count.
         /// </summary>
-        public int PeakPlants => _peakPlants;
+        public int PeakPlants => peakPlants;
 
         /// <summary>
-        /// Peak herbivore count.
+        /// Gets peak herbivore count.
         /// </summary>
-        public int PeakHerbivores => _peakHerbivores;
+        public int PeakHerbivores => peakHerbivores;
 
         /// <summary>
-        /// Peak carnivore count.
+        /// Gets peak carnivore count.
         /// </summary>
-        public int PeakCarnivores => _peakCarnivores;
+        public int PeakCarnivores => peakCarnivores;
 
         /// <summary>
-        /// Current plant count.
+        /// Gets current plant count.
         /// </summary>
-        public int CurrentPlants => _currentPlants;
+        public int CurrentPlants => currentPlants;
 
         /// <summary>
-        /// Current herbivore count.
+        /// Gets current herbivore count.
         /// </summary>
-        public int CurrentHerbivores => _currentHerbivores;
+        public int CurrentHerbivores => currentHerbivores;
 
         /// <summary>
-        /// Current carnivore count.
+        /// Gets current carnivore count.
         /// </summary>
-        public int CurrentCarnivores => _currentCarnivores;
+        public int CurrentCarnivores => currentCarnivores;
 
         /// <summary>
-        /// Current total population.
+        /// Gets current total population.
         /// </summary>
-        public int CurrentPopulation => _currentPlants + _currentHerbivores + _currentCarnivores;
+        public int CurrentPopulation => currentPlants + currentHerbivores + currentCarnivores;
 
         /// <summary>
-        /// Average lifespan based on session data.
+        /// Gets average lifespan based on session data.
         /// </summary>
-        public double AverageLifespan => _sessionDeaths > 0 ? _sessionTime / _sessionDeaths : 0;
+        public double AverageLifespan => sessionDeaths > 0 ? sessionTime / sessionDeaths : 0;
 
         public StatisticsTracker()
         {
@@ -132,11 +132,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void RecordBirth(WorldEntity entity)
         {
-            _totalBirths++;
-            _sessionBirths++;
+            totalBirths++;
+            sessionBirths++;
 
             if (entity is Plant)
-                _totalPlantsGrown++;
+                totalPlantsGrown++;
         }
 
         /// <summary>
@@ -144,11 +144,11 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void RecordDeath(WorldEntity entity, DeathCause cause)
         {
-            _totalDeaths++;
-            _sessionDeaths++;
+            totalDeaths++;
+            sessionDeaths++;
 
             if (cause == DeathCause.Predation && entity is Herbivore)
-                _totalHerbivoresEaten++;
+                totalHerbivoresEaten++;
         }
 
         /// <summary>
@@ -156,10 +156,10 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void RecordFeeding(Creature eater, WorldEntity food, double nutritionValue)
         {
-            _totalFoodConsumed += nutritionValue;
+            totalFoodConsumed += nutritionValue;
 
             if (eater is Herbivore && food is Plant)
-                _totalPlantsEaten++;
+                totalPlantsEaten++;
         }
 
         /// <summary>
@@ -167,20 +167,20 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void UpdateSnapshot(int plants, int herbivores, int carnivores)
         {
-            _currentPlants = plants;
-            _currentHerbivores = herbivores;
-            _currentCarnivores = carnivores;
+            currentPlants = plants;
+            currentHerbivores = herbivores;
+            currentCarnivores = carnivores;
 
             // Update peak values
             int totalPopulation = plants + herbivores + carnivores;
-            if (totalPopulation > _peakPopulation)
-                _peakPopulation = totalPopulation;
-            if (plants > _peakPlants)
-                _peakPlants = plants;
-            if (herbivores > _peakHerbivores)
-                _peakHerbivores = herbivores;
-            if (carnivores > _peakCarnivores)
-                _peakCarnivores = carnivores;
+            if (totalPopulation > peakPopulation)
+                peakPopulation = totalPopulation;
+            if (plants > peakPlants)
+                peakPlants = plants;
+            if (herbivores > peakHerbivores)
+                peakHerbivores = herbivores;
+            if (carnivores > peakCarnivores)
+                peakCarnivores = carnivores;
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void UpdateTime(double deltaTime)
         {
-            _sessionTime += deltaTime;
+            sessionTime += deltaTime;
         }
 
         /// <summary>
@@ -196,9 +196,9 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void ResetSession()
         {
-            _sessionBirths = 0;
-            _sessionDeaths = 0;
-            _sessionTime = 0;
+            sessionBirths = 0;
+            sessionDeaths = 0;
+            sessionTime = 0;
         }
 
         /// <summary>
@@ -206,22 +206,23 @@ namespace Terrarium.Logic.Simulation
         /// </summary>
         public void Reset()
         {
-            _totalBirths = 0;
-            _totalDeaths = 0;
-            _totalPlantsGrown = 0;
-            _totalPlantsEaten = 0;
-            _totalHerbivoresEaten = 0;
-            _totalFoodConsumed = 0;
-            _peakPopulation = 0;
-            _peakPlants = 0;
-            _peakHerbivores = 0;
-            _peakCarnivores = 0;
+            totalBirths = 0;
+            totalDeaths = 0;
+            totalPlantsGrown = 0;
+            totalPlantsEaten = 0;
+            totalHerbivoresEaten = 0;
+            totalFoodConsumed = 0;
+            peakPopulation = 0;
+            peakPlants = 0;
+            peakHerbivores = 0;
+            peakCarnivores = 0;
             ResetSession();
         }
 
         /// <summary>
         /// Gets a summary string of current statistics.
         /// </summary>
+        /// <returns></returns>
         public string GetSummary()
         {
             return $"Population: {CurrentPopulation} (Peak: {PeakPopulation})\n" +

@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -6,24 +8,23 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering;
 /// <summary>
 /// Shows visual indicators when a predator is near prey.
 /// </summary>
 public class PredatorWarningSystem
 {
-    private readonly Canvas _canvas;
-    private readonly Dictionary<Herbivore, WarningVisual> _warnings;
-    private double _updateTimer;
+    private readonly Canvas canvas;
+    private readonly Dictionary<Herbivore, WarningVisual> warnings;
+    private double updateTimer;
 
-    private readonly List<Carnivore> _carnivoreBuffer = new();
-    private readonly HashSet<Herbivore> _existingHerbivoresBuffer = new();
-    private readonly List<Herbivore> _toRemoveBuffer = new();
+    private readonly List<Carnivore> carnivoreBuffer = new();
+    private readonly HashSet<Herbivore> existingHerbivoresBuffer = new();
+    private readonly List<Herbivore> toRemoveBuffer = new();
 
-    private const double _updateInterval = 0.2;
-    private const double _warningRadius = 100.0;
-    private const double _warningRadiusSquared = _warningRadius * _warningRadius;
-    private const double _pulseSpeed = 3.0;
+    private const double updateInterval = 0.2;
+    private const double warningRadius = 100.0;
+    private const double warningRadiusSquared = warningRadius * warningRadius;
+    private const double pulseSpeed = 3.0;
 
     public bool IsEnabled { get; set; } = true;
 
@@ -31,9 +32,9 @@ public class PredatorWarningSystem
 
     public PredatorWarningSystem(Canvas canvas)
     {
-        _canvas = canvas;
-        _warnings = new Dictionary<Herbivore, WarningVisual>();
-        _updateTimer = 0;
+        this.canvas = canvas;
+        warnings = new Dictionary<Herbivore, WarningVisual>();
+        updateTimer = 0;
     }
 
     /// <summary>
@@ -47,31 +48,31 @@ public class PredatorWarningSystem
             return;
         }
 
-        _updateTimer += deltaTime;
+        updateTimer += deltaTime;
 
         // Update pulse animation
-        foreach (var warning in _warnings.Values)
+        foreach (var warning in warnings.Values)
         {
-            warning.PulsePhase += _pulseSpeed * deltaTime;
-            double scale = 1.0 + 0.2 * Math.Sin(warning.PulsePhase);
+            warning.PulsePhase += pulseSpeed * deltaTime;
+            double scale = 1.0 + (0.2 * Math.Sin(warning.PulsePhase));
             warning.ScaleTransform.ScaleX = scale;
             warning.ScaleTransform.ScaleY = scale;
-            warning.Visual.Opacity = 0.5 + 0.3 * Math.Sin(warning.PulsePhase);
+            warning.Visual.Opacity = 0.5 + (0.3 * Math.Sin(warning.PulsePhase));
         }
 
-        if (_updateTimer < _updateInterval)
+        if (updateTimer < updateInterval)
         {
             return;
         }
-        _updateTimer = 0;
+        updateTimer = 0;
 
-        _carnivoreBuffer.Clear();
+        carnivoreBuffer.Clear();
         foreach (var carnivore in carnivores)
         {
-            _carnivoreBuffer.Add(carnivore);
+            carnivoreBuffer.Add(carnivore);
         }
 
-        _existingHerbivoresBuffer.Clear();
+        existingHerbivoresBuffer.Clear();
 
         foreach (var herbivore in herbivores)
         {
@@ -80,11 +81,11 @@ public class PredatorWarningSystem
                 continue;
             }
 
-            _existingHerbivoresBuffer.Add(herbivore);
+            existingHerbivoresBuffer.Add(herbivore);
 
             // Check distance to nearest carnivore
             double nearestDistanceSquared = double.MaxValue;
-            foreach (var carnivore in _carnivoreBuffer)
+            foreach (var carnivore in carnivoreBuffer)
             {
                 if (!carnivore.IsAlive)
                 {
@@ -100,7 +101,7 @@ public class PredatorWarningSystem
                 }
             }
 
-            bool inDanger = nearestDistanceSquared < _warningRadiusSquared;
+            bool inDanger = nearestDistanceSquared < warningRadiusSquared;
 
             if (inDanger)
             {
@@ -113,13 +114,13 @@ public class PredatorWarningSystem
         }
 
         // Remove warnings for dead/removed herbivores
-        _toRemoveBuffer.Clear();
-        foreach (var kvp in _warnings)
+        toRemoveBuffer.Clear();
+        foreach (var kvp in warnings)
         {
-            if (!_existingHerbivoresBuffer.Contains(kvp.Key))
+            if (!existingHerbivoresBuffer.Contains(kvp.Key))
             {
-                _canvas.Children.Remove(kvp.Value.Visual);
-                _toRemoveBuffer.Add(kvp.Key);
+                canvas.Children.Remove(kvp.Value.Visual);
+                toRemoveBuffer.Add(kvp.Key);
             }
             else
             {
@@ -128,18 +129,18 @@ public class PredatorWarningSystem
             }
         }
 
-        foreach (var herbivore in _toRemoveBuffer)
+        foreach (var herbivore in toRemoveBuffer)
         {
-            _warnings.Remove(herbivore);
+            warnings.Remove(herbivore);
         }
     }
 
     private void ShowWarning(Herbivore herbivore, double distance)
     {
-        if (_warnings.TryGetValue(herbivore, out var warning))
+        if (warnings.TryGetValue(herbivore, out var warning))
         {
             // Update intensity based on distance
-            double intensity = 1.0 - (distance / _warningRadius);
+            double intensity = 1.0 - (distance / warningRadius);
 
             // Closer = more red/urgent
             byte red = (byte)(255 * intensity);
@@ -163,8 +164,8 @@ public class PredatorWarningSystem
         Canvas.SetTop(textBlock, herbivore.Y - 30);
         Canvas.SetZIndex(textBlock, 600);
 
-        _canvas.Children.Add(textBlock);
-        _warnings[herbivore] = new WarningVisual
+        canvas.Children.Add(textBlock);
+        warnings[herbivore] = new WarningVisual
         {
             Visual = textBlock,
             PulsePhase = 0,
@@ -175,10 +176,10 @@ public class PredatorWarningSystem
 
     private void HideWarning(Herbivore herbivore)
     {
-        if (_warnings.TryGetValue(herbivore, out var warning))
+        if (warnings.TryGetValue(herbivore, out var warning))
         {
-            _canvas.Children.Remove(warning.Visual);
-            _warnings.Remove(herbivore);
+            canvas.Children.Remove(warning.Visual);
+            warnings.Remove(herbivore);
         }
     }
 
@@ -187,18 +188,21 @@ public class PredatorWarningSystem
     /// </summary>
     public void Clear()
     {
-        foreach (var warning in _warnings.Values)
+        foreach (var warning in warnings.Values)
         {
-            _canvas.Children.Remove(warning.Visual);
+            canvas.Children.Remove(warning.Visual);
         }
-        _warnings.Clear();
+        warnings.Clear();
     }
 }
 
 internal class WarningVisual
 {
     public TextBlock Visual { get; set; } = null!;
+
     public double PulsePhase { get; set; }
+
     public SolidColorBrush ForegroundBrush { get; set; } = null!;
+
     public ScaleTransform ScaleTransform { get; set; } = null!;
 }

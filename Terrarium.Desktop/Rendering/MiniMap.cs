@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -7,66 +9,64 @@ using System.Windows.Shapes;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Simulation;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Mini-map showing a bird's eye view of the entire ecosystem.
 /// </summary>
 public class MiniMap
 {
-    private readonly Canvas _parentCanvas;
-    private readonly Border _mapBorder;
-    private readonly Canvas _mapCanvas;
-    private readonly Border _viewportIndicator;
+    private readonly Canvas parentCanvas;
+    private readonly Border mapBorder;
+    private readonly Canvas mapCanvas;
+    private readonly Border viewportIndicator;
 
-    private readonly List<Line> _gridLines = new();
-    private readonly List<Ellipse> _dotPool = new();
-    private int _activeDotCount;
+    private readonly List<Line> gridLines = new();
+    private readonly List<Ellipse> dotPool = new();
+    private int activeDotCount;
 
-    private readonly SolidColorBrush _gridBrush = CreateFrozenBrush(Color.FromArgb(30, 255, 255, 255));
-    private readonly SolidColorBrush _deadBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 80));
-    private readonly SolidColorBrush _herbivoreBrush = CreateFrozenBrush(Color.FromRgb(255, 183, 77));
-    private readonly SolidColorBrush _hungryBrush = CreateFrozenBrush(Color.FromRgb(231, 76, 60));
-    private readonly SolidColorBrush _carnivoreBrush = CreateFrozenBrush(Color.FromRgb(192, 57, 43));
+    private readonly SolidColorBrush gridBrush = CreateFrozenBrush(Color.FromArgb(30, 255, 255, 255));
+    private readonly SolidColorBrush deadBrush = CreateFrozenBrush(Color.FromRgb(80, 80, 80));
+    private readonly SolidColorBrush herbivoreBrush = CreateFrozenBrush(Color.FromRgb(255, 183, 77));
+    private readonly SolidColorBrush hungryBrush = CreateFrozenBrush(Color.FromRgb(231, 76, 60));
+    private readonly SolidColorBrush carnivoreBrush = CreateFrozenBrush(Color.FromRgb(192, 57, 43));
 
-    private readonly Dictionary<int, SolidColorBrush> _brushCache = new();
+    private readonly Dictionary<int, SolidColorBrush> brushCache = new();
     private const int BrushCacheMax = 96;
-    private bool _gridBuilt;
-    private double _gridScaleX;
-    private double _gridScaleY;
-    private double _lastWorldWidth;
-    private double _lastWorldHeight;
+    private bool gridBuilt;
+    private double gridScaleX;
+    private double gridScaleY;
+    private double lastWorldWidth;
+    private double lastWorldHeight;
 
     private const double MapWidth = 160;
     private const double MapHeight = 100;
     private const double Margin = 10;
 
-    private bool _isVisible = true;
-    private double _worldWidth;
-    private double _worldHeight;
+    private bool isVisible = true;
+    private double worldWidth;
+    private double worldHeight;
 
     public bool IsVisible
     {
-        get => _isVisible;
+        get => isVisible;
         set
         {
-            _isVisible = value;
-            _mapBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            isVisible = value;
+            mapBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
     public MiniMap(Canvas parentCanvas)
     {
-        _parentCanvas = parentCanvas;
+        this.parentCanvas = parentCanvas;
 
-        _mapCanvas = new Canvas
+        mapCanvas = new Canvas
         {
             Width = MapWidth,
             Height = MapHeight,
             ClipToBounds = true
         };
 
-        _viewportIndicator = new Border
+        viewportIndicator = new Border
         {
             BorderBrush = CreateFrozenBrush(Color.FromArgb(180, 255, 255, 255)),
             BorderThickness = new Thickness(1.5),
@@ -74,7 +74,7 @@ public class MiniMap
             CornerRadius = new CornerRadius(2)
         };
 
-        _mapBorder = new Border
+        mapBorder = new Border
         {
             Width = MapWidth + 4,
             Height = MapHeight + 24,
@@ -96,7 +96,7 @@ public class MiniMap
                     },
                     new Border
                     {
-                        Child = _mapCanvas,
+                        Child = mapCanvas,
                         Margin = new Thickness(2, 0, 2, 2),
                         Background = CreateFrozenBrush(
                             new LinearGradientBrush(
@@ -109,18 +109,18 @@ public class MiniMap
             }
         };
 
-        Canvas.SetZIndex(_mapBorder, 800);
-        _parentCanvas.Children.Add(_mapBorder);
+        Canvas.SetZIndex(mapBorder, 800);
+        this.parentCanvas.Children.Add(mapBorder);
 
-        _parentCanvas.SizeChanged += (s, e) => UpdatePosition();
+        this.parentCanvas.SizeChanged += (s, e) => UpdatePosition();
         UpdatePosition();
     }
 
     private void UpdatePosition()
     {
-        Canvas.SetLeft(_mapBorder, Margin);
-        Canvas.SetBottom(_mapBorder, Margin);
-        Canvas.SetTop(_mapBorder, _parentCanvas.ActualHeight - MapHeight - 24 - Margin);
+        Canvas.SetLeft(mapBorder, Margin);
+        Canvas.SetBottom(mapBorder, Margin);
+        Canvas.SetTop(mapBorder, parentCanvas.ActualHeight - MapHeight - 24 - Margin);
     }
 
     /// <summary>
@@ -128,16 +128,16 @@ public class MiniMap
     /// </summary>
     public void Update(World world, double viewportWidth, double viewportHeight)
     {
-        if (!_isVisible)
+        if (!isVisible)
         {
             return;
         }
 
-        _worldWidth = world.Width;
-        _worldHeight = world.Height;
+        worldWidth = world.Width;
+        worldHeight = world.Height;
 
-        double scaleX = MapWidth / _worldWidth;
-        double scaleY = MapHeight / _worldHeight;
+        double scaleX = MapWidth / worldWidth;
+        double scaleY = MapHeight / worldHeight;
 
         EnsureTerrainGrid(scaleX, scaleY);
         UpdateEntityDots(world, scaleX, scaleY);
@@ -147,22 +147,22 @@ public class MiniMap
 
     private void EnsureTerrainGrid(double scaleX, double scaleY)
     {
-        bool dimsChanged = _lastWorldWidth != _worldWidth || _lastWorldHeight != _worldHeight;
-        bool scaleChanged = Math.Abs(_gridScaleX - scaleX) > 0.0001 || Math.Abs(_gridScaleY - scaleY) > 0.0001;
+        bool dimsChanged = lastWorldWidth != worldWidth || lastWorldHeight != worldHeight;
+        bool scaleChanged = Math.Abs(gridScaleX - scaleX) > 0.0001 || Math.Abs(gridScaleY - scaleY) > 0.0001;
 
-        if (_gridBuilt && !dimsChanged && !scaleChanged)
+        if (gridBuilt && !dimsChanged && !scaleChanged)
         {
             return;
         }
 
-        foreach (var line in _gridLines)
+        foreach (var line in gridLines)
         {
-            _mapCanvas.Children.Remove(line);
+            mapCanvas.Children.Remove(line);
         }
-        _gridLines.Clear();
+        gridLines.Clear();
 
         int gridSize = 100;
-        for (int x = 0; x < _worldWidth; x += gridSize)
+        for (int x = 0; x < worldWidth; x += gridSize)
         {
             var line = new Line
             {
@@ -170,15 +170,15 @@ public class MiniMap
                 Y1 = 0,
                 X2 = x * scaleX,
                 Y2 = MapHeight,
-                Stroke = _gridBrush,
+                Stroke = gridBrush,
                 StrokeThickness = 0.5,
                 IsHitTestVisible = false
             };
-            _gridLines.Add(line);
-            _mapCanvas.Children.Add(line);
+            gridLines.Add(line);
+            mapCanvas.Children.Add(line);
         }
 
-        for (int y = 0; y < _worldHeight; y += gridSize)
+        for (int y = 0; y < worldHeight; y += gridSize)
         {
             var line = new Line
             {
@@ -186,24 +186,24 @@ public class MiniMap
                 Y1 = y * scaleY,
                 X2 = MapWidth,
                 Y2 = y * scaleY,
-                Stroke = _gridBrush,
+                Stroke = gridBrush,
                 StrokeThickness = 0.5,
                 IsHitTestVisible = false
             };
-            _gridLines.Add(line);
-            _mapCanvas.Children.Add(line);
+            gridLines.Add(line);
+            mapCanvas.Children.Add(line);
         }
 
-        _gridBuilt = true;
-        _gridScaleX = scaleX;
-        _gridScaleY = scaleY;
-        _lastWorldWidth = _worldWidth;
-        _lastWorldHeight = _worldHeight;
+        gridBuilt = true;
+        gridScaleX = scaleX;
+        gridScaleY = scaleY;
+        lastWorldWidth = worldWidth;
+        lastWorldHeight = worldHeight;
     }
 
     private void UpdateEntityDots(World world, double scaleX, double scaleY)
     {
-        _activeDotCount = 0;
+        activeDotCount = 0;
 
         foreach (var plant in world.Plants)
         {
@@ -220,9 +220,9 @@ public class MiniMap
             UpdateCarnivoreDot(carnivore, scaleX, scaleY);
         }
 
-        for (int i = _activeDotCount; i < _dotPool.Count; i++)
+        for (int i = activeDotCount; i < dotPool.Count; i++)
         {
-            _dotPool[i].Visibility = Visibility.Collapsed;
+            dotPool[i].Visibility = Visibility.Collapsed;
         }
     }
 
@@ -236,8 +236,8 @@ public class MiniMap
         var brush = GetCachedBrush(Color.FromRgb(r, g, b));
 
         var dot = GetDot(dotSize, brush);
-        Canvas.SetLeft(dot, plant.X * scaleX - dotSize / 2);
-        Canvas.SetTop(dot, plant.Y * scaleY - dotSize / 2);
+        Canvas.SetLeft(dot, (plant.X * scaleX) - (dotSize / 2));
+        Canvas.SetTop(dot, (plant.Y * scaleY) - (dotSize / 2));
     }
 
     private void UpdateHerbivoreDot(Herbivore herbivore, double scaleX, double scaleY)
@@ -247,44 +247,44 @@ public class MiniMap
 
         if (!herbivore.IsAlive)
         {
-            brush = _deadBrush;
+            brush = deadBrush;
         }
         else if (herbivore.Hunger > 70)
         {
-            brush = _hungryBrush;
+            brush = hungryBrush;
         }
         else
         {
-            brush = _herbivoreBrush;
+            brush = herbivoreBrush;
         }
 
         var dot = GetDot(dotSize, brush);
-        Canvas.SetLeft(dot, herbivore.X * scaleX - dotSize / 2);
-        Canvas.SetTop(dot, herbivore.Y * scaleY - dotSize / 2);
+        Canvas.SetLeft(dot, (herbivore.X * scaleX) - (dotSize / 2));
+        Canvas.SetTop(dot, (herbivore.Y * scaleY) - (dotSize / 2));
     }
 
     private void UpdateCarnivoreDot(Carnivore carnivore, double scaleX, double scaleY)
     {
         double dotSize = 5;
-        Brush brush = carnivore.IsAlive ? _carnivoreBrush : _deadBrush;
+        Brush brush = carnivore.IsAlive ? carnivoreBrush : deadBrush;
 
         var dot = GetDot(dotSize, brush);
-        Canvas.SetLeft(dot, carnivore.X * scaleX - dotSize / 2);
-        Canvas.SetTop(dot, carnivore.Y * scaleY - dotSize / 2);
+        Canvas.SetLeft(dot, (carnivore.X * scaleX) - (dotSize / 2));
+        Canvas.SetTop(dot, (carnivore.Y * scaleY) - (dotSize / 2));
     }
 
     private Ellipse GetDot(double dotSize, Brush fill)
     {
         Ellipse dot;
-        if (_activeDotCount < _dotPool.Count)
+        if (activeDotCount < dotPool.Count)
         {
-            dot = _dotPool[_activeDotCount];
+            dot = dotPool[activeDotCount];
         }
         else
         {
             dot = new Ellipse { IsHitTestVisible = false };
-            _dotPool.Add(dot);
-            _mapCanvas.Children.Add(dot);
+            dotPool.Add(dot);
+            mapCanvas.Children.Add(dot);
         }
 
         dot.Width = dotSize;
@@ -292,25 +292,25 @@ public class MiniMap
         dot.Fill = fill;
         dot.Visibility = Visibility.Visible;
 
-        _activeDotCount++;
+        activeDotCount++;
         return dot;
     }
 
     private SolidColorBrush GetCachedBrush(Color color)
     {
         int key = (color.R << 16) | (color.G << 8) | color.B;
-        if (_brushCache.TryGetValue(key, out var brush))
+        if (brushCache.TryGetValue(key, out var brush))
         {
             return brush;
         }
 
-        if (_brushCache.Count >= BrushCacheMax)
+        if (brushCache.Count >= BrushCacheMax)
         {
-            _brushCache.Clear();
+            brushCache.Clear();
         }
 
         brush = CreateFrozenBrush(color);
-        _brushCache[key] = brush;
+        brushCache[key] = brush;
         return brush;
     }
 
@@ -318,24 +318,24 @@ public class MiniMap
     {
         // For now, assume viewport shows the entire world
         // In future, this could show a scrollable view area
-        double indicatorWidth = Math.Min(viewportWidth, _worldWidth) * scaleX;
-        double indicatorHeight = Math.Min(viewportHeight, _worldHeight) * scaleY;
+        double indicatorWidth = Math.Min(viewportWidth, worldWidth) * scaleX;
+        double indicatorHeight = Math.Min(viewportHeight, worldHeight) * scaleY;
 
-        _viewportIndicator.Width = indicatorWidth;
-        _viewportIndicator.Height = indicatorHeight;
+        viewportIndicator.Width = indicatorWidth;
+        viewportIndicator.Height = indicatorHeight;
 
         // Center the viewport indicator
         double offsetX = (MapWidth - indicatorWidth) / 2;
         double offsetY = (MapHeight - indicatorHeight) / 2;
 
-        Canvas.SetLeft(_viewportIndicator, offsetX);
-        Canvas.SetTop(_viewportIndicator, offsetY);
+        Canvas.SetLeft(viewportIndicator, offsetX);
+        Canvas.SetTop(viewportIndicator, offsetY);
 
         // Only add if not already present
-        if (!_mapCanvas.Children.Contains(_viewportIndicator))
+        if (!mapCanvas.Children.Contains(viewportIndicator))
         {
-            _mapCanvas.Children.Add(_viewportIndicator);
-            Panel.SetZIndex(_viewportIndicator, 999);
+            mapCanvas.Children.Add(viewportIndicator);
+            Panel.SetZIndex(viewportIndicator, 999);
         }
     }
 
@@ -346,7 +346,8 @@ public class MiniMap
         return brush;
     }
 
-    private static T CreateFrozenBrush<T>(T brush) where T : Freezable
+    private static T CreateFrozenBrush<T>(T brush)
+        where T : Freezable
     {
         brush.Freeze();
         return brush;

@@ -1,9 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Terrarium.Logic.Entities;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Entities
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+
     /// <summary>
     /// Unit tests for LivingEntity health and aging mechanics.
     /// Tests the fundamental life properties shared by all living entities.
@@ -154,8 +154,3 @@ namespace Terrarium.Tests.Entities
         }
     }
 }
-
-
-
-
-

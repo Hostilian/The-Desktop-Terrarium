@@ -1,14 +1,14 @@
-using Terrarium.Logic.Interfaces;
-
 namespace Terrarium.Logic.Entities
 {
+    using Terrarium.Logic.Interfaces;
+
     /// <summary>
     /// Represents a plant entity that grows over time.
     /// </summary>
     public class Plant : LivingEntity, IClickable
     {
-        private double _size;
-        private double _growthRate;
+        private double size;
+        private double growthRate;
 
         // Plant-specific constants
         private const double MinSize = 1.0;
@@ -22,41 +22,41 @@ namespace Terrarium.Logic.Entities
         private const double GrowthHealRate = 0.1;
         private const double ClickRadiusPadding = 10.0;
 
-        private double _waterLevel;
+        private double waterLevel;
 
         /// <summary>
-        /// Current size of the plant.
+        /// Gets current size of the plant.
         /// </summary>
         public double Size
         {
-            get => _size;
-            private set => _size = Math.Clamp(value, MinSize, MaxSize);
+            get => size;
+            private set => size = Math.Clamp(value, MinSize, MaxSize);
         }
 
         /// <summary>
-        /// Rate at which the plant grows per tick.
+        /// Gets or sets rate at which the plant grows per tick.
         /// </summary>
         public double GrowthRate
         {
-            get => _growthRate;
-            set => _growthRate = Math.Max(0, value);
+            get => growthRate;
+            set => growthRate = Math.Max(0, value);
         }
 
         /// <summary>
-        /// Current water level of the plant (0-100).
+        /// Gets current water level of the plant (0-100).
         /// </summary>
         public double WaterLevel
         {
-            get => _waterLevel;
-            private set => _waterLevel = Math.Clamp(value, 0, MaxWaterLevel);
+            get => waterLevel;
+            private set => waterLevel = Math.Clamp(value, 0, MaxWaterLevel);
         }
 
         public Plant(double x, double y, string type = "Plant", double initialSize = MinSize)
             : base(x, y, type)
         {
-            _size = initialSize;
-            _growthRate = DefaultGrowthRate;
-            _waterLevel = MaxWaterLevel;
+            size = initialSize;
+            growthRate = DefaultGrowthRate;
+            waterLevel = MaxWaterLevel;
         }
 
         public override void Update(double deltaTime)
@@ -89,7 +89,7 @@ namespace Terrarium.Logic.Entities
             double clickRadius = Size + ClickRadiusPadding;
             double dx = x - X;
             double dy = Y - y;
-            return (dx * dx + dy * dy) <= (clickRadius * clickRadius);
+            return ((dx * dx) + (dy * dy)) <= (clickRadius * clickRadius);
         }
     }
 }

@@ -1,3 +1,5 @@
+namespace Terrarium.Desktop.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -5,19 +7,17 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Terrarium.Logic.Entities;
 
-namespace Terrarium.Desktop.Rendering;
-
 /// <summary>
 /// Displays emoji indicators above creatures showing their current state/mood.
 /// </summary>
 public class CreatureMoodIndicator
 {
-    private readonly Canvas _canvas;
-    private readonly Dictionary<Creature, MoodVisual> _moodVisuals;
-    private double _updateTimer;
+    private readonly Canvas canvas;
+    private readonly Dictionary<Creature, MoodVisual> moodVisuals;
+    private double updateTimer;
 
-    private readonly HashSet<Creature> _existingCreaturesBuffer = new();
-    private readonly List<Creature> _toRemoveBuffer = new();
+    private readonly HashSet<Creature> existingCreaturesBuffer = new();
+    private readonly List<Creature> toRemoveBuffer = new();
 
     private const double UpdateInterval = 0.5; // Update moods every 0.5 seconds
     private const double IndicatorOffsetY = -25;
@@ -44,9 +44,9 @@ public class CreatureMoodIndicator
 
     public CreatureMoodIndicator(Canvas canvas)
     {
-        _canvas = canvas;
-        _moodVisuals = new Dictionary<Creature, MoodVisual>();
-        _updateTimer = 0;
+        this.canvas = canvas;
+        moodVisuals = new Dictionary<Creature, MoodVisual>();
+        updateTimer = 0;
     }
 
     /// <summary>
@@ -64,16 +64,16 @@ public class CreatureMoodIndicator
             return;
         }
 
-        _updateTimer += deltaTime;
-        if (_updateTimer < UpdateInterval)
+        updateTimer += deltaTime;
+        if (updateTimer < UpdateInterval)
         {
             return;
         }
 
-        _updateTimer = 0;
+        updateTimer = 0;
 
         // Track which creatures still exist
-        _existingCreaturesBuffer.Clear();
+        existingCreaturesBuffer.Clear();
 
         foreach (var herbivore in herbivores)
         {
@@ -82,7 +82,7 @@ public class CreatureMoodIndicator
                 continue;
             }
 
-            _existingCreaturesBuffer.Add(herbivore);
+            existingCreaturesBuffer.Add(herbivore);
             string mood = GetMoodEmoji(herbivore);
             UpdateOrCreateMoodVisual(herbivore, mood);
         }
@@ -94,19 +94,19 @@ public class CreatureMoodIndicator
                 continue;
             }
 
-            _existingCreaturesBuffer.Add(carnivore);
+            existingCreaturesBuffer.Add(carnivore);
             string mood = GetMoodEmoji(carnivore);
             UpdateOrCreateMoodVisual(carnivore, mood);
         }
 
         // Remove visuals for dead/removed creatures
-        _toRemoveBuffer.Clear();
-        foreach (var kvp in _moodVisuals)
+        toRemoveBuffer.Clear();
+        foreach (var kvp in moodVisuals)
         {
-            if (!_existingCreaturesBuffer.Contains(kvp.Key))
+            if (!existingCreaturesBuffer.Contains(kvp.Key))
             {
-                _canvas.Children.Remove(kvp.Value.Visual);
-                _toRemoveBuffer.Add(kvp.Key);
+                canvas.Children.Remove(kvp.Value.Visual);
+                toRemoveBuffer.Add(kvp.Key);
             }
             else
             {
@@ -115,9 +115,9 @@ public class CreatureMoodIndicator
             }
         }
 
-        foreach (var creature in _toRemoveBuffer)
+        foreach (var creature in toRemoveBuffer)
         {
-            _moodVisuals.Remove(creature);
+            moodVisuals.Remove(creature);
         }
     }
 
@@ -166,7 +166,7 @@ public class CreatureMoodIndicator
 
     private void UpdateOrCreateMoodVisual(Creature creature, string mood)
     {
-        if (_moodVisuals.TryGetValue(creature, out var existing))
+        if (moodVisuals.TryGetValue(creature, out var existing))
         {
             if (existing.CurrentMood != mood)
             {
@@ -187,8 +187,8 @@ public class CreatureMoodIndicator
             Canvas.SetTop(textBlock, creature.Y + IndicatorOffsetY);
             Canvas.SetZIndex(textBlock, MoodZIndex);
 
-            _canvas.Children.Add(textBlock);
-            _moodVisuals[creature] = new MoodVisual { Visual = textBlock, CurrentMood = mood };
+            canvas.Children.Add(textBlock);
+            moodVisuals[creature] = new MoodVisual { Visual = textBlock, CurrentMood = mood };
         }
     }
 
@@ -197,16 +197,17 @@ public class CreatureMoodIndicator
     /// </summary>
     public void Clear()
     {
-        foreach (var kvp in _moodVisuals)
+        foreach (var kvp in moodVisuals)
         {
-            _canvas.Children.Remove(kvp.Value.Visual);
+            canvas.Children.Remove(kvp.Value.Visual);
         }
-        _moodVisuals.Clear();
+        moodVisuals.Clear();
     }
 }
 
 internal class MoodVisual
 {
     public TextBlock Visual { get; set; } = null!;
+
     public string CurrentMood { get; set; } = string.Empty;
 }

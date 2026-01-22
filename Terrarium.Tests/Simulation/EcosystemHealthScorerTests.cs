@@ -1,10 +1,10 @@
-
-using Terrarium.Logic.Simulation;
-using Terrarium.Logic.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Terrarium.Tests.Simulation
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Terrarium.Logic.Entities;
+    using Terrarium.Logic.Simulation;
+
+    [TestClass]
     /// <summary>
     /// Comprehensive tests for EcosystemHealthScorer to achieve 100% coverage.
     /// </summary>
@@ -107,7 +107,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should get diversity bonus
-            Assert.IsTrue(health > 50);
+            Assert.IsGreaterThan(50, health);
         }
 
         [TestMethod]
@@ -168,7 +168,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.IsTrue(health <= 100);
+            Assert.IsLessThanOrEqualTo(100, health);
         }
 
         [TestMethod]
@@ -183,12 +183,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.IsTrue(health >= 0);
+            Assert.IsGreaterThanOrEqualTo(0, health);
         }
     }
 }
-
-
-
-
-

@@ -1,7 +1,7 @@
-using System;
-
 namespace Terrarium.Logic.Simulation
 {
+    using System;
+
     public static class EcosystemHealthScorer
     {
         private const double ScoreMin = 0;
@@ -33,9 +33,9 @@ namespace Terrarium.Logic.Simulation
                 double carnRatio = (double)carnivores / total;
 
                 // Ideal ratios: ~50% plants, ~35% herbivores, ~15% carnivores
-                double plantBalance = 1 - Math.Abs(plantRatio - 0.5) * 1.5;
-                double herbBalance = 1 - Math.Abs(herbRatio - 0.35) * 2.0;
-                double carnBalance = 1 - Math.Abs(carnRatio - 0.15) * 3.0;
+                double plantBalance = 1 - (Math.Abs(plantRatio - 0.5) * 1.5);
+                double herbBalance = 1 - (Math.Abs(herbRatio - 0.35) * 2.0);
+                double carnBalance = 1 - (Math.Abs(carnRatio - 0.15) * 3.0);
 
                 double balanceScore = (plantBalance + herbBalance + carnBalance) / 3;
                 score *= Math.Max(0.3, balanceScore);

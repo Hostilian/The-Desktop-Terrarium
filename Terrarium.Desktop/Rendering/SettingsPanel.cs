@@ -148,7 +148,7 @@ public class SettingsPanel
         AddToggleSetting("Weather Effects", "🌧️", ShowWeatherEffects, value =>
         {
             ShowWeatherEffects = value;
-            WeatherEffectsToggled?.Invoke(value);
+            this.WeatherEffectsToggled?.Invoke(value);
         });
 
         AddToggleSetting("Sound", "🔊", EnableSound, value =>

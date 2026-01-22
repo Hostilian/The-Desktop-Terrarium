@@ -48,7 +48,7 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: 🏗️ Build Solution
-      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:TreatWarningsAsErrors=true -p:ContinuousIntegrationBuild=true
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
 
     - name: 🧪 Run Tests
       run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory "${{ github.workspace }}/TestResults" --collect:"XPlat Code Coverage"

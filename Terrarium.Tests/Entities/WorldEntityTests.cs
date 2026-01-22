@@ -103,7 +103,7 @@ namespace Terrarium.Tests.Entities
             double distance = entity1.DistanceTo(entity2);
 
             // Assert
-            double expected = Math.Sqrt(1000 * 1000 + 1000 * 1000);
+            double expected = Math.Sqrt((1000 * 1000) + (1000 * 1000));
             Assert.AreEqual(expected, distance, 0.001);
         }
     }

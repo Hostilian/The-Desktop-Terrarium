@@ -53,8 +53,7 @@ public class PredatorWarningTests
         double distance = CalculateDistance(herbivoreX, herbivoreY, carnivoreX, carnivoreY);
         // sqrt(70^2 + 70^2) = sqrt(9800) ≈ 98.99
 
-        Assert.IsLessThan(_WarningRadius, distance,
-            $"Diagonal distance {distance:F2} should be within {_WarningRadius}");
+        Assert.IsLessThan(_WarningRadius, distance, $"Diagonal distance {distance:F2} should be within {_WarningRadius}");
     }
 
     [TestMethod]
@@ -76,8 +75,7 @@ public class PredatorWarningTests
             nearestDistance = Math.Min(nearestDistance, dist);
         }
 
-        Assert.AreEqual(50, nearestDistance, 0.01,
-            "Nearest predator should be 50 units away");
+        Assert.AreEqual(50, nearestDistance, 0.01, "Nearest predator should be 50 units away");
     }
 
     /// <summary>

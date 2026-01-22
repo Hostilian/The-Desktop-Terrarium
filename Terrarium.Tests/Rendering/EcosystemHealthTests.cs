@@ -46,7 +46,7 @@ namespace Terrarium.Tests.Rendering
         public void HealthScore_WithinValidRange()
         {
             // Test various scenarios
-            var scenarios = new (int plants, int herbs, int carns)[]
+            var scenarios = new (int Plants, int Herbs, int Carns)[]
             {
                 (10, 5, 2),
                 (50, 20, 5),
@@ -55,13 +55,13 @@ namespace Terrarium.Tests.Rendering
                 (20, 10, 0),
             };
 
-            foreach (var (plants, herbs, carns) in scenarios)
+            foreach (var (Plants, Herbs, Carns) in scenarios)
             {
-                double score = EcosystemHealthScorer.CalculateHealthPercent(plants, herbs, carns);
+                double score = EcosystemHealthScorer.CalculateHealthPercent(Plants, Herbs, Carns);
                 Assert.IsGreaterThanOrEqualTo(0, score,
-                    $"Score {score} should be >= 0 for ({plants}, {herbs}, {carns})");
+                    $"Score {score} should be >= 0 for ({Plants}, {Herbs}, {Carns})");
                 Assert.IsLessThanOrEqualTo(100, score,
-                    $"Score {score} should be <= 100 for ({plants}, {herbs}, {carns})");
+                    $"Score {score} should be <= 100 for ({Plants}, {Herbs}, {Carns})");
             }
         }
     }

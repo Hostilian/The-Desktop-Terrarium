@@ -17,9 +17,9 @@ namespace Terrarium.Tests.Simulation
             var world = new World();
 
             // Assert
-            Assert.Equal(World.MaxX, world.Width);
-            Assert.Equal(World.MaxY, world.Height);
-            Assert.Equal(TerrariumType.Forest, world.TerrariumType);
+            Assert.AreEqual(World.MaxX, world.Width);
+            Assert.AreEqual(World.MaxY, world.Height);
+            Assert.AreEqual(TerrariumType.Forest, world.TerrariumType);
         }
 
         [TestMethod]
@@ -29,9 +29,9 @@ namespace Terrarium.Tests.Simulation
             var world = new World(800, 600, TerrariumType.Desert);
 
             // Assert
-            Assert.Equal(800, world.Width);
-            Assert.Equal(600, world.Height);
-            Assert.Equal(TerrariumType.Desert, world.TerrariumType);
+            Assert.AreEqual(800, world.Width);
+            Assert.AreEqual(600, world.Height);
+            Assert.AreEqual(TerrariumType.Desert, world.TerrariumType);
         }
 
         [TestMethod]
@@ -45,8 +45,8 @@ namespace Terrarium.Tests.Simulation
             world.AddPlant(plant);
 
             // Assert
-            Assert.Contains(plant, world.Plants);
-            Assert.Equal(1, world.Plants.Count);
+            CollectionAssert.Contains(world.Plants, plant);
+            Assert.AreEqual(1, world.Plants.Count);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Terrarium.Tests.Simulation
             world.AddHerbivore(herbivore);
 
             // Assert
-            Assert.Contains(herbivore, world.Herbivores);
+            CollectionAssert.Contains(world.Herbivores, herbivore);
             Assert.AreEqual(1, world.Herbivores.Count);
         }
 
@@ -75,7 +75,7 @@ namespace Terrarium.Tests.Simulation
             world.AddCarnivore(carnivore);
 
             // Assert
-            Assert.Contains(carnivore, world.Carnivores);
+            CollectionAssert.Contains(world.Carnivores, carnivore);
             Assert.AreEqual(1, world.Carnivores.Count);
         }
 
@@ -101,10 +101,10 @@ namespace Terrarium.Tests.Simulation
             world.RemoveDeadEntities();
 
             // Assert
-            Assert.Contains(alivePlant, world.Plants);
-            Assert.DoesNotContain(deadPlant, world.Plants);
-            Assert.Contains(aliveHerbivore, world.Herbivores);
-            Assert.DoesNotContain(deadHerbivore, world.Herbivores);
+            CollectionAssert.Contains(world.Plants, alivePlant);
+            CollectionAssert.DoesNotContain(world.Plants, deadPlant);
+            CollectionAssert.Contains(world.Herbivores, aliveHerbivore);
+            CollectionAssert.DoesNotContain(world.Herbivores, deadHerbivore);
         }
 
         [TestMethod]
@@ -117,9 +117,9 @@ namespace Terrarium.Tests.Simulation
             var plant = world.SpawnRandomPlant();
 
             // Assert
-            Assert.NotNull(plant);
+            Assert.IsNotNull(plant);
             Assert.AreEqual("Tree", plant.Type);
-            Assert.Contains(plant, world.Plants);
+            CollectionAssert.Contains(world.Plants, plant);
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ namespace Terrarium.Tests.Simulation
             var plant = world.SpawnRandomPlant();
 
             // Assert
-            Assert.Equal("Algae", plant.Type);
+            Assert.AreEqual("Algae", plant.Type);
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Terrarium.Tests.Simulation
             var plant = world.SpawnRandomPlant();
 
             // Assert
-            Assert.Equal("Crystal", plant.Type);
+            Assert.AreEqual("Crystal", plant.Type);
         }
 
         [Fact]
@@ -171,10 +171,10 @@ namespace Terrarium.Tests.Simulation
             var plant = world.SpawnPlantAt(250, 300);
 
             // Assert
-            Assert.Equal(250, plant.X);
-            Assert.Equal(300, plant.Y);
-            Assert.Equal("Tree", plant.Type);
-            Assert.Contains(plant, world.Plants);
+            Assert.AreEqual(250, plant.X);
+            Assert.AreEqual(300, plant.Y);
+            Assert.AreEqual("Tree", plant.Type);
+            CollectionAssert.Contains(world.Plants, plant);
         }
 
         [Fact]
@@ -187,9 +187,9 @@ namespace Terrarium.Tests.Simulation
             var herbivore = world.SpawnRandomHerbivore();
 
             // Assert
-            Assert.NotNull(herbivore);
-            Assert.Equal("Deer", herbivore.Type);
-            Assert.Contains(herbivore, world.Herbivores);
+            Assert.IsNotNull(herbivore);
+            Assert.AreEqual("Deer", herbivore.Type);
+            CollectionAssert.Contains(world.Herbivores, herbivore);
         }
 
         [Fact]
@@ -202,7 +202,7 @@ namespace Terrarium.Tests.Simulation
             var herbivore = world.SpawnRandomHerbivore(factionOverride: FactionType.CrystalChoir);
 
             // Assert
-            Assert.Equal(FactionType.CrystalChoir, herbivore.Faction);
+            Assert.AreEqual(FactionType.CrystalChoir, herbivore.Faction);
         }
 
         [Fact]
@@ -215,9 +215,9 @@ namespace Terrarium.Tests.Simulation
             var carnivore = world.SpawnRandomCarnivore();
 
             // Assert
-            Assert.NotNull(carnivore);
-            Assert.Equal("Dragon", carnivore.Type);
-            Assert.Contains(carnivore, world.Carnivores);
+            Assert.IsNotNull(carnivore);
+            Assert.AreEqual("Dragon", carnivore.Type);
+            CollectionAssert.Contains(world.Carnivores, carnivore);
         }
 
         [Fact]
@@ -230,7 +230,7 @@ namespace Terrarium.Tests.Simulation
             var carnivore = world.SpawnRandomCarnivore("CustomWolf");
 
             // Assert
-            Assert.Equal("CustomWolf", carnivore.Type);
+            Assert.AreEqual("CustomWolf", carnivore.Type);
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace Terrarium.Tests.Simulation
             var allEntities = world.GetAllEntities().ToList();
 
             // Assert
-            Assert.Equal(3, allEntities.Count);
+            Assert.AreEqual(3, allEntities.Count);
         }
 
         [Fact]
@@ -272,7 +272,7 @@ namespace Terrarium.Tests.Simulation
             var terrain = world.GetTerrainAt(-100, -100);
 
             // Assert
-            Assert.Equal(TerrainType.Void, terrain);
+            Assert.AreEqual(TerrainType.Void, terrain);
         }
 
         [Fact]
@@ -286,7 +286,7 @@ namespace Terrarium.Tests.Simulation
             var terrain = world.GetTerrainAt(100, 100);
 
             // Assert
-            Assert.Equal(TerrainType.AshenWasteland, terrain);
+            Assert.AreEqual(TerrainType.AshenWasteland, terrain);
         }
 
         [Fact]
@@ -310,8 +310,8 @@ namespace Terrarium.Tests.Simulation
             bool converted = world.AttemptTerrainConversion(100, 100, FactionType.AshenLegion);
 
             // Assert
-            Assert.True(converted);
-            Assert.Equal(TerrainType.AshenWasteland, world.GetTerrainAt(100, 100));
+            Assert.IsTrue(converted);
+            Assert.AreEqual(TerrainType.AshenWasteland, world.GetTerrainAt(100, 100));
         }
 
         [Fact]
@@ -362,7 +362,10 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.NotEmpty(territory);
-            Assert.All(territory, cell => Assert.Equal(TerrainType.VerdantGrowth, cell.terrain));
+            foreach (var cell in territory)
+            {
+                Assert.AreEqual(TerrainType.VerdantGrowth, cell.terrain);
+            }
         }
 
         [Fact]

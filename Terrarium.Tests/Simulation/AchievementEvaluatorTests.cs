@@ -23,7 +23,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "first_birth");
+            Assert.IsTrue(achievements.Any(a => a.Id == "first_birth"));
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "population_10");
+            Assert.IsTrue(achievements.Any(a => a.Id == "population_10"));
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "population_25");
+            Assert.IsTrue(achievements.Any(a => a.Id == "population_25"));
         }
 
         [Fact]

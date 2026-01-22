@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using Terrarium.Logic.Simulation.Achievements;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Rendering
 {
     [TestClass]

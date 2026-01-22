@@ -1,4 +1,6 @@
 using Terrarium.Logic.Simulation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>

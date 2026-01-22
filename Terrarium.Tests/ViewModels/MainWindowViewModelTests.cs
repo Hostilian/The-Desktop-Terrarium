@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Desktop.ViewModels;
 using Terrarium.Logic.Simulation;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.ViewModels;
 
 /// <summary>

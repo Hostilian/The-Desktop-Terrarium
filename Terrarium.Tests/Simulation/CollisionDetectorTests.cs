@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>

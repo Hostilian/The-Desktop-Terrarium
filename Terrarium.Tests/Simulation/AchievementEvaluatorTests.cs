@@ -1,6 +1,8 @@
 
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Simulation.Achievements;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>
@@ -167,7 +169,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.DoesNotContain(achievements, a => a.Id == "survivor");
+            Assert.IsFalse(achievements.Any(a => a.Id == "survivor"));
         }
 
         [TestMethod]
@@ -293,7 +295,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.DoesNotContain(achievements, a => a.Id == "balance");
+            Assert.IsFalse(achievements.Any(a => a.Id == "balance"));
         }
 
         [TestMethod]
@@ -311,7 +313,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.DoesNotContain(achievements, a => a.Id == "balance");
+            Assert.IsFalse(achievements.Any(a => a.Id == "balance"));
         }
 
         [TestMethod]

@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Terrarium.Logic.Entities;
 using Terrarium.Logic.Simulation;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>
@@ -186,7 +187,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsFalse(string.IsNullOrEmpty(summary));
-            StringAssert.IsTrue(summary.Any("Population"));
+            StringAssert.Contains(summary, "Population");
         }
     }
 }

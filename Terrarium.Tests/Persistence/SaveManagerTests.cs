@@ -4,6 +4,7 @@ using Terrarium.Logic.Entities;
 using Terrarium.Logic.Persistence;
 using Terrarium.Logic.Simulation;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Persistence
 {
     [TestClass]
@@ -248,7 +249,7 @@ namespace Terrarium.Tests.Persistence
                 Assert.IsFalse(success, "TryLoadWorld should return false for invalid JSON");
                 Assert.IsNull(world, "World should be null on failure");
                 Assert.IsNotNull(errorDetails, "Error details should be provided");
-                StringAssert.IsTrue(errorDetails.Any("Save file is corrupted or not valid JSON", "Error should contain specific error message"));
+                StringAssert.Contains(errorDetails, "Save file is corrupted or not valid JSON");
             }
             finally
             {
@@ -365,7 +366,7 @@ namespace Terrarium.Tests.Persistence
                 }
                 catch (InvalidDataException ex)
                 {
-                    StringAssert.IsTrue(ex.Message.Any("invalid", "Should mention invalid dimensions"));
+                    StringAssert.Contains(ex.Message, "invalid");
                 }
             }
             finally

@@ -1,6 +1,8 @@
 
 using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>
@@ -151,7 +153,7 @@ namespace Terrarium.Tests.Simulation
             double healthPercent = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert
-            Assert.AreEqual(healthPercent / 100.0, health01, precision: 5);
+            Assert.AreEqual(healthPercent / 100.0, health01, 0.00001);
         }
 
         [TestMethod]

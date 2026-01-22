@@ -1,5 +1,7 @@
 
 using Terrarium.Desktop.Constants;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Constants
 {
     /// <summary>

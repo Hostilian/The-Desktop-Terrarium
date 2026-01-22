@@ -3,6 +3,7 @@ using Terrarium.Logic.Simulation;
 using Terrarium.Logic.Entities;
 using System;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Terrarium.Tests.Simulation
 {
@@ -70,7 +71,7 @@ namespace Terrarium.Tests.Simulation
             // Arrange
             var loreManager = new LoreManager();
             var factionManager = new FactionManager();
-            var creatures = new[]
+            var creatures = new Creature[]
             {
                 new Herbivore(100, 100, "Deer", faction: FactionType.VerdantCollective),
                 new Carnivore(200, 200, "Wolf", faction: FactionType.AshenLegion)
@@ -92,8 +93,9 @@ namespace Terrarium.Tests.Simulation
             var loreManager = new LoreManager();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            var exception = Assert.Throws<ArgumentNullException>(() => 
                 loreManager.GenerateEventDescription(null!));
+            Assert.IsNotNull(exception);
         }
 
         [TestMethod]
@@ -141,8 +143,9 @@ namespace Terrarium.Tests.Simulation
             var loreManager = new LoreManager();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            var exception = Assert.Throws<ArgumentNullException>(() => 
                 loreManager.TryCreateNamedCharacter(null!));
+            Assert.IsNotNull(exception);
         }
 
         [TestMethod]

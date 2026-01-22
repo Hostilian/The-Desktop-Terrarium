@@ -1,5 +1,7 @@
 
 using Terrarium.Logic.Simulation.Achievements;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>

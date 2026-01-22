@@ -1,5 +1,7 @@
 
 using Terrarium.Desktop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Terrarium.Tests.Desktop
 {
     /// <summary>
@@ -13,15 +15,15 @@ namespace Terrarium.Tests.Desktop
             // Arrange
             var option = new TerrariumTypeOption
             {
-                DisplayName = "Test Display",
-                Description = "Test Description",
-                Type = global::Terrarium.Logic.Simulation.TerrariumType.Forest
+                Title = "Test Title",
+                Subtitle = "Test Subtitle",
+                Id = "test_id"
             };
 
             // Assert
-            Assert.AreEqual("Test Display", option.DisplayName);
-            Assert.AreEqual("Test Description", option.Description);
-            Assert.AreEqual(global::Terrarium.Logic.Simulation.TerrariumType.Forest, option.Type);
+            Assert.AreEqual("Test Title", option.Title);
+            Assert.AreEqual("Test Subtitle", option.Subtitle);
+            Assert.AreEqual("test_id", option.Id);
         }
     }
 }

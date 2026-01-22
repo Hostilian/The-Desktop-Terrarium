@@ -4,6 +4,7 @@ using Terrarium.Logic.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Terrarium.Tests.Simulation
 {
     /// <summary>

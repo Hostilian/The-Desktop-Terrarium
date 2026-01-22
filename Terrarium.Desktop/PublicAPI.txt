@@ -231,3 +231,32 @@ Terrarium.Desktop.ViewModels.MainWindowViewModel.PlagueCommand -> System.Windows
 Terrarium.Desktop.ViewModels.MainWindowViewModel.FertilityBlessingCommand -> System.Windows.Input.ICommand
 Terrarium.Desktop.ViewModels.MainWindowViewModel.AbundanceCommand -> System.Windows.Input.ICommand
 Terrarium.Desktop.ViewModels.MainWindowViewModel.CorruptionCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.PlagueCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.FertilityBlessingCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.AbundanceCommand -> System.Windows.Input.ICommand
+Terrarium.Desktop.ViewModels.MainWindowViewModel.CorruptionCommand -> System.Windows.Input.ICommand
+
+Terrarium.Desktop.Rendering.SettingsPanel
+Terrarium.Desktop.Rendering.SettingsPanel.SettingsPanel(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.SettingsPanel.SimulationSpeed.get -> double
+Terrarium.Desktop.Rendering.SettingsPanel.SpawnRate.get -> double
+Terrarium.Desktop.Rendering.SettingsPanel.ShowParticles.get -> bool
+Terrarium.Desktop.Rendering.SettingsPanel.ShowNotifications.get -> bool
+Terrarium.Desktop.Rendering.SettingsPanel.ShowWeatherEffects.get -> bool
+Terrarium.Desktop.Rendering.SettingsPanel.EnableSound.get -> bool
+Terrarium.Desktop.Rendering.SettingsPanel.SimpleMode.get -> bool
+Terrarium.Desktop.Rendering.SettingsPanel.MaxPlants.get -> int
+Terrarium.Desktop.Rendering.SettingsPanel.MaxCreatures.get -> int
+Terrarium.Desktop.Rendering.SettingsPanel.SimulationSpeedChanged -> System.Action<double>?
+Terrarium.Desktop.Rendering.SettingsPanel.SpawnRateChanged -> System.Action<double>?
+Terrarium.Desktop.Rendering.SettingsPanel.ParticlesToggled -> System.Action<bool>?
+Terrarium.Desktop.Rendering.SettingsPanel.NotificationsToggled -> System.Action<bool>?
+Terrarium.Desktop.Rendering.SettingsPanel.WeatherEffectsToggled -> System.Action<bool>?
+Terrarium.Desktop.Rendering.SettingsPanel.SoundToggled -> System.Action<bool>?
+Terrarium.Desktop.Rendering.SettingsPanel.SimpleModeToggled -> System.Action<bool>?
+Terrarium.Desktop.Rendering.SettingsPanel.MaxPlantsChanged -> System.Action<int>?
+Terrarium.Desktop.Rendering.SettingsPanel.MaxCreaturesChanged -> System.Action<int>?
+Terrarium.Desktop.Rendering.SettingsPanel.Show() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.Hide() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.Toggle() -> void
+Terrarium.Desktop.Rendering.SettingsPanel.IsVisible.get -> bool

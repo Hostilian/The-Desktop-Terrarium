@@ -12,9 +12,8 @@ namespace Terrarium.Desktop.Rendering;
 /// </summary>
 public class SettingsPanel
 {
-    private readonly Canvas _parentCanvas;
-    private Border? _panelBorder;
-    private StackPanel? _settingsContent;
+    private const double _panelWidth = 280;
+    private const double _panelHeight = 420;
 
     // Static fields with proper prefix
     private static readonly Brush _settingsLabelBrush = CreateFrozenBrush(Color.FromRgb(200, 200, 200));
@@ -41,31 +40,106 @@ public class SettingsPanel
         BlurRadius = 15,
         Opacity = 0.7
     });
+
+    private readonly Canvas _parentCanvas;
+    private Border? _panelBorder;
+    private StackPanel? _settingsContent;
     private bool _isVisible;
 
+    /// <summary>
+    /// Gets the current simulation speed multiplier.
+    /// </summary>
     public double SimulationSpeed { get; private set; } = 1.0;
+
+    /// <summary>
+    /// Gets the current spawn rate multiplier.
+    /// </summary>
     public double SpawnRate { get; private set; } = 0.5;
+
+    /// <summary>
+    /// Gets a value indicating whether particles are shown.
+    /// </summary>
     public bool ShowParticles { get; private set; } = true;
+
+    /// <summary>
+    /// Gets a value indicating whether notifications are shown.
+    /// </summary>
     public bool ShowNotifications { get; private set; } = true;
+
+    /// <summary>
+    /// Gets a value indicating whether weather effects are shown.
+    /// </summary>
     public bool ShowWeatherEffects { get; private set; } = true;
+
+    /// <summary>
+    /// Gets a value indicating whether sound is enabled.
+    /// </summary>
     public bool EnableSound { get; private set; } = true;
+
+    /// <summary>
+    /// Gets a value indicating whether simple mode is enabled.
+    /// </summary>
     public bool SimpleMode { get; private set; } = true;
+
+    /// <summary>
+    /// Gets the maximum number of plants.
+    /// </summary>
     public int MaxPlants { get; private set; } = 50;
+
+    /// <summary>
+    /// Gets the maximum number of creatures.
+    /// </summary>
     public int MaxCreatures { get; private set; } = 30;
 
+    /// <summary>
+    /// Occurs when the simulation speed changes.
+    /// </summary>
     public event Action<double>? SimulationSpeedChanged;
+
+    /// <summary>
+    /// Occurs when the spawn rate changes.
+    /// </summary>
     public event Action<double>? SpawnRateChanged;
+
+    /// <summary>
+    /// Occurs when the particles toggle changes.
+    /// </summary>
     public event Action<bool>? ParticlesToggled;
+
+    /// <summary>
+    /// Occurs when the notifications toggle changes.
+    /// </summary>
     public event Action<bool>? NotificationsToggled;
+
+    /// <summary>
+    /// Occurs when the weather effects toggle changes.
+    /// </summary>
     public event Action<bool>? WeatherEffectsToggled;
+
+    /// <summary>
+    /// Occurs when the sound toggle changes.
+    /// </summary>
     public event Action<bool>? SoundToggled;
+
+    /// <summary>
+    /// Occurs when the simple mode toggle changes.
+    /// </summary>
     public event Action<bool>? SimpleModeToggled;
+
+    /// <summary>
+    /// Occurs when the max plants value changes.
+    /// </summary>
     public event Action<int>? MaxPlantsChanged;
+
+    /// <summary>
+    /// Occurs when the max creatures value changes.
+    /// </summary>
     public event Action<int>? MaxCreaturesChanged;
 
-    private const double _panelWidth = 280;
-    private const double _panelHeight = 420;
-
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SettingsPanel"/> class.
+    /// </summary>
+    /// <param name="parentCanvas">The parent canvas to attach the panel to.</param>
     public SettingsPanel(Canvas parentCanvas)
     {
         _parentCanvas = parentCanvas;
@@ -356,6 +430,9 @@ public class SettingsPanel
         Canvas.SetTop(_panelBorder, Math.Max(20, y));
     }
 
+    /// <summary>
+    /// Shows the settings panel with animation.
+    /// </summary>
     public void Show()
     {
         if (_panelBorder == null)
@@ -379,6 +456,9 @@ public class SettingsPanel
         }
     }
 
+    /// <summary>
+    /// Hides the settings panel.
+    /// </summary>
     public void Hide()
     {
         if (_panelBorder == null)
@@ -390,6 +470,9 @@ public class SettingsPanel
         _isVisible = false;
     }
 
+    /// <summary>
+    /// Toggles the visibility of the settings panel.
+    /// </summary>
     public void Toggle()
     {
         if (_isVisible)
@@ -402,5 +485,8 @@ public class SettingsPanel
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the settings panel is currently visible.
+    /// </summary>
     public bool IsVisible => _isVisible;
 }

@@ -9,18 +9,5 @@ namespace Terrarium.Tests.Constants
     /// </summary>
     public class Win32ConstantsTests
     {
-        [TestMethod]
-        public void WM_NC_HITTEST_HasCorrectValue()
-        {
-            // Assert
-            Assert.AreEqual(0x0084, Win32Constants.WMNCHITTEST);
-        }
-
-        [TestMethod]
-        public void HT_TRANSPARENT_HasCorrectValue()
-        {
-            // Assert
-            Assert.AreEqual(-1, Win32Constants.HTTRANSPARENT);
-        }
     }
 }

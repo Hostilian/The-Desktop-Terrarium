@@ -14,6 +14,7 @@ Terrarium.Desktop.MainWindow.Title -> string
 Terrarium.Desktop.MainWindow.Title.set -> void
 Terrarium.Desktop.MainWindow.WindowState -> System.Windows.WindowState
 Terrarium.Desktop.MainWindow.WindowState.set -> void
+Terrarium.Desktop.MainWindow.Dispose() -> void
 
 Terrarium.Desktop.ChronicleWindow
 Terrarium.Desktop.ChronicleWindow.ChronicleWindow() -> void

@@ -26,7 +26,7 @@ namespace Terrarium.Desktop;
 /// god simulator mode with divine powers, and particle sandbox simulation.
 /// Follows MVVM principles with logic delegated to services (future refactoring).
 /// </remarks>
-public partial class MainWindow : Window
+public partial class MainWindow : Window, IDisposable
 {
     private SimulationEngine? _simulationEngine;
     private Renderer? _renderer;
@@ -236,7 +236,7 @@ public partial class MainWindow : Window
                 double distance = Math.Sqrt(Math.Pow(entity.X - impactX, 2) + Math.Pow(entity.Y - impactY, 2));
                 if (distance <= impactRadius)
                 {
-                    double damage = GodPowerConstants.METEOR_BASE_DAMAGE * (1 - distance / impactRadius);
+                    double damage = GodPowerConstants.METEOR_BASE_DAMAGE * (1 - (distance / impactRadius));
                     entity.TakeDamage(damage);
 
                     if (entity is Creature creature)
@@ -723,7 +723,7 @@ public partial class MainWindow : Window
     private void CheckAndNotifyRestartRequirements(SettingsDialog settings)
     {
         bool requiresRestart = false;
-        string restartReasons = "";
+        string restartReasons = string.Empty;
 
         if (settings.WorldWidth != 800 || settings.WorldHeight != 600)
         {
@@ -776,6 +776,30 @@ public partial class MainWindow : Window
         _renderTimer?.Stop();
         _systemMonitorTimer?.Stop();
         _systemMonitor?.Dispose();
+    }
+
+    /// <summary>
+    /// Disposes of managed resources.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes of managed resources.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose(), false if called from finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _renderTimer?.Stop();
+            _systemMonitorTimer?.Stop();
+            _systemMonitor?.Dispose();
+            _soundManager?.Dispose(); // Assuming SoundManager implements IDisposable
+        }
     }
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

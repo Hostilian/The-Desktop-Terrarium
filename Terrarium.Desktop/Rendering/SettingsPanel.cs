@@ -86,7 +86,7 @@ public class SettingsPanel
             FontSize = 18,
             FontWeight = FontWeights.Bold,
             Foreground = Brushes.White,
-            Margin = new Thickness(0, 0, 0, 15)
+            Margin = new Thickness(0, 0, 0, 15),
         };
         _settingsContent.Children.Add(header);
 
@@ -94,28 +94,28 @@ public class SettingsPanel
         AddSliderSetting("Simulation Speed", "🏃", 0.1, 3.0, SimulationSpeed, value =>
         {
             SimulationSpeed = value;
-            SimulationSpeedChanged?.Invoke(value);
+            this.SimulationSpeedChanged?.Invoke(value);
         }, "{0:F1}x");
 
         // Spawn Rate
         AddSliderSetting("Spawn Rate", "🌱", 0.0, 2.0, SpawnRate, value =>
         {
             SpawnRate = value;
-            SpawnRateChanged?.Invoke(value);
+            this.SpawnRateChanged?.Invoke(value);
         }, "{0:F1}x");
 
         // Max Plants
         AddSliderSetting("Max Plants", "🌿", 10, 100, MaxPlants, value =>
         {
             MaxPlants = (int)value;
-            MaxPlantsChanged?.Invoke((int)value);
+            this.MaxPlantsChanged?.Invoke((int)value);
         }, "{0:F0}");
 
         // Max Creatures
         AddSliderSetting("Max Creatures", "🐾", 5, 60, MaxCreatures, value =>
         {
             MaxCreatures = (int)value;
-            MaxCreaturesChanged?.Invoke((int)value);
+            this.MaxCreaturesChanged?.Invoke((int)value);
         }, "{0:F0}");
 
         // Separator
@@ -128,7 +128,7 @@ public class SettingsPanel
             FontSize = 14,
             FontWeight = FontWeights.SemiBold,
             Foreground = _visualHeaderBrush,
-            Margin = new Thickness(0, 5, 0, 10)
+            Margin = new Thickness(0, 5, 0, 10),
         };
         _settingsContent.Children.Add(visualHeader);
 
@@ -136,13 +136,13 @@ public class SettingsPanel
         AddToggleSetting("Particles", "✨", ShowParticles, value =>
         {
             ShowParticles = value;
-            ParticlesToggled?.Invoke(value);
+            this.ParticlesToggled?.Invoke(value);
         });
 
         AddToggleSetting("Notifications", "🔔", ShowNotifications, value =>
         {
             ShowNotifications = value;
-            NotificationsToggled?.Invoke(value);
+            this.NotificationsToggled?.Invoke(value);
         });
 
         AddToggleSetting("Weather Effects", "🌧️", ShowWeatherEffects, value =>
@@ -172,7 +172,7 @@ public class SettingsPanel
             Background = _closeButtonBackgroundBrush,
             Foreground = Brushes.White,
             BorderBrush = _closeButtonBorderBrush,
-            Cursor = System.Windows.Input.Cursors.Hand
+            Cursor = System.Windows.Input.Cursors.Hand,
         };
         closeButton.Click += (s, e) => Hide();
         _settingsContent.Children.Add(closeButton);
@@ -188,7 +188,7 @@ public class SettingsPanel
             Child = _settingsContent,
             Visibility = Visibility.Collapsed,
             RenderTransform = new TranslateTransform(0, 0),
-            Effect = _panelShadowEffect
+            Effect = _panelShadowEffect,
         };
 
         Canvas.SetZIndex(_panelBorder, 900);

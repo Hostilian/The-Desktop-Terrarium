@@ -117,6 +117,14 @@ Terrarium.Desktop.Rendering.SessionTimer.SetSessionTime(double) -> void
 Terrarium.Desktop.Rendering.SessionTimer.SetGenerationCount(int) -> void
 Terrarium.Desktop.Rendering.SessionTimer.Reset() -> void
 
+Terrarium.Desktop.Rendering.SpeedIndicator
+Terrarium.Desktop.Rendering.SpeedIndicator.SpeedIndicator(System.Windows.Controls.Canvas) -> void
+Terrarium.Desktop.Rendering.SpeedIndicator.IsEnabled -> bool
+Terrarium.Desktop.Rendering.SpeedIndicator.IsEnabled.set -> void
+Terrarium.Desktop.Rendering.SpeedIndicator.SetSpeed(double) -> void
+Terrarium.Desktop.Rendering.SpeedIndicator.Update(double) -> void
+Terrarium.Desktop.Rendering.SpeedIndicator.ForceShow() -> void
+
 Terrarium.Desktop.Rendering.ParticleSystem
 Terrarium.Desktop.Rendering.ParticleSystem.ParticleSystem(System.Windows.Controls.Canvas) -> void
 Terrarium.Desktop.Rendering.ParticleSystem.Update(double) -> void

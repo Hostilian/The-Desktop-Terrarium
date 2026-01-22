@@ -133,8 +133,8 @@ public class SoundManager : IDisposable
                     SystemSounds.Exclamation.Play();
                     break;
                 case "ambient":
-                    // Random ambient sound
-                    if (_random.Next(10) < 3) // 30% chance
+                    // Random ambient sound - 30% chance
+                    if (_random.Next(10) < 3)
                     {
                         SystemSounds.Question.Play();
                     }

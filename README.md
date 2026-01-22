@@ -181,6 +181,9 @@ cd The-Desktop-Terrarium
 cd publish
 .\Terrarium.Desktop.exe
 
+cd publish && .\Terrarium.Desktop.exe
+
+
 # Test
 dotnet test src/DesktopTerrarium.sln
 ```

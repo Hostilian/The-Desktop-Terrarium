@@ -15,7 +15,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealth01(50, 35, 15);
 
             // Assert
-            Assert.InRange(health, 0.0, 1.0);
+            Assert.IsTrue(health >= 0.0 && health <= 1.0);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should be close to 100 with ideal balance
-            Assert.InRange(health, 95, 100);
+            Assert.IsTrue(health >= 95 && health <= 100);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should have significant penalty
-            Assert.InRange(health, 0, 60);
+            Assert.IsTrue(health >= 0 && health <= 60);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should have penalty
-            Assert.InRange(health, 0, 70);
+            Assert.IsTrue(health >= 0 && health <= 70);
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should have penalty
-            Assert.InRange(health, 0, 80);
+            Assert.IsTrue(health >= 0 && health <= 80);
         }
 
         [TestMethod]
@@ -120,7 +120,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should get population bonus
-            Assert.InRange(health, 70, 100);
+            Assert.IsTrue(health >= 70 && health <= 100);
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace Terrarium.Tests.Simulation
             double health = EcosystemHealthScorer.CalculateHealthPercent(plants, herbivores, carnivores);
 
             // Assert - should be low due to imbalance
-            Assert.InRange(health, 0, 50);
+            Assert.IsTrue(health >= 0 && health <= 50);
         }
 
         [TestMethod]

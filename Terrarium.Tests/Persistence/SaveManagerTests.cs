@@ -248,7 +248,7 @@ namespace Terrarium.Tests.Persistence
                 Assert.IsFalse(success, "TryLoadWorld should return false for invalid JSON");
                 Assert.IsNull(world, "World should be null on failure");
                 Assert.IsNotNull(errorDetails, "Error details should be provided");
-                StringAssert.Contains(errorDetails, "Save file is corrupted or not valid JSON", "Error should contain specific error message");
+                StringAssert.IsTrue(errorDetails.Any("Save file is corrupted or not valid JSON", "Error should contain specific error message"));
             }
             finally
             {
@@ -365,7 +365,7 @@ namespace Terrarium.Tests.Persistence
                 }
                 catch (InvalidDataException ex)
                 {
-                    StringAssert.Contains(ex.Message, "invalid", "Should mention invalid dimensions");
+                    StringAssert.IsTrue(ex.Message.Any("invalid", "Should mention invalid dimensions"));
                 }
             }
             finally

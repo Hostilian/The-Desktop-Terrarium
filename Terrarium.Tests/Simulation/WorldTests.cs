@@ -44,7 +44,7 @@ namespace Terrarium.Tests.Simulation
             world.AddPlant(plant);
 
             // Assert
-            CollectionAssert.Contains(world.Plants, plant);
+            CollectionAssert.IsTrue(world.Plants.Any(plant));
             Assert.AreEqual(1, world.Plants.Count);
         }
 
@@ -59,7 +59,7 @@ namespace Terrarium.Tests.Simulation
             world.AddHerbivore(herbivore);
 
             // Assert
-            CollectionAssert.Contains(world.Herbivores, herbivore);
+            CollectionAssert.IsTrue(world.Herbivores.Any(herbivore));
             Assert.AreEqual(1, world.Herbivores.Count);
         }
 
@@ -74,7 +74,7 @@ namespace Terrarium.Tests.Simulation
             world.AddCarnivore(carnivore);
 
             // Assert
-            CollectionAssert.Contains(world.Carnivores, carnivore);
+            CollectionAssert.IsTrue(world.Carnivores.Any(carnivore));
             Assert.AreEqual(1, world.Carnivores.Count);
         }
 
@@ -100,9 +100,9 @@ namespace Terrarium.Tests.Simulation
             world.RemoveDeadEntities();
 
             // Assert
-            CollectionAssert.Contains(world.Plants, alivePlant);
+            CollectionAssert.IsTrue(world.Plants.Any(alivePlant));
             CollectionAssert.DoesNotContain(world.Plants, deadPlant);
-            CollectionAssert.Contains(world.Herbivores, aliveHerbivore);
+            CollectionAssert.IsTrue(world.Herbivores.Any(aliveHerbivore));
             CollectionAssert.DoesNotContain(world.Herbivores, deadHerbivore);
         }
 
@@ -118,7 +118,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsNotNull(plant);
             Assert.AreEqual("Tree", plant.Type);
-            CollectionAssert.Contains(world.Plants, plant);
+            CollectionAssert.IsTrue(world.Plants.Any(plant));
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace Terrarium.Tests.Simulation
             Assert.AreEqual(250, plant.X);
             Assert.AreEqual(300, plant.Y);
             Assert.AreEqual("Tree", plant.Type);
-            CollectionAssert.Contains(world.Plants, plant);
+            CollectionAssert.IsTrue(world.Plants.Any(plant));
         }
 
         [TestMethod]
@@ -188,7 +188,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsNotNull(herbivore);
             Assert.AreEqual("Deer", herbivore.Type);
-            CollectionAssert.Contains(world.Herbivores, herbivore);
+            CollectionAssert.IsTrue(world.Herbivores.Any(herbivore));
         }
 
         [TestMethod]
@@ -216,7 +216,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsNotNull(carnivore);
             Assert.AreEqual("Dragon", carnivore.Type);
-            CollectionAssert.Contains(world.Carnivores, carnivore);
+            CollectionAssert.IsTrue(world.Carnivores.Any(carnivore));
         }
 
         [TestMethod]
@@ -258,7 +258,7 @@ namespace Terrarium.Tests.Simulation
             var terrain = world.GetTerrainAt(100, 100);
 
             // Assert
-            Assert.NotEqual(TerrainType.Void, terrain);
+            Assert.AreNotEqual(TerrainType.Void, terrain);
         }
 
         [TestMethod]
@@ -360,7 +360,7 @@ namespace Terrarium.Tests.Simulation
             var territory = world.GetFactionTerritory(FactionType.VerdantCollective).ToList();
 
             // Assert
-            Assert.NotEmpty(territory);
+            Assert.IsNotEmpty(territory);
             foreach (var cell in territory)
             {
                 Assert.AreEqual(TerrainType.VerdantGrowth, cell.terrain);
@@ -379,7 +379,7 @@ namespace Terrarium.Tests.Simulation
             // Assert
             Assert.IsNotNull(control);
             var totalPercent = control.Values.Sum();
-            Assert.InRange(totalPercent, 95, 105); // Should be ~100% with rounding
+            Assert.IsTrue(totalPercent >= 95 && totalPercent <= 105); // Should be ~100% with rounding
         }
     }
 }

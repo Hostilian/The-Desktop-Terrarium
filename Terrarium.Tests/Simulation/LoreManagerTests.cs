@@ -19,7 +19,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsNotNull(loreManager.Chronicle);
-            Assert.NotEmpty(loreManager.Chronicle); // Should have ancient events
+            Assert.IsNotEmpty(loreManager.Chronicle); // Should have ancient events
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             var ancientEvents = loreManager.Chronicle.Where(e => e.Type == LoreEventType.AncientHistory);
-            Assert.InRange(ancientEvents.Count(), 3, 5); // Should generate 3-5 ancient events
+            Assert.IsTrue(ancientEvents.Count() >= 3 && ancientEvents.Count() <= 5); // Should generate 3-5 ancient events
         }
 
         [TestMethod]
@@ -82,7 +82,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsNotNull(description);
-            Assert.NotEmpty(description);
+            Assert.IsNotEmpty(description);
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Terrarium.Tests.Simulation
             }
 
             // Assert - should have created at least one named character
-            Assert.NotEmpty(loreManager.NamedCharacters);
+            Assert.IsNotEmpty(loreManager.NamedCharacters);
         }
 
         [TestMethod]
@@ -217,7 +217,7 @@ namespace Terrarium.Tests.Simulation
 
             // Assert
             Assert.IsNotNull(lore);
-            Assert.NotEmpty(lore);
+            Assert.IsNotEmpty(lore);
         }
 
         [TestMethod]
@@ -255,7 +255,7 @@ namespace Terrarium.Tests.Simulation
             };
 
             // Assert
-            Assert.NotEqual(0, loreEvent.Timestamp);
+            Assert.AreNotEqual(0, loreEvent.Timestamp);
             Assert.AreEqual("Test event", loreEvent.Description);
             Assert.AreEqual(LoreEventType.Battle, loreEvent.Type);
             Assert.AreEqual(LoreImportance.Major, loreEvent.Importance);

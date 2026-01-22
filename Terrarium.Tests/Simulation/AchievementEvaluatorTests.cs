@@ -77,7 +77,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "population_50");
+            Assert.IsTrue(achievements.Any(a => a.Id == "population_50"));
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "births_10");
+            Assert.IsTrue(achievements.Any(a => a.Id == "births_10"));
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "births_50");
+            Assert.IsTrue(achievements.Any(a => a.Id == "births_50"));
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "births_100");
+            Assert.IsTrue(achievements.Any(a => a.Id == "births_100"));
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "survivor");
+            Assert.IsTrue(achievements.Any(a => a.Id == "survivor"));
         }
 
         [TestMethod]
@@ -185,7 +185,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "time_5min");
+            Assert.IsTrue(achievements.Any(a => a.Id == "time_5min"));
         }
 
         [TestMethod]
@@ -203,7 +203,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "time_30min");
+            Assert.IsTrue(achievements.Any(a => a.Id == "time_30min"));
         }
 
         [TestMethod]
@@ -221,7 +221,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "time_1hour");
+            Assert.IsTrue(achievements.Any(a => a.Id == "time_1hour"));
         }
 
         [TestMethod]
@@ -239,7 +239,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "plants_20");
+            Assert.IsTrue(achievements.Any(a => a.Id == "plants_20"));
         }
 
         [TestMethod]
@@ -257,7 +257,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "plants_40");
+            Assert.IsTrue(achievements.Any(a => a.Id == "plants_40"));
         }
 
         [TestMethod]
@@ -275,7 +275,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "balance");
+            Assert.IsTrue(achievements.Any(a => a.Id == "balance"));
         }
 
         [TestMethod]
@@ -329,7 +329,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Contains(achievements, a => a.Id == "apex_predator");
+            Assert.IsTrue(achievements.Any(a => a.Id == "apex_predator"));
         }
 
         [TestMethod]
@@ -347,7 +347,7 @@ namespace Terrarium.Tests.Simulation
             );
 
             // Assert
-            Assert.Empty(achievements);
+            Assert.AreEqual(0, achievements.Count);
         }
 
         [TestMethod]

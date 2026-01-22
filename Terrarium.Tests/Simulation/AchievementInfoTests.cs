@@ -38,7 +38,7 @@ namespace Terrarium.Tests.Simulation
             var achievement2 = new AchievementInfo("test2", "Title", "Desc");
 
             // Act & Assert
-            Assert.NotEqual(achievement1, achievement2);
+            Assert.AreNotEqual(achievement1, achievement2);
         }
     }
 }

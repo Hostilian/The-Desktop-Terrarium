@@ -155,7 +155,7 @@ public class SpeedIndicator
         {
             _currentSpeed = speed;
             _hideTimer = HideDelay;
-            Show();
+            this.Show();
         }
     }
 

@@ -17,11 +17,11 @@ You can generate them in PowerShell:
 Run the following commands from the project root:
 
 ```powershell
-# 1. Compile the WiX source
-candle installer/Product.wxs -dTerrarium.Desktop.TargetDir=src/Terrarium.Desktop/bin/Release/net8.0-windows/
+# 1. Install WiX Toolset (if not installed)
+dotnet tool install --global wix
 
-# 2. Link objects to create MSI
-light Product.wixobj -out DesktopTerrarium.msi -ext WixUIExtension
+# 2. Build the MSI
+wix build installer/Product.wxs -d Terrarium.Desktop.TargetDir=src/Terrarium.Desktop/bin/Release/net8.0-windows/ -o DesktopTerrarium.msi
 ```
 
 ## 4. Test Installation

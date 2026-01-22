@@ -13,21 +13,27 @@ public class UIConstantsTests
     [TestMethod]
     public void EntityClickTolerance_ShouldBePositive()
     {
-        Assert.IsGreaterThan(0, UIConstants.ENTITYCLICKTOLERANCEPIXELS,
+        Assert.IsGreaterThan(
+            0,
+            UIConstants.ENTITYCLICKTOLERANCEPIXELS,
             "Click tolerance must be positive");
     }
 
     [TestMethod]
     public void CreatureClickTolerance_ShouldBePositive()
     {
-        Assert.IsGreaterThan(0, UIConstants.CREATURECLICKTOLERANCEPIXELS,
+        Assert.IsGreaterThan(
+            0,
+            UIConstants.CREATURECLICKTOLERANCEPIXELS,
             "Creature click tolerance must be positive");
     }
 
     [TestMethod]
     public void CreatureClickTolerance_ShouldBeSmallerThanEntityTolerance()
     {
-        Assert.IsLessThan(UIConstants.ENTITYCLICKTOLERANCEPIXELS, UIConstants.CREATURECLICKTOLERANCEPIXELS,
+        Assert.IsLessThan(
+            UIConstants.ENTITYCLICKTOLERANCEPIXELS,
+            UIConstants.CREATURECLICKTOLERANCEPIXELS,
             "Creature tolerance should be smaller than general entity tolerance for precision");
     }
 
@@ -41,7 +47,9 @@ public class UIConstantsTests
     [TestMethod]
     public void SimulationSpeedPresets_ShouldStartWithNormalSpeed()
     {
-        Assert.AreEqual(1.0, UIConstants.SIMULATIONSPEEDPRESETS[0],
+        Assert.AreEqual(
+            1.0,
+            UIConstants.SIMULATIONSPEEDPRESETS[0],
             "First speed preset should be 1.0 (normal speed)");
     }
 

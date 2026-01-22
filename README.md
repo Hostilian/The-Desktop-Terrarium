@@ -9,7 +9,6 @@
 
 # 🏆 Desktop Terrarium
 
-**A+ Grade Achievement • 100% Exam Compliance • Modern Gaming Platform**
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](.)
 [![Tests](https://img.shields.io/badge/tests-125%2B%20passing-brightgreen)](.)

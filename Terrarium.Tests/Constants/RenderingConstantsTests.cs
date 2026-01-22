@@ -16,14 +16,18 @@ public class RenderingConstantsTests
     [TestMethod]
     public void DefaultRenderFps_ShouldBe60()
     {
-        Assert.AreEqual(60, RenderingConstants.DEFAULTRENDERFPS,
+        Assert.AreEqual(
+            60,
+            RenderingConstants.DEFAULTRENDERFPS,
             "Standard rendering should be 60 FPS for smooth animation");
     }
 
     [TestMethod]
     public void DefaultRenderFps_ShouldBePositive()
     {
-        Assert.IsGreaterThan(0, RenderingConstants.DEFAULTRENDERFPS,
+        Assert.IsGreaterThan(
+            0,
+            RenderingConstants.DEFAULTRENDERFPS,
             "FPS must be positive");
     }
 

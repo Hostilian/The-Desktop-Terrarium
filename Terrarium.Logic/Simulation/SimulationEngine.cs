@@ -652,7 +652,7 @@ namespace Terrarium.Logic.Simulation
 
         public string GetTimeOfDayString() => _dayNightCycle.CurrentPhase.ToString();
 
-        public double GetLightLevel() => _dayNightCycle.LightLevel;
+        public double LightLevel => _dayNightCycle.LightLevel;
 
         /// <summary>
         /// Handles entity death events for lore generation.

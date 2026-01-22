@@ -34,7 +34,7 @@ Terrarium.Logic.Simulation.SimulationEngine.FindClickableAt(int, int) -> Terrari
 Terrarium.Logic.Simulation.SimulationEngine.IsEcosystemBalanced() -> bool
 Terrarium.Logic.Simulation.SimulationEngine.GetEcosystemHealth() -> int
 Terrarium.Logic.Simulation.SimulationEngine.GetTimeOfDayString() -> string
-Terrarium.Logic.Simulation.SimulationEngine.GetLightLevel() -> double
+Terrarium.Logic.Simulation.SimulationEngine.LightLevel -> double
 
 Terrarium.Logic.Simulation.World
 Terrarium.Logic.Simulation.World.Width -> int
